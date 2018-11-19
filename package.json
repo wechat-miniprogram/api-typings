@@ -1,0 +1,15 @@
+{
+  "name": "miniprogram-api-typings",
+  "version": "2.4.0",
+  "description": "Type definitions for APIs of Wechat Mini Program in TypeScript",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wechat-miniprogram/api-typings.git"
+  },
+	"author": "wechat-miniprogram",
+	"license": "MIT",
+  "bugs": {
+    "url": "https://github.com/wechat-miniprogram/api-typings/issues"
+  },
+  "homepage": "https://github.com/wechat-miniprogram/api-typings#readme"
+}
