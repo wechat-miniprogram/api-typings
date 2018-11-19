@@ -1,7 +1,9 @@
 {
   "name": "miniprogram-api-typings",
-  "version": "2.4.0",
+  "version": "2.4.0-1",
   "description": "Type definitions for APIs of Wechat Mini Program in TypeScript",
+  "main": "./index.d.ts",
+  "types": "./index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/wechat-miniprogram/api-typings.git"
