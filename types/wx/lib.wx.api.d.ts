@@ -190,23 +190,25 @@ declare namespace wx {
       | 'utf-8/utf8'
       | 'latin1';
   }
-  /** 用户授权设置信息 */
+  /** 用户授权设置信息，详情参考[权限]((授权)) */
   interface AuthSetting {
-    /** 是否授权摄像头 */
+    /** 是否授权摄像头，对应[`<camera />`]((camera)) 组件 */
     camera: boolean;
-    /** 是否授权保存到相册 wx.saveImageToPhotosAlbum, wx.saveVideoToPhotosAlbum */
+    /** 是否授权保存到相册 [wx.saveImageToPhotosAlbum]((wx.saveImageToPhotosAlbum)), [wx.saveVideoToPhotosAlbum]((wx.saveVideoToPhotosAlbum)) */
     writePhotosAlbum: boolean;
-    /** 是否授权录音功能，对应接口 wx.startRecord */
+    /** 是否授权录音功能，对应接口 [wx.startRecord]((wx.startRecord)) */
     record: boolean;
-    /** 是否授权微信运动步数，对应接口 wx.getWeRunData */
+    /** 是否授权微信运动步数，对应接口 [wx.getWeRunData]((wx.getWeRunData)) */
     werun: boolean;
-    /** 是否授权发票抬头，对应接口 wx.chooseInvoiceTitle */
+    /** 是否授权获取发票，对应接口 [wx.chooseInvoice]((wx.chooseInvoice)) */
+    invoice: boolean;
+    /** 是否授权发票抬头，对应接口 [wx.chooseInvoiceTitle]((wx.chooseInvoiceTitle)) */
     invoiceTitle: boolean;
-    /** 是否授权通讯地址，对应接口 wx.chooseAddress */
+    /** 是否授权通讯地址，对应接口 [wx.chooseAddress]((wx.chooseAddress)) */
     address: boolean;
-    /** 是否授权地理位置，对应接口 wx.getLocation wx.chooseLocation */
+    /** 是否授权地理位置，对应接口 [wx.getLocation]((wx.getLocation)), [wx.chooseLocation]((wx.chooseLocation)), [wx.openLocation]((wx.openLocation)) */
     userLocation: boolean;
-    /** 是否授权用户信息，对应接口 wx.getUserInfo */
+    /** 是否授权用户信息，对应接口 [wx.getUserInfo]((wx.getUserInfo)) */
     userInfo: boolean;
   }
   interface AuthorizeOption {
@@ -1088,6 +1090,10 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
     /** 临时文件路径。如果没传入 filePath 指定文件存储路径，则下载后的文件会存储到一个临时文件 */
     tempFilePath: string;
   }
+  interface DownloadTaskOnHeadersReceivedCallbackResult {
+    /** 开发者服务器返回的 HTTP Response Header */
+    header: object;
+  }
   interface DownloadTaskOnProgressUpdateCallbackResult {
     /** 下载进度百分比 */
     progress: number;
@@ -1896,6 +1902,24 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
   }
   /** InnerAudioContext 实例，可通过 [wx.createInnerAudioContext]((wx.createInnerAudioContext)) 接口获取实例。
 * 
+* **支持格式**
+* 
+* 
+* | 格式 | iOS  | Android |
+* | ---- | ---- | ------- |
+* | flac | x    | √       |
+* | m4a  | x    | √       |
+* | ogg  | x    | √       |
+* | ape  | x    | √       |
+* | amr  | x    | √       |
+* | wma  | x    | √       |
+* | wav  | √    | √       |
+* | mp3  | √    | √       |
+* | mp4  | x    | √       |
+* | aac  | √    | √       |
+* | aiff | √    | x       |
+* | caf  | √    | x       |
+* 
 * **示例代码**
 * 
 * 
@@ -1961,7 +1985,7 @@ innerAudioContext.onError((res) => {
   interface InvoiceInfo {
     /** 所选发票卡券的 cardId */
     cardId: string;
-    /** 所选发票卡券的加密 code，报销方可以通过 cardId 和 encryptCode 获得报销发票的信息 */
+    /** 所选发票卡券的加密 code，报销方可以通过 cardId 和 encryptCode 获得报销发票的信息。 */
     encryptCode: string;
     /** 发票方的 appId */
     publisherAppId: string;
@@ -2709,17 +2733,17 @@ innerAudioContext.onError((res) => {
   }
   /** 菜单按钮的布局位置信息 */
   interface Rect {
-    /** 下边界坐标 */
+    /** 下边界坐标，单位：px */
     bottom: number;
-    /** 高度 */
+    /** 高度，单位：px */
     height: number;
-    /** 左边界坐标 */
+    /** 左边界坐标，单位：px */
     left: number;
-    /** 右边界坐标 */
+    /** 右边界坐标，单位：px */
     right: number;
-    /** 上边界坐标 */
+    /** 上边界坐标，单位：px */
     top: number;
-    /** 宽度 */
+    /** 宽度，单位：px */
     width: number;
   }
   interface RedirectToOption {
@@ -2893,6 +2917,10 @@ innerAudioContext.onError((res) => {
     statusCode: number;
     /** 开发者服务器返回的数据 */
     data: string | object | ArrayBuffer;
+  }
+  interface RequestTaskOnHeadersReceivedCallbackResult {
+    /** 开发者服务器返回的 HTTP Response Header */
+    header: object;
   }
   interface Result {
     /** z 轴的角速度 */
@@ -3201,8 +3229,8 @@ innerAudioContext.onError((res) => {
     success?: SetScreenBrightnessSuccessCallback;
   }
   interface SetStorageOption {
-    /** 需要存储的内容 */
-    data: object | string;
+    /** 需要存储的内容。只支持原生类型、Date、及能够通过`JSON.stringify`序列化的对象。 */
+    data: object;
     /** 本地缓存中指定的 key */
     key: string;
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
@@ -3944,6 +3972,10 @@ innerAudioContext.onError((res) => {
     /** 开发者服务器返回的数据 */
     data: string;
   }
+  interface UploadTaskOnHeadersReceivedCallbackResult {
+    /** 开发者服务器返回的 HTTP Response Header */
+    header: object;
+  }
   interface UploadTaskOnProgressUpdateCallbackResult {
     /** 上传进度百分比 */
     progress: number;
@@ -4404,12 +4436,12 @@ innerAudioContext.onError((res) => {
     ): void;
   }
   interface BackgroundAudioManager {
-    /** [BackgroundAudioManager.onCanPlay(function callback)](BackgroundAudioManager.onCanPlay.md)
+    /** [BackgroundAudioManager.onCanplay(function callback)](BackgroundAudioManager.onCanplay.md)
      *
      * 监听背景音频进入可以播放状态。但不保证后面可以流畅播放 */
-    onCanPlay(
+    onCanplay(
       /** 的回调函数 */
-      callback: OnCanPlayCallback,
+      callback: BackgroundAudioManagerOnCanplayCallback,
     ): void;
     /** [BackgroundAudioManager.onEnded(function callback)](BackgroundAudioManager.onEnded.md)
      *
@@ -5998,6 +6030,33 @@ ctx.draw()
      *
      * 最低基础库： `1.4.0` */
     abort(): void;
+    /** [DownloadTask.offHeadersReceived(function callback)](DownloadTask.offHeadersReceived.md)
+     *
+     * 取消监听HTTP Response Header 事件，会比请求完成事件更早
+     *
+     * 最低基础库： `2.1.0` */
+    offHeadersReceived(
+      /** HTTP Response Header 事件的回调函数 */
+      callback: DownloadTaskOffHeadersReceivedCallback,
+    ): void;
+    /** [DownloadTask.offProgressUpdate(function callback)](DownloadTask.offProgressUpdate.md)
+     *
+     * 取消监听下载进度变化事件
+     *
+     * 最低基础库： `2.1.0` */
+    offProgressUpdate(
+      /** 下载进度变化事件的回调函数 */
+      callback: DownloadTaskOffProgressUpdateCallback,
+    ): void;
+    /** [DownloadTask.onHeadersReceived(function callback)](DownloadTask.onHeadersReceived.md)
+     *
+     * 监听HTTP Response Header 事件，会比请求完成事件更早
+     *
+     * 最低基础库： `2.1.0` */
+    onHeadersReceived(
+      /** HTTP Response Header 事件的回调函数 */
+      callback: DownloadTaskOnHeadersReceivedCallback,
+    ): void;
     /** [DownloadTask.onProgressUpdate(function callback)](DownloadTask.onProgressUpdate.md)
      *
      * 监听下载进度变化事件
@@ -6293,7 +6352,7 @@ ctx.draw()
      * 监听音频进入可以播放状态的事件。但不保证后面可以流畅播放 */
     onCanplay(
       /** 音频进入可以播放状态的事件的回调函数 */
-      callback: OnCanplayCallback,
+      callback: InnerAudioContextOnCanplayCallback,
     ): void;
     /** [InnerAudioContext.onEnded(function callback)](InnerAudioContext.onEnded.md)
      *
@@ -6800,6 +6859,24 @@ Page({
      *
      * 最低基础库： `1.4.0` */
     abort(): void;
+    /** [RequestTask.offHeadersReceived(function callback)](RequestTask.offHeadersReceived.md)
+     *
+     * 取消监听HTTP Response Header 事件，会比请求完成事件更早
+     *
+     * 最低基础库： `2.1.0` */
+    offHeadersReceived(
+      /** HTTP Response Header 事件的回调函数 */
+      callback: RequestTaskOffHeadersReceivedCallback,
+    ): void;
+    /** [RequestTask.onHeadersReceived(function callback)](RequestTask.onHeadersReceived.md)
+     *
+     * 监听HTTP Response Header 事件，会比请求完成事件更早
+     *
+     * 最低基础库： `2.1.0` */
+    onHeadersReceived(
+      /** HTTP Response Header 事件的回调函数 */
+      callback: RequestTaskOnHeadersReceivedCallback,
+    ): void;
   }
   interface SelectorQuery {
     /** [[NodesRef]((NodesRef)) SelectorQuery.exec(function callback)](SelectorQuery.exec.md)
@@ -6954,6 +7031,33 @@ Component({
      *
      * 最低基础库： `1.4.0` */
     abort(): void;
+    /** [UploadTask.offHeadersReceived(function callback)](UploadTask.offHeadersReceived.md)
+     *
+     * 取消监听HTTP Response Header 事件，会比请求完成事件更早
+     *
+     * 最低基础库： `2.1.0` */
+    offHeadersReceived(
+      /** HTTP Response Header 事件的回调函数 */
+      callback: UploadTaskOffHeadersReceivedCallback,
+    ): void;
+    /** [UploadTask.offProgressUpdate(function callback)](UploadTask.offProgressUpdate.md)
+     *
+     * 取消监听上传进度变化事件
+     *
+     * 最低基础库： `2.1.0` */
+    offProgressUpdate(
+      /** 上传进度变化事件的回调函数 */
+      callback: UploadTaskOffProgressUpdateCallback,
+    ): void;
+    /** [UploadTask.onHeadersReceived(function callback)](UploadTask.onHeadersReceived.md)
+     *
+     * 监听HTTP Response Header 事件，会比请求完成事件更早
+     *
+     * 最低基础库： `2.1.0` */
+    onHeadersReceived(
+      /** HTTP Response Header 事件的回调函数 */
+      callback: UploadTaskOnHeadersReceivedCallback,
+    ): void;
     /** [UploadTask.onProgressUpdate(function callback)](UploadTask.onProgressUpdate.md)
      *
      * 监听上传进度变化事件
@@ -7088,7 +7192,7 @@ console.log(extConfig)
     getExtConfigSync(): ExtInfo;
     /** [Object wx.getMenuButtonBoundingClientRect()](wx.getMenuButtonBoundingClientRect.md)
      *
-     * 获取菜单按钮的布局置信息
+     * 获取菜单按钮（右上角胶囊按钮）的布局位置信息。坐标信息以屏幕左上角为原点。
      *
      * 最低基础库： `2.1.0` */
     getMenuButtonBoundingClientRect(): Rect;
@@ -7168,7 +7272,7 @@ wx.getStorage({
   key: 'key',
   success (res) {
     console.log(res.data)
-  } 
+  }
 })
 ```
 * 
@@ -7539,7 +7643,7 @@ wx.getSetting({
       })
     }
   }
-}
+})
 ```
 * 
 * 最低基础库： `1.2.0` */
@@ -7692,6 +7796,12 @@ wx.chooseImage({
      *
      * 选择用户已有的发票
      *
+     * **通过 cardId 和 encryptCode 获得报销发票的信息**
+     *
+     *
+     * 请参考[微信电子发票文档](https://mp.weixin.qq.com/wiki?t=resource/res_main&id=21517918939oae3U)中，「查询报销发票信息」部分。
+     * 其中 `access_token` 的获取请参考[getAccessToken]((getAccessToken))文档
+     *
      * 最低基础库： `2.3.0` */
     chooseInvoice(option: ChooseInvoiceOption): void;
     /** [wx.chooseInvoiceTitle(Object object)](wx.chooseInvoiceTitle.md)
@@ -7810,7 +7920,7 @@ wx.closeBluetoothAdapter({
     closeBluetoothAdapter(option: CloseBluetoothAdapterOption): void;
     /** [wx.closeSocket(Object object)](wx.closeSocket.md)
 * 
-* 关闭 WeSocket 连接
+* 关闭 WebSocket 连接
 * 
 * **示例代码**
 * 
@@ -8172,8 +8282,8 @@ wx.chooseImage({
 * **示例代码**
 * 
 * 
-* ```js
-wx.getLocation({
+*  ```js
+ wx.getLocation({
   type: 'wgs84',
   success (res) {
     const latitude = res.latitude
@@ -8182,7 +8292,7 @@ wx.getLocation({
     const accuracy = res.accuracy
   }
 })
-```
+ ```
 * 
 * **注意**
 * 
@@ -8301,7 +8411,7 @@ wx.getStorage({
   key: 'key',
   success (res) {
     console.log(res.data)
-  } 
+  }
 })
 ```
 * 
@@ -8429,7 +8539,7 @@ Page({
     getUserInfo(option: GetUserInfoOption): void;
     /** [wx.getWeRunData(Object object)](wx.getWeRunData.md)
 * 
-* 获取用户过去三十天微信运动步数。需要先调用 wx.login 接口。
+* 获取用户过去三十天微信运动步数。需要先调用 [wx.login]((wx.login)) 接口。步数信息会在用户主动进入小程序时更新。
 * 
 * **示例代码**
 * 
@@ -9179,8 +9289,8 @@ wx.openCard({
 * **示例代码**
 * 
 * 
-* ```js
-wx.getLocation({
+*  ```js
+ wx.getLocation({
   type: 'gcj02', //返回可以用于wx.openLocation的经纬度
   success (res) {
     const latitude = res.latitude
@@ -9188,11 +9298,11 @@ wx.getLocation({
     wx.openLocation({
       latitude,
       longitude,
-      scale: 28
+      scale: 18
     })
   }
 })
-``` */
+ ``` */
     openLocation(option: OpenLocationOption): void;
     /** [wx.openSetting(Object object)](wx.openSetting.md)
 * 
@@ -9419,7 +9529,7 @@ wx.removeStorage({
   key: 'key',
   success (res) {
     console.log(res.data)
-  } 
+  }
 })
 ```
 * 
@@ -9443,7 +9553,7 @@ wx.removeStorage({
   key: 'key',
   success (res) {
     console.log(res.data)
-  } 
+  }
 })
 ```
 * 
@@ -9810,7 +9920,7 @@ wx.setNavigationBarTitle({
     setScreenBrightness(option: SetScreenBrightnessOption): void;
     /** [wx.setStorage(Object object)](wx.setStorage.md)
 * 
-* 将数据存储在本地缓存中指定的 key 中。会覆盖掉原来该 key 对应的内容。数据存储生命周期跟小程序本身一致，即除用户主动删除或超过一定时间被自动清理，否则数据都一直可用。数据存储上限为 10MB。
+* 将数据存储在本地缓存中指定的 key 中。会覆盖掉原来该 key 对应的内容。数据存储生命周期跟小程序本身一致，即除用户主动删除或超过一定时间被自动清理，否则数据都一直可用。单个 key 允许存储的最大数据长度为 1MB，所有数据存储上限为 10MB。
 * 
 * **示例代码**
 * 
@@ -9827,7 +9937,7 @@ try {
 } catch (e) { }
 ``` */
     setStorage(option: SetStorageOption): void;
-    /** [wx.setStorageSync(string key, Object|string data)]((wx.setStorageSync))
+    /** [wx.setStorageSync(string key, Object data)]((wx.setStorageSync))
 * 
 * wx.setStorage 的同步版本
 * 
@@ -9848,8 +9958,8 @@ try {
     setStorageSync(
       /** 本地缓存中指定的 key */
       key: string,
-      /** 需要存储的内容 */
-      data: Object | string,
+      /** 需要存储的内容。只支持原生类型、Date、及能够通过`JSON.stringify`序列化的对象。 */
+      data: object,
     ): void;
     /** [wx.setTabBarBadge(Object object)](wx.setTabBarBadge.md)
 * 
@@ -10686,6 +10796,10 @@ wx.canvasGetImageData({
   type AuthorizeFailCallback = (res: GeneralCallbackResult) => void;
   /** 接口调用成功的回调函数 */
   type AuthorizeSuccessCallback = (res: GeneralCallbackResult) => void;
+  /** 的回调函数 */
+  type BackgroundAudioManagerOnCanplayCallback = (
+    res: GeneralCallbackResult,
+  ) => void;
   /** 背景音频自然播放结束事件的回调函数 */
   type BackgroundAudioManagerOnEndedCallback = (
     res: GeneralCallbackResult,
@@ -10925,6 +11039,18 @@ wx.canvasGetImageData({
   /** 接口调用成功的回调函数 */
   type DownloadFileSuccessCallback = (
     result: DownloadFileSuccessCallbackResult,
+  ) => void;
+  /** HTTP Response Header 事件的回调函数 */
+  type DownloadTaskOffHeadersReceivedCallback = (
+    res: GeneralCallbackResult,
+  ) => void;
+  /** 下载进度变化事件的回调函数 */
+  type DownloadTaskOffProgressUpdateCallback = (
+    res: GeneralCallbackResult,
+  ) => void;
+  /** HTTP Response Header 事件的回调函数 */
+  type DownloadTaskOnHeadersReceivedCallback = (
+    result: DownloadTaskOnHeadersReceivedCallbackResult,
   ) => void;
   /** 下载进度变化事件的回调函数 */
   type DownloadTaskOnProgressUpdateCallback = (
@@ -11286,6 +11412,10 @@ wx.canvasGetImageData({
   type IncludePointsFailCallback = (res: GeneralCallbackResult) => void;
   /** 接口调用成功的回调函数 */
   type IncludePointsSuccessCallback = (res: GeneralCallbackResult) => void;
+  /** 音频进入可以播放状态的事件的回调函数 */
+  type InnerAudioContextOnCanplayCallback = (
+    res: GeneralCallbackResult,
+  ) => void;
   /** 音频自然播放至结束的事件的回调函数 */
   type InnerAudioContextOnEndedCallback = (res: GeneralCallbackResult) => void;
   /** 音频播放错误事件的回调函数 */
@@ -11524,10 +11654,6 @@ wx.canvasGetImageData({
   type OnBluetoothDeviceFoundCallback = (
     result: OnBluetoothDeviceFoundCallbackResult,
   ) => void;
-  /** 的回调函数 */
-  type OnCanPlayCallback = (res: GeneralCallbackResult) => void;
-  /** 音频进入可以播放状态的事件的回调函数 */
-  type OnCanplayCallback = (res: GeneralCallbackResult) => void;
   /** 向微信后台请求检查更新结果事件的回调函数 */
   type OnCheckForUpdateCallback = (
     result: OnCheckForUpdateCallbackResult,
@@ -11794,6 +11920,14 @@ wx.canvasGetImageData({
   type RequestPaymentSuccessCallback = (res: GeneralCallbackResult) => void;
   /** 接口调用成功的回调函数 */
   type RequestSuccessCallback = (result: RequestSuccessCallbackResult) => void;
+  /** HTTP Response Header 事件的回调函数 */
+  type RequestTaskOffHeadersReceivedCallback = (
+    res: GeneralCallbackResult,
+  ) => void;
+  /** HTTP Response Header 事件的回调函数 */
+  type RequestTaskOnHeadersReceivedCallback = (
+    result: RequestTaskOnHeadersReceivedCallbackResult,
+  ) => void;
   /** 接口调用结束的回调函数（调用成功、失败都会执行） */
   type ResumeBGMCompleteCallback = (res: GeneralCallbackResult) => void;
   /** 接口调用失败的回调函数 */
@@ -12349,6 +12483,18 @@ wx.canvasGetImageData({
   /** 接口调用成功的回调函数 */
   type UploadFileSuccessCallback = (
     result: UploadFileSuccessCallbackResult,
+  ) => void;
+  /** HTTP Response Header 事件的回调函数 */
+  type UploadTaskOffHeadersReceivedCallback = (
+    res: GeneralCallbackResult,
+  ) => void;
+  /** 上传进度变化事件的回调函数 */
+  type UploadTaskOffProgressUpdateCallback = (
+    res: GeneralCallbackResult,
+  ) => void;
+  /** HTTP Response Header 事件的回调函数 */
+  type UploadTaskOnHeadersReceivedCallback = (
+    result: UploadTaskOnHeadersReceivedCallbackResult,
   ) => void;
   /** 上传进度变化事件的回调函数 */
   type UploadTaskOnProgressUpdateCallback = (
