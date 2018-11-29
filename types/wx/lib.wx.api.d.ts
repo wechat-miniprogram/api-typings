@@ -599,13 +599,13 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
      * 可选值：
      * - 'album': 从相册选图;
      * - 'camera': 使用相机; */
-    sourceType?: 'album' | 'camera';
+    sourceType?: ('album' | 'camera') [];
     /** 所选的图片的尺寸
      *
      * 可选值：
      * - 'original': 原图;
      * - 'compressed': 压缩图; */
-    sizeType?: 'original' | 'compressed';
+    sizeType?: ('original' | 'compressed') [];
     /** 最多可以选择的图片张数 */
     count?: number;
   }
