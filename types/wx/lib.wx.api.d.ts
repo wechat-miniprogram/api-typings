@@ -4195,7 +4195,7 @@ innerAudioContext.onError((res) => {
     /** [Animation.step(Object object)](Animation.step.md)
      *
      * 表示一组动画完成。可以在一组动画中调用任意多个动画方法，一组动画中的所有动画会同时开始，一组动画完成后才会进行下一组动画。 */
-    step(option: StepOption): void;
+    step(option?: StepOption): Animation;
     /** [Array.<Object> Animation.export()](Animation.export.md)
      *
      * 导出动画队列。**export 方法每次调用后会清掉之前的动画操作。** */
@@ -6920,7 +6920,10 @@ Page({
      * - 后代选择器：.the-ancestor .the-descendant
      * - 跨自定义组件的后代选择器：.the-ancestor >>> .the-descendant
      * - 多选择器的并集：#a-node, .some-other-nodes */
-    selectAll(): NodesRef;
+    selectAll(
+      /** 选择器 */
+      selector: string,
+    ): NodesRef;
     /** [[NodesRef]((NodesRef)) SelectorQuery.selectViewport()](SelectorQuery.selectViewport.md)
      *
      * 选择显示区域。可用于获取显示区域的尺寸、滚动位置等信息。 */
@@ -7289,7 +7292,7 @@ try {
     getStorageSync(
       /** 本地缓存中指定的 key */
       key: string,
-    ): object;
+    ): object | string | boolean;
     /** [[Animation]((Animation)) wx.createAnimation(Object object)](wx.createAnimation.md)
      *
      * 创建一个动画实例 [animation]((Animation))。调用实例的方法来描述动画。最后通过动画实例的 export 方法导出动画数据传递给组件的 animation 属性。 */
@@ -7322,6 +7325,8 @@ try {
     createCanvasContext(
       /** 要获取上下文的 `<canvas>` 组件 canvas-id 属性 */
       canvasId: string,
+      /** 在自定义组件下，当前组件实例的this */
+      component?: any,
     ): CanvasContext;
     /** [[DownloadTask]((DownloadTask)) wx.downloadFile(Object object)](wx.downloadFile.md)
 * 
@@ -7684,7 +7689,11 @@ wx.canvasGetImageData({
     /** [wx.canvasToTempFilePath(Object object, Object this)](wx.canvasToTempFilePath.md)
      *
      * 把当前画布指定区域的内容导出生成指定大小的图片。在 `draw()` 回调里调用该方法才能保证图片导出成功。 */
-    canvasToTempFilePath(option: CanvasToTempFilePathOption): void;
+    canvasToTempFilePath(
+      option: CanvasToTempFilePathOption,
+      /** 在自定义组件下，当前组件实例的this */
+      component?: any,
+    ): void;
     /** [wx.checkIsSoterEnrolledInDevice(Object object)](wx.checkIsSoterEnrolledInDevice.md)
 * 
 * 获取设备内是否录入如指纹等生物信息的接口
@@ -9959,7 +9968,7 @@ try {
       /** 本地缓存中指定的 key */
       key: string,
       /** 需要存储的内容。只支持原生类型、Date、及能够通过`JSON.stringify`序列化的对象。 */
-      data: object,
+      data: object | string | boolean,
     ): void;
     /** [wx.setTabBarBadge(Object object)](wx.setTabBarBadge.md)
 * 
