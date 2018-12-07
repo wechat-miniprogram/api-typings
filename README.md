@@ -2,6 +2,8 @@
 
 > [English version](./README-en.md)
 
+[![npm](https://badge.fury.io/js/miniprogram-api-typings.svg)](https://badge.fury.io/js/miniprogram-api-typings)
+
 微信小程序 API 的 TypeScript 类型定义文件
 
 ## 安装

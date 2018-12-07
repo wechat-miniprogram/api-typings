@@ -2,6 +2,8 @@
 
 > [中文版本](./README.md)
 
+[![npm](https://badge.fury.io/js/miniprogram-api-typings.svg)](https://badge.fury.io/js/miniprogram-api-typings)
+
 Type definitions for APIs of Wechat Mini Program in TypeScript
 
 ## Install
