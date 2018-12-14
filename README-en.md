@@ -2,7 +2,8 @@
 
 > [中文版本](./README.md)
 
-[![npm](https://badge.fury.io/js/miniprogram-api-typings.svg)](https://badge.fury.io/js/miniprogram-api-typings)
+[![](https://img.shields.io/npm/v/miniprogram-api-typings.svg?style=flat)](https://www.npmjs.com/package/miniprogram-api-typings)
+[![](https://img.shields.io/github/license/wechat-miniprogram/miniprogram-api-typings.svg)](https://github.com/wechat-miniprogram/miniprogram-api-typings)
 
 Type definitions for APIs of Wechat Mini Program in TypeScript
 
