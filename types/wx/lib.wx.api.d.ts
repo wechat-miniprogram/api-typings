@@ -1664,7 +1664,7 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
   }
   interface GetStorageSuccessCallbackResult {
     /** key对应的内容 */
-    data: object | string;
+    data: any;
   }
   interface GetSystemInfoOption {
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
@@ -3278,7 +3278,7 @@ innerAudioContext.onError((res) => {
   }
   interface SetStorageOption {
     /** 需要存储的内容。只支持原生类型、Date、及能够通过`JSON.stringify`序列化的对象。 */
-    data: object;
+    data: any;
     /** 本地缓存中指定的 key */
     key: string;
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
@@ -6076,7 +6076,7 @@ ctx.draw()
     abort(): void;
     /** [DownloadTask.offHeadersReceived(function callback)](DownloadTask.offHeadersReceived.md)
      *
-     * 取消监听 HTTP Response Header 事件。会比请求完成事件更早
+     * 取消监听 HTTP Response Header 事件
      *
      * 最低基础库： `2.1.0` */
     offHeadersReceived(
@@ -6303,7 +6303,7 @@ ctx.draw()
     destroy(): void;
     /** [InnerAudioContext.offCanplay(function callback)](InnerAudioContext.offCanplay.md)
      *
-     * 取消监听音频进入可以播放状态的事件。但不保证后面可以流畅播放
+     * 取消监听音频进入可以播放状态的事件
      *
      * 最低基础库： `1.9.0` */
     offCanplay(
@@ -6384,7 +6384,7 @@ ctx.draw()
     ): void;
     /** [InnerAudioContext.offWaiting(function callback)](InnerAudioContext.offWaiting.md)
      *
-     * 取消监听音频加载中事件。当音频因为数据不足，需要停下来加载时会触发
+     * 取消监听音频加载中事件
      *
      * 最低基础库： `1.9.0` */
     offWaiting(
@@ -6929,7 +6929,7 @@ Page({
     abort(): void;
     /** [RequestTask.offHeadersReceived(function callback)](RequestTask.offHeadersReceived.md)
      *
-     * 取消监听 HTTP Response Header 事件。会比请求完成事件更早
+     * 取消监听 HTTP Response Header 事件
      *
      * 最低基础库： `2.1.0` */
     offHeadersReceived(
@@ -7104,7 +7104,7 @@ Component({
     abort(): void;
     /** [UploadTask.offHeadersReceived(function callback)](UploadTask.offHeadersReceived.md)
      *
-     * 取消监听 HTTP Response Header 事件。会比请求完成事件更早
+     * 取消监听 HTTP Response Header 事件
      *
      * 最低基础库： `2.1.0` */
     offHeadersReceived(
@@ -7261,7 +7261,7 @@ console.log(accountInfo.plugin.version) // 插件版本号， 'a.b.c' 这样的�
     /** [Object wx.getBatteryInfoSync()](https://developers.weixin.qq.com/miniprogram/dev/api/device/battery/wx.getBatteryInfoSync.html)
      *
      * [wx.getBatteryInfo](https://developers.weixin.qq.com/miniprogram/dev/api/device/battery/wx.getBatteryInfo.html) 的同步版本 */
-    getBatteryInfoSync(): object;
+    getBatteryInfoSync(): GetBatteryInfoSyncResult;
     /** [Object wx.getExtConfigSync()](wx.getExtConfigSync.md)
 * 
 * [wx.getExtConfig](https://developers.weixin.qq.com/miniprogram/dev/api/ext/wx.getExtConfig.html) 的同步版本。
@@ -7336,7 +7336,7 @@ try {
   // Do something when catch error
 }
 ``` */
-    getStorageInfoSync(): object;
+    getStorageInfoSync(): GetStorageInfoSyncOption;
     /** [Object wx.getSystemInfoSync()](https://developers.weixin.qq.com/miniprogram/dev/api/system/system-info/wx.getSystemInfoSync.html)
 * 
 * [wx.getSystemInfo](https://developers.weixin.qq.com/miniprogram/dev/api/system/system-info/wx.getSystemInfo.html) 的同步版本
@@ -7372,37 +7372,7 @@ try {
   // Do something when catch error
 }
 ``` */
-    getSystemInfoSync(): object;
-    /** [Object|string wx.getStorageSync(string key)](https://developers.weixin.qq.com/miniprogram/dev/api/storage/wx.getStorageSync.html)
-* 
-* [wx.getStorage](https://developers.weixin.qq.com/miniprogram/dev/api/storage/wx.getStorage.html) 的同步版本
-* 
-* **示例代码**
-* 
-* 
-* ```js
-wx.getStorage({
-  key: 'key',
-  success (res) {
-    console.log(res.data)
-  }
-})
-```
-* 
-* ```js
-try {
-  var value = wx.getStorageSync('key')
-  if (value) {
-    // Do something with return value
-  }
-} catch (e) {
-  // Do something when catch error
-}
-``` */
-    getStorageSync(
-      /** 本地缓存中指定的 key */
-      key: string,
-    ): object;
+    getSystemInfoSync(): GetSystemInfoSyncResult;
     /** [[Animation](https://developers.weixin.qq.com/miniprogram/dev/api/ui/animation/Animation.html) wx.createAnimation(Object object)](wx.createAnimation.md)
      *
      * 创建一个动画实例 [animation](https://developers.weixin.qq.com/miniprogram/dev/api/ui/animation/Animation.html)。调用实例的方法来描述动画。最后通过动画实例的 export 方法导出动画数据传递给组件的 animation 属性。 */
@@ -7688,6 +7658,36 @@ wx.chooseImage({
       /** worker 入口文件的**绝对路径** */
       scriptPath: string,
     ): Worker;
+    /** [any wx.getStorageSync(string key)](https://developers.weixin.qq.com/miniprogram/dev/api/storage/wx.getStorageSync.html)
+* 
+* [wx.getStorage](https://developers.weixin.qq.com/miniprogram/dev/api/storage/wx.getStorage.html) 的同步版本
+* 
+* **示例代码**
+* 
+* 
+* ```js
+wx.getStorage({
+  key: 'key',
+  success (res) {
+    console.log(res.data)
+  }
+})
+```
+* 
+* ```js
+try {
+  var value = wx.getStorageSync('key')
+  if (value) {
+    // Do something with return value
+  }
+} catch (e) {
+  // Do something when catch error
+}
+``` */
+    getStorageSync(
+      /** 本地缓存中指定的 key */
+      key: string,
+    ): any;
     /** [boolean wx.canIUse(string schema)](wx.canIUse.md)
 * 
 * 判断小程序的API，回调，参数，组件等是否在当前版本可用。
@@ -8979,7 +8979,7 @@ wx.notifyBLECharacteristicValueChange({
     ): void;
     /** [wx.offAppHide(function callback)](wx.offAppHide.md)
      *
-     * 取消监听小程序切后台事件。该事件与 [`App.onHide`]((app-service/app#onhide)) 的回调时机一致。
+     * 取消监听小程序切后台事件
      *
      * 最低基础库： `2.1.2` */
     offAppHide(
@@ -8988,24 +8988,7 @@ wx.notifyBLECharacteristicValueChange({
     ): void;
     /** [wx.offAppShow(function callback)](wx.offAppShow.md)
      *
-     * 取消监听小程序切前台事件。该事件与 [`App.onShow`]((app-service/app#onshowobject)) 的回调参数一致。
-     *
-     * **返回有效 referrerInfo 的场景**
-     *
-     *
-     * | 场景值 | 场景                            | appId含义  |
-     * | ------ | ------------------------------- | ---------- |
-     * | 1020   | 公众号 profile 页相关小程序列表 | 来源公众号 |
-     * | 1035   | 公众号自定义菜单                | 来源公众号 |
-     * | 1036   | App 分享消息卡片                | 来源App    |
-     * | 1037   | 小程序打开小程序                | 来源小程序 |
-     * | 1038   | 从另一个小程序返回              | 来源小程序 |
-     * | 1043   | 公众号模板消息                  | 来源公众号 |
-     *
-     * **注意**
-     *
-     *
-     * 部分版本在无`referrerInfo`的时候会返回 `undefined`，建议使用 `options.referrerInfo && options.referrerInfo.appId` 进行判断。
+     * 取消监听小程序切前台事件
      *
      * 最低基础库： `2.1.2` */
     offAppShow(
@@ -9059,14 +9042,7 @@ wx.notifyBLECharacteristicValueChange({
     ): void;
     /** [wx.offPageNotFound(function callback)](wx.offPageNotFound.md)
      *
-     * 取消监听小程序要打开的页面不存在事件。该事件与 [`App.onPageNotFound`]((app-service/app#onpagenotfoundobject)) 的回调时机一致。
-     *
-     * **注意**
-     *
-     *
-     * - 开发者可以在回调中进行页面重定向，但必须在回调中**同步**处理，异步处理（例如 `setTimeout` 异步执行）无效。
-     * - 若开发者没有调用 `wx.onPageNotFound` 绑定监听，也没有声明 `App.onPageNotFound`，当跳转页面不存在时，将推入微信客户端原生的页面不存在提示页面。
-     * - 如果回调中又重定向到另一个不存在的页面，将推入微信客户端原生的页面不存在提示页面，并且不再第二次回调。
+     * 取消监听小程序要打开的页面不存在事件
      *
      * 最低基础库： `2.1.2` */
     offPageNotFound(
@@ -10210,7 +10186,7 @@ try {
 } catch (e) { }
 ``` */
     setStorage(option: SetStorageOption): void;
-    /** [wx.setStorageSync(string key, Object data)](https://developers.weixin.qq.com/miniprogram/dev/api/storage/wx.setStorageSync.html)
+    /** [wx.setStorageSync(string key, any data)](https://developers.weixin.qq.com/miniprogram/dev/api/storage/wx.setStorageSync.html)
 * 
 * [wx.setStorage](https://developers.weixin.qq.com/miniprogram/dev/api/storage/wx.setStorage.html) 的同步版本
 * 
@@ -10232,7 +10208,7 @@ try {
       /** 本地缓存中指定的 key */
       key: string,
       /** 需要存储的内容。只支持原生类型、Date、及能够通过`JSON.stringify`序列化的对象。 */
-      data: object,
+      data: any,
     ): void;
     /** [wx.setTabBarBadge(Object object)](wx.setTabBarBadge.md)
 * 
