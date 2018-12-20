@@ -4594,7 +4594,7 @@ innerAudioContext.onError((res) => {
     /** [CameraContext.stopRecord(Object object)](CameraContext.stopRecord.md)
      *
      * 结束录像 */
-    stopRecord(option: StopRecordOption): void;
+    stopRecord(option?: StopRecordOption): void;
     /** [CameraContext.takePhoto(Object object)](CameraContext.takePhoto.md)
      *
      * 拍摄照片 */
@@ -6169,7 +6169,7 @@ ctx.draw()
     /** [FileSystemManager.getSavedFileList(Object object)](FileSystemManager.getSavedFileList.md)
      *
      * 获取该小程序下已保存的本地缓存文件列表 */
-    getSavedFileList(option: FileSystemManagerGetSavedFileListOption): void;
+    getSavedFileList(option?: FileSystemManagerGetSavedFileListOption): void;
     /** [FileSystemManager.mkdir(Object object)](FileSystemManager.mkdir.md)
      *
      * 创建目录 */
@@ -6540,21 +6540,21 @@ Page({
     /** [LivePlayerContext.exitFullScreen(Object object)](LivePlayerContext.exitFullScreen.md)
      *
      * 退出全屏 */
-    exitFullScreen(option: ExitFullScreenOption): void;
+    exitFullScreen(option?: ExitFullScreenOption): void;
     /** [LivePlayerContext.mute(Object object)](LivePlayerContext.mute.md)
      *
      * 静音 */
-    mute(option: MuteOption): void;
+    mute(option?: MuteOption): void;
     /** [LivePlayerContext.pause(Object object)](LivePlayerContext.pause.md)
      *
      * 暂停
      *
      * 最低基础库： `1.9.90` */
-    pause(option: LivePlayerContextPauseOption): void;
+    pause(option?: LivePlayerContextPauseOption): void;
     /** [LivePlayerContext.play(Object object)](LivePlayerContext.play.md)
      *
      * 播放 */
-    play(option: PlayOption): void;
+    play(option?: PlayOption): void;
     /** [LivePlayerContext.requestFullScreen(Object object)](LivePlayerContext.requestFullScreen.md)
      *
      * 进入全屏 */
@@ -6564,23 +6564,23 @@ Page({
      * 恢复
      *
      * 最低基础库： `1.9.90` */
-    resume(option: LivePlayerContextResumeOption): void;
+    resume(option?: LivePlayerContextResumeOption): void;
     /** [LivePlayerContext.stop(Object object)](LivePlayerContext.stop.md)
      *
      * 停止 */
-    stop(option: LivePlayerContextStopOption): void;
+    stop(option?: LivePlayerContextStopOption): void;
   }
   interface LivePusherContext {
     /** [LivePusherContext.pause(Object object)](LivePusherContext.pause.md)
      *
      * 暂停推流 */
-    pause(option: LivePusherContextPauseOption): void;
+    pause(option?: LivePusherContextPauseOption): void;
     /** [LivePusherContext.pauseBGM(Object object)](LivePusherContext.pauseBGM.md)
      *
      * 暂停背景音
      *
      * 最低基础库： `2.4.0` */
-    pauseBGM(option: PauseBGMOption): void;
+    pauseBGM(option?: PauseBGMOption): void;
     /** [LivePusherContext.playBGM(Object object)](LivePusherContext.playBGM.md)
      *
      * 播放背景音
@@ -6590,13 +6590,13 @@ Page({
     /** [LivePusherContext.resume(Object object)](LivePusherContext.resume.md)
      *
      * 恢复推流 */
-    resume(option: LivePusherContextResumeOption): void;
+    resume(option?: LivePusherContextResumeOption): void;
     /** [LivePusherContext.resumeBGM(Object object)](LivePusherContext.resumeBGM.md)
      *
      * 恢复背景音
      *
      * 最低基础库： `2.4.0` */
-    resumeBGM(option: ResumeBGMOption): void;
+    resumeBGM(option?: ResumeBGMOption): void;
     /** [LivePusherContext.setBGMVolume(Object object)](LivePusherContext.setBGMVolume.md)
      *
      * 设置背景音音量
@@ -6608,31 +6608,31 @@ Page({
      * 快照
      *
      * 最低基础库： `1.9.90` */
-    snapshot(option: SnapshotOption): void;
+    snapshot(option?: SnapshotOption): void;
     /** [LivePusherContext.start(Object object)](LivePusherContext.start.md)
      *
      * 播放推流 */
-    start(option: LivePusherContextStartOption): void;
+    start(option?: LivePusherContextStartOption): void;
     /** [LivePusherContext.stop(Object object)](LivePusherContext.stop.md)
      *
      * 停止推流 */
-    stop(option: LivePusherContextStopOption): void;
+    stop(option?: LivePusherContextStopOption): void;
     /** [LivePusherContext.stopBGM(Object object)](LivePusherContext.stopBGM.md)
      *
      * 停止背景音
      *
      * 最低基础库： `2.4.0` */
-    stopBGM(option: StopBGMOption): void;
+    stopBGM(option?: StopBGMOption): void;
     /** [LivePusherContext.switchCamera(Object object)](LivePusherContext.switchCamera.md)
      *
      * 切换前后摄像头 */
-    switchCamera(option: SwitchCameraOption): void;
+    switchCamera(option?: SwitchCameraOption): void;
     /** [LivePusherContext.toggleTorch(Object object)](LivePusherContext.toggleTorch.md)
      *
      * 切换
      *
      * 最低基础库： `2.1.0` */
-    toggleTorch(option: ToggleTorchOption): void;
+    toggleTorch(option?: ToggleTorchOption): void;
   }
   interface LogManager {
     /** [LogManager.debug()](LogManager.debug.md)
@@ -6668,19 +6668,19 @@ Page({
     /** [MapContext.getCenterLocation(Object object)](MapContext.getCenterLocation.md)
      *
      * 获取当前地图中心的经纬度。返回的是 gcj02 坐标系，可以用于 [wx.openLocation()](https://developers.weixin.qq.com/miniprogram/dev/api/location/wx.openLocation.html) */
-    getCenterLocation(option: GetCenterLocationOption): void;
+    getCenterLocation(option?: GetCenterLocationOption): void;
     /** [MapContext.getRegion(Object object)](MapContext.getRegion.md)
      *
      * 获取当前地图的视野范围
      *
      * 最低基础库： `1.4.0` */
-    getRegion(option: GetRegionOption): void;
+    getRegion(option?: GetRegionOption): void;
     /** [MapContext.getScale(Object object)](MapContext.getScale.md)
      *
      * 获取当前地图的缩放级别
      *
      * 最低基础库： `1.4.0` */
-    getScale(option: GetScaleOption): void;
+    getScale(option?: GetScaleOption): void;
     /** [MapContext.includePoints(Object object)](MapContext.includePoints.md)
      *
      * 缩放视野展示所有经纬度
@@ -7875,7 +7875,7 @@ wx.checkIsSupportSoterAuthentication({
 * 
 * 最低基础库： `1.5.0` */
     checkIsSupportSoterAuthentication(
-      option: CheckIsSupportSoterAuthenticationOption,
+      option?: CheckIsSupportSoterAuthenticationOption,
     ): void;
     /** [wx.checkSession(Object object)](wx.checkSession.md)
 * 
@@ -7899,7 +7899,7 @@ wx.checkSession({
   }
 })
 ``` */
-    checkSession(option: CheckSessionOption): void;
+    checkSession(option?: CheckSessionOption): void;
     /** [wx.chooseAddress(Object object)](wx.chooseAddress.md)
 * 
 * 获取用户收货地址。调起用户编辑收货地址原生界面，并在编辑完成后返回用户选择的地址。
@@ -7924,7 +7924,7 @@ wx.chooseAddress({
 ```
 * 
 * 最低基础库： `1.1.0` */
-    chooseAddress(option: ChooseAddressOption): void;
+    chooseAddress(option?: ChooseAddressOption): void;
     /** [wx.chooseImage(Object object)](wx.chooseImage.md)
 * 
 * 从本地相册选择图片或使用相机拍照。
@@ -7954,7 +7954,7 @@ wx.chooseImage({
      * 其中 `access_token` 的获取请参考[getAccessToken]((getAccessToken))文档
      *
      * 最低基础库： `2.3.0` */
-    chooseInvoice(option: ChooseInvoiceOption): void;
+    chooseInvoice(option?: ChooseInvoiceOption): void;
     /** [wx.chooseInvoiceTitle(Object object)](wx.chooseInvoiceTitle.md)
 * 
 * 选择用户的发票抬头
@@ -7971,11 +7971,11 @@ wx.chooseInvoiceTitle({
 ```
 * 
 * 最低基础库： `1.5.0` */
-    chooseInvoiceTitle(option: ChooseInvoiceTitleOption): void;
+    chooseInvoiceTitle(option?: ChooseInvoiceTitleOption): void;
     /** [wx.chooseLocation(Object object)](wx.chooseLocation.md)
      *
      * 打开地图选择位置。 */
-    chooseLocation(option: ChooseLocationOption): void;
+    chooseLocation(option?: ChooseLocationOption): void;
     /** [wx.chooseVideo(Object object)](wx.chooseVideo.md)
 * 
 * 拍摄视频或从手机相册中选视频。
@@ -8012,7 +8012,7 @@ try {
   // Do something when catch error
 }
 ``` */
-    clearStorage(option: ClearStorageOption): void;
+    clearStorage(option?: ClearStorageOption): void;
     /** [wx.clearStorageSync()](https://developers.weixin.qq.com/miniprogram/dev/api/storage/wx.clearStorageSync.html)
 * 
 * [wx.clearStorage](https://developers.weixin.qq.com/miniprogram/dev/api/storage/wx.clearStorage.html) 的同步版本
@@ -8068,7 +8068,7 @@ wx.closeBluetoothAdapter({
 ```
 * 
 * 最低基础库： `1.1.0` */
-    closeBluetoothAdapter(option: CloseBluetoothAdapterOption): void;
+    closeBluetoothAdapter(option?: CloseBluetoothAdapterOption): void;
     /** [wx.closeSocket(Object object)](wx.closeSocket.md)
 * 
 * 关闭 WebSocket 连接
@@ -8162,7 +8162,7 @@ wx.createBLEConnection({
      * 获取当前支持的音频输入源
      *
      * 最低基础库： `2.1.0` */
-    getAvailableAudioSources(option: GetAvailableAudioSourcesOption): void;
+    getAvailableAudioSources(option?: GetAvailableAudioSourcesOption): void;
     /** [wx.getBLEDeviceCharacteristics(Object object)](wx.getBLEDeviceCharacteristics.md)
 * 
 * 获取蓝牙设备某个服务中所有特征值(characteristic)。
@@ -8226,18 +8226,18 @@ wx.getBackgroundAudioPlayerState({
 })
 ``` */
     getBackgroundAudioPlayerState(
-      option: GetBackgroundAudioPlayerStateOption,
+      option?: GetBackgroundAudioPlayerStateOption,
     ): void;
     /** [wx.getBatteryInfo(Object object)](wx.getBatteryInfo.md)
      *
      * 获取设备电量。同步 API [wx.getBatteryInfoSync](https://developers.weixin.qq.com/miniprogram/dev/api/device/battery/wx.getBatteryInfoSync.html) 在 iOS 上不可用。 */
-    getBatteryInfo(option: GetBatteryInfoOption): void;
+    getBatteryInfo(option?: GetBatteryInfoOption): void;
     /** [wx.getBeacons(Object object)](wx.getBeacons.md)
      *
      * 获取所有已搜索到的 iBeacon 设备
      *
      * 最低基础库： `1.2.0` */
-    getBeacons(option: GetBeaconsOption): void;
+    getBeacons(option?: GetBeaconsOption): void;
     /** [wx.getBluetoothAdapterState(Object object)](wx.getBluetoothAdapterState.md)
 * 
 * 获取本机蓝牙适配器状态。
@@ -8255,7 +8255,7 @@ wx.getBluetoothAdapterState({
 ```
 * 
 * 最低基础库： `1.1.0` */
-    getBluetoothAdapterState(option: GetBluetoothAdapterStateOption): void;
+    getBluetoothAdapterState(option?: GetBluetoothAdapterStateOption): void;
     /** [wx.getBluetoothDevices(Object object)](wx.getBluetoothDevices.md)
 * 
 * 获取在蓝牙模块生效期间所有已发现的蓝牙设备。包括已经和本机处于连接状态的设备。
@@ -8293,7 +8293,7 @@ wx.getBluetoothDevices({
 * - 蓝牙设备在被搜索到时，系统返回的 name 字段一般为广播包中的 LocalName 字段中的设备名称，而如果与蓝牙设备建立连接，系统返回的 name 字段会改为从蓝牙设备上获取到的 `GattName`。若需要动态改变设备名称并展示，建议使用 `localName` 字段。
 * 
 * 最低基础库： `1.1.0` */
-    getBluetoothDevices(option: GetBluetoothDevicesOption): void;
+    getBluetoothDevices(option?: GetBluetoothDevicesOption): void;
     /** [wx.getClipboardData(Object object)](wx.getClipboardData.md)
 * 
 * 获取系统剪贴板的内容
@@ -8310,7 +8310,7 @@ wx.getClipboardData({
 ```
 * 
 * 最低基础库： `1.1.0` */
-    getClipboardData(option: GetClipboardDataOption): void;
+    getClipboardData(option?: GetClipboardDataOption): void;
     /** [wx.getConnectedBluetoothDevices(Object object)](wx.getConnectedBluetoothDevices.md)
 * 
 * 根据 uuid 获取处于已连接状态的设备。
@@ -8336,7 +8336,7 @@ wx.getConnectedBluetoothDevices({
      * 获取已连接中的 Wi-Fi 信息。
      *
      * 最低基础库： `1.6.0` */
-    getConnectedWifi(option: GetConnectedWifiOption): void;
+    getConnectedWifi(option?: GetConnectedWifiOption): void;
     /** [wx.getExtConfig(Object object)](wx.getExtConfig.md)
 * 
 * 获取[第三方平台]((devtools/ext))自定义的数据字段。
@@ -8359,7 +8359,7 @@ if (wx.getExtConfig) {
 ```
 * 
 * 最低基础库： `1.1.0` */
-    getExtConfig(option: GetExtConfigOption): void;
+    getExtConfig(option?: GetExtConfigOption): void;
     /** [wx.getFileInfo(Object object)](wx.getFileInfo.md)
 * 
 * 获取文件信息
@@ -8394,7 +8394,7 @@ wx.getHCEState({
 ```
 * 
 * 最低基础库： `1.7.0` */
-    getHCEState(option: GetHCEStateOption): void;
+    getHCEState(option?: GetHCEStateOption): void;
     /** [wx.getImageInfo(Object object)](wx.getImageInfo.md)
 * 
 * 获取图片信息。网络图片需先配置download域名才能生效。
@@ -8465,7 +8465,7 @@ wx.getNetworkType({
   }
 })
 ``` */
-    getNetworkType(option: GetNetworkTypeOption): void;
+    getNetworkType(option?: GetNetworkTypeOption): void;
     /** [wx.getSavedFileInfo(Object object)](wx.getSavedFileInfo.md)
 * 
 * 获取本地文件的文件信息。此接口只能用于获取已保存到本地的文件，若需要获取临时文件信息，请使用 [wx.getFileInfo()](https://developers.weixin.qq.com/miniprogram/dev/api/file/wx.getFileInfo.html) 接口。
@@ -8495,7 +8495,7 @@ wx.getSavedFileList({
   }
 })
 ``` */
-    getSavedFileList(option: WxGetSavedFileListOption): void;
+    getSavedFileList(option?: WxGetSavedFileListOption): void;
     /** [wx.getScreenBrightness(Object object)](wx.getScreenBrightness.md)
      *
      * 获取屏幕亮度
@@ -8506,7 +8506,7 @@ wx.getSavedFileList({
      * - 若安卓系统设置中开启了自动调节亮度功能，则屏幕亮度会根据光线自动调整，该接口仅能获取自动调节亮度之前的值，而非实时的亮度值。
      *
      * 最低基础库： `1.2.0` */
-    getScreenBrightness(option: GetScreenBrightnessOption): void;
+    getScreenBrightness(option?: GetScreenBrightnessOption): void;
     /** [wx.getSetting(Object object)](wx.getSetting.md)
 * 
 * 获取用户的当前设置。**返回值中只会出现小程序已经向用户请求过的[权限](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/authorize/wx.authorize.html)**。
@@ -8527,7 +8527,7 @@ wx.getSetting({
 ```
 * 
 * 最低基础库： `1.2.0` */
-    getSetting(option: GetSettingOption): void;
+    getSetting(option?: GetSettingOption): void;
     /** [wx.getShareInfo(Object object)](wx.getShareInfo.md)
 * 
 * 获取转发详细信息
@@ -8604,7 +8604,7 @@ try {
   // Do something when catch error
 }
 ``` */
-    getStorageInfo(option: GetStorageInfoOption): void;
+    getStorageInfo(option?: GetStorageInfoOption): void;
     /** [wx.getSystemInfo(Object object)](wx.getSystemInfo.md)
 * 
 * 获取系统信息
@@ -8640,7 +8640,7 @@ try {
   // Do something when catch error
 }
 ``` */
-    getSystemInfo(option: GetSystemInfoOption): void;
+    getSystemInfo(option?: GetSystemInfoOption): void;
     /** [wx.getUserInfo(Object object)](wx.getUserInfo.md)
 * 
 * 获取用户信息。
@@ -8729,7 +8729,7 @@ wx.getWeRunData({
 * | step | number | 微信运动步数 |
 * 
 * 最低基础库： `1.2.0` */
-    getWeRunData(option: GetWeRunDataOption): void;
+    getWeRunData(option?: GetWeRunDataOption): void;
     /** [wx.getWifiList(Object object)](wx.getWifiList.md)
      *
      * 请求获取 Wi-Fi 列表。在 `onGetWifiList` 注册的回调中返回 `wifiList` 数据。
@@ -8737,17 +8737,17 @@ wx.getWeRunData({
      * iOS 将跳转到系统的 Wi-Fi 界面，Android 不会跳转。 iOS 11.0 及 iOS 11.1 两个版本因系统问题，该方法失效。但在 iOS 11.2 中已修复。
      *
      * 最低基础库： `1.6.0` */
-    getWifiList(option: GetWifiListOption): void;
+    getWifiList(option?: GetWifiListOption): void;
     /** [wx.hideLoading(Object object)](wx.hideLoading.md)
      *
      * 隐藏 loading 提示框
      *
      * 最低基础库： `1.1.0` */
-    hideLoading(option: HideLoadingOption): void;
+    hideLoading(option?: HideLoadingOption): void;
     /** [wx.hideNavigationBarLoading(Object object)](wx.hideNavigationBarLoading.md)
      *
      * 在当前页面隐藏导航条加载动画 */
-    hideNavigationBarLoading(option: HideNavigationBarLoadingOption): void;
+    hideNavigationBarLoading(option?: HideNavigationBarLoadingOption): void;
     /** [wx.hideShareMenu(Object object)](wx.hideShareMenu.md)
 * 
 * 隐藏转发按钮
@@ -8760,7 +8760,7 @@ wx.hideShareMenu()
 ```
 * 
 * 最低基础库： `1.1.0` */
-    hideShareMenu(option: HideShareMenuOption): void;
+    hideShareMenu(option?: HideShareMenuOption): void;
     /** [wx.hideTabBar(Object object)](wx.hideTabBar.md)
      *
      * 隐藏 tabBar
@@ -8776,7 +8776,7 @@ wx.hideShareMenu()
     /** [wx.hideToast(Object object)](wx.hideToast.md)
      *
      * 隐藏消息提示框 */
-    hideToast(option: HideToastOption): void;
+    hideToast(option?: HideToastOption): void;
     /** [wx.loadFontFace(Object object)](wx.loadFontFace.md)
 * 
 * 动态加载网络字体。文件地址需为下载类型。iOS 仅支持 https 格式文件地址。
@@ -9504,7 +9504,7 @@ wx.openBluetoothAdapter({
 ```
 * 
 * 最低基础库： `1.1.0` */
-    openBluetoothAdapter(option: OpenBluetoothAdapterOption): void;
+    openBluetoothAdapter(option?: OpenBluetoothAdapterOption): void;
     /** [wx.openCard(Object object)](wx.openCard.md)
 * 
 * 查看微信卡包中的卡券。只有通过 [认证](https://developers.weixin.qq.com/miniprogram/product/renzheng.html) 的小程序才能使用。更多文档请参考 [微信卡券接口文档](https://mp.weixin.qq.com/cgi-bin/announce?action=getannouncement&key=1490190158&version=1&lang=zh_CN&platform=2)。
@@ -9576,7 +9576,7 @@ wx.openSetting({
 ```
 * 
 * 最低基础库： `1.1.0` */
-    openSetting(option: OpenSettingOption): void;
+    openSetting(option?: OpenSettingOption): void;
     /** [wx.pageScrollTo(Object object)](wx.pageScrollTo.md)
 * 
 * 将页面滚动到目标位置
@@ -9603,7 +9603,7 @@ wx.pageScrollTo({
 * ```js
 wx.pauseBackgroundAudio()
 ``` */
-    pauseBackgroundAudio(option: PauseBackgroundAudioOption): void;
+    pauseBackgroundAudio(option?: PauseBackgroundAudioOption): void;
     /** [wx.pauseVoice(Object object)](wx.pauseVoice.md)
 * 
 * 暂停正在播放的语音。再次调用 [`wx.playVoice`](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/wx.playVoice.html) 播放同一个文件时，会从暂停处开始播放。如果想从头开始播放，需要先调用 [`wx.stopVoice`](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/wx.stopVoice.html)。
@@ -9623,7 +9623,7 @@ wx.startRecord({
   }
 })
 ``` */
-    pauseVoice(option: PauseVoiceOption): void;
+    pauseVoice(option?: PauseVoiceOption): void;
     /** [wx.playBackgroundAudio(Object object)](wx.playBackgroundAudio.md)
 * 
 * 使用后台播放器播放音乐。对于微信客户端来说，只能同时有一个后台音乐在播放。当用户离开小程序后，音乐将暂停播放；当用户在其他小程序占用了音乐播放器，原有小程序内的音乐将停止播放。
@@ -10397,7 +10397,7 @@ wx.showModal({
     /** [wx.showNavigationBarLoading(Object object)](wx.showNavigationBarLoading.md)
      *
      * 在当前页面显示导航条加载动画 */
-    showNavigationBarLoading(option: ShowNavigationBarLoadingOption): void;
+    showNavigationBarLoading(option?: ShowNavigationBarLoadingOption): void;
     /** [wx.showShareMenu(Object object)](wx.showShareMenu.md)
 * 
 * 显示当前页面的转发按钮
@@ -10516,7 +10516,7 @@ wx.startCompass()
 ```
 * 
 * 最低基础库： `1.1.0` */
-    startCompass(option: StartCompassOption): void;
+    startCompass(option?: StartCompassOption): void;
     /** [wx.startDeviceMotionListening(Object object)](wx.startDeviceMotionListening.md)
      *
      * 开始监听设备方向的变化。
@@ -10571,7 +10571,7 @@ wx.startPullDownRefresh()
 ```
 * 
 * 最低基础库： `1.5.0` */
-    startPullDownRefresh(option: StartPullDownRefreshOption): void;
+    startPullDownRefresh(option?: StartPullDownRefreshOption): void;
     /** [wx.startRecord(Object object)](wx.startRecord.md)
 * 
 * 开始录音。当主动调用 [`wx.stopRecord`](https://developers.weixin.qq.com/miniprogram/dev/api/media/recorder/wx.stopRecord.html)，或者录音超过1分钟时自动结束录音。当用户离开小程序时，此接口无法调用。
@@ -10657,7 +10657,7 @@ wx.startWifi({
 ```
 * 
 * 最低基础库： `1.6.0` */
-    startWifi(option: StartWifiOption): void;
+    startWifi(option?: StartWifiOption): void;
     /** [wx.stopAccelerometer(Object object)](wx.stopAccelerometer.md)
 * 
 * 停止监听加速度数据。
@@ -10670,7 +10670,7 @@ wx.stopAccelerometer()
 ```
 * 
 * 最低基础库： `1.1.0` */
-    stopAccelerometer(option: StopAccelerometerOption): void;
+    stopAccelerometer(option?: StopAccelerometerOption): void;
     /** [wx.stopBackgroundAudio(Object object)](wx.stopBackgroundAudio.md)
 * 
 * 停止播放音乐。
@@ -10681,13 +10681,13 @@ wx.stopAccelerometer()
 * ```js
 wx.stopBackgroundAudio()
 ``` */
-    stopBackgroundAudio(option: StopBackgroundAudioOption): void;
+    stopBackgroundAudio(option?: StopBackgroundAudioOption): void;
     /** [wx.stopBeaconDiscovery(Object object)](wx.stopBeaconDiscovery.md)
      *
      * 停止搜索附近的 iBeacon 设备
      *
      * 最低基础库： `1.2.0` */
-    stopBeaconDiscovery(option: StopBeaconDiscoveryOption): void;
+    stopBeaconDiscovery(option?: StopBeaconDiscoveryOption): void;
     /** [wx.stopBluetoothDevicesDiscovery(Object object)](wx.stopBluetoothDevicesDiscovery.md)
 * 
 * 停止搜寻附近的蓝牙外围设备。若已经找到需要的蓝牙设备并不需要继续搜索时，建议调用该接口停止蓝牙搜索。
@@ -10706,7 +10706,7 @@ wx.stopBluetoothDevicesDiscovery({
 * 
 * 最低基础库： `1.1.0` */
     stopBluetoothDevicesDiscovery(
-      option: StopBluetoothDevicesDiscoveryOption,
+      option?: StopBluetoothDevicesDiscoveryOption,
     ): void;
     /** [wx.stopCompass(Object object)](wx.stopCompass.md)
 * 
@@ -10720,19 +10720,19 @@ wx.stopCompass()
 ```
 * 
 * 最低基础库： `1.1.0` */
-    stopCompass(option: StopCompassOption): void;
+    stopCompass(option?: StopCompassOption): void;
     /** [wx.stopDeviceMotionListening(Object object)](wx.stopDeviceMotionListening.md)
      *
      * 停止监听设备方向的变化。
      *
      * 最低基础库： `2.3.0` */
-    stopDeviceMotionListening(option: StopDeviceMotionListeningOption): void;
+    stopDeviceMotionListening(option?: StopDeviceMotionListeningOption): void;
     /** [wx.stopGyroscope(Object object)](wx.stopGyroscope.md)
      *
      * 停止监听陀螺仪数据。
      *
      * 最低基础库： `2.3.0` */
-    stopGyroscope(option: StopGyroscopeOption): void;
+    stopGyroscope(option?: StopGyroscopeOption): void;
     /** [wx.stopHCE(Object object)](wx.stopHCE.md)
 * 
 * 关闭 NFC 模块。仅在安卓系统下有效。
@@ -10749,13 +10749,13 @@ wx.stopHCE({
 ```
 * 
 * 最低基础库： `1.7.0` */
-    stopHCE(option: StopHCEOption): void;
+    stopHCE(option?: StopHCEOption): void;
     /** [wx.stopLocalServiceDiscovery(Object object)](wx.stopLocalServiceDiscovery.md)
      *
      * 停止搜索 mDNS 服务
      *
      * 最低基础库： `2.4.0` */
-    stopLocalServiceDiscovery(option: StopLocalServiceDiscoveryOption): void;
+    stopLocalServiceDiscovery(option?: StopLocalServiceDiscoveryOption): void;
     /** [wx.stopPullDownRefresh(Object object)](wx.stopPullDownRefresh.md)
 * 
 * 停止当前页面下拉刷新。
@@ -10772,7 +10772,7 @@ Page({
 ```
 * 
 * 最低基础库： `1.5.0` */
-    stopPullDownRefresh(option: StopPullDownRefreshOption): void;
+    stopPullDownRefresh(option?: StopPullDownRefreshOption): void;
     /** [wx.stopRecord()](wx.stopRecord.md)
 * 
 * 停止录音。
@@ -10810,7 +10810,7 @@ wx.startRecord({
   }
 })
 ``` */
-    stopVoice(option: StopVoiceOption): void;
+    stopVoice(option?: StopVoiceOption): void;
     /** [wx.stopWifi(Object object)](wx.stopWifi.md)
 * 
 * 关闭 Wi-Fi 模块。
@@ -10827,7 +10827,7 @@ wx.stopWifi({
 ```
 * 
 * 最低基础库： `1.6.0` */
-    stopWifi(option: StopWifiOption): void;
+    stopWifi(option?: StopWifiOption): void;
     /** [wx.switchTab(Object object)](wx.switchTab.md)
 * 
 * 跳转到 tabBar 页面，并关闭其他所有非 tabBar 页面
@@ -10876,13 +10876,13 @@ wx.updateShareMenu({
      * 使手机发生较长时间的振动（400 ms)
      *
      * 最低基础库： `1.2.0` */
-    vibrateLong(option: VibrateLongOption): void;
+    vibrateLong(option?: VibrateLongOption): void;
     /** [wx.vibrateShort(Object object)](wx.vibrateShort.md)
      *
      * 使手机发生较短时间的振动（15 ms）。仅在 iPhone `7 / 7 Plus` 以上及 Android 机型生效
      *
      * 最低基础库： `1.2.0` */
-    vibrateShort(option: VibrateShortOption): void;
+    vibrateShort(option?: VibrateShortOption): void;
     /** [wx.writeBLECharacteristicValue(Object object)](wx.writeBLECharacteristicValue.md)
 * 
 * 向低功耗蓝牙设备特征值中写入二进制数据。注意：必须设备的特征值支持 write 才可以成功调用。
