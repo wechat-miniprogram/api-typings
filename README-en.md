@@ -26,6 +26,7 @@ npm install miniprogram-api-typings@2.4.1
 
 Base Library version|npm version|command
 -|-|-
+[v2.6.5](https://developers.weixin.qq.com/miniprogram/dev/framework/release.html#v265-20190402) | [2.6.5-1](https://www.npmjs.com/package/miniprogram-api-typings/v/2.6.5-1) | `npm install miniprogram-api-typings@2.6.5-1`
 [v2.4.2](https://developers.weixin.qq.com/miniprogram/dev/framework/release.html#v242-20181204)|[2.4.2-2](https://www.npmjs.com/package/miniprogram-api-typings/v/2.4.2-2)|`npm install miniprogram-api-typings@2.4.2-2`
 [v2.4.1](https://developers.weixin.qq.com/miniprogram/dev/framework/release.html#v241-20181121)|[2.4.1](https://www.npmjs.com/package/miniprogram-api-typings/v/2.4.1)|`npm install miniprogram-api-typings@2.4.1`
 [v2.4.0](https://developers.weixin.qq.com/miniprogram/dev/framework/release.html#v240-20181105)|[2.4.0-1](https://www.npmjs.com/package/miniprogram-api-typings/v/2.4.0-1)|`npm install miniprogram-api-typings@2.4.0-1`
