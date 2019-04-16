@@ -8,6 +8,16 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ***************************************************************************** */
 
+/*! *****************************************************************************
+Copyright (c) 2018 Tencent, Inc. All rights reserved. 
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+***************************************************************************** */
+
 declare namespace Page {
   interface ICustomShareContent {
     /** 转发标题。默认值：当前小程序名称 */
@@ -53,6 +63,15 @@ declare namespace Page {
     text: string;
   }
 
+  interface IResizeOption {
+    size: {
+      /** 变化后的窗口宽度，单位 px */
+      windowWidth: number;
+      /** 变化后的窗口高度，单位 px */
+      windowHeight: number;
+    };
+  }
+
   interface PageInstanceBaseProps<D extends IAnyObject = any> {
     /** 页面的初始数据
      *
@@ -81,7 +100,7 @@ declare namespace Page {
        *
        * 其中 `key` 可以以数据路径的形式给出，支持改变数组中的某一项或对象的某个属性，如 `array[2].message`，`a.b.c.d`，并且不需要在 this.data 中预先定义。
        */
-      data: D | Pick<D, K>,
+      data: D | Pick<D, K> | IAnyObject,
       /** setData引起的界面更新渲染完毕后的回调函数，最低基础库： `1.5.0` */
       callback?: () => void,
     ): void;
@@ -165,6 +184,12 @@ declare namespace Page {
     onTabItemTap?(
       /** tab 点击参数 */
       options?: ITabItemTapOption,
+    ): void;
+
+    /** 窗口尺寸改变时触发，最低基础库：`2.4.0` */
+    onResize?(
+      /** 窗口尺寸参数 */
+      options?: IResizeOption,
     ): void;
   }
 
