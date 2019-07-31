@@ -30,14 +30,14 @@ declare interface PropertyOption {
   /** 属性类型 */
   type: PropertyType;
   /** 属性初始值 */
-  value: any;
+  value?: any;
   /** 属性值被更改时的响应函数 */
   observer?(
     newVal?: any,
     oldVal?: any,
     changedPath?: Array<string | number>,
   ): void;
-  optionalTypes: PropertyType[];
+  optionalTypes?: PropertyType[];
 }
 
 declare interface TriggerEventOption {
@@ -87,13 +87,17 @@ declare interface WxComponent extends BaseComponent {
   /** 检查组件是否具有 `behavior` （检查时会递归检查被直接或间接引入的所有behavior） */
   hasBehavior(behavior: object): void;
   /** 触发事件，参见组件事件 */
-  triggerEvent(name: string, detail: object, options: TriggerEventOption): void;
+  triggerEvent(
+    name: string,
+    detail?: object,
+    options?: TriggerEventOption,
+  ): void;
   /** 创建一个 SelectorQuery 对象，选择器选取范围为这个组件实例内 */
-  createSelectorQuery(): wx.SelectorQuery;
+  createSelectorQuery(): WechatMiniprogram.SelectorQuery;
   /** 创建一个 IntersectionObserver 对象，选择器选取范围为这个组件实例内 */
   createIntersectionObserver(
-    options: wx.CreateIntersectionObserverOption,
-  ): wx.IntersectionObserver;
+    options: WechatMiniprogram.CreateIntersectionObserverOption,
+  ): WechatMiniprogram.IntersectionObserver;
   /** 使用选择器选择组件实例节点，返回匹配到的第一个组件实例对象（会被 `wx://component-export` 影响） */
   selectComponent(selector: string): WxComponent;
   /** 使用选择器选择组件实例节点，返回匹配到的全部组件实例对象组成的数组 */

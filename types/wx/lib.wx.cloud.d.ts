@@ -199,59 +199,45 @@ declare namespace WXNS {
   }
 }
 
-declare namespace wx {
-  export function operateWXData(param: any): void;
-  export function uploadFile(
-    param: WXNS.IUploadFileParam,
-  ): WXNS.IUploadFileTask;
-  export function downloadFile(
-    param: WXNS.IDownloadFileParam,
-  ): WXNS.IDownloadFileTask;
-  export function request(param: WXNS.IRequestParam): WXNS.IRequestTask;
-  export function getFileInfo(param: WXNS.IGetFileInfoParam): void;
-}
-
 /**
  * extend wx with cloud
  */
-declare namespace wx {
-  export var cloud: {
-    init: (config?: ICloudConfig) => void;
+interface WxCloud {
+  init: (config?: ICloudConfig) => void;
 
-    // callFunction: (param: ICloud.CallFunctionParam) => Promise<ICloud.CallFunctionResult> | void,
+  // callFunction: (param: ICloud.CallFunctionParam) => Promise<ICloud.CallFunctionResult> | void,
 
-    // uploadFile: (param: ICloud.UploadFileParam) => Promise<ICloud.UploadFileResult> | WXNS.IUploadFileTask,
-    // downloadFile: (param: ICloud.DownloadFileParam) => Promise<ICloud.DownloadFileResult> | WXNS.IDownloadFileTask,
-    // getTempFileURL: (param: ICloud.GetTempFileURLParam) => Promise<ICloud.GetTempFileURLResult> | void,
-    // deleteFile: (param: ICloud.DeleteFileParam) => Promise<ICloud.DeleteFileResult> | void,
+  // uploadFile: (param: ICloud.UploadFileParam) => Promise<ICloud.UploadFileResult> | WXNS.IUploadFileTask,
+  // downloadFile: (param: ICloud.DownloadFileParam) => Promise<ICloud.DownloadFileResult> | WXNS.IDownloadFileTask,
+  // getTempFileURL: (param: ICloud.GetTempFileURLParam) => Promise<ICloud.GetTempFileURLResult> | void,
+  // deleteFile: (param: ICloud.DeleteFileParam) => Promise<ICloud.DeleteFileResult> | void,
 
-    callFunction(param: OQ<ICloud.CallFunctionParam>): void;
-    callFunction(
-      param: RQ<ICloud.CallFunctionParam>,
-    ): Promise<ICloud.CallFunctionResult>;
+  callFunction(param: OQ<ICloud.CallFunctionParam>): void;
+  callFunction(
+    param: RQ<ICloud.CallFunctionParam>,
+  ): Promise<ICloud.CallFunctionResult>;
 
-    uploadFile(param: OQ<ICloud.UploadFileParam>): WXNS.IUploadFileTask;
-    uploadFile(
-      param: RQ<ICloud.UploadFileParam>,
-    ): Promise<ICloud.UploadFileResult>;
+  uploadFile(param: OQ<ICloud.UploadFileParam>): WXNS.IUploadFileTask;
+  uploadFile(
+    param: RQ<ICloud.UploadFileParam>,
+  ): Promise<ICloud.UploadFileResult>;
 
-    downloadFile(param: OQ<ICloud.DownloadFileParam>): WXNS.IDownloadFileTask;
-    downloadFile(
-      param: RQ<ICloud.DownloadFileParam>,
-    ): Promise<ICloud.DownloadFileResult>;
+  downloadFile(param: OQ<ICloud.DownloadFileParam>): WXNS.IDownloadFileTask;
+  downloadFile(
+    param: RQ<ICloud.DownloadFileParam>,
+  ): Promise<ICloud.DownloadFileResult>;
 
-    getTempFileURL(param: OQ<ICloud.GetTempFileURLParam>): void;
-    getTempFileURL(
-      param: RQ<ICloud.GetTempFileURLParam>,
-    ): Promise<ICloud.GetTempFileURLResult>;
+  getTempFileURL(param: OQ<ICloud.GetTempFileURLParam>): void;
+  getTempFileURL(
+    param: RQ<ICloud.GetTempFileURLParam>,
+  ): Promise<ICloud.GetTempFileURLResult>;
 
-    deleteFile(param: OQ<ICloud.DeleteFileParam>): void;
-    deleteFile(
-      param: RQ<ICloud.DeleteFileParam>,
-    ): Promise<ICloud.DeleteFileResult>;
+  deleteFile(param: OQ<ICloud.DeleteFileParam>): void;
+  deleteFile(
+    param: RQ<ICloud.DeleteFileParam>,
+  ): Promise<ICloud.DeleteFileResult>;
 
-    database: (config?: ICloudConfig) => DB.Database;
-  };
+  database: (config?: ICloudConfig) => DB.Database;
 }
 
 declare namespace ICloud {
