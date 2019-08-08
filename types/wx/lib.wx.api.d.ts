@@ -4975,6 +4975,26 @@ innerAudioContext.onError((res) => {
       src: string,
     ): void;
   }
+  interface BackgroundAudioError {
+    /** 错误信息
+     *
+     * | 错误码 | 错误信息 | 说明 |
+     * | - | - | - |
+     * | 10001 |  | 系统错误 |
+     * | 10002 |  | 网络错误 |
+     * | 10003 |  | 文件错误 |
+     * | 10004 |  | 格式错误 |
+     * | -1 |  | 未知错误 | */ errMsg: string;
+    /** 错误码
+     *
+     * | 错误码 | 错误信息 | 说明 |
+     * | - | - | - |
+     * | 10001 |  | 系统错误 |
+     * | 10002 |  | 网络错误 |
+     * | 10003 |  | 文件错误 |
+     * | 10004 |  | 格式错误 |
+     * | -1 |  | 未知错误 | */ errCode: number;
+  }
   interface BackgroundAudioManager {
     /** [BackgroundAudioManager.onCanplay(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/media/background-audio/BackgroundAudioManager.onCanplay.html)
      *
@@ -5079,6 +5099,42 @@ innerAudioContext.onError((res) => {
      *
      * 停止音乐 */
     stop(): void;
+  }
+  interface BluetoothError {
+    /** 错误信息
+     *
+     * | 错误码 | 错误信息 | 说明 |
+     * | - | - | - |
+     * | 0 | ok | 正常 |
+     * | 10000 | not init | 未初始化蓝牙适配器 |
+     * | 10001 | not available | 当前蓝牙适配器不可用 |
+     * | 10002 | no device | 没有找到指定设备 |
+     * | 10003 | connection fail | 连接失败 |
+     * | 10004 | no service | 没有找到指定服务 |
+     * | 10005 | no characteristic | 没有找到指定特征值 |
+     * | 10006 | no connection | 当前连接已断开 |
+     * | 10007 | property not support | 当前特征值不支持此操作 |
+     * | 10008 | system error | 其余所有系统上报的异常 |
+     * | 10009 | system not support | Android 系统特有，系统版本低于 4.3 不支持 BLE |
+     * | 10012 | operate time out | 连接超时 |
+     * | 10013 | invalid_data | 连接 deviceId 为空或者是格式不正确 | */ errMsg: string;
+    /** 错误码
+     *
+     * | 错误码 | 错误信息 | 说明 |
+     * | - | - | - |
+     * | 0 | ok | 正常 |
+     * | 10000 | not init | 未初始化蓝牙适配器 |
+     * | 10001 | not available | 当前蓝牙适配器不可用 |
+     * | 10002 | no device | 没有找到指定设备 |
+     * | 10003 | connection fail | 连接失败 |
+     * | 10004 | no service | 没有找到指定服务 |
+     * | 10005 | no characteristic | 没有找到指定特征值 |
+     * | 10006 | no connection | 当前连接已断开 |
+     * | 10007 | property not support | 当前特征值不支持此操作 |
+     * | 10008 | system error | 其余所有系统上报的异常 |
+     * | 10009 | system not support | Android 系统特有，系统版本低于 4.3 不支持 BLE |
+     * | 10012 | operate time out | 连接超时 |
+     * | 10013 | invalid_data | 连接 deviceId 为空或者是格式不正确 | */ errCode: number;
   }
   interface CameraContext {
     /** [CameraContext.startRecord(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/camera/CameraContext.startRecord.html)
@@ -5504,6 +5560,78 @@ ctx.draw()
       reserve?: boolean,
       /** 绘制完成后执行的回调函数 */
       callback?: Function,
+    ): void;
+    /** [CanvasContext.drawImage(string imageResource, number sx, number sy, number sWidth, number sHeight, number dx, number dy, number dWidth, number dHeight)](https://developers.weixin.qq.com/miniprogram/dev/api/canvas/CanvasContext.drawImage.html)
+* 
+* 绘制图像到画布
+* 
+* **示例代码**
+* 
+* 
+* 
+* 有三个版本的写法：
+* 
+* - drawImage(imageResource, dx, dy)
+* - drawImage(imageResource, dx, dy, dWidth, dHeight)
+* - drawImage(imageResource, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight) 从 1.9.0 起支持
+* 
+* ```javascript
+const ctx = wx.createCanvasContext('myCanvas')
+
+wx.chooseImage({
+  success: function(res){
+    ctx.drawImage(res.tempFilePaths[0], 0, 0, 150, 100)
+    ctx.draw()
+  }
+})
+
+```
+* ![](@program/dev/image/canvas/draw-image.png) */
+    drawImage(
+      /** 所要绘制的图片资源 */
+      imageResource: string,
+      /** 图像的左上角在目标 canvas 上 x 轴的位置 */
+      dx: number,
+      /** 图像的左上角在目标 canvas 上 y 轴的位置 */
+      dy: number,
+    ): void;
+    /** [CanvasContext.drawImage(string imageResource, number sx, number sy, number sWidth, number sHeight, number dx, number dy, number dWidth, number dHeight)](https://developers.weixin.qq.com/miniprogram/dev/api/canvas/CanvasContext.drawImage.html)
+* 
+* 绘制图像到画布
+* 
+* **示例代码**
+* 
+* 
+* 
+* 有三个版本的写法：
+* 
+* - drawImage(imageResource, dx, dy)
+* - drawImage(imageResource, dx, dy, dWidth, dHeight)
+* - drawImage(imageResource, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight) 从 1.9.0 起支持
+* 
+* ```javascript
+const ctx = wx.createCanvasContext('myCanvas')
+
+wx.chooseImage({
+  success: function(res){
+    ctx.drawImage(res.tempFilePaths[0], 0, 0, 150, 100)
+    ctx.draw()
+  }
+})
+
+```
+* ![](@program/dev/image/canvas/draw-image.png) */
+    drawImage(
+      /** 所要绘制的图片资源 */
+      imageResource: string,
+      /** 图像的左上角在目标 canvas 上 x 轴的位置 */
+      dx: number,
+      /** 图像的左上角在目标 canvas 上 y 轴的位置 */
+      dy: number,
+      /** 在目标画布上绘制图像的宽度，允许对绘制的图像进行缩放 */
+      dWidth: number,
+      /** 在目标画布上绘制图像的高度，允许对绘制的图像进行缩放 */
+      dHeight: number,
     ): void;
     /** [CanvasContext.drawImage(string imageResource, number sx, number sy, number sWidth, number sHeight, number dx, number dy, number dWidth, number dHeight)](https://developers.weixin.qq.com/miniprogram/dev/api/canvas/CanvasContext.drawImage.html)
 * 
@@ -6905,6 +7033,26 @@ this.editorCtx.insertImage({
   interface GeneralCallbackResult {
     errMsg: string;
   }
+  interface IBeaconError {
+    /** 错误信息
+     *
+     * | 错误码 | 错误信息 | 说明 |
+     * | - | - | - |
+     * | 0 | ok | 正常 |
+     * | 11000 | unsupport | 系统或设备不支持 |
+     * | 11001 | bluetooth service unavailable | 蓝牙服务不可用 |
+     * | 11002 | location service unavailable | 位置服务不可用 |
+     * | 11003 | already start | 已经开始搜索 | */ errMsg: string;
+    /** 错误码
+     *
+     * | 错误码 | 错误信息 | 说明 |
+     * | - | - | - |
+     * | 0 | ok | 正常 |
+     * | 11000 | unsupport | 系统或设备不支持 |
+     * | 11001 | bluetooth service unavailable | 蓝牙服务不可用 |
+     * | 11002 | location service unavailable | 位置服务不可用 |
+     * | 11003 | already start | 已经开始搜索 | */ errCode: number;
+  }
   interface InnerAudioContext {
     /** [InnerAudioContext.destroy()](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/InnerAudioContext.destroy.html)
      *
@@ -7398,6 +7546,32 @@ Page({
      *
      * 最低基础库： `1.2.0` */
     translateMarker(option: TranslateMarkerOption): void;
+  }
+  interface NFCError {
+    /** 错误信息
+     *
+     * | 错误码 | 错误信息 | 说明 |
+     * | - | - | - |
+     * | 0 | ok | 正常 |
+     * | 13000 |  | 当前设备不支持NFC |
+     * | 13001 |  | 当前设备支持NFC，但系统NFC开关未开启 |
+     * | 13002 |  | 当前设备支持NFC，但不支持HCE |
+     * | 13003 |  | AID列表参数格式错误 |
+     * | 13004 |  | 未设置微信为默认NFC支付应用 |
+     * | 13005 |  | 返回的指令不合法 |
+     * | 13006 |  | 注册AID失败 | */ errMsg: string;
+    /** 错误码
+     *
+     * | 错误码 | 错误信息 | 说明 |
+     * | - | - | - |
+     * | 0 | ok | 正常 |
+     * | 13000 |  | 当前设备不支持NFC |
+     * | 13001 |  | 当前设备支持NFC，但系统NFC开关未开启 |
+     * | 13002 |  | 当前设备支持NFC，但不支持HCE |
+     * | 13003 |  | AID列表参数格式错误 |
+     * | 13004 |  | 未设置微信为默认NFC支付应用 |
+     * | 13005 |  | 返回的指令不合法 |
+     * | 13006 |  | 注册AID失败 | */ errCode: number;
   }
   interface NodesRef {
     /** [NodesRef.fields(Object fields)](https://developers.weixin.qq.com/miniprogram/dev/api/wxml/NodesRef.fields.html)
@@ -8054,6 +8228,44 @@ Component({
      *
      * 最低基础库： `1.7.0` */
     stop(): void;
+  }
+  interface WifiError {
+    /** 错误信息
+     *
+     * | 错误码 | 错误信息 | 说明 |
+     * | - | - | - |
+     * | 0 | ok | 正常 |
+     * | 12000 | not init | 未先调用 `startWifi` 接口 |
+     * | 12001 | system not support | 当前系统不支持相关能力 |
+     * | 12002 | password error Wi-Fi | 密码错误 |
+     * | 12003 | connection timeout | 连接超时 |
+     * | 12004 | duplicate request | 重复连接 Wi-Fi |
+     * | 12005 | wifi not turned on | Android 特有，未打开 Wi-Fi 开关 |
+     * | 12006 | gps not turned on | Android 特有，未打开 GPS 定位开关 |
+     * | 12007 | user denied | 用户拒绝授权链接 Wi-Fi |
+     * | 12008 | invalid SSID | 无效 SSID |
+     * | 12009 | system config err | 系统运营商配置拒绝连接 Wi-Fi |
+     * | 12010 | system internal error | 系统其他错误，需要在 errmsg 打印具体的错误原因 |
+     * | 12011 | weapp in background | 应用在后台无法配置 Wi-Fi |
+     * | 12013 | wifi config may be expired | 系统保存的 Wi-Fi 配置过期，建议忘记 Wi-Fi 后重试 | */ errMsg: string;
+    /** 错误码
+     *
+     * | 错误码 | 错误信息 | 说明 |
+     * | - | - | - |
+     * | 0 | ok | 正常 |
+     * | 12000 | not init | 未先调用 `startWifi` 接口 |
+     * | 12001 | system not support | 当前系统不支持相关能力 |
+     * | 12002 | password error Wi-Fi | 密码错误 |
+     * | 12003 | connection timeout | 连接超时 |
+     * | 12004 | duplicate request | 重复连接 Wi-Fi |
+     * | 12005 | wifi not turned on | Android 特有，未打开 Wi-Fi 开关 |
+     * | 12006 | gps not turned on | Android 特有，未打开 GPS 定位开关 |
+     * | 12007 | user denied | 用户拒绝授权链接 Wi-Fi |
+     * | 12008 | invalid SSID | 无效 SSID |
+     * | 12009 | system config err | 系统运营商配置拒绝连接 Wi-Fi |
+     * | 12010 | system internal error | 系统其他错误，需要在 errmsg 打印具体的错误原因 |
+     * | 12011 | weapp in background | 应用在后台无法配置 Wi-Fi |
+     * | 12013 | wifi config may be expired | 系统保存的 Wi-Fi 配置过期，建议忘记 Wi-Fi 后重试 | */ errCode: number;
   }
   interface Worker {
     /** [Worker.onMessage(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/worker/Worker.onMessage.html)
@@ -12269,7 +12481,7 @@ wx.writeBLECharacteristicValue({
     res: GeneralCallbackResult,
   ) => void;
   /** 接口调用失败的回调函数 */
-  type CloseBLEConnectionFailCallback = (res: GeneralCallbackResult) => void;
+  type CloseBLEConnectionFailCallback = (res: BluetoothError) => void;
   /** 接口调用成功的回调函数 */
   type CloseBLEConnectionSuccessCallback = (res: GeneralCallbackResult) => void;
   /** 接口调用结束的回调函数（调用成功、失败都会执行） */
@@ -12277,7 +12489,7 @@ wx.writeBLECharacteristicValue({
     res: GeneralCallbackResult,
   ) => void;
   /** 接口调用失败的回调函数 */
-  type CloseBluetoothAdapterFailCallback = (res: GeneralCallbackResult) => void;
+  type CloseBluetoothAdapterFailCallback = (res: BluetoothError) => void;
   /** 接口调用成功的回调函数 */
   type CloseBluetoothAdapterSuccessCallback = (
     res: GeneralCallbackResult,
@@ -12311,7 +12523,7 @@ wx.writeBLECharacteristicValue({
   /** 接口调用结束的回调函数（调用成功、失败都会执行） */
   type ConnectWifiCompleteCallback = (res: GeneralCallbackResult) => void;
   /** 接口调用失败的回调函数 */
-  type ConnectWifiFailCallback = (res: GeneralCallbackResult) => void;
+  type ConnectWifiFailCallback = (res: WifiError) => void;
   /** 接口调用成功的回调函数 */
   type ConnectWifiSuccessCallback = (res: GeneralCallbackResult) => void;
   /** 回调函数，在执行 `SelectorQuery.exec` 方法后，返回节点信息。 */
@@ -12327,7 +12539,7 @@ wx.writeBLECharacteristicValue({
     res: GeneralCallbackResult,
   ) => void;
   /** 接口调用失败的回调函数 */
-  type CreateBLEConnectionFailCallback = (res: GeneralCallbackResult) => void;
+  type CreateBLEConnectionFailCallback = (res: BluetoothError) => void;
   /** 接口调用成功的回调函数 */
   type CreateBLEConnectionSuccessCallback = (
     res: GeneralCallbackResult,
@@ -12427,9 +12639,7 @@ wx.writeBLECharacteristicValue({
     res: GeneralCallbackResult,
   ) => void;
   /** 接口调用失败的回调函数 */
-  type GetBLEDeviceCharacteristicsFailCallback = (
-    res: GeneralCallbackResult,
-  ) => void;
+  type GetBLEDeviceCharacteristicsFailCallback = (res: BluetoothError) => void;
   /** 接口调用成功的回调函数 */
   type GetBLEDeviceCharacteristicsSuccessCallback = (
     result: GetBLEDeviceCharacteristicsSuccessCallbackResult,
@@ -12439,7 +12649,7 @@ wx.writeBLECharacteristicValue({
     res: GeneralCallbackResult,
   ) => void;
   /** 接口调用失败的回调函数 */
-  type GetBLEDeviceServicesFailCallback = (res: GeneralCallbackResult) => void;
+  type GetBLEDeviceServicesFailCallback = (res: BluetoothError) => void;
   /** 接口调用成功的回调函数 */
   type GetBLEDeviceServicesSuccessCallback = (
     result: GetBLEDeviceServicesSuccessCallbackResult,
@@ -12467,7 +12677,7 @@ wx.writeBLECharacteristicValue({
   /** 接口调用结束的回调函数（调用成功、失败都会执行） */
   type GetBeaconsCompleteCallback = (res: GeneralCallbackResult) => void;
   /** 接口调用失败的回调函数 */
-  type GetBeaconsFailCallback = (res: GeneralCallbackResult) => void;
+  type GetBeaconsFailCallback = (res: IBeaconError) => void;
   /** 接口调用成功的回调函数 */
   type GetBeaconsSuccessCallback = (
     result: GetBeaconsSuccessCallbackResult,
@@ -12477,9 +12687,7 @@ wx.writeBLECharacteristicValue({
     res: GeneralCallbackResult,
   ) => void;
   /** 接口调用失败的回调函数 */
-  type GetBluetoothAdapterStateFailCallback = (
-    res: GeneralCallbackResult,
-  ) => void;
+  type GetBluetoothAdapterStateFailCallback = (res: BluetoothError) => void;
   /** 接口调用成功的回调函数 */
   type GetBluetoothAdapterStateSuccessCallback = (
     result: GetBluetoothAdapterStateSuccessCallbackResult,
@@ -12489,7 +12697,7 @@ wx.writeBLECharacteristicValue({
     res: GeneralCallbackResult,
   ) => void;
   /** 接口调用失败的回调函数 */
-  type GetBluetoothDevicesFailCallback = (res: GeneralCallbackResult) => void;
+  type GetBluetoothDevicesFailCallback = (res: BluetoothError) => void;
   /** 接口调用成功的回调函数 */
   type GetBluetoothDevicesSuccessCallback = (
     result: GetBluetoothDevicesSuccessCallbackResult,
@@ -12515,9 +12723,7 @@ wx.writeBLECharacteristicValue({
     res: GeneralCallbackResult,
   ) => void;
   /** 接口调用失败的回调函数 */
-  type GetConnectedBluetoothDevicesFailCallback = (
-    res: GeneralCallbackResult,
-  ) => void;
+  type GetConnectedBluetoothDevicesFailCallback = (res: BluetoothError) => void;
   /** 接口调用成功的回调函数 */
   type GetConnectedBluetoothDevicesSuccessCallback = (
     result: GetConnectedBluetoothDevicesSuccessCallbackResult,
@@ -12525,7 +12731,7 @@ wx.writeBLECharacteristicValue({
   /** 接口调用结束的回调函数（调用成功、失败都会执行） */
   type GetConnectedWifiCompleteCallback = (res: GeneralCallbackResult) => void;
   /** 接口调用失败的回调函数 */
-  type GetConnectedWifiFailCallback = (res: GeneralCallbackResult) => void;
+  type GetConnectedWifiFailCallback = (res: WifiError) => void;
   /** 接口调用成功的回调函数 */
   type GetConnectedWifiSuccessCallback = (
     result: GetConnectedWifiSuccessCallbackResult,
@@ -12547,7 +12753,7 @@ wx.writeBLECharacteristicValue({
   /** 接口调用结束的回调函数（调用成功、失败都会执行） */
   type GetHCEStateCompleteCallback = (res: GeneralCallbackResult) => void;
   /** 接口调用失败的回调函数 */
-  type GetHCEStateFailCallback = (res: GeneralCallbackResult) => void;
+  type GetHCEStateFailCallback = (res: NFCError) => void;
   /** 接口调用成功的回调函数 */
   type GetHCEStateSuccessCallback = (res: GeneralCallbackResult) => void;
   /** 接口调用结束的回调函数（调用成功、失败都会执行） */
@@ -12667,7 +12873,7 @@ wx.writeBLECharacteristicValue({
   /** 接口调用结束的回调函数（调用成功、失败都会执行） */
   type GetWifiListCompleteCallback = (res: GeneralCallbackResult) => void;
   /** 接口调用失败的回调函数 */
-  type GetWifiListFailCallback = (res: GeneralCallbackResult) => void;
+  type GetWifiListFailCallback = (res: WifiError) => void;
   /** 接口调用成功的回调函数 */
   type GetWifiListSuccessCallback = (res: GeneralCallbackResult) => void;
   /** 接口调用结束的回调函数（调用成功、失败都会执行） */
@@ -12956,7 +13162,7 @@ wx.writeBLECharacteristicValue({
   ) => void;
   /** 接口调用失败的回调函数 */
   type NotifyBLECharacteristicValueChangeFailCallback = (
-    res: GeneralCallbackResult,
+    res: BluetoothError,
   ) => void;
   /** 接口调用成功的回调函数 */
   type NotifyBLECharacteristicValueChangeSuccessCallback = (
@@ -13150,7 +13356,7 @@ wx.writeBLECharacteristicValue({
     res: GeneralCallbackResult,
   ) => void;
   /** 接口调用失败的回调函数 */
-  type OpenBluetoothAdapterFailCallback = (res: GeneralCallbackResult) => void;
+  type OpenBluetoothAdapterFailCallback = (res: BluetoothError) => void;
   /** 接口调用成功的回调函数 */
   type OpenBluetoothAdapterSuccessCallback = (
     res: GeneralCallbackResult,
@@ -13254,9 +13460,7 @@ wx.writeBLECharacteristicValue({
     res: GeneralCallbackResult,
   ) => void;
   /** 接口调用失败的回调函数 */
-  type ReadBLECharacteristicValueFailCallback = (
-    res: GeneralCallbackResult,
-  ) => void;
+  type ReadBLECharacteristicValueFailCallback = (res: BluetoothError) => void;
   /** 接口调用成功的回调函数 */
   type ReadBLECharacteristicValueSuccessCallback = (
     res: GeneralCallbackResult,
@@ -13422,7 +13626,7 @@ wx.writeBLECharacteristicValue({
   /** 接口调用结束的回调函数（调用成功、失败都会执行） */
   type SendHCEMessageCompleteCallback = (res: GeneralCallbackResult) => void;
   /** 接口调用失败的回调函数 */
-  type SendHCEMessageFailCallback = (res: GeneralCallbackResult) => void;
+  type SendHCEMessageFailCallback = (res: NFCError) => void;
   /** 接口调用成功的回调函数 */
   type SendHCEMessageSuccessCallback = (res: GeneralCallbackResult) => void;
   /** 接口调用结束的回调函数（调用成功、失败都会执行） */
@@ -13556,7 +13760,7 @@ wx.writeBLECharacteristicValue({
   /** 接口调用结束的回调函数（调用成功、失败都会执行） */
   type SetWifiListCompleteCallback = (res: GeneralCallbackResult) => void;
   /** 接口调用失败的回调函数 */
-  type SetWifiListFailCallback = (res: GeneralCallbackResult) => void;
+  type SetWifiListFailCallback = (res: WifiError) => void;
   /** 接口调用成功的回调函数 */
   type SetWifiListSuccessCallback = (res: GeneralCallbackResult) => void;
   /** 接口调用结束的回调函数（调用成功、失败都会执行） */
@@ -13640,7 +13844,7 @@ wx.writeBLECharacteristicValue({
     res: GeneralCallbackResult,
   ) => void;
   /** 接口调用失败的回调函数 */
-  type StartBeaconDiscoveryFailCallback = (res: GeneralCallbackResult) => void;
+  type StartBeaconDiscoveryFailCallback = (res: IBeaconError) => void;
   /** 接口调用成功的回调函数 */
   type StartBeaconDiscoverySuccessCallback = (
     res: GeneralCallbackResult,
@@ -13651,7 +13855,7 @@ wx.writeBLECharacteristicValue({
   ) => void;
   /** 接口调用失败的回调函数 */
   type StartBluetoothDevicesDiscoveryFailCallback = (
-    res: GeneralCallbackResult,
+    res: BluetoothError,
   ) => void;
   /** 接口调用成功的回调函数 */
   type StartBluetoothDevicesDiscoverySuccessCallback = (
@@ -13684,7 +13888,7 @@ wx.writeBLECharacteristicValue({
   /** 接口调用结束的回调函数（调用成功、失败都会执行） */
   type StartHCECompleteCallback = (res: GeneralCallbackResult) => void;
   /** 接口调用失败的回调函数 */
-  type StartHCEFailCallback = (res: GeneralCallbackResult) => void;
+  type StartHCEFailCallback = (res: NFCError) => void;
   /** 接口调用成功的回调函数 */
   type StartHCESuccessCallback = (res: GeneralCallbackResult) => void;
   /** 接口调用结束的回调函数（调用成功、失败都会执行） */
@@ -13734,7 +13938,7 @@ wx.writeBLECharacteristicValue({
   /** 接口调用结束的回调函数（调用成功、失败都会执行） */
   type StartWifiCompleteCallback = (res: GeneralCallbackResult) => void;
   /** 接口调用失败的回调函数 */
-  type StartWifiFailCallback = (res: GeneralCallbackResult) => void;
+  type StartWifiFailCallback = (res: WifiError) => void;
   /** 接口调用成功的回调函数 */
   type StartWifiSuccessCallback = (res: GeneralCallbackResult) => void;
   /** 接口调用结束的回调函数（调用成功、失败都会执行） */
@@ -13770,7 +13974,7 @@ wx.writeBLECharacteristicValue({
     res: GeneralCallbackResult,
   ) => void;
   /** 接口调用失败的回调函数 */
-  type StopBeaconDiscoveryFailCallback = (res: GeneralCallbackResult) => void;
+  type StopBeaconDiscoveryFailCallback = (res: IBeaconError) => void;
   /** 接口调用成功的回调函数 */
   type StopBeaconDiscoverySuccessCallback = (
     res: GeneralCallbackResult,
@@ -13781,7 +13985,7 @@ wx.writeBLECharacteristicValue({
   ) => void;
   /** 接口调用失败的回调函数 */
   type StopBluetoothDevicesDiscoveryFailCallback = (
-    res: GeneralCallbackResult,
+    res: BluetoothError,
   ) => void;
   /** 接口调用成功的回调函数 */
   type StopBluetoothDevicesDiscoverySuccessCallback = (
@@ -13814,7 +14018,7 @@ wx.writeBLECharacteristicValue({
   /** 接口调用结束的回调函数（调用成功、失败都会执行） */
   type StopHCECompleteCallback = (res: GeneralCallbackResult) => void;
   /** 接口调用失败的回调函数 */
-  type StopHCEFailCallback = (res: GeneralCallbackResult) => void;
+  type StopHCEFailCallback = (res: NFCError) => void;
   /** 接口调用成功的回调函数 */
   type StopHCESuccessCallback = (res: GeneralCallbackResult) => void;
   /** 接口调用结束的回调函数（调用成功、失败都会执行） */
@@ -13854,7 +14058,7 @@ wx.writeBLECharacteristicValue({
   /** 接口调用结束的回调函数（调用成功、失败都会执行） */
   type StopWifiCompleteCallback = (res: GeneralCallbackResult) => void;
   /** 接口调用失败的回调函数 */
-  type StopWifiFailCallback = (res: GeneralCallbackResult) => void;
+  type StopWifiFailCallback = (res: WifiError) => void;
   /** 接口调用成功的回调函数 */
   type StopWifiSuccessCallback = (res: GeneralCallbackResult) => void;
   /** 接口调用结束的回调函数（调用成功、失败都会执行） */
@@ -13972,9 +14176,7 @@ wx.writeBLECharacteristicValue({
     res: GeneralCallbackResult,
   ) => void;
   /** 接口调用失败的回调函数 */
-  type WriteBLECharacteristicValueFailCallback = (
-    res: GeneralCallbackResult,
-  ) => void;
+  type WriteBLECharacteristicValueFailCallback = (res: BluetoothError) => void;
   /** 接口调用成功的回调函数 */
   type WriteBLECharacteristicValueSuccessCallback = (
     res: GeneralCallbackResult,
