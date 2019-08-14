@@ -176,10 +176,24 @@ declare namespace WechatMiniprogram {
         }
 
         interface ComponentOptions {
-            /** 启用多slot支持 */
+            /**
+             * [启用多slot支持](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/wxml-wxss.html#组件wxml的slot)
+             */
             multipleSlots?: boolean
-            /** https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/wxml-wxss.html#组件样式隔离 */
+            /**
+             * [组件样式隔离](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/wxml-wxss.html#组件样式隔离)
+             */
             addGlobalClass?: boolean
+            /**
+             * [组件样式隔离](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/wxml-wxss.html#组件样式隔离)
+             */
+            styleIsolation?:
+                | 'isolated'
+                | 'apply-shared'
+                | 'shared'
+                | 'page-isolated'
+                | 'page-apply-shared'
+                | 'page-shared'
         }
 
         interface TriggerEventOption {
