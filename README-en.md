@@ -3,7 +3,7 @@
 > [中文版本](./README.md)
 
 [![](https://img.shields.io/npm/v/miniprogram-api-typings.svg?style=flat)](https://www.npmjs.com/package/miniprogram-api-typings)
-[![](https://img.shields.io/github/license/wechat-miniprogram/miniprogram-api-typings.svg)](https://github.com/wechat-miniprogram/miniprogram-api-typings)
+[![](https://img.shields.io/github/license/wechat-miniprogram/api-typings.svg)](https://github.com/wechat-miniprogram/api-typings)
 
 Type definitions for APIs of Wechat Mini Program in TypeScript
 
@@ -26,6 +26,7 @@ npm install miniprogram-api-typings@2.4.1
 
 Base Library version|npm version|command
 -|-|-
+[v2.8.0](https://developers.weixin.qq.com/miniprogram/dev/framework/release/#v2-8-0-2019-07-30) | [2.8.0](https://www.npmjs.com/package/miniprogram-api-typings/v/2.8.0) | `npm install miniprogram-api-typings@2.8.0`
 [v2.7.7](https://developers.weixin.qq.com/miniprogram/dev/framework/release/) | [2.7.7-2](https://www.npmjs.com/package/miniprogram-api-typings/v/2.7.7-2) | `npm install miniprogram-api-typings@2.7.7-2`
 [v2.6.5](https://developers.weixin.qq.com/miniprogram/dev/framework/release/#v2-6-5-2019-04-02) | [2.6.5-2](https://www.npmjs.com/package/miniprogram-api-typings/v/2.6.5-2) | `npm install miniprogram-api-typings@2.6.5-2`
 [v2.4.2](https://developers.weixin.qq.com/miniprogram/dev/framework/release/v2.html#v2-4-2-2018-12-04)|[2.4.2-2](https://www.npmjs.com/package/miniprogram-api-typings/v/2.4.2-2)|`npm install miniprogram-api-typings@2.4.2-2`

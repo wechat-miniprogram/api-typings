@@ -25,6 +25,7 @@ npm install miniprogram-api-typings@2.4.1
 
 基础库版本|npm 版本|命令
 -|-|-
+[v2.8.0](https://developers.weixin.qq.com/miniprogram/dev/framework/release/#v2-8-0-2019-07-30) | [2.8.0](https://www.npmjs.com/package/miniprogram-api-typings/v/2.8.0) | `npm install miniprogram-api-typings@2.8.0`
 [v2.7.7](https://developers.weixin.qq.com/miniprogram/dev/framework/release/) | [2.7.7-2](https://www.npmjs.com/package/miniprogram-api-typings/v/2.7.7-2) | `npm install miniprogram-api-typings@2.7.7-2`
 [v2.6.5](https://developers.weixin.qq.com/miniprogram/dev/framework/release/#v2-6-5-2019-04-02) | [2.6.5-2](https://www.npmjs.com/package/miniprogram-api-typings/v/2.6.5-2) | `npm install miniprogram-api-typings@2.6.5-2`
 [v2.4.2](https://developers.weixin.qq.com/miniprogram/dev/framework/release/v2.html#v2-4-2-2018-12-04)|[2.4.2-2](https://www.npmjs.com/package/miniprogram-api-typings/v/2.4.2-2)|`npm install miniprogram-api-typings@2.4.2-2`
