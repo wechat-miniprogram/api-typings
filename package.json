@@ -4,14 +4,32 @@
   "description": "Type definitions for APIs of Wechat Mini Program in TypeScript",
   "main": "./index.d.ts",
   "types": "./index.d.ts",
+  "scripts": {
+    "test": "dtslint . --localTs ./node_modules/typescript/lib",
+    "dtslint": "npm test"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/wechat-miniprogram/api-typings.git"
   },
-	"author": "wechat-miniprogram",
-	"license": "MIT",
+  "author": "Wechat Miniprogram <wx-miniprogram@qq.com>",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/wechat-miniprogram/api-typings/issues"
   },
-  "homepage": "https://github.com/wechat-miniprogram/api-typings#readme"
+  "homepage": "https://github.com/wechat-miniprogram/api-typings#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "dtslint": "^0.9.1",
+    "typescript": "^3.5.3"
+  },
+  "files": [
+    "LICENSE",
+    "CHANGELOG.md",
+    "README.md",
+    "README-en.md",
+    "index.d.ts",
+    "typings.json",
+    "types/"
+  ]
 }

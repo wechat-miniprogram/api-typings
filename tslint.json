@@ -1,0 +1,18 @@
+{
+  "extends": "dtslint/dtslint.json",
+  "rules": {
+    "jsdoc-format": false,
+    "max-line-length": false,
+    "no-unnecessary-generics": false,
+    "only-arrow-functions": false,
+    "no-unused-expression": false,
+    "no-bad-reference": false,
+    "prefer-template": false,
+    "no-empty-interface": false,
+    "no-object-literal-type-assertion": false,
+    "semicolon": {
+      "options": ["never"]
+    },
+    "interface-name": false
+  }
+}

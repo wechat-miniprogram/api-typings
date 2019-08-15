@@ -34,4 +34,14 @@ npm install miniprogram-api-typings@2.4.1
 
 ## 贡献
 
-定义文件是随 [文档](https://developers.weixin.qq.com/miniprogram/dev/index.html) 一起自动生成的，所以所有的 PR 都将 __不会__ 被接受。如果您有 bug 反馈或建议，请提一个 issue 给我们。非常感谢！
+API 的定义文件（`lib.wx.api.d.ts`）是随 [文档](https://developers.weixin.qq.com/miniprogram/dev/index.html) 一起自动生成的，如果发现了 API 接口的定义错误，请提一个 issue 给我们，关于 API 的 PR 将 __不会__ 被接受。
+
+如果有针对页面（`Page`）、自定义组件（`Component`）等接口的 bug 和建议，欢迎 PR 或提一个 issue 给我们。非常感谢！
+
+### 测试
+
+本定义文件使用 [`dtslint`](https://github.com/Microsoft/dtslint) 进行测试，所有的测试样例放在 `test` 目录下。
+
+想执行测试的话，克隆本项目并完成 `npm install --save-dev` 后执行 `npm test` 即可。
+
+如果您发现了不能通过自动化测试的测试样例，可以提交 PR 或者提一个 issue。当然，能通过自动化测试的强有力的测试样例也是欢迎的。

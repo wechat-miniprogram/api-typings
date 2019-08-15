@@ -35,4 +35,14 @@ Base Library version|npm version|command
 
 ## Contribution
 
-Since definitions are auto-generated together with [documentations](https://developers.weixin.qq.com/miniprogram/dev/index.html), all PRs will __not__ be merged. If you have any bug reports or suggestions, create an issue instead. Thanks for contributing!
+Definitions of Wechat APIs (`lib.wx.api.d.ts`) are auto-generated together with our [documentations](https://developers.weixin.qq.com/miniprogram/dev/index.html), therefore PRs including that file will __not__ be merged. If you found some APIs defined wrongly, create an issue instead.
+
+Both PR and issue are welcomed for definitions of pages (`Page`), custom components (`Component`) and other else, since they are written manually. Help us improve this definition if you have any bug reports or suggestions! Thanks for contributing!
+
+### Automated tests
+
+We use [`dtslint`](https://github.com/Microsoft/dtslint) to check if this definition is working properly. All test cases are under folder `test`.
+
+To perform an automated test, clone this repo, `npm install --save-dev` and `npm test`.
+
+If you have test case that fails the test, an issue or PR will be great. Strong test case that passes are also welcomed.
