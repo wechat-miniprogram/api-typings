@@ -309,7 +309,7 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         /** 节点的下边界坐标 */
         bottom: number
         /** 节点的 dataset */
-        dataset: object
+        dataset: IAnyObject
         /** 节点的高度 */
         height: number
         /** 节点的 ID */
@@ -335,7 +335,7 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         top: number
     }
     /** 新搜索到的设备列表 */
-    interface CallbackResultBlueToothDevice {
+    interface CallbackBlueToothDevice {
         /** 当前蓝牙设备的信号强度 */
         RSSI: number
         /** 当前蓝牙设备的广播数据段中的 ManufacturerData 数据段。 */
@@ -349,7 +349,7 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         /** 蓝牙设备名称，某些设备可能没有 */
         name: string
         /** 当前蓝牙设备的广播数据段中的 ServiceData 数据段 */
-        serviceData: object
+        serviceData: IAnyObject
     }
     interface CameraContextStartRecordOption {
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
@@ -1045,7 +1045,7 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         /** 接口调用失败的回调函数 */
         fail?: ConnectSocketFailCallback
         /** HTTP Header，Header 中不能设置 Referer */
-        header?: object
+        header?: IAnyObject
         /** 子协议数组
          *
          * 最低基础库： `1.4.0` */
@@ -1073,7 +1073,7 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
     }
     interface ContextCallbackResult {
         /** 节点对应的 Context 对象 */
-        context: object
+        context: IAnyObject
     }
     interface CopyFileFailCallbackResult {
         /** 错误信息
@@ -1190,7 +1190,7 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
          * 最低基础库： `1.8.0` */
         filePath?: string
         /** HTTP 请求的 Header，Header 中不能设置 Referer */
-        header?: object
+        header?: IAnyObject
         /** 接口调用成功的回调函数 */
         success?: DownloadFileSuccessCallback
     }
@@ -1205,7 +1205,7 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
     }
     interface DownloadTaskOnHeadersReceivedCallbackResult {
         /** 开发者服务器返回的 HTTP Response Header */
-        header: object
+        header: IAnyObject
     }
     interface DownloadTaskOnProgressUpdateCallbackResult {
         /** 下载进度百分比 */
@@ -1225,7 +1225,7 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
     }
     interface ExtInfo {
         /** 第三方平台自定义的数据 */
-        extConfig: object
+        extConfig: IAnyObject
     }
     interface Fields {
         /** 指定样式名列表，返回节点对应样式名的当前值
@@ -1463,25 +1463,8 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
     }
     interface GetBluetoothDevicesSuccessCallbackResult {
         /** uuid 对应的的已连接设备列表 */
-        devices: GetBluetoothDevicesSuccessCallbackResultBlueToothDevice[]
+        devices: ResultBlueToothDevice[]
         errMsg: string
-    }
-    /** uuid 对应的的已连接设备列表 */
-    interface GetBluetoothDevicesSuccessCallbackResultBlueToothDevice {
-        /** 当前蓝牙设备的信号强度 */
-        RSSI: number
-        /** 当前蓝牙设备的广播数据段中的 ManufacturerData 数据段。 */
-        advertisData: ArrayBuffer
-        /** 当前蓝牙设备的广播数据段中的 ServiceUUIDs 数据段 */
-        advertisServiceUUIDs: string[]
-        /** 用于区分设备的 id */
-        deviceId: string
-        /** 当前蓝牙设备的广播数据段中的 LocalName 数据段 */
-        localName: string
-        /** 蓝牙设备名称，某些设备可能没有 */
-        name: string
-        /** 当前蓝牙设备的广播数据段中的 ServiceData 数据段 */
-        serviceData: object
     }
     interface GetCenterLocationOption {
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
@@ -1558,7 +1541,7 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
     }
     interface GetExtConfigSuccessCallbackResult {
         /** 第三方平台自定义的数据 */
-        extConfig: object
+        extConfig: IAnyObject
         errMsg: string
     }
     interface GetFileInfoFailCallbackResult {
@@ -2313,7 +2296,7 @@ innerAudioContext.onError((res) => {
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: InsertImageCompleteCallback
         /** data 被序列化为 name=value;name1=value2 的格式挂在属性 data-custom 上 */
-        data?: object
+        data?: IAnyObject
         /** 添加到图片 img 标签上的类名 */
         extClass?: string
         /** 接口调用失败的回调函数 */
@@ -2368,7 +2351,7 @@ innerAudioContext.onError((res) => {
         /** 启动小程序的路径 */
         path: string
         /** 启动小程序的 query 参数 */
-        query: object
+        query: IAnyObject
         /** 来源信息。从另一个小程序、公众号或 App 进入小程序时返回。否则返回 `{}`。(参见后文注意) */
         referrerInfo: LaunchOptionsAppReferrerInfo
         /** 启动小程序的[场景值]((scene)) */
@@ -2381,7 +2364,7 @@ innerAudioContext.onError((res) => {
         /** 来源小程序、公众号或 App 的 appId */
         appId: string
         /** 来源小程序传过来的数据，scene=1037或1038时支持 */
-        extraData: object
+        extraData: IAnyObject
     }
     interface LivePlayerContextPauseOption {
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
@@ -2586,7 +2569,7 @@ innerAudioContext.onError((res) => {
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: NavigateBackMiniProgramCompleteCallback
         /** 需要返回给上一个小程序的数据，上一个小程序可在 `App.onShow` 中获取到这份数据。 [详情]((App))。 */
-        extraData?: object
+        extraData?: IAnyObject
         /** 接口调用失败的回调函数 */
         fail?: NavigateBackMiniProgramFailCallback
         /** 接口调用成功的回调函数 */
@@ -2615,7 +2598,7 @@ innerAudioContext.onError((res) => {
          * - 'release': 正式版; */
         envVersion?: 'develop' | 'trial' | 'release'
         /** 需要传递给目标小程序的数据，目标小程序可在 `App.onLaunch`，`App.onShow` 中获取到这份数据。如果跳转的是小游戏，可以在 [wx.onShow]((wx.onShow))、[wx.getLaunchOptionsSync](https://developers.weixin.qq.com/miniprogram/dev/api/base/app/life-cycle/wx.getLaunchOptionsSync.html) 中可以获取到这份数据数据。 */
-        extraData?: object
+        extraData?: IAnyObject
         /** 接口调用失败的回调函数 */
         fail?: NavigateToMiniProgramFailCallback
         /** 打开的页面路径，如果为空则打开首页。path 中 ? 后面的部分会成为 query，在小程序的 `App.onLaunch`、`App.onShow` 和 `Page.onLoad` 的回调函数或小游戏的 [wx.onShow]((wx.onShow)) 回调函数、[wx.getLaunchOptionsSync](https://developers.weixin.qq.com/miniprogram/dev/api/base/app/life-cycle/wx.getLaunchOptionsSync.html) 中可以获取到 query 数据。对于小游戏，可以只传入 query 部分，来实现传参效果，如：传入 "?foo=bar"。 */
@@ -2629,7 +2612,7 @@ innerAudioContext.onError((res) => {
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: NavigateToCompleteCallback
         /** 页面间通信接口，用于监听被打开页面发送到当前页面的数据。基础库 2.7.3 开始支持。 */
-        events?: object
+        events?: IAnyObject
         /** 接口调用失败的回调函数 */
         fail?: NavigateToFailCallback
         /** 接口调用成功的回调函数 */
@@ -2637,7 +2620,7 @@ innerAudioContext.onError((res) => {
     }
     interface NodeCallbackResult {
         /** 节点对应的 Node 实例 */
-        node: object
+        node: IAnyObject
     }
     interface NotifyBLECharacteristicValueChangeOption {
         /** 蓝牙特征值的 uuid */
@@ -2679,7 +2662,7 @@ innerAudioContext.onError((res) => {
         /** 小程序切前台的路径 */
         path: string
         /** 小程序切前台的 query 参数 */
-        query: object
+        query: IAnyObject
         /** 来源信息。从另一个小程序、公众号或 App 进入小程序时返回。否则返回 `{}`。(参见后文注意) */
         referrerInfo: ResultReferrerInfo
         /** 小程序切前台的[场景值]((scene)) */
@@ -2718,10 +2701,6 @@ innerAudioContext.onError((res) => {
         available: boolean
         /** 蓝牙适配器是否处于搜索状态 */
         discovering: boolean
-    }
-    interface OnBluetoothDeviceFoundCallbackResult {
-        /** 新搜索到的设备列表 */
-        devices: CallbackResultBlueToothDevice[]
     }
     interface OnCameraFrameCallbackResult {
         /** 图像像素点数据，一维数组，每四项表示一个像素点的 rgba */
@@ -2858,7 +2837,7 @@ innerAudioContext.onError((res) => {
         /** 连接成功的 HTTP 响应 Header
          *
          * 最低基础库： `2.0.0` */
-        header: object
+        header: IAnyObject
     }
     interface OnPageNotFoundCallbackResult {
         /** 是否本次启动的首个页面（例如从分享等入口进来，首个页面是开发者配置的分享页面） */
@@ -2866,7 +2845,7 @@ innerAudioContext.onError((res) => {
         /** 不存在页面的路径 */
         path: string
         /** 打开不存在页面的 query 参数 */
-        query: object
+        query: IAnyObject
     }
     interface OnSocketMessageCallbackResult {
         /** 服务器返回的消息 */
@@ -2876,7 +2855,7 @@ innerAudioContext.onError((res) => {
         /** 连接成功的 HTTP 响应 Header
          *
          * 最低基础库： `2.0.0` */
-        header: object
+        header: IAnyObject
     }
     interface OnStopCallbackResult {
         /** 录音总时长，单位：ms */
@@ -3396,7 +3375,7 @@ innerAudioContext.onError((res) => {
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: RequestCompleteCallback
         /** 请求的参数 */
-        data?: string | object | ArrayBuffer
+        data?: string | IAnyObject | ArrayBuffer
         /** 返回的数据格式
          *
          * 可选值：
@@ -3408,7 +3387,7 @@ innerAudioContext.onError((res) => {
         /** 设置请求的 header，header 中不能设置 Referer。
          *
          * `content-type` 默认为 `application/json` */
-        header?: object
+        header?: IAnyObject
         /** HTTP 请求方法
          *
          * 可选值：
@@ -3464,25 +3443,42 @@ innerAudioContext.onError((res) => {
     }
     interface RequestSuccessCallbackResult {
         /** 开发者服务器返回的数据 */
-        data: string | object | ArrayBuffer
+        data: string | IAnyObject | ArrayBuffer
         /** 开发者服务器返回的 HTTP Response Header
          *
          * 最低基础库： `1.2.0` */
-        header: object
+        header: IAnyObject
         /** 开发者服务器返回的 HTTP 状态码 */
         statusCode: number
         errMsg: string
     }
     interface RequestTaskOnHeadersReceivedCallbackResult {
         /** 开发者服务器返回的 HTTP Response Header */
-        header: object
+        header: IAnyObject
+    }
+    /** uuid 对应的的已连接设备列表 */
+    interface ResultBlueToothDevice {
+        /** 当前蓝牙设备的信号强度 */
+        RSSI: number
+        /** 当前蓝牙设备的广播数据段中的 ManufacturerData 数据段。 */
+        advertisData: ArrayBuffer
+        /** 当前蓝牙设备的广播数据段中的 ServiceUUIDs 数据段 */
+        advertisServiceUUIDs: string[]
+        /** 用于区分设备的 id */
+        deviceId: string
+        /** 当前蓝牙设备的广播数据段中的 LocalName 数据段 */
+        localName: string
+        /** 蓝牙设备名称，某些设备可能没有 */
+        name: string
+        /** 当前蓝牙设备的广播数据段中的 ServiceData 数据段 */
+        serviceData: IAnyObject
     }
     /** 来源信息。从另一个小程序、公众号或 App 进入小程序时返回。否则返回 `{}`。(参见后文注意) */
     interface ResultReferrerInfo {
         /** 来源小程序、公众号或 App 的 appId */
         appId: string
         /** 来源小程序传过来的数据，scene=1037或1038时支持 */
-        extraData: object
+        extraData: IAnyObject
     }
     interface ResumeBGMOption {
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
@@ -3657,7 +3653,7 @@ innerAudioContext.onError((res) => {
     }
     interface ScrollOffsetCallbackResult {
         /** 节点的 dataset */
-        dataset: object
+        dataset: IAnyObject
         /** 节点的 ID */
         id: string
         /** 节点的水平滚动位置 */
@@ -3747,7 +3743,7 @@ innerAudioContext.onError((res) => {
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: SetContentsCompleteCallback
         /** 表示内容的delta对象 */
-        delta?: object
+        delta?: IAnyObject
         /** 接口调用失败的回调函数 */
         fail?: SetContentsFailCallback
         /** 带标签的HTML内容 */
@@ -3879,7 +3875,7 @@ innerAudioContext.onError((res) => {
     }
     interface SetTopBarTextOption {
         /** 置顶栏文字 */
-        text: object
+        text: string
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: SetTopBarTextCompleteCallback
         /** 接口调用失败的回调函数 */
@@ -4270,7 +4266,7 @@ innerAudioContext.onError((res) => {
         /** [Stats](https://developers.weixin.qq.com/miniprogram/dev/api/file/Stats.html)|Object
          *
          * 当 recursive 为 false 时，res.stats 是一个 Stats 对象。当 recursive 为 true 且 path 是一个目录的路径时，res.stats 是一个 Object，key 以 path 为根路径的相对路径，value 是该路径对应的 Stats 对象。 */
-        stats: Stats | object
+        stats: Stats | IAnyObject
         errMsg: string
     }
     /** 描述文件状态的对象 */
@@ -4630,9 +4626,9 @@ innerAudioContext.onError((res) => {
         /** 接口调用失败的回调函数 */
         fail?: UploadFileFailCallback
         /** HTTP 请求中其他额外的 form data */
-        formData?: object
+        formData?: IAnyObject
         /** HTTP 请求 Header，Header 中不能设置 Referer */
-        header?: object
+        header?: IAnyObject
         /** 接口调用成功的回调函数 */
         success?: UploadFileSuccessCallback
     }
@@ -4645,7 +4641,7 @@ innerAudioContext.onError((res) => {
     }
     interface UploadTaskOnHeadersReceivedCallbackResult {
         /** 开发者服务器返回的 HTTP Response Header */
-        header: object
+        header: IAnyObject
     }
     interface UploadTaskOnProgressUpdateCallbackResult {
         /** 上传进度百分比 */
@@ -4731,7 +4727,7 @@ innerAudioContext.onError((res) => {
     }
     interface WorkerOnMessageCallbackResult {
         /** 主线程/Worker 线程向当前线程发送的消息 */
-        message: object
+        message: IAnyObject
     }
     interface WriteBLECharacteristicValueOption {
         /** 蓝牙特征值的 uuid */
@@ -4885,7 +4881,7 @@ innerAudioContext.onError((res) => {
         /** [Array.<Object> Animation.export()](https://developers.weixin.qq.com/miniprogram/dev/api/ui/animation/Animation.export.html)
          *
          * 导出动画队列。**export 方法每次调用后会清掉之前的动画操作。** */
-        export(): object[]
+        export(): IAnyObject[]
         /** [[Animation](https://developers.weixin.qq.com/miniprogram/dev/api/ui/animation/Animation.html) Animation.backgroundColor(string value)](https://developers.weixin.qq.com/miniprogram/dev/api/ui/animation/Animation.backgroundColor.html)
          *
          * 设置背景色 */
@@ -7154,7 +7150,7 @@ this.editorCtx.insertImage({
              *
              * 最低基础库： `2.3.0` */
             recursive?: boolean,
-        ): Stats | object
+        ): Stats | IAnyObject
         /** [number FileSystemManager.saveFileSync(string tempFilePath, string filePath)](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.saveFileSync.html)
          *
          * [FileSystemManager.saveFile](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.saveFile.html) 的同步版本 */
@@ -8180,7 +8176,7 @@ Component({
 * 最低基础库： `1.6.0` */
         in(
             /** 自定义组件实例 */
-            component: any,
+            component: Component.TrivialInstance | Page.TrivialInstance,
         ): SelectorQuery
     }
     interface SocketTask {
@@ -8505,7 +8501,7 @@ worker.postMessage({
 ``` */
         postMessage(
             /** 需要发送的消息，必须是一个可序列化的 JavaScript key-value 形式的对象。 */
-            message: object,
+            message: IAnyObject,
         ): void
         /** [Worker.terminate()](https://developers.weixin.qq.com/miniprogram/dev/api/worker/Worker.terminate.html)
          *
@@ -8664,7 +8660,7 @@ try {
             /** [audio]((audio)) 组件的 id */
             id: string,
             /** 在自定义组件下，当前组件实例的this，以操作组件内 [audio]((audio)) 组件 */
-            component?: any,
+            component?: Component.TrivialInstance | Page.TrivialInstance,
         ): AudioContext
         /** [[BackgroundAudioManager](https://developers.weixin.qq.com/miniprogram/dev/api/media/background-audio/BackgroundAudioManager.html) wx.getBackgroundAudioManager()](https://developers.weixin.qq.com/miniprogram/dev/api/media/background-audio/wx.getBackgroundAudioManager.html)
          *
@@ -8688,7 +8684,7 @@ try {
             /** 要获取上下文的 [canvas]((canvas)) 组件 canvas-id 属性 */
             canvasId: string,
             /** 在自定义组件下，当前组件实例的this，表示在这个自定义组件下查找拥有 canvas-id 的 [canvas]((canvas)) ，如果省略则不在任何自定义组件内查找 */
-            component?: any,
+            component?: Component.TrivialInstance | Page.TrivialInstance,
         ): CanvasContext
         /** [[DownloadTask](https://developers.weixin.qq.com/miniprogram/dev/api/network/download/DownloadTask.html) wx.downloadFile(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/network/download/wx.downloadFile.html)
 *
@@ -8737,7 +8733,7 @@ wx.downloadFile({
          * 最低基础库： `1.9.3` */
         createIntersectionObserver(
             /** 自定义组件实例 */
-            component: object,
+            component: IAnyObject,
             /** 选项 */
             options: CreateIntersectionObserverOption,
         ): IntersectionObserver
@@ -8756,7 +8752,7 @@ wx.downloadFile({
             /** [live-player]((live-player)) 组件的 id */
             id: string,
             /** 在自定义组件下，当前组件实例的this，以操作组件内 [live-player]((live-player)) 组件 */
-            component?: any,
+            component?: Component.TrivialInstance | Page.TrivialInstance,
         ): LivePlayerContext
         /** [[LivePusherContext](https://developers.weixin.qq.com/miniprogram/dev/api/media/live/LivePusherContext.html) wx.createLivePusherContext()](https://developers.weixin.qq.com/miniprogram/dev/api/media/live/wx.createLivePusherContext.html)
          *
@@ -8788,7 +8784,7 @@ logger.warn({str: 'hello world'}, 'warn log', 100, [1, 2, 3])
             /** [map]((map)) 组件的 id */
             mapId: string,
             /** 在自定义组件下，当前组件实例的this，以操作组件内 [map]((map)) 组件 */
-            component?: any,
+            component?: Component.TrivialInstance | Page.TrivialInstance,
         ): MapContext
         /** [[OffscreenCanvas](https://developers.weixin.qq.com/miniprogram/dev/api/canvas/OffscreenCanvas.html) wx.createOffscreenCanvas()](https://developers.weixin.qq.com/miniprogram/dev/api/canvas/wx.createOffscreenCanvas.html)
          *
@@ -8879,8 +8875,7 @@ wx.connectSocket({
   header:{
     'content-type': 'application/json'
   },
-  protocols: ['protocol1'],
-  method:"GET"
+  protocols: ['protocol1']
 })
 ``` */
         connectSocket(option: ConnectSocketOption): SocketTask
@@ -8930,7 +8925,7 @@ wx.chooseImage({
             /** [video]((video)) 组件的 id */
             id: string,
             /** 在自定义组件下，当前组件实例的this，以操作组件内 [video]((video)) 组件 */
-            component: any,
+            component?: Component.TrivialInstance | Page.TrivialInstance,
         ): VideoContext
         /** [[Worker](https://developers.weixin.qq.com/miniprogram/dev/api/worker/wx.createWorker.html) wx.createWorker(string scriptPath)](https://developers.weixin.qq.com/miniprogram/dev/api/worker/wx.createWorker.html)
          *
@@ -9116,7 +9111,7 @@ wx.canvasGetImageData({
         canvasGetImageData(
             option: CanvasGetImageDataOption,
             /** 在自定义组件下，当前组件实例的this，以操作组件内 [canvas]((canvas)) 组件 */
-            component?: any,
+            component?: Component.TrivialInstance | Page.TrivialInstance,
         ): void
         /** [wx.canvasPutImageData(Object object, Object this)](https://developers.weixin.qq.com/miniprogram/dev/api/canvas/wx.canvasPutImageData.html)
          *
@@ -9126,7 +9121,7 @@ wx.canvasGetImageData({
         canvasPutImageData(
             option: CanvasPutImageDataOption,
             /** 在自定义组件下，当前组件实例的this，以操作组件内 [canvas]((canvas)) 组件 */
-            component?: any,
+            component?: Component.TrivialInstance | Page.TrivialInstance,
         ): void
         /** [wx.canvasToTempFilePath(Object object, Object this)](https://developers.weixin.qq.com/miniprogram/dev/api/canvas/wx.canvasToTempFilePath.html)
          *
@@ -9134,7 +9129,7 @@ wx.canvasGetImageData({
         canvasToTempFilePath(
             option: CanvasToTempFilePathOption,
             /** 在自定义组件下，当前组件实例的this，以操作组件内 [canvas]((canvas)) 组件 */
-            component?: any,
+            component?: Component.TrivialInstance | Page.TrivialInstance,
         ): void
         /** [wx.checkIsSoterEnrolledInDevice(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/soter/wx.checkIsSoterEnrolledInDevice.html)
 *
@@ -9411,7 +9406,7 @@ wx.onSocketClose(function(res) {
   console.log('WebSocket 已关闭！')
 })
 ``` */
-        closeSocket(option: CloseSocketOption): void
+        closeSocket(option?: CloseSocketOption): void
         /** [wx.compressImage(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/image/wx.compressImage.html)
 *
 * 压缩图片接口，可选压缩质量
@@ -10209,7 +10204,7 @@ wx.login({
   }
 })
 ``` */
-        login(option: LoginOption): void
+        login(option?: LoginOption): void
         /** [wx.makePhoneCall(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/device/phone/wx.makePhoneCall.html)
 *
 * 拨打电话
@@ -11349,7 +11344,7 @@ wx.reportAnalytics('purchase', {
             /** 事件名 */
             eventName: string,
             /** 上报的自定义数据，key 为配置中的字段名，value 为上报的数据。 */
-            data: object,
+            data: IAnyObject,
         ): void
         /** [wx.reportMonitor(string name, number value)](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/report/wx.reportMonitor.html)
 *
@@ -11584,7 +11579,7 @@ wx.setBackgroundTextStyle({
         setBackgroundTextStyle(option: SetBackgroundTextStyleOption): void
         /** [wx.setClipboardData(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/device/clipboard/wx.setClipboardData.html)
 *
-* 设置系统剪贴板的内容
+* 设置系统剪贴板的内容。调用成功后，会弹出 toast 提示"内容已复制"，持续 1.5s
 *
 * **示例代码**
 *
@@ -12480,6 +12475,7 @@ wx.writeBLECharacteristicValue({
 */
         env: { USER_DATA_PATH: string }
     }
+
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type AccessCompleteCallback = (res: GeneralCallbackResult) => void
     /** 接口调用失败的回调函数 */
@@ -12735,25 +12731,17 @@ wx.writeBLECharacteristicValue({
     /** 接口调用成功的回调函数 */
     type ClearSuccessCallback = (res: GeneralCallbackResult) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
-    type CloseBLEConnectionCompleteCallback = (
-        res: GeneralCallbackResult,
-    ) => void
+    type CloseBLEConnectionCompleteCallback = (res: BluetoothError) => void
     /** 接口调用失败的回调函数 */
     type CloseBLEConnectionFailCallback = (res: BluetoothError) => void
     /** 接口调用成功的回调函数 */
-    type CloseBLEConnectionSuccessCallback = (
-        res: GeneralCallbackResult,
-    ) => void
+    type CloseBLEConnectionSuccessCallback = (res: BluetoothError) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
-    type CloseBluetoothAdapterCompleteCallback = (
-        res: GeneralCallbackResult,
-    ) => void
+    type CloseBluetoothAdapterCompleteCallback = (res: BluetoothError) => void
     /** 接口调用失败的回调函数 */
     type CloseBluetoothAdapterFailCallback = (res: BluetoothError) => void
     /** 接口调用成功的回调函数 */
-    type CloseBluetoothAdapterSuccessCallback = (
-        res: GeneralCallbackResult,
-    ) => void
+    type CloseBluetoothAdapterSuccessCallback = (res: BluetoothError) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type CloseCompleteCallback = (res: GeneralCallbackResult) => void
     /** 接口调用失败的回调函数 */
@@ -12781,11 +12769,11 @@ wx.writeBLECharacteristicValue({
     /** 接口调用成功的回调函数 */
     type ConnectSocketSuccessCallback = (res: GeneralCallbackResult) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
-    type ConnectWifiCompleteCallback = (res: GeneralCallbackResult) => void
+    type ConnectWifiCompleteCallback = (res: WifiError) => void
     /** 接口调用失败的回调函数 */
     type ConnectWifiFailCallback = (res: WifiError) => void
     /** 接口调用成功的回调函数 */
-    type ConnectWifiSuccessCallback = (res: GeneralCallbackResult) => void
+    type ConnectWifiSuccessCallback = (res: WifiError) => void
     /** 回调函数，在执行 `SelectorQuery.exec` 方法后，返回节点信息。 */
     type ContextCallback = (result: ContextCallbackResult) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
@@ -12795,15 +12783,11 @@ wx.writeBLECharacteristicValue({
     /** 接口调用成功的回调函数 */
     type CopyFileSuccessCallback = (res: GeneralCallbackResult) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
-    type CreateBLEConnectionCompleteCallback = (
-        res: GeneralCallbackResult,
-    ) => void
+    type CreateBLEConnectionCompleteCallback = (res: BluetoothError) => void
     /** 接口调用失败的回调函数 */
     type CreateBLEConnectionFailCallback = (res: BluetoothError) => void
     /** 接口调用成功的回调函数 */
-    type CreateBLEConnectionSuccessCallback = (
-        res: GeneralCallbackResult,
-    ) => void
+    type CreateBLEConnectionSuccessCallback = (res: BluetoothError) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type DownloadFileCompleteCallback = (res: GeneralCallbackResult) => void
     /** 接口调用失败的回调函数 */
@@ -12896,7 +12880,7 @@ wx.writeBLECharacteristicValue({
     ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type GetBLEDeviceCharacteristicsCompleteCallback = (
-        res: GeneralCallbackResult,
+        res: BluetoothError,
     ) => void
     /** 接口调用失败的回调函数 */
     type GetBLEDeviceCharacteristicsFailCallback = (res: BluetoothError) => void
@@ -12905,9 +12889,7 @@ wx.writeBLECharacteristicValue({
         result: GetBLEDeviceCharacteristicsSuccessCallbackResult,
     ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
-    type GetBLEDeviceServicesCompleteCallback = (
-        res: GeneralCallbackResult,
-    ) => void
+    type GetBLEDeviceServicesCompleteCallback = (res: BluetoothError) => void
     /** 接口调用失败的回调函数 */
     type GetBLEDeviceServicesFailCallback = (res: BluetoothError) => void
     /** 接口调用成功的回调函数 */
@@ -12935,7 +12917,7 @@ wx.writeBLECharacteristicValue({
         result: GetBatteryInfoSuccessCallbackResult,
     ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
-    type GetBeaconsCompleteCallback = (res: GeneralCallbackResult) => void
+    type GetBeaconsCompleteCallback = (res: IBeaconError) => void
     /** 接口调用失败的回调函数 */
     type GetBeaconsFailCallback = (res: IBeaconError) => void
     /** 接口调用成功的回调函数 */
@@ -12944,7 +12926,7 @@ wx.writeBLECharacteristicValue({
     ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type GetBluetoothAdapterStateCompleteCallback = (
-        res: GeneralCallbackResult,
+        res: BluetoothError,
     ) => void
     /** 接口调用失败的回调函数 */
     type GetBluetoothAdapterStateFailCallback = (res: BluetoothError) => void
@@ -12953,9 +12935,7 @@ wx.writeBLECharacteristicValue({
         result: GetBluetoothAdapterStateSuccessCallbackResult,
     ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
-    type GetBluetoothDevicesCompleteCallback = (
-        res: GeneralCallbackResult,
-    ) => void
+    type GetBluetoothDevicesCompleteCallback = (res: BluetoothError) => void
     /** 接口调用失败的回调函数 */
     type GetBluetoothDevicesFailCallback = (res: BluetoothError) => void
     /** 接口调用成功的回调函数 */
@@ -12982,7 +12962,7 @@ wx.writeBLECharacteristicValue({
     ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type GetConnectedBluetoothDevicesCompleteCallback = (
-        res: GeneralCallbackResult,
+        res: BluetoothError,
     ) => void
     /** 接口调用失败的回调函数 */
     type GetConnectedBluetoothDevicesFailCallback = (
@@ -12993,7 +12973,7 @@ wx.writeBLECharacteristicValue({
         result: GetConnectedBluetoothDevicesSuccessCallbackResult,
     ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
-    type GetConnectedWifiCompleteCallback = (res: GeneralCallbackResult) => void
+    type GetConnectedWifiCompleteCallback = (res: WifiError) => void
     /** 接口调用失败的回调函数 */
     type GetConnectedWifiFailCallback = (res: WifiError) => void
     /** 接口调用成功的回调函数 */
@@ -13015,11 +12995,11 @@ wx.writeBLECharacteristicValue({
         result: GetExtConfigSuccessCallbackResult,
     ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
-    type GetHCEStateCompleteCallback = (res: GeneralCallbackResult) => void
+    type GetHCEStateCompleteCallback = (res: NFCError) => void
     /** 接口调用失败的回调函数 */
     type GetHCEStateFailCallback = (res: NFCError) => void
     /** 接口调用成功的回调函数 */
-    type GetHCEStateSuccessCallback = (res: GeneralCallbackResult) => void
+    type GetHCEStateSuccessCallback = (res: NFCError) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type GetImageInfoCompleteCallback = (res: GeneralCallbackResult) => void
     /** 接口调用失败的回调函数 */
@@ -13149,11 +13129,11 @@ wx.writeBLECharacteristicValue({
         result: GetWeRunDataSuccessCallbackResult,
     ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
-    type GetWifiListCompleteCallback = (res: GeneralCallbackResult) => void
+    type GetWifiListCompleteCallback = (res: WifiError) => void
     /** 接口调用失败的回调函数 */
     type GetWifiListFailCallback = (res: WifiError) => void
     /** 接口调用成功的回调函数 */
-    type GetWifiListSuccessCallback = (res: GeneralCallbackResult) => void
+    type GetWifiListSuccessCallback = (res: WifiError) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type HideLoadingCompleteCallback = (res: GeneralCallbackResult) => void
     /** 接口调用失败的回调函数 */
@@ -13460,7 +13440,7 @@ wx.writeBLECharacteristicValue({
     type NodeCallback = (result: NodeCallbackResult) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type NotifyBLECharacteristicValueChangeCompleteCallback = (
-        res: GeneralCallbackResult,
+        res: BluetoothError,
     ) => void
     /** 接口调用失败的回调函数 */
     type NotifyBLECharacteristicValueChangeFailCallback = (
@@ -13468,7 +13448,7 @@ wx.writeBLECharacteristicValue({
     ) => void
     /** 接口调用成功的回调函数 */
     type NotifyBLECharacteristicValueChangeSuccessCallback = (
-        res: GeneralCallbackResult,
+        res: BluetoothError,
     ) => void
     /** 监听相交状态变化的回调函数 */
     type ObserveCallback = (result: ObserveCallbackResult) => void
@@ -13563,7 +13543,8 @@ wx.writeBLECharacteristicValue({
     ) => void
     /** 寻找到新设备的事件的回调函数 */
     type OnBluetoothDeviceFoundCallback = (
-        result: OnBluetoothDeviceFoundCallbackResult,
+        /** 新搜索到的设备列表 */
+        devices: CallbackBlueToothDevice[],
     ) => void
     /** 回调函数 */
     type OnCameraFrameCallback = (result: OnCameraFrameCallbackResult) => void
@@ -13660,15 +13641,11 @@ wx.writeBLECharacteristicValue({
     /** 窗口尺寸变化事件的回调函数 */
     type OnWindowResizeCallback = (result: OnWindowResizeCallbackResult) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
-    type OpenBluetoothAdapterCompleteCallback = (
-        res: GeneralCallbackResult,
-    ) => void
+    type OpenBluetoothAdapterCompleteCallback = (res: BluetoothError) => void
     /** 接口调用失败的回调函数 */
     type OpenBluetoothAdapterFailCallback = (res: BluetoothError) => void
     /** 接口调用成功的回调函数 */
-    type OpenBluetoothAdapterSuccessCallback = (
-        res: GeneralCallbackResult,
-    ) => void
+    type OpenBluetoothAdapterSuccessCallback = (res: BluetoothError) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type OpenCardCompleteCallback = (res: GeneralCallbackResult) => void
     /** 接口调用失败的回调函数 */
@@ -13765,13 +13742,13 @@ wx.writeBLECharacteristicValue({
     type ReLaunchSuccessCallback = (res: GeneralCallbackResult) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type ReadBLECharacteristicValueCompleteCallback = (
-        res: GeneralCallbackResult,
+        res: BluetoothError,
     ) => void
     /** 接口调用失败的回调函数 */
     type ReadBLECharacteristicValueFailCallback = (res: BluetoothError) => void
     /** 接口调用成功的回调函数 */
     type ReadBLECharacteristicValueSuccessCallback = (
-        res: GeneralCallbackResult,
+        res: BluetoothError,
     ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type ReadFileCompleteCallback = (res: GeneralCallbackResult) => void
@@ -13938,11 +13915,11 @@ wx.writeBLECharacteristicValue({
     /** 接口调用失败的回调函数 */
     type SendFailCallback = (res: GeneralCallbackResult) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
-    type SendHCEMessageCompleteCallback = (res: GeneralCallbackResult) => void
+    type SendHCEMessageCompleteCallback = (res: NFCError) => void
     /** 接口调用失败的回调函数 */
     type SendHCEMessageFailCallback = (res: NFCError) => void
     /** 接口调用成功的回调函数 */
-    type SendHCEMessageSuccessCallback = (res: GeneralCallbackResult) => void
+    type SendHCEMessageSuccessCallback = (res: NFCError) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type SendSocketMessageCompleteCallback = (
         res: GeneralCallbackResult,
@@ -14080,11 +14057,11 @@ wx.writeBLECharacteristicValue({
     /** 接口调用成功的回调函数 */
     type SetTopBarTextSuccessCallback = (res: GeneralCallbackResult) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
-    type SetWifiListCompleteCallback = (res: GeneralCallbackResult) => void
+    type SetWifiListCompleteCallback = (res: WifiError) => void
     /** 接口调用失败的回调函数 */
     type SetWifiListFailCallback = (res: WifiError) => void
     /** 接口调用成功的回调函数 */
-    type SetWifiListSuccessCallback = (res: GeneralCallbackResult) => void
+    type SetWifiListSuccessCallback = (res: WifiError) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type ShowActionSheetCompleteCallback = (res: GeneralCallbackResult) => void
     /** 接口调用失败的回调函数 */
@@ -14164,18 +14141,14 @@ wx.writeBLECharacteristicValue({
         res: GeneralCallbackResult,
     ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
-    type StartBeaconDiscoveryCompleteCallback = (
-        res: GeneralCallbackResult,
-    ) => void
+    type StartBeaconDiscoveryCompleteCallback = (res: IBeaconError) => void
     /** 接口调用失败的回调函数 */
     type StartBeaconDiscoveryFailCallback = (res: IBeaconError) => void
     /** 接口调用成功的回调函数 */
-    type StartBeaconDiscoverySuccessCallback = (
-        res: GeneralCallbackResult,
-    ) => void
+    type StartBeaconDiscoverySuccessCallback = (res: IBeaconError) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type StartBluetoothDevicesDiscoveryCompleteCallback = (
-        res: GeneralCallbackResult,
+        res: BluetoothError,
     ) => void
     /** 接口调用失败的回调函数 */
     type StartBluetoothDevicesDiscoveryFailCallback = (
@@ -14183,7 +14156,7 @@ wx.writeBLECharacteristicValue({
     ) => void
     /** 接口调用成功的回调函数 */
     type StartBluetoothDevicesDiscoverySuccessCallback = (
-        res: GeneralCallbackResult,
+        res: BluetoothError,
     ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type StartCompassCompleteCallback = (res: GeneralCallbackResult) => void
@@ -14210,11 +14183,11 @@ wx.writeBLECharacteristicValue({
     /** 接口调用成功的回调函数 */
     type StartGyroscopeSuccessCallback = (res: GeneralCallbackResult) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
-    type StartHCECompleteCallback = (res: GeneralCallbackResult) => void
+    type StartHCECompleteCallback = (res: NFCError) => void
     /** 接口调用失败的回调函数 */
     type StartHCEFailCallback = (res: NFCError) => void
     /** 接口调用成功的回调函数 */
-    type StartHCESuccessCallback = (res: GeneralCallbackResult) => void
+    type StartHCESuccessCallback = (res: NFCError) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type StartLocalServiceDiscoveryCompleteCallback = (
         res: GeneralCallbackResult,
@@ -14282,11 +14255,11 @@ wx.writeBLECharacteristicValue({
         result: StartSoterAuthenticationSuccessCallbackResult,
     ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
-    type StartWifiCompleteCallback = (res: GeneralCallbackResult) => void
+    type StartWifiCompleteCallback = (res: WifiError) => void
     /** 接口调用失败的回调函数 */
     type StartWifiFailCallback = (res: WifiError) => void
     /** 接口调用成功的回调函数 */
-    type StartWifiSuccessCallback = (res: GeneralCallbackResult) => void
+    type StartWifiSuccessCallback = (res: WifiError) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type StatCompleteCallback = (res: GeneralCallbackResult) => void
     /** 接口调用失败的回调函数 */
@@ -14318,18 +14291,14 @@ wx.writeBLECharacteristicValue({
         res: GeneralCallbackResult,
     ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
-    type StopBeaconDiscoveryCompleteCallback = (
-        res: GeneralCallbackResult,
-    ) => void
+    type StopBeaconDiscoveryCompleteCallback = (res: IBeaconError) => void
     /** 接口调用失败的回调函数 */
     type StopBeaconDiscoveryFailCallback = (res: IBeaconError) => void
     /** 接口调用成功的回调函数 */
-    type StopBeaconDiscoverySuccessCallback = (
-        res: GeneralCallbackResult,
-    ) => void
+    type StopBeaconDiscoverySuccessCallback = (res: IBeaconError) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type StopBluetoothDevicesDiscoveryCompleteCallback = (
-        res: GeneralCallbackResult,
+        res: BluetoothError,
     ) => void
     /** 接口调用失败的回调函数 */
     type StopBluetoothDevicesDiscoveryFailCallback = (
@@ -14337,7 +14306,7 @@ wx.writeBLECharacteristicValue({
     ) => void
     /** 接口调用成功的回调函数 */
     type StopBluetoothDevicesDiscoverySuccessCallback = (
-        res: GeneralCallbackResult,
+        res: BluetoothError,
     ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type StopCompassCompleteCallback = (res: GeneralCallbackResult) => void
@@ -14364,11 +14333,11 @@ wx.writeBLECharacteristicValue({
     /** 接口调用成功的回调函数 */
     type StopGyroscopeSuccessCallback = (res: GeneralCallbackResult) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
-    type StopHCECompleteCallback = (res: GeneralCallbackResult) => void
+    type StopHCECompleteCallback = (res: NFCError) => void
     /** 接口调用失败的回调函数 */
     type StopHCEFailCallback = (res: NFCError) => void
     /** 接口调用成功的回调函数 */
-    type StopHCESuccessCallback = (res: GeneralCallbackResult) => void
+    type StopHCESuccessCallback = (res: NFCError) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type StopLocalServiceDiscoveryCompleteCallback = (
         res: GeneralCallbackResult,
@@ -14414,11 +14383,11 @@ wx.writeBLECharacteristicValue({
     /** 接口调用成功的回调函数 */
     type StopVoiceSuccessCallback = (res: GeneralCallbackResult) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
-    type StopWifiCompleteCallback = (res: GeneralCallbackResult) => void
+    type StopWifiCompleteCallback = (res: WifiError) => void
     /** 接口调用失败的回调函数 */
     type StopWifiFailCallback = (res: WifiError) => void
     /** 接口调用成功的回调函数 */
-    type StopWifiSuccessCallback = (res: GeneralCallbackResult) => void
+    type StopWifiSuccessCallback = (res: WifiError) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type SwitchCameraCompleteCallback = (res: GeneralCallbackResult) => void
     /** 接口调用失败的回调函数 */
@@ -14531,13 +14500,13 @@ wx.writeBLECharacteristicValue({
     ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type WriteBLECharacteristicValueCompleteCallback = (
-        res: GeneralCallbackResult,
+        res: BluetoothError,
     ) => void
     /** 接口调用失败的回调函数 */
     type WriteBLECharacteristicValueFailCallback = (res: BluetoothError) => void
     /** 接口调用成功的回调函数 */
     type WriteBLECharacteristicValueSuccessCallback = (
-        res: GeneralCallbackResult,
+        res: BluetoothError,
     ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type WriteFileCompleteCallback = (res: GeneralCallbackResult) => void
@@ -14594,7 +14563,9 @@ wx.writeBLECharacteristicValue({
     /** 接口调用成功的回调函数 */
     type WxStopRecordSuccessCallback = (res: GeneralCallbackResult) => void
 }
+declare const console: WechatMiniprogram.Console
 declare const wx: WechatMiniprogram.Wx
+
 /** [clearInterval(number intervalID)](https://developers.weixin.qq.com/miniprogram/dev/api/base/timer/clearInterval.html)
  *
  * 取消由 setInterval 设置的定时器。 */

@@ -1,11 +1,11 @@
 {
   "name": "miniprogram-api-typings",
-  "version": "2.8.0-1",
+  "version": "2.8.0-2",
   "description": "Type definitions for APIs of Wechat Mini Program in TypeScript",
   "main": "./index.d.ts",
   "types": "./index.d.ts",
   "scripts": {
-    "test": "dtslint . --localTs ./node_modules/typescript/lib",
+    "test": "mkdir -p ~/.dts && dtslint . --localTs ./node_modules/typescript/lib",
     "dtslint": "npm test"
   },
   "repository": {

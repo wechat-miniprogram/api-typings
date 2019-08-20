@@ -104,3 +104,24 @@ Component({
     },
   },
 })
+
+Component({
+  properties: {
+    n: Number,
+    s: String,
+    a: Array,
+    b: Boolean,
+    o: Object
+  },
+  methods: {
+    f() {
+      this.data.n // $ExpectType number
+      this.data.s // $ExpectType string
+      this.data.a // $ExpectType any[]
+      this.data.b // $ExpectType boolean
+      this.data.o // $ExpectType Record<string, any>
+      this.data.a[0] // $ExpectType any
+      this.data.o.prop // $ExpectType any
+    }
+  }
+})

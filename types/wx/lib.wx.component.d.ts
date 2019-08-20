@@ -75,7 +75,7 @@ declare namespace WechatMiniprogram {
                     ? boolean
                     : T extends ArrayConstructor
                         ? any[]
-                        : T extends ObjectConstructor ? object : any
+                        : T extends ObjectConstructor ? IAnyObject : any
         interface FullProperty<T extends PropertyType> {
             /** 属性类型 */
             type: T
