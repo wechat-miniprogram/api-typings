@@ -2,8 +2,9 @@
 
 > [中文版本](./README.md)
 
-[![](https://img.shields.io/npm/v/miniprogram-api-typings.svg?style=flat)](https://www.npmjs.com/package/miniprogram-api-typings)
-[![](https://img.shields.io/github/license/wechat-miniprogram/api-typings.svg)](https://github.com/wechat-miniprogram/api-typings)
+[![Published on NPM](https://img.shields.io/npm/v/miniprogram-api-typings.svg?style=flat)](https://www.npmjs.com/package/miniprogram-api-typings)
+[![MIT License](https://img.shields.io/github/license/wechat-miniprogram/api-typings.svg)](https://github.com/wechat-miniprogram/api-typings)
+[![Travis CI Test Status](https://travis-ci.org/wechat-miniprogram/api-typings.svg?branch=master)](https://travis-ci.org/wechat-miniprogram/api-typings)
 
 Type definitions for APIs of Wechat Mini Program in TypeScript
 

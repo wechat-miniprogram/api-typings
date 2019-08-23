@@ -3,9 +3,10 @@
 - 将 `object` 改为 `Record<string, any>`，以允许任意属性和方法
 - 自定义组件属性构造器为 `ObjectConstructor` 时，类型推导为 `Record<string, any>` 而不是 `object`
 - 修正 `component` 参数的类型为页面或自定义组件实例
+- 补齐 `console: WechatMiniprogram.Console` 全局变量
 - 修正一些其他的接口类型错误
 
-## 2019-08-14 v2.8.0-2
+## 2019-08-14 v2.8.0-1
 
 - 补齐 `styleIsolation` 到 `ComponentOption`
 

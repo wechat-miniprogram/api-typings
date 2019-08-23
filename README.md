@@ -2,8 +2,9 @@
 
 > [English version](./README-en.md)
 
-[![](https://img.shields.io/npm/v/miniprogram-api-typings.svg?style=flat)](https://www.npmjs.com/package/miniprogram-api-typings)
-[![](https://img.shields.io/github/license/wechat-miniprogram/api-typings.svg)](https://github.com/wechat-miniprogram/miniprogram-api-typings)
+[![已在 NPM 发布](https://img.shields.io/npm/v/miniprogram-api-typings.svg?style=flat)](https://www.npmjs.com/package/miniprogram-api-typings)
+[![MIT 协议](https://img.shields.io/github/license/wechat-miniprogram/api-typings.svg)](https://github.com/wechat-miniprogram/api-typings)
+[![Travis CI 测试状况](https://travis-ci.org/wechat-miniprogram/api-typings.svg?branch=master)](https://travis-ci.org/wechat-miniprogram/api-typings)
 
 微信小程序 API 的 TypeScript 类型定义文件
 
