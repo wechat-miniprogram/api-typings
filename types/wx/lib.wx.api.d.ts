@@ -45,18 +45,7 @@ declare namespace WechatMiniprogram {
     }
     /** 需要添加的卡券列表 */
     interface AddCardRequestInfo {
-        /** 卡券的扩展参数。需将 CardExt 对象 JSON 序列化为**字符串**传入
-         * __CardExt 对象__
-         *
-         * | 属性                 | 类型   | 默认值 | 必填 | 说明                                                                                                                                                                                               |
-         * | -------------------- | ------ | ------ | ---- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-         * | code                 | string |        | 否   | 用户领取的 code，仅自定义 code 模式的卡券须填写，非自定义 code 模式卡券不可填写，[详情](https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1451025056)                                         |
-         * | openid               | string |        | 否   | 指定领取者的 openid，只有该用户能领取。 bind_openid 字段为 true 的卡券必须填写，bind_openid 字段为 false 不可填写。                                                                                |
-         * | timestamp            | number |        | 是   | 时间戳，东八区时间,UTC+8，单位为秒                                                                                                                                                                 |
-         * | nonce_str            | string |        | 否   | 随机字符串，由开发者设置传入，加强安全性（若不填写可能被重放请求）。随机字符串，不长于 32 位。推荐使用大小写字母和数字，不同添加请求的 nonce_str 须动态生成，若重复将会导致领取失败。              |
-         * | fixed_begintimestamp | number |        | 否   | 卡券在第三方系统的实际领取时间，为东八区时间戳（UTC+8,精确到秒）。当卡券的有效期类为 DATE_TYPE_FIX_TERM 时专用，标识卡券的实际生效时间，用于解决商户系统内起始时间和领取微信卡券时间不同步的问题。 |
-         * | outer_str            | string |        | 否   | 领取渠道参数，用于标识本次领取的渠道值。                                                                                                                                                           |
-         * | signature            | string |        | 是   | 签名，商户将接口列表中的参数按照指定方式进行签名,签名方式使用 SHA1，具体签名方案参见：[卡券签名](https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1499332673_Unm7V)                          | */
+        /** 卡券的扩展参数。需将 CardExt 对象 JSON 序列化为**字符串**传入 */
         cardExt: string
         /** 卡券 ID */
         cardId: string
@@ -583,7 +572,7 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
          *
          * 可选值：
          * - 'fingerPrint': 指纹识别;
-         * - 'facial': 人脸识别（暂未支持）;
+         * - 'facial': 人脸识别;
          * - 'speech': 声纹识别（暂未支持）; */
         supportMode: Array<'fingerPrint' | 'facial' | 'speech'>
         errMsg: string
@@ -2127,6 +2116,14 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         fail?: GetWifiListFailCallback
         /** 接口调用成功的回调函数 */
         success?: GetWifiListSuccessCallback
+    }
+    interface HideKeyboardOption {
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: HideKeyboardCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: HideKeyboardFailCallback
+        /** 接口调用成功的回调函数 */
+        success?: HideKeyboardSuccessCallback
     }
     interface HideLoadingOption {
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
@@ -4915,6 +4912,10 @@ innerAudioContext.onError((res) => {
         /** 接口调用成功的回调函数 */
         success?: WxStopRecordSuccessCallback
     }
+    interface envObj {
+        /** 文件系统中的用户目录路径 */
+        USER_DATA_PATH: string
+    }
     interface Animation {
         /** [Array.<Object> Animation.export()](https://developers.weixin.qq.com/miniprogram/dev/api/ui/animation/Animation.export.html)
          *
@@ -5701,8 +5702,14 @@ ctx.draw()
         createPattern(
             /** 重复的图像源，仅支持包内路径和临时路径 */
             image: string,
-            /** 如何重复图像 */
-            repetition: string,
+            /** 如何重复图像
+             *
+             * 参数 repetition 可选值：
+             * - 'repeat': 水平竖直方向都重复;
+             * - 'repeat-x': 水平方向重复;
+             * - 'repeat-y': 竖直方向重复;
+             * - 'no-repeat': 不重复; */
+            repetition: 'repeat' | 'repeat-x' | 'repeat-y' | 'no-repeat',
         ): void
         /** [CanvasContext.draw(boolean reserve, function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/canvas/CanvasContext.draw.html)
 *
@@ -6299,8 +6306,13 @@ ctx.draw()
 ```
 * ![](@program/dev/image/canvas/line-cap.png) */
         setLineCap(
-            /** 线条的结束端点样式 */
-            lineCap: string,
+            /** 线条的结束端点样式
+             *
+             * 参数 lineCap 可选值：
+             * - 'butt': 向线条的每个末端添加平直的边缘。;
+             * - 'round': 向线条的每个末端添加圆形线帽。;
+             * - 'square': 向线条的每个末端添加正方形线帽。; */
+            lineCap: 'butt' | 'round' | 'square',
         ): void
         /** [CanvasContext.setLineDash(Array.<number> pattern, number offset)](https://developers.weixin.qq.com/miniprogram/dev/api/canvas/CanvasContext.setLineDash.html)
 *
@@ -6373,8 +6385,13 @@ ctx.draw()
 ```
 * ![](@program/dev/image/canvas/line-join.png) */
         setLineJoin(
-            /** 线条的结束交点样式 */
-            lineJoin: string,
+            /** 线条的结束交点样式
+             *
+             * 参数 lineJoin 可选值：
+             * - 'bevel': 斜角;
+             * - 'round': 圆角;
+             * - 'miter': 尖角; */
+            lineJoin: 'bevel' | 'round' | 'miter',
         ): void
         /** [CanvasContext.setLineWidth(number lineWidth)](https://developers.weixin.qq.com/miniprogram/dev/api/canvas/CanvasContext.setLineWidth.html)
 *
@@ -6544,8 +6561,13 @@ ctx.draw()
 *
 * 最低基础库： `1.1.0` */
         setTextAlign(
-            /** 文字的对齐方式 */
-            align: string,
+            /** 文字的对齐方式
+             *
+             * 参数 align 可选值：
+             * - 'left': 左对齐;
+             * - 'center': 居中对齐;
+             * - 'right': 右对齐; */
+            align: 'left' | 'center' | 'right',
         ): void
         /** [CanvasContext.setTextBaseline(string textBaseline)](https://developers.weixin.qq.com/miniprogram/dev/api/canvas/CanvasContext.setTextBaseline.html)
 *
@@ -6582,8 +6604,14 @@ ctx.draw()
 *
 * 最低基础库： `1.4.0` */
         setTextBaseline(
-            /** 文字的竖直对齐方式 */
-            textBaseline: string,
+            /** 文字的竖直对齐方式
+             *
+             * 参数 textBaseline 可选值：
+             * - 'top': 顶部对齐;
+             * - 'bottom': 底部对齐;
+             * - 'middle': 居中对齐;
+             * - 'normal': ; */
+            textBaseline: 'top' | 'bottom' | 'middle' | 'normal',
         ): void
         /** [CanvasContext.setTransform(number scaleX, number scaleY, number skewX, number skewY, number translateX, number translateY)](https://developers.weixin.qq.com/miniprogram/dev/api/canvas/CanvasContext.setTransform.html)
          *
@@ -7026,6 +7054,52 @@ this.editorCtx.insertImage({
          * 撤销 */
         undo(option?: UndoOption): void
     }
+    interface EventChannel {
+        /** [EventChannel.emit(string eventName, any args)](https://developers.weixin.qq.com/miniprogram/dev/api/route/EventChannel.emit.html)
+         *
+         * 触发一个事件
+         *
+         * 最低基础库： `2.7.3` */
+        emit(
+            /** 事件名称 */
+            eventName: string,
+            /** 事件参数 */
+            ...args: any
+        ): void
+        /** [EventChannel.off(string eventName, function fn)](https://developers.weixin.qq.com/miniprogram/dev/api/route/EventChannel.off.html)
+         *
+         * 取消监听一个事件。给出第二个参数时，只取消给出的监听函数，否则取消所有监听函数
+         *
+         * 最低基础库： `2.7.3` */
+        off(
+            /** 事件名称 */
+            eventName: string,
+            /** 事件监听函数 */
+            fn: EventCallback,
+        ): void
+        /** [EventChannel.on(string eventName, function fn)](https://developers.weixin.qq.com/miniprogram/dev/api/route/EventChannel.on.html)
+         *
+         * 持续监听一个事件
+         *
+         * 最低基础库： `2.7.3` */
+        on(
+            /** 事件名称 */
+            eventName: string,
+            /** 事件监听函数 */
+            fn: EventCallback,
+        ): void
+        /** [EventChannel.once(string eventName, function fn)](https://developers.weixin.qq.com/miniprogram/dev/api/route/EventChannel.once.html)
+         *
+         * 监听一个事件一次，触发后失效
+         *
+         * 最低基础库： `2.7.3` */
+        once(
+            /** 事件名称 */
+            eventName: string,
+            /** 事件监听函数 */
+            fn: EventCallback,
+        ): void
+    }
     interface FileSystemManager {
         /** [Array.<string> FileSystemManager.readdirSync(string dirPath)](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.readdirSync.html)
          *
@@ -7061,8 +7135,32 @@ this.editorCtx.insertImage({
             filePath: string,
             /** 要追加的文本或二进制数据 */
             data: string | ArrayBuffer,
-            /** 指定写入文件的字符编码 */
-            encoding?: string,
+            /** 指定写入文件的字符编码
+             *
+             * 参数 encoding 可选值：
+             * - 'ascii': ;
+             * - 'base64': ;
+             * - 'binary': ;
+             * - 'hex': ;
+             * - 'ucs2': 以小端序读取;
+             * - 'ucs-2': 以小端序读取;
+             * - 'utf16le': 以小端序读取;
+             * - 'utf-16le': 以小端序读取;
+             * - 'utf-8': ;
+             * - 'utf8': ;
+             * - 'latin1': ; */
+            encoding?:
+                | 'ascii'
+                | 'base64'
+                | 'binary'
+                | 'hex'
+                | 'ucs2'
+                | 'ucs-2'
+                | 'utf16le'
+                | 'utf-16le'
+                | 'utf-8'
+                | 'utf8'
+                | 'latin1',
         ): void
         /** [FileSystemManager.copyFile(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.copyFile.html)
          *
@@ -7175,8 +7273,32 @@ this.editorCtx.insertImage({
             filePath: string,
             /** 要写入的文本或二进制数据 */
             data: string | ArrayBuffer,
-            /** 指定写入文件的字符编码 */
-            encoding?: string,
+            /** 指定写入文件的字符编码
+             *
+             * 参数 encoding 可选值：
+             * - 'ascii': ;
+             * - 'base64': ;
+             * - 'binary': ;
+             * - 'hex': ;
+             * - 'ucs2': 以小端序读取;
+             * - 'ucs-2': 以小端序读取;
+             * - 'utf16le': 以小端序读取;
+             * - 'utf-16le': 以小端序读取;
+             * - 'utf-8': ;
+             * - 'utf8': ;
+             * - 'latin1': ; */
+            encoding?:
+                | 'ascii'
+                | 'base64'
+                | 'binary'
+                | 'hex'
+                | 'ucs2'
+                | 'ucs-2'
+                | 'utf16le'
+                | 'utf-16le'
+                | 'utf-8'
+                | 'utf8'
+                | 'latin1',
         ): void
         /** [[Stats](https://developers.weixin.qq.com/miniprogram/dev/api/file/Stats.html)|Object FileSystemManager.statSync(string path, boolean recursive)](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.statSync.html)
          *
@@ -7204,8 +7326,32 @@ this.editorCtx.insertImage({
         readFileSync(
             /** 要读取的文件的路径 */
             filePath: string,
-            /** 指定读取文件的字符编码，如果不传 encoding，则以 ArrayBuffer 格式读取文件的二进制内容 */
-            encoding?: string,
+            /** 指定读取文件的字符编码，如果不传 encoding，则以 ArrayBuffer 格式读取文件的二进制内容
+             *
+             * 参数 encoding 可选值：
+             * - 'ascii': ;
+             * - 'base64': ;
+             * - 'binary': ;
+             * - 'hex': ;
+             * - 'ucs2': 以小端序读取;
+             * - 'ucs-2': 以小端序读取;
+             * - 'utf16le': 以小端序读取;
+             * - 'utf-16le': 以小端序读取;
+             * - 'utf-8': ;
+             * - 'utf8': ;
+             * - 'latin1': ; */
+            encoding?:
+                | 'ascii'
+                | 'base64'
+                | 'binary'
+                | 'hex'
+                | 'ucs2'
+                | 'ucs-2'
+                | 'utf16le'
+                | 'utf-16le'
+                | 'utf-8'
+                | 'utf8'
+                | 'latin1',
         ): string | ArrayBuffer
     }
     interface GeneralCallbackResult {
@@ -10233,6 +10379,23 @@ wx.getWeRunData({
          *
          * 最低基础库： `1.6.0` */
         getWifiList(option?: GetWifiListOption): void
+        /** [wx.hideKeyboard(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/ui/keyboard/wx.hideKeyboard.html)
+*
+* 在input、textarea等focus拉起键盘之后，手动调用此接口收起键盘
+*
+* **示例代码**
+*
+*
+* ```js
+wx.hideKeyboard({
+  complete: res => {
+    console.log('hideKeyboard res', res)
+  }
+})
+```
+*
+* 最低基础库： `2.8.2` */
+        hideKeyboard(option?: HideKeyboardOption): void
         /** [wx.hideLoading(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/ui/interaction/wx.hideLoading.html)
          *
          * 隐藏 loading 提示框
@@ -12303,7 +12466,7 @@ wx.startHCE({
          *
          *
          * - 安卓微信7.0.6版本，iOS 7.0.5版本起支持该接口
-         * - 需在app.json中配置requireBackgroundModes: ['location']后使用
+         * - 需在app.json中配置requiredBackgroundModes: ['location']后使用
          * - 获取位置信息需配置[地理位置用途说明]((configuration/app#permission))。
          *
          * 最低基础库： `2.8.0` */
@@ -12690,7 +12853,7 @@ wx.writeBLECharacteristicValue({
         cloud: WxCloud /**
 文件系统中的用户目录路径
 */
-        env: { USER_DATA_PATH: string }
+        env: envObj
     }
 
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
@@ -13028,6 +13191,11 @@ wx.writeBLECharacteristicValue({
     /** 下载进度变化事件的回调函数 */
     type DownloadTaskOnProgressUpdateCallback = (
         result: DownloadTaskOnProgressUpdateCallbackResult,
+    ) => void
+    /** 事件监听函数 */
+    type EventCallback = (
+        /** 触发事件参数 */
+        ...args: any
     ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type ExitFullScreenCompleteCallback = (res: GeneralCallbackResult) => void
@@ -13380,6 +13548,12 @@ wx.writeBLECharacteristicValue({
     type GetWifiListFailCallback = (res: WifiError) => void
     /** 接口调用成功的回调函数 */
     type GetWifiListSuccessCallback = (res: WifiError) => void
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type HideKeyboardCompleteCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用失败的回调函数 */
+    type HideKeyboardFailCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用成功的回调函数 */
+    type HideKeyboardSuccessCallback = (res: GeneralCallbackResult) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type HideLoadingCompleteCallback = (res: GeneralCallbackResult) => void
     /** 接口调用失败的回调函数 */

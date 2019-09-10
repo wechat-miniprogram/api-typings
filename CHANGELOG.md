@@ -1,3 +1,7 @@
+## 2019-09-10 v2.8.2
+- 同步 API 定义到基础库 2.8.2
+- 加强了参数为可选值的方法参数类型定义和注释（如 `FileSystemManager.appendFileSync` 的 `encoding`）
+
 ## 2019-08-30 v2.8.1
 - 同步 API 定义到基础库 2.8.1
 - 修复了部分最低基础库显示为 `[object Object]` 的问题
