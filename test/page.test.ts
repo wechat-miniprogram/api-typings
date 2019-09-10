@@ -5,9 +5,9 @@ getCurrentPages()[0].data
 
 const app = getApp() as WechatMiniprogram.App.Instance<{
   globalData: {
-    userInfo: WechatMiniprogram.UserInfo,
-  },
-  userInfoReadyCallback(userInfo: WechatMiniprogram.UserInfo): void,
+    userInfo: WechatMiniprogram.UserInfo;
+  };
+  userInfoReadyCallback(userInfo: WechatMiniprogram.UserInfo): void;
 }>
 
 Page({
@@ -29,7 +29,7 @@ Page({
         hasUserInfo: true,
       })
     } else if (this.data.canIUse) {
-      app.userInfoReadyCallback = (res) => {
+      app.userInfoReadyCallback = res => {
         this.setData({
           userInfo: res,
           hasUserInfo: true,
@@ -61,20 +61,20 @@ Page({
 Page({
   data: {
     text: 'init data',
-    array: [{msg: '1'}, {msg: '2'}],
+    array: [{ msg: '1' }, { msg: '2' }],
     logs: [] as string[],
   },
   onLoad(options) {
     options.from // $ExpectType string | undefined
     const app = getApp() as WechatMiniprogram.App.Instance<{
-      globalData: { userInfo: WechatMiniprogram.UserInfo },
+      globalData: { userInfo: WechatMiniprogram.UserInfo };
     }>
     app.globalData.userInfo.nickName // $ExpectType string
   },
   onReady() {
     this.setData({
       logs: (wx.getStorageSync('logs') || []).map((log: number) => {
-        return (new Date(log)).toString()
+        return new Date(log).toString()
       }),
     })
   },
@@ -91,28 +91,31 @@ Page({
       path: '/page/user?id=123',
     }
   },
-  onPageScroll() {
-  },
-  onResize() {
-  },
+  onPageScroll() {},
+  onResize() {},
   onTabItemTap(item) {
     item.index // $ExpectType string
     item.pagePath // $ExpectType string
     item.text // $ExpectType string
   },
   viewTap() {
-    this.setData({
-      text: 'Set some data for updating view.',
-      'array[0].text': 'changed data',
-      'object.text': 'changed data',
-      'newField.text': 'new data',
-    }, function() {
-    })
+    this.setData(
+      {
+        text: 'Set some data for updating view.',
+        'array[0].text': 'changed data',
+        'object.text': 'changed data',
+        'newField.text': 'new data',
+      },
+      function() {},
+    )
     this.route // $ExpectType string
     this.data.text // $ExpectType string
     this.viewTap()
 
-    const p = getCurrentPages()[1] as WechatMiniprogram.Page.Instance<{ a: number }, { customData: { b: number } }>
+    const p = getCurrentPages()[1] as WechatMiniprogram.Page.Instance<
+      { a: number },
+      { customData: { b: number } }
+    >
     p.customData.b = p.data.a
   },
   customData: {
@@ -149,7 +152,7 @@ Page({
 Page({
   f() {
     this.data // $ExpectType Record<string, any>
-  }
+  },
 })
 
 Page({
@@ -163,7 +166,9 @@ Page({
 })
 
 Page({
-  onLoad(q) { q },
+  onLoad(q) {
+    q
+  },
   f() {
     this.onLoad()
   },
@@ -182,11 +187,11 @@ Page<DataType, CustomOption>({
   },
   getLogs() {
     return (wx.getStorageSync('logs') || []).map((log: number) => {
-      return (new Date(log)).toString()
+      return new Date(log).toString()
     })
   },
   onLoad() {
-    const logs = this.getLogs()  // $ExpectType string[]
+    const logs = this.getLogs() // $ExpectType string[]
     this.setData({ logs })
     this.logs // $ExpectError
     this.data.logs // $ExpectType string[]

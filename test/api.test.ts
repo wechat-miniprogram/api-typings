@@ -28,31 +28,29 @@ wx.navigateTo({
 
 getCurrentPages().map(p => p.options)
 
-{
-  // $ExpectType SelectorQuery
-  const query = wx.createSelectorQuery()
-  query.select('#a').boundingClientRect(res => {
-    res.bottom // $ExpectType number
-  })
-  query.selectViewport().scrollOffset(res => {
-    res.scrollTop // $ExpectType number
-  })
-  query.exec(res => {
-    res // $ExpectType any
-  })
-}
+// $ExpectType SelectorQuery
+const query = wx.createSelectorQuery()
+query.select('#a').boundingClientRect(res => {
+  res.bottom // $ExpectType number
+})
+query.selectViewport().scrollOffset(res => {
+  res.scrollTop // $ExpectType number
+})
+query.exec(res => {
+  res // $ExpectType any
+})
 
 Page({
   f() {
     wx.createSelectorQuery().in(this)
-  }
+  },
 })
 Component({
   methods: {
     f() {
       wx.createSelectorQuery().in(this)
-    }
-  }
+    },
+  },
 })
 
 console.group('test')
@@ -62,3 +60,5 @@ console.info('console', 'info')
 console.warn('console', 'warn')
 console.error('console', 'error')
 console.groupEnd()
+
+wx.env.USER_DATA_PATH // $ExpectType string

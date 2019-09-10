@@ -12,15 +12,14 @@ declare namespace WechatMiniprogram {
       D extends DataOption,
       P extends PropertyOption,
       M extends MethodOption,
-      C extends ComputedOption,
+      C extends ComputedOption
     > = Instance<D, P, M> & { data: ComputedOptionToData<C> }
     type ComputedOptions<
       D extends DataOption,
       P extends PropertyOption,
       M extends MethodOption,
-      C extends ComputedOption,
-    > =
-      Partial<Computed<C>> &
+      C extends ComputedOption
+    > = Partial<Computed<C>> &
       ThisType<ComputedInstance<D, P, M, C>> &
       Options<D, P, M>
     interface ComputedConstructor {
@@ -28,7 +27,7 @@ declare namespace WechatMiniprogram {
         D extends DataOption,
         P extends PropertyOption,
         M extends MethodOption,
-        C extends ComputedOption,
+        C extends ComputedOption
       >(
         options: ComputedOptions<D, P, M, C>,
       ): string
@@ -37,7 +36,12 @@ declare namespace WechatMiniprogram {
 }
 type ComputedComponent = WechatMiniprogram.Component.ComputedConstructor
 type IAnyObject = WechatMiniprogram.IAnyObject
-type ComputedOptions = WechatMiniprogram.Component.ComputedOptions<IAnyObject, IAnyObject, IAnyObject, IAnyObject>
+type ComputedOptions = WechatMiniprogram.Component.ComputedOptions<
+  IAnyObject,
+  IAnyObject,
+  IAnyObject,
+  IAnyObject
+>
 
 (Component as ComputedComponent)({
   properties: {
@@ -45,13 +49,13 @@ type ComputedOptions = WechatMiniprogram.Component.ComputedOptions<IAnyObject, I
   },
   data: {
     b: {
-      c: 'test'
+      c: 'test',
     },
   },
   computed: {
     d() {
       return 'test'
-    }
+    },
   },
   methods: {
     f() {
@@ -74,11 +78,13 @@ Behavior({
 
     const calcComputed = (scope: typeof defFields, insertToData?: boolean) => {
       const needUpdate: Record<string, any> = {}
-      const data = defFields.data = defFields.data || {}
+      const data = (defFields.data = defFields.data || {})
 
       for (const key of computedKeys) {
         const value = computed[key].call(scope)
-        if (computedCache[key] !== value) needUpdate[key] = computedCache[key] = value
+        if (computedCache[key] !== value) {
+          needUpdate[key] = computedCache[key] = value
+        }
         if (insertToData) data[key] = needUpdate[key]
       }
 
@@ -86,7 +92,10 @@ Behavior({
     }
 
     defFields.methods = defFields.methods || {}
-    defFields.methods._setData = function(data: Record<string, any>, callback?: () => void) {
+    defFields.methods._setData = function(
+      data: Record<string, any>,
+      callback?: () => void,
+    ) {
       const originalSetData = this._originalSetData
       originalSetData.call(this, data, callback)
       const needUpdate = calcComputed(this)

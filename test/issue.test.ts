@@ -35,7 +35,7 @@ wx.cloud.deleteFile({
   fileList: ['a7xzcb'],
   success: res => {
     res.fileList // $ExpectType DeleteFileResultItem[]
-  }
+  },
 })
 
 // https://github.com/wechat-miniprogram/api-typings/issues/33
@@ -44,7 +44,8 @@ wx.addCard({
     {
       cardId: '',
       cardExt: '{"code": "", "openid": "", "timestamp": "", "signature":""}',
-    }, {
+    },
+    {
       cardId: '',
       cardExt: '{"code": "", "openid": "", "timestamp": "", "signature":""}',
     },
@@ -132,7 +133,7 @@ wx.request({
   success(res) {
     const data: WechatMiniprogram.IAnyObject = { res }
     data.customData // $ExpectType any
-  }
+  },
 })
 interface IResponse {
   customData: string
@@ -142,5 +143,5 @@ wx.request({
   success(res) {
     const data = res.data as IResponse
     data.customData // $ExpectType string
-  }
+  },
 })

@@ -43,7 +43,7 @@ Component({
 
   data: {
     text: 'init data',
-    array: [{msg: '1'}, {msg: '2'}],
+    array: [{ msg: '1' }, { msg: '2' }],
     logs: [] as string[],
   },
 
@@ -56,16 +56,15 @@ Component({
   },
 
   lifetimes: {
-    attached() { },
-    moved() { },
-    detached() { },
+    attached() {},
+    moved() {},
+    detached() {},
     error(err) {
       err // $ExpectType Error
     },
   },
 
-  created() {
-  },
+  created() {},
 
   pageLifetimes: {
     show() {
@@ -78,11 +77,15 @@ Component({
     onMyButtonTap() {
       this.data.text // $ExpectType string
       this.data.min.toFixed() // $ExpectType string
-      this.triggerEvent('tap', { a: 1 }, {
-        bubbles: true,
-        composed: true,
-        capturePhase: true,
-      })
+      this.triggerEvent(
+        'tap',
+        { a: 1 },
+        {
+          bubbles: true,
+          composed: true,
+          capturePhase: true,
+        },
+      )
     },
     _myPrivateMethod() {
       this.setData({
@@ -105,23 +108,140 @@ Component({
   },
 })
 
+interface Config {
+  a: number
+}
+
+interface ConfigConstructor extends ObjectConstructor {
+  new (value?: any): Config
+  readonly prototype: Config
+}
+
+Component({
+  properties: {
+    config: {
+      type: Object as ConfigConstructor,
+    },
+  },
+  methods: {
+    doc() {
+      this.data.config // $ExpectType Record<string, any>
+    },
+  },
+  options: {
+    addGlobalClass: true,
+  },
+})
+
 Component({
   properties: {
     n: Number,
+    n2: {
+      type: Number,
+      value: 1,
+    },
     s: String,
     a: Array,
+    a2: {
+      type: Array,
+      value: [1, 2],
+    },
     b: Boolean,
-    o: Object
+    o: Object,
   },
   methods: {
     f() {
       this.data.n // $ExpectType number
+      this.data.n2 // $ExpectType number
       this.data.s // $ExpectType string
       this.data.a // $ExpectType any[]
+      this.data.a2 // $ExpectType any[]
       this.data.b // $ExpectType boolean
       this.data.o // $ExpectType Record<string, any>
       this.data.a[0] // $ExpectType any
       this.data.o.prop // $ExpectType any
-    }
-  }
+    },
+  },
+})
+
+Component({
+  properties: {
+    n: Number,
+    n2: {
+      type: Number,
+      value: 1,
+    },
+    s: String,
+    a: Array,
+    a2: {
+      type: Array,
+      value: [1, 2],
+    },
+    b: Boolean,
+    o: Object,
+    o2: {
+      type: Object,
+      value: {} as WechatMiniprogram.UserInfo,
+    },
+  },
+  methods: {
+    f() {
+      this.data.n // $ExpectType number
+      this.data.n2 // $ExpectType number
+      this.data.s // $ExpectType string
+      this.data.a // $ExpectType any[]
+      this.data.a2 // $ExpectType any[]
+      this.data.b // $ExpectType boolean
+      this.data.o // $ExpectType Record<string, any>
+      this.data.o2 // $ExpectType Record<string, any>
+      this.data.o2.city // $ExpectType any
+      this.data.a[0] // $ExpectType any
+      this.data.o.prop // $ExpectType any
+    },
+  },
+})
+
+Component({
+  properties: {
+    n: {
+      type: Number,
+      value: 1,
+    },
+    a: {
+      type: Array,
+      value: [1, 2],
+    },
+  },
+  methods: {
+    f() {
+      this.data.n // $ExpectType number
+      this.data.a // $ExpectType any[]
+    },
+  },
+})
+
+Component({
+  properties: {
+    n: Number,
+    a: Array,
+  },
+  methods: {
+    f() {
+      this.data.n // $ExpectType number
+      this.data.a // $ExpectType any[]
+    },
+  },
+})
+
+Component({
+  data: {
+    a: 1,
+  },
+  methods: {
+    someMethod() {
+      this.setData({
+        a: '', // $ExpectError
+      })
+    },
+  },
 })

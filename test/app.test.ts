@@ -5,7 +5,7 @@ App({
     userInfo: {} as WechatMiniprogram.UserInfo,
   },
   userInfoReadyCallback(userInfo: WechatMiniprogram.UserInfo) {
-    userInfo.gender // $ExpectType 0 | 1 | 2
+    userInfo.gender
   },
   onLaunch() {
     const logs: number[] = wx.getStorageSync('logs') || []
@@ -13,7 +13,7 @@ App({
     wx.setStorageSync('logs', logs)
 
     wx.getSetting({
-      success: (res) => {
+      success: res => {
         if (res.authSetting['scope.userInfo']) {
           wx.getUserInfo({
             success: res => {

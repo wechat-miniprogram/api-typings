@@ -23,7 +23,7 @@ Behavior({
   },
   data: {
     text: 'init data',
-    array: [{msg: '1'}, {msg: '2'}],
+    array: [{ msg: '1' }, { msg: '2' }],
     logs: [] as string[],
   },
   attached() {},
