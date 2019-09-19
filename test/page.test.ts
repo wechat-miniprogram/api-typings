@@ -3,12 +3,12 @@ Page({}) // $ExpectType void
 // $ExpectType Record<string, any>
 getCurrentPages()[0].data
 
-const app = getApp() as WechatMiniprogram.App.Instance<{
+const app = getApp<{
   globalData: {
     userInfo: WechatMiniprogram.UserInfo;
   };
   userInfoReadyCallback(userInfo: WechatMiniprogram.UserInfo): void;
-}>
+}>()
 
 Page({
   data: {
@@ -66,9 +66,9 @@ Page({
   },
   onLoad(options) {
     options.from // $ExpectType string | undefined
-    const app = getApp() as WechatMiniprogram.App.Instance<{
+    const app = getApp<{
       globalData: { userInfo: WechatMiniprogram.UserInfo };
-    }>
+    }>()
     app.globalData.userInfo.nickName // $ExpectType string
   },
   onReady() {

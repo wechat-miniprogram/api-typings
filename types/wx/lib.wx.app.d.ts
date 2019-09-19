@@ -240,7 +240,7 @@ declare namespace WechatMiniprogram {
         }
 
         interface GetApp {
-            (opts?: GetAppOption): TrivialInstance
+            <T = IAnyObject>(opts?: GetAppOption): Instance<T>
         }
     }
 }

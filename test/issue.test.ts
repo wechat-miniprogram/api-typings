@@ -145,3 +145,22 @@ wx.request({
     data.customData // $ExpectType string
   },
 })
+
+// https://github.com/wechat-miniprogram/api-typings/issues/73
+{
+  const task = wx.connectSocket({ url: '' })
+  task.onClose(res => {
+    res.code // $ExpectType number
+    res.reason // $ExpectType string
+  })
+}
+
+// https://github.com/wechat-miniprogram/api-typings/issues/75
+{
+  wx.onBluetoothDeviceFound(res => {
+    res.devices.forEach(device => {
+      device.name // $ExpectType string
+      device.deviceId // $ExpectType string
+    })
+  })
+}

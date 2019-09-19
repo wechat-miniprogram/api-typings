@@ -1,3 +1,9 @@
+## 2019-09-19 v2.8.3
+- 同步 API 定义到基础库 2.8.3
+- `getApp` 支持范型（#77）
+- 修正一些接口错误（#73, #75, #79）
+- 补齐 `require`, `exports`, `module.exports` 定义，以支持在没有 `@types/node` 下编译
+
 ## 2019-09-10 v2.8.2
 - 同步 API 定义到基础库 2.8.2
 - 加强了参数为可选值的方法参数类型定义和注释（如 `FileSystemManager.appendFileSync` 的 `encoding`）
