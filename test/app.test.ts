@@ -41,3 +41,5 @@ App({
 
 // $ExpectType Instance<Record<string, any>>
 getApp()
+
+App.Page = () => {}

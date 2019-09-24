@@ -1,6 +1,7 @@
 # npm
 node_modules
 package-lock.json
+yarn.lock
 
 # OS X
 .DS_Store*

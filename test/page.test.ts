@@ -197,3 +197,5 @@ Page<DataType, CustomOption>({
     this.data.logs // $ExpectType string[]
   },
 })
+
+Page.a = () => {}

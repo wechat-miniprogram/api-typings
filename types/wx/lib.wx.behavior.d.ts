@@ -27,7 +27,7 @@ declare namespace WechatMiniprogram {
             Partial<OtherOption> &
             Partial<Lifetimes> &
             ThisType<Instance<TData, TProperty, TMethod>>
-        interface Constructor {
+        interface Constructor extends IAnyObject {
             <
                 TData extends DataOption,
                 TProperty extends PropertyOption,

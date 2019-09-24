@@ -37,3 +37,5 @@ Behavior({
     },
   },
 })
+
+Behavior.a = () => {}

@@ -227,7 +227,7 @@ declare namespace WechatMiniprogram {
             ThisType<Instance<T>>
         type TrivialInstance = Instance<IAnyObject>
 
-        interface Constructor {
+        interface Constructor extends IAnyObject {
             <T extends IAnyObject>(options: Options<T>): void
         }
 

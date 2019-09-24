@@ -245,3 +245,5 @@ Component({
     },
   },
 })
+
+Component.a = () => {}
