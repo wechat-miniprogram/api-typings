@@ -2,7 +2,7 @@
 
 基础库版本|npm 版本|命令
 -|-|-
-[v2.8.3](https://developers.weixin.qq.com/miniprogram/dev/framework/release/#v2-8-3-2019-09-17) | [2.8.3](https://www.npmjs.com/package/miniprogram-api-typings/v/2.8.3) | `npm install miniprogram-api-typings@2.8.3`
+[v2.8.3](https://developers.weixin.qq.com/miniprogram/dev/framework/release/#v2-8-3-2019-09-17) | [2.8.3-1](https://www.npmjs.com/package/miniprogram-api-typings/v/2.8.3-1) | `npm install miniprogram-api-typings@2.8.3-1`
 [v2.8.2](https://developers.weixin.qq.com/miniprogram/dev/framework/release/#v2-8-2-2019-08-30) | [2.8.2](https://www.npmjs.com/package/miniprogram-api-typings/v/2.8.2) | `npm install miniprogram-api-typings@2.8.2`
 [v2.8.1](https://developers.weixin.qq.com/miniprogram/dev/framework/release/#v2-8-1-2019-08-22) | [2.8.1](https://www.npmjs.com/package/miniprogram-api-typings/v/2.8.1) | `npm install miniprogram-api-typings@2.8.1`
 [v2.8.0](https://developers.weixin.qq.com/miniprogram/dev/framework/release/#v2-8-0-2019-07-30) | [2.8.0-2](https://www.npmjs.com/package/miniprogram-api-typings/v/2.8.0-2) | `npm install miniprogram-api-typings@2.8.0-2`

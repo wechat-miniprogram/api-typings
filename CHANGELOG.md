@@ -1,3 +1,7 @@
+## 2019-10-10 v2.8.3-1
+- 修复注释文档中不可用的链接
+- 组件实例类型支持 `Partial` 的自定义方法（[用例](https://github.com/wechat-miniprogram/api-typings/blob/master/test/issue.test.ts#L170-L185)）
+
 ## 2019-09-19 v2.8.3
 - 同步 API 定义到基础库 2.8.3
 - `getApp` 支持范型（#77）

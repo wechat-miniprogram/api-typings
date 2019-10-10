@@ -13,7 +13,7 @@ declare namespace WechatMiniprogram {
         type Instance<
             TData extends DataOption,
             TProperty extends PropertyOption,
-            TMethod extends MethodOption
+            TMethod extends Partial<MethodOption>
         > = InstanceProperties &
             InstanceMethods<TData> &
             TMethod & {
