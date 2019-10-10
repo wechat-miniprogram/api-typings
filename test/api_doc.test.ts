@@ -1,3 +1,5 @@
+import {expectType} from 'tsd'
+
 // Test case from `Animation`
 {
   Page({
@@ -110,9 +112,9 @@
 {
   const context = wx.createCameraContext()
   const listener = context.onCameraFrame(frame => {
-    frame.data // $ExpectType ArrayBuffer
-    frame.width // $ExpectType number
-    frame.height // $ExpectType number
+    expectType<ArrayBuffer>(frame.data)
+    expectType<number>(frame.width)
+    expectType<number>(frame.height)
   })
   listener.start()
 }
@@ -149,12 +151,12 @@
   })
 
   downloadTask.onProgressUpdate(res => {
-    // $ExpectType number
-    res.progress // 下载进度
-    // $ExpectType number
-    res.totalBytesWritten // 已经下载的数据长度
-    // $ExpectType number
-    res.totalBytesExpectedToWrite // 预期需要下载的数据总长度
+     // 下载进度
+    expectType<number>(res.progress)
+     // 已经下载的数据长度
+    expectType<number>(res.totalBytesWritten)
+     // 预期需要下载的数据总长度
+    expectType<number>(res.totalBytesExpectedToWrite)
   })
 
   downloadTask.abort() // 取消下载任务
@@ -170,7 +172,7 @@
     console.log('开始播放')
   })
   innerAudioContext.onError(res => {
-    res.errMsg // $ExpectType string
+    expectType<string>(res.errMsg)
     res.errCode
   })
 }
@@ -290,11 +292,11 @@
   recorderManager.onStop(res => {
     console.log('recorder stop', res)
     const { tempFilePath } = res
-    tempFilePath // $ExpectType string
+    expectType<string>(tempFilePath)
   })
   recorderManager.onFrameRecorded(res => {
     const { frameBuffer } = res
-    frameBuffer.byteLength // $ExpectType number
+    expectType<number>(frameBuffer.byteLength)
     console.log('frameBuffer.byteLength', frameBuffer.byteLength)
   })
 
@@ -349,7 +351,7 @@
 
   updateManager.onCheckForUpdate(function(res) {
     // 请求完新版本信息的回调
-    res.hasUpdate // $ExpectType boolean
+    expectType<boolean>(res.hasUpdate)
   })
 
   updateManager.onUpdateReady(function() {
@@ -380,17 +382,17 @@
       user: 'test',
     },
     success(res) {
-      res.data // $ExpectType string
+      expectType<string>(res.data)
     },
   })
 
   uploadTask.onProgressUpdate(res => {
-    // $ExpectType number
-    res.progress // 上传进度
-    // $ExpectType number
-    res.totalBytesSent // 已经上传的数据长度
-    // $ExpectType number
-    res.totalBytesExpectedToSend // 预期需要上传的数据总长度
+    // 上传进度
+    expectType<number>(res.progress)
+    // 已经上传的数据长度
+    expectType<number>(res.totalBytesSent)
+    // 预期需要上传的数据总长度
+    expectType<number>(res.totalBytesExpectedToSend)
   })
 
   uploadTask.abort() // 取消上传任务
@@ -439,7 +441,7 @@
   const worker = wx.createWorker('workers/request/index.js') // 文件名指定 worker 的入口文件路径，绝对路径
 
   worker.onMessage(function(res) {
-    res.message // $ExpectType Record<string, any>
+    expectType<Record<string, any>>(res.message)
   })
 
   worker.postMessage({
@@ -464,8 +466,8 @@
     ],
     success(res) {
       res.cardList.forEach(card => {
-        card.cardExt // $ExpectType string
-        card.cardId // $ExpectType string
+        expectType<string>(card.cardExt)
+        expectType<string>(card.cardId)
       }) // 卡券添加结果
     },
   })
@@ -522,10 +524,10 @@
     width: 100,
     height: 100,
     success(res) {
-      res.width // $ExpectType number
-      res.height // $ExpectType number
-      res.data // $ExpectType Uint8ClampedArray
-      res.data.length // $ExpectType number
+      expectType<number>(res.width)
+      expectType<number>(res.height)
+      expectType<Uint8ClampedArray>(res.data)
+      expectType<number>(res.data.length)
     },
   })
 }
@@ -535,7 +537,7 @@
   wx.checkIsSoterEnrolledInDevice({
     checkAuthMode: 'fingerPrint',
     success(res) {
-      res.isEnrolled // $ExpectType boolean
+      expectType<boolean>(res.isEnrolled)
     },
   })
 }
@@ -568,14 +570,14 @@
 {
   wx.chooseAddress({
     success(res) {
-      res.userName // $ExpectType string
-      res.postalCode // $ExpectType string
-      res.provinceName // $ExpectType string
-      res.cityName // $ExpectType string
-      res.countyName // $ExpectType string
-      res.detailInfo // $ExpectType string
-      res.nationalCode // $ExpectType string
-      res.telNumber // $ExpectType string
+      expectType<string>(res.userName)
+      expectType<string>(res.postalCode)
+      expectType<string>(res.provinceName)
+      expectType<string>(res.cityName)
+      expectType<string>(res.countyName)
+      expectType<string>(res.detailInfo)
+      expectType<string>(res.nationalCode)
+      expectType<string>(res.telNumber)
     },
   })
 }
@@ -594,7 +596,7 @@
     maxDuration: 60,
     camera: 'back',
     success(res) {
-      res.tempFilePath // $ExpectType string
+      expectType<string>(res.tempFilePath)
     },
   })
 }
@@ -642,8 +644,8 @@
   })
 
   wx.onSocketClose(function(res) {
-    res.code // $ExpectType number
-    res.reason // $ExpectType string
+    expectType<number>(res.code)
+    expectType<string>(res.reason)
     console.log('WebSocket 已关闭！')
   })
 }
@@ -673,7 +675,7 @@
     SSID: '',
     password: '',
     success(res) {
-      res.errMsg // $ExpectType string
+      expectType<string>(res.errMsg)
     },
   })
 }
@@ -718,12 +720,12 @@
 // Test case from `wx.getAccountInfoSync`
 {
   const accountInfo = wx.getAccountInfoSync()
-  // $ExpectType string
-  accountInfo.miniProgram.appId // 小程序 appId
-  // $ExpectType string
-  accountInfo.plugin.appId // 插件 appId
-  // $ExpectType string
-  accountInfo.plugin.version // 插件版本号， 'a.b.c' 这样的形式
+  // 小程序 appId
+  expectType<string>(accountInfo.miniProgram.appId)
+  // 插件 appId
+  expectType<string>(accountInfo.plugin.appId)
+  // 插件版本号， 'a.b.c' 这样的形式
+  expectType<string>(accountInfo.plugin.version)
 }
 
 // Test case from `wx.getBLEDeviceCharacteristics`
@@ -735,11 +737,11 @@
     serviceId: '',
     success(res) {
       res.characteristics.forEach(characteristic => {
-        characteristic.properties.indicate // $ExpectType boolean
-        characteristic.properties.notify // $ExpectType boolean
-        characteristic.properties.read // $ExpectType boolean
-        characteristic.properties.write // $ExpectType boolean
-        characteristic.uuid // $ExpectType string
+        expectType<boolean>(characteristic.properties.indicate)
+        expectType<boolean>(characteristic.properties.notify)
+        expectType<boolean>(characteristic.properties.read)
+        expectType<boolean>(characteristic.properties.write)
+        expectType<string>(characteristic.uuid)
       })
     },
   })
@@ -752,8 +754,8 @@
     deviceId: '',
     success(res) {
       res.services.forEach(service => {
-        service.uuid // $ExpectType string
-        service.isPrimary // $ExpectType boolean
+        expectType<string>(service.uuid)
+        expectType<boolean>(service.isPrimary)
       })
     },
   })
@@ -763,13 +765,12 @@
 {
   wx.getBackgroundAudioPlayerState({
     success(res) {
-      // FIXME: wait for dtslint #191 and expect this
-      res.status /* $ExpectType 0 | 1 | 2 */
+      expectType<0 | 1 | 2>(res.status)
 
-      res.dataUrl // $ExpectType string
-      res.currentPosition // $ExpectType number
-      res.duration // $ExpectType number
-      res.downloadPercent // $ExpectType number
+      expectType<string>(res.dataUrl)
+      expectType<number>(res.currentPosition)
+      expectType<number>(res.duration)
+      expectType<number>(res.downloadPercent)
     },
   })
 }
@@ -788,7 +789,7 @@
   wx.getBluetoothDevices({
     success(res) {
       res.devices.forEach(device => {
-        device.advertisData // $ExpectType ArrayBuffer
+        expectType<ArrayBuffer>(device.advertisData)
       })
     },
   })
@@ -798,7 +799,7 @@
 {
   wx.getClipboardData({
     success(res) {
-      res.data // $ExpectType string
+      expectType<string>(res.data)
     },
   })
 }
@@ -809,8 +810,8 @@
     services: [''],
     success(res) {
       res.devices.forEach(device => {
-        device.deviceId // $ExpectType string
-        device.name // $ExpectType string
+        expectType<string>(device.deviceId)
+        expectType<string>(device.name)
       })
     },
   })
@@ -821,8 +822,8 @@
   wx.getFileInfo({
     filePath: '',
     success(res) {
-      res.size // $ExpectType number
-      res.digest // $ExpectType string
+      expectType<number>(res.size)
+      expectType<string>(res.digest)
     },
   })
 }
@@ -831,7 +832,7 @@
 {
   wx.getHCEState({
     success(res) {
-      res.errMsg // $ExpectType string
+      expectType<string>(res.errMsg)
     },
   })
 }
@@ -841,8 +842,8 @@
   wx.getImageInfo({
     src: 'images/a.jpg',
     success(res) {
-      res.width // $ExpectType number
-      res.height // $ExpectType number
+      expectType<number>(res.width)
+      expectType<number>(res.height)
     },
   })
 
@@ -851,8 +852,8 @@
       wx.getImageInfo({
         src: res.tempFilePaths[0],
         success(res) {
-          res.width // $ExpectType number
-          res.height // $ExpectType number
+          expectType<number>(res.width)
+          expectType<number>(res.height)
         },
       })
     },
@@ -907,8 +908,8 @@
 {
   wx.getSelectedTextRange({
     success(res) {
-      res.start // $ExpectType number
-      res.end // $ExpectType number
+      expectType<number>(res.start)
+      expectType<number>(res.end)
     },
   })
 }
@@ -929,9 +930,9 @@
 {
   wx.getStorageInfo({
     success(res) {
-      res.keys // $ExpectType string[]
-      res.currentSize // $ExpectType number
-      res.limitSize // $ExpectType number
+      expectType<string[]>(res.keys)
+      expectType<number>(res.currentSize)
+      expectType<number>(res.limitSize)
     },
   })
 }
@@ -940,9 +941,9 @@
 {
   wx.getStorageInfo({
     success(res) {
-      res.keys // $ExpectType string[]
-      res.currentSize // $ExpectType number
-      res.limitSize // $ExpectType number
+      expectType<string[]>(res.keys)
+      expectType<number>(res.currentSize)
+      expectType<number>(res.limitSize)
     },
   })
 }
@@ -952,7 +953,7 @@
   wx.getStorage({
     key: 'key',
     success(res) {
-      res.data // $ExpectType any
+      expectType<any>(res.data)
     },
   })
 }
@@ -962,7 +963,7 @@
   wx.getStorage({
     key: 'key',
     success(res) {
-      res.data // $ExpectType any
+      expectType<any>(res.data)
     },
   })
 }
@@ -971,13 +972,13 @@
 {
   wx.getSystemInfo({
     success(res) {
-      res.model // $ExpectType string
-      res.pixelRatio // $ExpectType number
-      res.windowWidth // $ExpectType number
-      res.windowHeight // $ExpectType number
-      res.language // $ExpectType string
-      res.version // $ExpectType string
-      res.platform // $ExpectType string
+      expectType<string>(res.model)
+      expectType<number>(res.pixelRatio)
+      expectType<number>(res.windowWidth)
+      expectType<number>(res.windowHeight)
+      expectType<string>(res.language)
+      expectType<string>(res.version)
+      expectType<string>(res.platform)
     },
   })
 }
@@ -986,13 +987,13 @@
 {
   wx.getSystemInfo({
     success(res) {
-      res.model // $ExpectType string
-      res.pixelRatio // $ExpectType number
-      res.windowWidth // $ExpectType number
-      res.windowHeight // $ExpectType number
-      res.language // $ExpectType string
-      res.version // $ExpectType string
-      res.platform // $ExpectType string
+      expectType<string>(res.model)
+      expectType<number>(res.pixelRatio)
+      expectType<number>(res.windowWidth)
+      expectType<number>(res.windowHeight)
+      expectType<string>(res.language)
+      expectType<string>(res.version)
+      expectType<string>(res.platform)
     },
   })
 }
@@ -1003,12 +1004,12 @@
   wx.getUserInfo({
     success(res) {
       const userInfo = res.userInfo
-      userInfo.nickName // $ExpectType string
-      userInfo.avatarUrl // $ExpectType string
-      userInfo.gender // 性别 0：未知、1：男、2：女
-      userInfo.province // $ExpectType string
-      userInfo.city // $ExpectType string
-      userInfo.country // $ExpectType string
+      expectType<string>(userInfo.nickName)
+      expectType<string>(userInfo.avatarUrl)
+      expectType<0 | 1 | 2>(userInfo.gender) // 性别 0：未知、1：男、2：女
+      expectType<string>(userInfo.province)
+      expectType<string>(userInfo.city)
+      expectType<string>(userInfo.country)
     },
   })
 }
@@ -1018,9 +1019,9 @@
   wx.getWeRunData({
     success(res) {
       // 拿 encryptedData 到开发者后台解密开放数据
-      res.encryptedData // $ExpectType string
+      expectType<string>(res.encryptedData)
       // 或拿 cloudID 通过云调用直接获取开放数据
-      res.cloudID // $ExpectType string
+      expectType<string>(res.cloudID)
     },
   })
 }
@@ -1157,21 +1158,21 @@
 // Test case from `wx.onAccelerometerChange`
 {
   wx.onAccelerometerChange(function(res) {
-    res.x // $ExpectType number
-    res.y // $ExpectType number
-    res.z // $ExpectType number
+    expectType<number>(res.x)
+    expectType<number>(res.y)
+    expectType<number>(res.z)
   })
 }
 
 // Test case from `wx.onBLECharacteristicValueChange`
 {
   wx.onBLECharacteristicValueChange(function(res) {
-    res.characteristicId // $ExpectType string
-    res.value // $ExpectType ArrayBuffer
+    expectType<string>(res.characteristicId)
+    expectType<ArrayBuffer>(res.value)
     console.log(
       `characteristic ${res.characteristicId} has changed, now is ${res.value}`,
     )
-    res.value // $ExpectType ArrayBuffer
+    expectType<ArrayBuffer>(res.value)
   })
 }
 
@@ -1198,13 +1199,13 @@
     const { devices } = res
     console.log('new device list has founded')
     devices.forEach(device => {
-      device.RSSI // $ExpectType number
-      device.advertisData // $ExpectType ArrayBuffer
-      device.advertisServiceUUIDs // $ExpectType string[]
-      device.deviceId // $ExpectType string
-      device.localName // $ExpectType string
-      device.name // $ExpectType string
-      device.serviceData // $ExpectType Record<string, any>
+      expectType<number>(device.RSSI)
+      expectType<ArrayBuffer>(device.advertisData)
+      expectType<string[]>(device.advertisServiceUUIDs)
+      expectType<string>(device.deviceId)
+      expectType<string>(device.localName)
+      expectType<string>(device.name)
+      expectType<Record<string, any>>(device.serviceData)
     })
   })
 }
@@ -1212,7 +1213,7 @@
 // Test case from `wx.onKeyboardHeightChange`
 {
   wx.onKeyboardHeightChange(res => {
-    res.height // $ExpectType number
+    expectType<number>(res.height)
   })
 }
 
@@ -1228,7 +1229,7 @@
 // Test case from `wx.onNetworkStatusChange`
 {
   wx.onNetworkStatusChange(function(res) {
-    res.isConnected // $ExpectType boolean
+    expectType<boolean>(res.isConnected)
     res.networkType
   })
 }
@@ -1270,7 +1271,7 @@
 {
   wx.openSetting({
     success(res) {
-      res.authSetting // $ExpectType AuthSetting
+      expectType<WechatMiniprogram.AuthSetting>(res.authSetting)
       res.authSetting = {
         'scope.userInfo': true,
         'scope.userLocation': true,
@@ -1984,9 +1985,9 @@
 {
   try {
     const res = wx.getStorageInfoSync()
-    res.keys // $ExpectType string[]
-    res.currentSize // $ExpectType number
-    res.limitSize // $ExpectType number
+    expectType<string[]>(res.keys)
+    expectType<number>(res.currentSize)
+    expectType<number>(res.limitSize)
   } catch (e) {
     // Do something when catch error
   }
@@ -1996,9 +1997,9 @@
 {
   try {
     const res = wx.getStorageInfoSync()
-    res.keys // $ExpectType string[]
-    res.currentSize // $ExpectType number
-    res.limitSize // $ExpectType number
+    expectType<string[]>(res.keys)
+    expectType<number>(res.currentSize)
+    expectType<number>(res.limitSize)
   } catch (e) {
     // Do something when catch error
   }
@@ -2032,13 +2033,13 @@
 {
   try {
     const res = wx.getSystemInfoSync()
-    res.model // $ExpectType string
-    res.pixelRatio // $ExpectType number
-    res.windowWidth // $ExpectType number
-    res.windowHeight // $ExpectType number
-    res.language // $ExpectType string
-    res.version // $ExpectType string
-    res.platform // $ExpectType string
+    expectType<string>(res.model)
+    expectType<number>(res.pixelRatio)
+    expectType<number>(res.windowWidth)
+    expectType<number>(res.windowHeight)
+    expectType<string>(res.language)
+    expectType<string>(res.version)
+    expectType<string>(res.platform)
   } catch (e) {
     // Do something when catch error
   }
@@ -2048,13 +2049,13 @@
 {
   try {
     const res = wx.getSystemInfoSync()
-    res.model // $ExpectType string
-    res.pixelRatio // $ExpectType number
-    res.windowWidth // $ExpectType number
-    res.windowHeight // $ExpectType number
-    res.language // $ExpectType string
-    res.version // $ExpectType string
-    res.platform // $ExpectType string
+    expectType<string>(res.model)
+    expectType<number>(res.pixelRatio)
+    expectType<number>(res.windowWidth)
+    expectType<number>(res.windowHeight)
+    expectType<string>(res.language)
+    expectType<string>(res.version)
+    expectType<string>(res.platform)
   } catch (e) {
     // Do something when catch error
   }
@@ -2848,10 +2849,10 @@
     success(res) {
       // tempFilePath可以作为img标签的src属性显示图片
       res.tempFiles.forEach(tempFile => {
-        tempFile.name // $ExpectType string
-        tempFile.path // $ExpectType string
-        tempFile.size // $ExpectType number
-        tempFile.time // $ExpectType number
+        expectType<string>(tempFile.name)
+        expectType<string>(tempFile.path)
+        expectType<number>(tempFile.size)
+        expectType<number>(tempFile.time)
       })
     },
   })
@@ -2865,7 +2866,7 @@
     sourceType: ['album', 'camera'],
     success(res) {
       // tempFilePath可以作为img标签的src属性显示图片
-      res.tempFilePaths // $ExpectType string[]
+      expectType<string[]>(res.tempFilePaths)
     },
   })
 }
@@ -2942,8 +2943,8 @@
     getCenterLocation() {
       this.mapCtx.getCenterLocation({
         success(res) {
-          res.longitude // $ExpectType number
-          res.latitude // $ExpectType number
+          expectType<number>(res.longitude)
+          expectType<number>(res.latitude)
         },
       })
     },

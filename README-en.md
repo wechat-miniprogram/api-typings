@@ -39,7 +39,7 @@ Both PR and issue are welcomed for definitions of pages (`Page`), custom compone
 
 ### Automated tests
 
-We use [`dtslint`](https://github.com/Microsoft/dtslint) to check if this definition is working properly. All test cases are under folder `test`.
+We use [`tsd`](https://github.com/SamVerschueren/tsd) to check if this definition is working properly. All test cases are under folder `test`.
 
 To perform an automated test, clone this repo, `npm install --save-dev` and `npm test`.
 

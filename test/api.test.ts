@@ -1,14 +1,16 @@
+import {expectType} from 'tsd'
+
 wx.request({
   url: 'https://www.baidu.com',
   success(res) {
-    res.errMsg // $ExpectType string
-    res // $ExpectType RequestSuccessCallbackResult
+    expectType<string>(res.errMsg)
+    expectType<WechatMiniprogram.RequestSuccessCallbackResult>(res)
   },
 })
 wx.startBluetoothDevicesDiscovery({
   services: ['FEE7'],
   fail(res) {
-    res.errCode // $ExpectType number
+    expectType<number>(res.errCode)
   },
 })
 wx.authorize({
@@ -19,8 +21,8 @@ wx.navigateTo({
 })
 
 {
-  // $ExpectType CanvasContext
   const ctx = wx.createCanvasContext('myCanvas')
+  expectType<WechatMiniprogram.CanvasContext>(ctx)
   ctx.setFillStyle('red')
   ctx.fillRect(10, 10, 150, 75)
   ctx.draw()
@@ -28,16 +30,16 @@ wx.navigateTo({
 
 getCurrentPages().map(p => p.options)
 
-// $ExpectType SelectorQuery
 const query = wx.createSelectorQuery()
+expectType<WechatMiniprogram.SelectorQuery>(query)
 query.select('#a').boundingClientRect(res => {
-  res.bottom // $ExpectType number
+  expectType<number>(res.bottom)
 })
 query.selectViewport().scrollOffset(res => {
-  res.scrollTop // $ExpectType number
+  expectType<number>(res.scrollTop)
 })
 query.exec(res => {
-  res // $ExpectType any
+  expectType<any>(res)
 })
 
 Page({
@@ -61,4 +63,4 @@ console.warn('console', 'warn')
 console.error('console', 'error')
 console.groupEnd()
 
-wx.env.USER_DATA_PATH // $ExpectType string
+expectType<string>(wx.env.USER_DATA_PATH)

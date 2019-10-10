@@ -1,7 +1,8 @@
-Page({}) // $ExpectType void
+import {expectType, expectError} from 'tsd'
 
-// $ExpectType Record<string, any>
-getCurrentPages()[0].data
+expectType<void>(Page({}))
+
+expectType<Record<string, any>>(getCurrentPages()[0].data)
 
 const app = getApp<{
   globalData: {
@@ -65,11 +66,11 @@ Page({
     logs: [] as string[],
   },
   onLoad(options) {
-    options.from // $ExpectType string | undefined
+    expectType<string | undefined>(options.from)
     const app = getApp<{
       globalData: { userInfo: WechatMiniprogram.UserInfo };
     }>()
-    app.globalData.userInfo.nickName // $ExpectType string
+    expectType<string>(app.globalData.userInfo.nickName)
   },
   onReady() {
     this.setData({
@@ -82,9 +83,9 @@ Page({
   onUnload() {},
   onPullDownRefresh() {},
   onShareAppMessage(res) {
-    res.from // $ExpectType string
+    expectType<string>(res.from)
     if (res.from === 'button') {
-      res.webViewUrl // $ExpectType string | undefined
+      expectType<string | undefined>(res.webViewUrl)
     }
     return {
       title: '自定义转发标题',
@@ -94,9 +95,9 @@ Page({
   onPageScroll() {},
   onResize() {},
   onTabItemTap(item) {
-    item.index // $ExpectType string
-    item.pagePath // $ExpectType string
-    item.text // $ExpectType string
+    expectType<string>(item.index)
+    expectType<string>(item.pagePath)
+    expectType<string>(item.text)
   },
   viewTap() {
     this.setData(
@@ -108,8 +109,8 @@ Page({
       },
       function() {},
     )
-    this.route // $ExpectType string
-    this.data.text // $ExpectType string
+    expectType<string>(this.route)
+    expectType<string>(this.data.text)
     this.viewTap()
 
     const p = getCurrentPages()[1] as WechatMiniprogram.Page.Instance<
@@ -128,20 +129,20 @@ Page({
     a: 1,
   },
   onLoad(q) {
-    q // $ExpectType Record<string, string | undefined>
-    this.data.a // $ExpectType number
-    this.a // $ExpectError
+    expectType<Record<string, string | undefined>>(q)
+    expectType<number>(this.data.a)
+    expectError(this.a)
   },
   jump() {
     const query = wx.createSelectorQuery()
     query.select('#a').boundingClientRect(res => {
-      res // $ExpectType BoundingClientRectCallbackResult
+      expectType<WechatMiniprogram.BoundingClientRectCallbackResult>(res)
     })
     query.selectViewport().scrollOffset(res => {
-      res // $ExpectType ScrollOffsetCallbackResult
+      expectType<WechatMiniprogram.ScrollOffsetCallbackResult>(res)
     })
     query.exec(res => {
-      res // $ExpectType any
+      expectType<any>(res)
     })
   },
   jumpBack() {
@@ -151,14 +152,14 @@ Page({
 
 Page({
   f() {
-    this.data // $ExpectType Record<string, any>
+    expectType<Record<string, any>>(this.data)
   },
 })
 
 Page({
   data: {},
   f() {
-    this.data // $ExpectType {}
+    expectType<{}>(this.data)
     this.setData({
       a: 1,
     })
@@ -191,9 +192,10 @@ Page<DataType, CustomOption>({
     })
   },
   onLoad() {
-    const logs = this.getLogs() // $ExpectType string[]
+    const logs = this.getLogs()
+    expectType<string[]>(logs)
     this.setData({ logs })
-    this.logs // $ExpectError
-    this.data.logs // $ExpectType string[]
+    expectError(this.logs)
+    expectType<string[]>(this.data.logs)
   },
 })

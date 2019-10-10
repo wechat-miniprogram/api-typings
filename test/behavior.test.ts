@@ -1,4 +1,6 @@
-Behavior({}) // $ExpectType string
+import {expectType, expectError} from 'tsd'
+
+expectType<string>(Behavior({}))
 
 Behavior({
   behaviors: [],
@@ -16,8 +18,8 @@ Behavior({
       type: Number,
       value: 0,
       observer(newVal, oldVal) {
-        newVal // $ExpectType number
-        oldVal.toExponential() // $ExpectType string
+        expectType<number>(newVal)
+        expectType<string>(oldVal.toExponential())
       },
     },
   },
@@ -29,11 +31,11 @@ Behavior({
   attached() {},
   methods: {
     myBehaviorMethod() {
-      this.created() // $ExpectError
-      this.data.text // $ExpectType string
-      this.properties.text // $ExpectType string
-      this.data.max // $ExpectType number
-      this.properties.myProperty2 // $ExpectType string
+      expectError(this.created())
+      expectType<string>(this.data.text)
+      expectType<string>(this.properties.text)
+      expectType<number>(this.data.max)
+      expectType<string>(this.properties.myProperty2)
     },
   },
 })

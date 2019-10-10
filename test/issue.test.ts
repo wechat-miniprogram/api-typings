@@ -1,5 +1,7 @@
+import {expectType} from 'tsd'
+
 // https://github.com/wechat-miniprogram/api-typings/issues/11
-wx.env.USER_DATA_PATH // $ExpectType string
+expectType<string>(wx.env.USER_DATA_PATH)
 
 // https://github.com/wechat-miniprogram/api-typings/issues/13
 const ctx = wx.createCanvasContext('myCanvas')
@@ -10,7 +12,7 @@ ctx.drawImage('', 0, 0, 0, 0, 0, 0, 0, 0)
 // https://github.com/wechat-miniprogram/api-typings/issues/15
 wx.getSetting({
   success(res) {
-    res.authSetting['scope.userInfo'] // $ExpectType boolean | undefined
+    expectType<boolean | undefined>(res.authSetting['scope.userInfo'])
   },
 })
 
@@ -24,17 +26,17 @@ wx.cloud.callFunction({
     y: 2,
   },
   success: res => {
-    res.errMsg // $ExpectType string
+    expectType<string>(res.errMsg)
   },
   fail: err => {
-    err.errMsg // $ExpectType string
+    expectType<string>(err.errMsg)
   },
 })
 
 wx.cloud.deleteFile({
   fileList: ['a7xzcb'],
   success: res => {
-    res.fileList // $ExpectType DeleteFileResultItem[]
+    expectType<ICloud.DeleteFileResultItem[]>(res.fileList)
   },
 })
 
@@ -51,7 +53,7 @@ wx.addCard({
     },
   ],
   success(res) {
-    res.cardList // $ExpectType AddCardResponseInfo[]
+    expectType<WechatMiniprogram.AddCardResponseInfo[]>(res.cardList)
   },
 })
 
@@ -60,7 +62,7 @@ wx.chooseMessageFile({
   count: 10,
   type: 'image',
   success(res) {
-    res.tempFiles // $ExpectType ChooseFile[]
+    expectType<WechatMiniprogram.ChooseFile[]>(res.tempFiles)
   },
 })
 
@@ -72,18 +74,18 @@ wx.canvasGetImageData({
   width: 100,
   height: 100,
   success(res) {
-    res.width // $ExpectType number
-    res.height // $ExpectType number
-    res.data // $ExpectType Uint8ClampedArray
-    res.data.length // $ExpectType number
+    expectType<number>(res.width)
+    expectType<number>(res.height)
+    expectType<Uint8ClampedArray>(res.data)
+    expectType<number>(res.data.length)
   },
 })
 
 // https://github.com/wechat-miniprogram/api-typings/issues/45
 wx.onGyroscopeChange(res => {
-  res.x // $ExpectType number
-  res.y // $ExpectType number
-  res.z // $ExpectType number
+  expectType<number>(res.x)
+  expectType<number>(res.y)
+  expectType<number>(res.z)
 })
 
 // https://github.com/wechat-miniprogram/api-typings/issues/47
@@ -108,7 +110,7 @@ wx.setNavigationBarColor({
 // https://github.com/wechat-miniprogram/api-typings/issues/59
 wx.login({
   success(res) {
-    res.errMsg // $ExpectType string
+    expectType<string>(res.errMsg)
   },
 })
 
@@ -117,13 +119,13 @@ wx.loadFontFace({
   source: '',
   family: 'font',
   success(res) {
-    res.status // $ExpectType string
+    expectType<string>(res.status)
   },
   fail(res) {
-    res.status // $ExpectType string
+    expectType<string>(res.status)
   },
   complete(res) {
-    res.status // $ExpectType string
+    expectType<string>(res.status)
   },
 })
 
@@ -132,7 +134,7 @@ wx.request({
   url: '',
   success(res) {
     const data: WechatMiniprogram.IAnyObject = { res }
-    data.customData // $ExpectType any
+    expectType<any>(data.customData)
   },
 })
 interface IResponse {
@@ -142,7 +144,7 @@ wx.request({
   url: '',
   success(res) {
     const data = res.data as IResponse
-    data.customData // $ExpectType string
+    expectType<string>(data.customData)
   },
 })
 
@@ -150,8 +152,8 @@ wx.request({
 {
   const task = wx.connectSocket({ url: '' })
   task.onClose(res => {
-    res.code // $ExpectType number
-    res.reason // $ExpectType string
+    expectType<number>(res.code)
+    expectType<string>(res.reason)
   })
 }
 
@@ -159,8 +161,25 @@ wx.request({
 {
   wx.onBluetoothDeviceFound(res => {
     res.devices.forEach(device => {
-      device.name // $ExpectType string
-      device.deviceId // $ExpectType string
+      expectType<string>(device.name)
+      expectType<string>(device.deviceId)
     })
+  })
+}
+
+// https://github.com/wechat-miniprogram/api-typings/issues/82
+{
+  interface IDialogMethod extends Partial<WechatMiniprogram.Component.MethodOption> {
+    f?: () => string
+    g: () => void
+  }
+  type Dialog = WechatMiniprogram.Component.Instance<{}, {}, IDialogMethod>
+  Page({
+    f() {
+      const comp = this.selectComponent('#comp') as Dialog
+      expectType<(() => string) | undefined>(comp.f)
+      if (comp.f) expectType<string>(comp.f())
+      comp.g()
+    },
   })
 }

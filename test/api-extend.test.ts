@@ -1,19 +1,11 @@
-declare namespace WechatMiniprogram {
-  interface Wx {
-    customMethod(a: number): string
-  }
-  interface CanvasContext {
-    customMethod(): void
-  }
-  interface SocketTask {
-    readyState: number
-  }
-}
+/// <reference path="./api-extend.test.d.ts" />
+
+import {expectType} from 'tsd'
 
 {
-  wx.customMethod(1) // $ExpectType string
+  expectType<string>(wx.customMethod(1))
   const ctx = wx.createCanvasContext('test')
-  ctx.customMethod() // $ExpectType void
+  expectType<void>(ctx.customMethod())
   const task = wx.connectSocket({ url: '' })
   task.readyState = 1
 }

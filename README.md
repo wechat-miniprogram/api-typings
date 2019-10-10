@@ -38,7 +38,7 @@ API 的定义文件（`lib.wx.api.d.ts`）是随 [文档](https://developers.wei
 
 ### 测试
 
-本定义文件使用 [`dtslint`](https://github.com/Microsoft/dtslint) 进行测试，所有的测试样例放在 `test` 目录下。
+本定义文件使用 [`tsd`](https://github.com/SamVerschueren/tsd) 进行测试，所有的测试样例放在 `test` 目录下。
 
 想执行测试的话，克隆本项目并完成 `npm install --save-dev` 后执行 `npm test` 即可。
 

@@ -1,4 +1,6 @@
-Component({}) // $ExpectType string
+import {expectType, expectError} from 'tsd'
+
+expectType<string>(Component({}))
 
 Component({
   behaviors: [''],
@@ -28,10 +30,10 @@ Component({
       type: Number,
       value: 0,
       observer(newVal, oldVal) {
-        newVal // $ExpectType number
-        oldVal // $ExpectType number
-        this.onMyButtonTap() // $ExpectType void
-        this.data.max // $ExpectType number
+        expectType<number>(newVal)
+        expectType<number>(oldVal)
+        expectType<void>(this.onMyButtonTap())
+        expectType<number>(this.data.max)
       },
     },
     lastLeaf: {
@@ -60,7 +62,7 @@ Component({
     moved() {},
     detached() {},
     error(err) {
-      err // $ExpectType Error
+      expectType<Error>(err)
     },
   },
 
@@ -68,15 +70,15 @@ Component({
 
   pageLifetimes: {
     show() {
-      // $ExpectType string
-      this.is // is current component but not the page
+      // is current component but not the page
+      expectType<string>(this.is)
     },
   },
 
   methods: {
     onMyButtonTap() {
-      this.data.text // $ExpectType string
-      this.data.min.toFixed() // $ExpectType string
+      expectType<string>(this.data.text)
+      expectType<string>(this.data.min.toFixed())
       this.triggerEvent(
         'tap',
         { a: 1 },
@@ -93,20 +95,22 @@ Component({
       })
     },
     _propertyChange(newVal: number, oldVal: number) {
-      newVal // $ExpectType number
-      oldVal // $ExpectType number
+      expectType<number>(newVal)
+      expectType<number>(oldVal)
     },
   },
 })
 
-Component({
-  custom: 1, // $ExpectError
-  methods: {
-    f() {
-      this.custom // $ExpectError
+expectError(
+  Component({
+    custom: 1,
+    methods: {
+      f() {
+        expectError(this.custom)
+      },
     },
-  },
-})
+  }),
+)
 
 interface Config {
   a: number
@@ -125,7 +129,7 @@ Component({
   },
   methods: {
     doc() {
-      this.data.config // $ExpectType Record<string, any>
+      expectType<Record<string, any>>(this.data.config)
     },
   },
   options: {
@@ -151,15 +155,15 @@ Component({
   },
   methods: {
     f() {
-      this.data.n // $ExpectType number
-      this.data.n2 // $ExpectType number
-      this.data.s // $ExpectType string
-      this.data.a // $ExpectType any[]
-      this.data.a2 // $ExpectType any[]
-      this.data.b // $ExpectType boolean
-      this.data.o // $ExpectType Record<string, any>
-      this.data.a[0] // $ExpectType any
-      this.data.o.prop // $ExpectType any
+      expectType<number>(this.data.n)
+      expectType<number>(this.data.n2)
+      expectType<string>(this.data.s)
+      expectType<any[]>(this.data.a)
+      expectType<any[]>(this.data.a2)
+      expectType<boolean>(this.data.b)
+      expectType<Record<string, any>>(this.data.o)
+      expectType<any>(this.data.a[0])
+      expectType<any>(this.data.o.prop)
     },
   },
 })
@@ -181,22 +185,27 @@ Component({
     o: Object,
     o2: {
       type: Object,
-      value: {} as WechatMiniprogram.UserInfo,
+      value: {} as Record<string, any>,
     },
   },
   methods: {
+    g() {
+      const str = (1).toFixed(0)
+      return str
+    },
     f() {
-      this.data.n // $ExpectType number
-      this.data.n2 // $ExpectType number
-      this.data.s // $ExpectType string
-      this.data.a // $ExpectType any[]
-      this.data.a2 // $ExpectType any[]
-      this.data.b // $ExpectType boolean
-      this.data.o // $ExpectType Record<string, any>
-      this.data.o2 // $ExpectType Record<string, any>
-      this.data.o2.city // $ExpectType any
-      this.data.a[0] // $ExpectType any
-      this.data.o.prop // $ExpectType any
+      expectType<string>(this.g())
+      expectType<number>(this.data.n)
+      expectType<number>(this.data.n2)
+      expectType<string>(this.data.s)
+      expectType<any[]>(this.data.a)
+      expectType<any[]>(this.data.a2)
+      expectType<boolean>(this.data.b)
+      expectType<Record<string, any>>(this.data.o)
+      expectType<Record<string, any>>(this.data.o2)
+      expectType<any>(this.data.o2.city)
+      expectType<any>(this.data.a[0])
+      expectType<any>(this.data.o.prop)
     },
   },
 })
@@ -214,8 +223,8 @@ Component({
   },
   methods: {
     f() {
-      this.data.n // $ExpectType number
-      this.data.a // $ExpectType any[]
+      expectType<number>(this.data.n)
+      expectType<any[]>(this.data.a)
     },
   },
 })
@@ -227,21 +236,23 @@ Component({
   },
   methods: {
     f() {
-      this.data.n // $ExpectType number
-      this.data.a // $ExpectType any[]
+      expectType<number>(this.data.n)
+      expectType<any[]>(this.data.a)
     },
   },
 })
 
-Component({
-  data: {
-    a: 1,
-  },
-  methods: {
-    someMethod() {
-      this.setData({
-        a: '', // $ExpectError
-      })
+expectError(
+  Component({
+    data: {
+      a: 1,
     },
-  },
-})
+    methods: {
+      someMethod() {
+        this.setData({
+          a: '',
+        })
+      },
+    },
+  }),
+)
