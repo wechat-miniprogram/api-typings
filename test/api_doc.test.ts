@@ -151,11 +151,11 @@ import {expectType} from 'tsd'
   })
 
   downloadTask.onProgressUpdate(res => {
-     // 下载进度
+    // 下载进度
     expectType<number>(res.progress)
-     // 已经下载的数据长度
+    // 已经下载的数据长度
     expectType<number>(res.totalBytesWritten)
-     // 预期需要下载的数据总长度
+    // 预期需要下载的数据总长度
     expectType<number>(res.totalBytesExpectedToWrite)
   })
 
@@ -3013,6 +3013,16 @@ import {expectType} from 'tsd'
       eventChannel.on('acceptDataFromOpenerPage', function(data: any) {
         console.log(data)
       })
+    },
+  })
+}
+
+// Test case from `wx.requestSubscribeMessage`
+{
+  wx.requestSubscribeMessage({
+    tmplIds: [''],
+    success(res) {
+      expectType<string>(res.TEMPLATE_ID)
     },
   })
 }

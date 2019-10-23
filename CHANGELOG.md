@@ -1,3 +1,6 @@
+## 2019-10-23 v2.9.0
+- 同步 API 定义到基础库 2.9.0
+
 ## 2019-10-10 v2.8.3-1
 - 修复注释文档中不可用的链接
 - 组件实例类型支持 `Partial` 的自定义方法（[用例](https://github.com/wechat-miniprogram/api-typings/blob/master/test/issue.test.ts#L170-L185)）

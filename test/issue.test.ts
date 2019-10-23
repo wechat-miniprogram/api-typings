@@ -169,7 +169,8 @@ wx.request({
 
 // https://github.com/wechat-miniprogram/api-typings/issues/82
 {
-  interface IDialogMethod extends Partial<WechatMiniprogram.Component.MethodOption> {
+  interface IDialogMethod
+    extends Partial<WechatMiniprogram.Component.MethodOption> {
     f?: () => string
     g: () => void
   }
