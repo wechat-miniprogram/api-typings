@@ -1,4 +1,4 @@
-import {expectType} from 'tsd'
+import { expectType } from 'tsd'
 
 // https://github.com/wechat-miniprogram/api-typings/issues/11
 expectType<string>(wx.env.USER_DATA_PATH)

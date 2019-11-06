@@ -1,4 +1,4 @@
-import {expectType} from 'tsd'
+import { expectType } from 'tsd'
 
 // Test case from `Animation`
 {
@@ -194,6 +194,21 @@ import {expectType} from 'tsd'
           rect.height // 节点的高度
         })
         .exec()
+    },
+    getAllRects() {
+      // FIXME:
+      // wx.createSelectorQuery().selectAll('.a-class').boundingClientRect(function(rects) {
+      //   rects.forEach(function(rect) {
+      //     rect.id      // 节点的ID
+      //     rect.dataset // 节点的dataset
+      //     rect.left    // 节点的左边界坐标
+      //     rect.right   // 节点的右边界坐标
+      //     rect.top     // 节点的上边界坐标
+      //     rect.bottom  // 节点的下边界坐标
+      //     rect.width   // 节点的宽度
+      //     rect.height  // 节点的高度
+      //   })
+      // }).exec()
     },
   })
 }

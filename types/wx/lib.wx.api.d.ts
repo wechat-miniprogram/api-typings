@@ -500,6 +500,8 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         success?: CanvasPutImageDataSuccessCallback
     }
     interface CanvasToTempFilePathOption {
+        /** 画布标识，传入 [canvas](https://developers.weixin.qq.com/miniprogram/dev/component/canvas.html) 组件实例 （canvas type="2d" 时使用该属性）。 */
+        canvas: string
         /** 画布标识，传入 [canvas](https://developers.weixin.qq.com/miniprogram/dev/component/canvas.html) 组件的 canvas-id */
         canvasId: string
         /** 图片的质量，目前仅对 jpg 有效。取值范围为 (0, 1]，不在范围内时当作 1.0 处理。
@@ -1664,6 +1666,14 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         complete?: GetLocationCompleteCallback
         /** 接口调用失败的回调函数 */
         fail?: GetLocationFailCallback
+        /** 高精度定位超时时间(ms)，指定时间内返回最高精度，该值3000ms以上高精度定位才有效果
+         *
+         * 最低基础库： `2.9.0` */
+        highAccuracyExpireTime?: number
+        /** 开启高精度定位
+         *
+         * 最低基础库： `2.9.0` */
+        isHighAccuracy?: boolean
         /** 接口调用成功的回调函数 */
         success?: GetLocationSuccessCallback
         /** wgs84 返回 gps 坐标，gcj02 返回可用于 wx.openLocation 的坐标 */
@@ -3498,6 +3508,7 @@ innerAudioContext.onError((res) => {
         success?: RenameSuccessCallback
     }
     /** Canvas 绘图上下文。
+     *     - 通过 Canvas.getContext('2d') 接口可以获取 CanvasRenderingContext2D 对象，实现了 [HTML Canvas 2D Context](https://www.w3.org/TR/2dcontext/) 定义的属性、方法。
      *     - 通过 Canvas.getContext('webgl') 或 OffscreenCanvas.getContext('webgl') 接口可以获取 WebGLRenderingContext 对象，实现了 [WebGL 1.0](https://www.khronos.org/registry/webgl/specs/latest/1.0/) 定义的所有属性、方法、常量。 */
     interface RenderingContext {}
     interface RequestOption {
@@ -5497,13 +5508,13 @@ listener.start()
     interface Canvas {
         /** [Canvas.cancelAnimationFrame(number requestID)](https://developers.weixin.qq.com/miniprogram/dev/api/canvas/Canvas.cancelAnimationFrame.html)
          *
-         * 取消由 requestAnimationFrame 添加到计划中的动画帧请求。（仅支持在 WebGL 中使用）
+         * 取消由 requestAnimationFrame 添加到计划中的动画帧请求。支持在 2D Canvas 和 WebGL Canvas 下使用, 但不支持混用 2D 和 WebGL 的方法。
          *
          * 最低基础库： `2.7.0` */
         cancelAnimationFrame(requestID: number): void
         /** [[Image](https://developers.weixin.qq.com/miniprogram/dev/api/canvas/Image.html) Canvas.createImage()](https://developers.weixin.qq.com/miniprogram/dev/api/canvas/Canvas.createImage.html)
          *
-         * 创建一个图片对象。（仅支持在 WebGL 中使用，暂不支持在 OffscreenCanvas 中使用。）
+         * 创建一个图片对象。 支持在 2D Canvas 和 WebGL Canvas 下使用, 但不支持混用 2D 和 WebGL 的方法。
          *
          * 最低基础库： `2.7.0` */
         createImage(): Image
@@ -5513,13 +5524,13 @@ listener.start()
          *
          * ****
          *
-         * 当前仅支持获取 WebGL 绘图上下文
+         * 支持获取 2D 和 WebGL 绘图上下文
          *
          * 最低基础库： `2.7.0` */
         getContext(contextType: string): RenderingContext
         /** [number Canvas.requestAnimationFrame(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/canvas/Canvas.requestAnimationFrame.html)
          *
-         * 在下次进行重绘时执行。（仅支持在 WebGL 中使用）
+         * 在下次进行重绘时执行。 支持在 2D Canvas 和 WebGL Canvas 下使用, 但不支持混用 2D 和 WebGL 的方法。
          *
          * 最低基础库： `2.7.0` */
         requestAnimationFrame(
@@ -8732,10 +8743,15 @@ Component({
          *
          * 向指定的 IP 和 port 发送消息 */
         send(option: UDPSocketSendOption): void
-        /** [number UDPSocket.bind()](https://developers.weixin.qq.com/miniprogram/dev/api/network/udp/UDPSocket.bind.html)
+        /** [number UDPSocket.bind(number port)](https://developers.weixin.qq.com/miniprogram/dev/api/network/udp/UDPSocket.bind.html)
          *
-         * 绑定一个系统随机分配的可用端口 */
-        bind(): number
+         * 绑定一个系统随机分配的可用端口，或绑定一个指定的端口号 */
+        bind(
+            /** 指定要绑定的端口号
+             *
+             * 最低基础库： `2.9.0` */
+            port: number,
+        ): number
     }
     interface UpdateManager {
         /** [UpdateManager.applyUpdate()](https://developers.weixin.qq.com/miniprogram/dev/api/base/update/UpdateManager.applyUpdate.html)
@@ -10214,7 +10230,7 @@ wx.chooseImage({
 })
 ``` */
         getImageInfo(option: GetImageInfoOption): void
-        /** [wx.getLocation(Object object, boolean isHighAccuracy, number highAccuracyExpireTime)](https://developers.weixin.qq.com/miniprogram/dev/api/location/wx.getLocation.html)
+        /** [wx.getLocation(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/location/wx.getLocation.html)
 *
 * 获取当前的地理位置、速度。当用户离开小程序后，此接口无法调用。开启高精度定位，接口耗时会增加，可指定 highAccuracyExpireTime 作为超时时间。
 *
@@ -10238,17 +10254,7 @@ wx.chooseImage({
 *
 * - 工具中定位模拟使用IP定位，可能会有一定误差。且工具目前仅支持 gcj02 坐标。
 * - 使用第三方服务进行逆地址解析时，请确认第三方服务默认的坐标系，正确进行坐标转换。 */
-        getLocation(
-            option: GetLocationOption,
-            /** 开启高精度定位
-             *
-             * 最低基础库： `2.9.0` */
-            isHighAccuracy?: boolean,
-            /** 高精度定位超时时间(ms)，指定时间内返回最高精度，该值3000ms以上高精度定位才有效果
-             *
-             * 最低基础库： `2.9.0` */
-            highAccuracyExpireTime?: number,
-        ): void
+        getLocation(option: GetLocationOption): void
         /** [wx.getNetworkType(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/device/network/wx.getNetworkType.html)
 *
 * 获取网络类型
@@ -11639,6 +11645,17 @@ wx.onUserCaptureScreen(function (res) {
         /** [wx.openBluetoothAdapter(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/wx.openBluetoothAdapter.html)
 *
 * 初始化蓝牙模块
+*
+* **object.fail 回调函数返回的 state 参数（仅 iOS）**
+*
+*
+* | 状态码 | 说明   |
+* | ------ | ------ |
+* | 0      | 未知   |
+* | 1      | 重置中 |
+* | 2      | 不支持 |
+* | 3      | 未授权 |
+* | 4      | 未开启 |
 *
 * **注意**
 *

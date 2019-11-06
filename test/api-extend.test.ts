@@ -1,6 +1,6 @@
 /// <reference path="./api-extend.test.d.ts" />
 
-import {expectType} from 'tsd'
+import { expectType } from 'tsd'
 
 {
   expectType<string>(wx.customMethod(1))

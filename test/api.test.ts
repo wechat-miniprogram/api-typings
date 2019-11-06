@@ -1,4 +1,4 @@
-import {expectType} from 'tsd'
+import { expectType } from 'tsd'
 
 wx.request({
   url: 'https://www.baidu.com',
