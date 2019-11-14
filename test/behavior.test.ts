@@ -39,3 +39,10 @@ Behavior({
     },
   },
 })
+
+Behavior({
+  attached() {},
+  pageLifetimes: {
+    show() {},
+  },
+})

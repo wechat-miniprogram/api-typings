@@ -1,11 +1,23 @@
 /*! *****************************************************************************
 Copyright (c) 2019 Tencent, Inc. All rights reserved.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+Permission is hereby granted, free of charge, to any person obtaining a copy of 
+this software and associated documentation files (the "Software"), to deal in 
+the Software without restriction, including without limitation the rights to 
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies 
+of the Software, and to permit persons to whom the Software is furnished to do 
+so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+The above copyright notice and this permission notice shall be included in all 
+copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+SOFTWARE.
 ***************************************************************************** */
 
 declare namespace WechatMiniprogram {
@@ -385,6 +397,25 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         fail?: CameraFrameListenerStopFailCallback
         /** 接口调用成功的回调函数 */
         success?: CameraFrameListenerStopSuccessCallback
+    }
+    /** Canvas 实例，可通过 [SelectorQuery](https://developers.weixin.qq.com/miniprogram/dev/api/wxml/SelectorQuery.html) 获取。
+     *
+     * **示例代码**
+     *
+     *
+     *
+     * 2D Canvas 示例
+     * [在微信开发者工具中查看示例](https://developers.weixin.qq.com/s/SHfgCmmq7UcM)
+     *
+     * WebGL 示例
+     * [在微信开发者工具中查看示例](https://developers.weixin.qq.com/s/qEGUOqmf7T8z)
+     *
+     * 最低基础库： `2.7.0` */
+    interface Canvas {
+        /** 画布高度 */
+        height: number
+        /** 画布宽度 */
+        width: number
     }
     /** canvas 组件的绘图上下文 */
     interface CanvasContext {
@@ -2281,6 +2312,17 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         /** 图片的真实宽度 */
         width: number
     }
+    /** ImageData 对象
+     *
+     * 最低基础库： `2.9.0` */
+    interface ImageData {
+        /** 一维数组，包含以 RGBA 顺序的数据，数据使用 0 至 255（包含）的整数表示 */
+        data: Uint8ClampedArray
+        /** 使用像素描述 ImageData 的实际高度 */
+        height: number
+        /** 使用像素描述 ImageData 的实际宽度 */
+        width: number
+    }
     /** 图片的本地临时文件列表
      *
      * 最低基础库： `1.2.0` */
@@ -3508,8 +3550,11 @@ innerAudioContext.onError((res) => {
         success?: RenameSuccessCallback
     }
     /** Canvas 绘图上下文。
-     *     - 通过 Canvas.getContext('2d') 接口可以获取 CanvasRenderingContext2D 对象，实现了 [HTML Canvas 2D Context](https://www.w3.org/TR/2dcontext/) 定义的属性、方法。
-     *     - 通过 Canvas.getContext('webgl') 或 OffscreenCanvas.getContext('webgl') 接口可以获取 WebGLRenderingContext 对象，实现了 [WebGL 1.0](https://www.khronos.org/registry/webgl/specs/latest/1.0/) 定义的所有属性、方法、常量。 */
+     *
+     * ****
+     *
+     * - 通过 Canvas.getContext('2d') 接口可以获取 CanvasRenderingContext2D 对象，实现了 [HTML Canvas 2D Context](https://www.w3.org/TR/2dcontext/) 定义的属性、方法。
+     * - 通过 Canvas.getContext('webgl') 或 OffscreenCanvas.getContext('webgl') 接口可以获取 WebGLRenderingContext 对象，实现了 [WebGL 1.0](https://www.khronos.org/registry/webgl/specs/latest/1.0/) 定义的所有属性、方法、常量。 */
     interface RenderingContext {}
     interface RequestOption {
         /** 开发者服务器接口地址 */
@@ -5512,6 +5557,12 @@ listener.start()
          *
          * 最低基础库： `2.7.0` */
         cancelAnimationFrame(requestID: number): void
+        /** [[ImageData](https://developers.weixin.qq.com/miniprogram/dev/api/canvas/ImageData.html) Canvas.createImageData()](https://developers.weixin.qq.com/miniprogram/dev/api/canvas/Canvas.createImageData.html)
+         *
+         * 创建一个 ImageData 对象。仅支持在 2D Canvas 中使用。
+         *
+         * 最低基础库： `2.9.0` */
+        createImageData(): ImageData
         /** [[Image](https://developers.weixin.qq.com/miniprogram/dev/api/canvas/Image.html) Canvas.createImage()](https://developers.weixin.qq.com/miniprogram/dev/api/canvas/Canvas.createImage.html)
          *
          * 创建一个图片对象。 支持在 2D Canvas 和 WebGL Canvas 下使用, 但不支持混用 2D 和 WebGL 的方法。
@@ -7212,7 +7263,7 @@ this.editorCtx.insertImage({
         scrollIntoView(): void
         /** [EditorContext.setContents(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/editor/EditorContext.setContents.html)
          *
-         * 初始化编辑器内容，hmlt和delta同时存在时仅delta生效 */
+         * 初始化编辑器内容，html和delta同时存在时仅delta生效 */
         setContents(option: SetContentsOption): void
         /** [EditorContext.undo(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/editor/EditorContext.undo.html)
          *
@@ -10971,12 +11022,12 @@ wx.notifyBLECharacteristicValueChange({
         ): void
         /** [wx.offBeaconServiceChange(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/device/ibeacon/wx.offBeaconServiceChange.html)
          *
-         * 取消监听 iBeacon 服务状态变化事件。
+         * 取消监听 iBeacon 服务状态变化事件
          *
          * 最低基础库： `2.8.1` */
         offBeaconServiceChange(
             /** iBeacon 服务状态变化事件的回调函数 */
-            callback: (...args: any[]) => any,
+            callback: OffBeaconServiceChangeCallback,
         ): void
         /** [wx.offBeaconUpdate(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/device/ibeacon/wx.offBeaconUpdate.html)
          *
@@ -10985,7 +11036,7 @@ wx.notifyBLECharacteristicValueChange({
          * 最低基础库： `2.8.1` */
         offBeaconUpdate(
             /** iBeacon 设备更新事件的回调函数 */
-            callback: (...args: any[]) => any,
+            callback: OffBeaconUpdateCallback,
         ): void
         /** [wx.offBluetoothAdapterStateChange(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/wx.offBluetoothAdapterStateChange.html)
          *
@@ -11057,6 +11108,15 @@ wx.notifyBLECharacteristicValueChange({
          * 最低基础库： `2.8.1` */
         offHCEMessage(
             /** 接收 NFC 设备消息事件的回调函数 */
+            callback: (...args: any[]) => any,
+        ): void
+        /** [wx.offKeyboardHeightChange(function callback)](https://developers.weixin.qq.com/miniprogram/dev/aapi/ui/keyboard/wx.offKeyboardHeightChange.html)
+         *
+         * 取消监听键盘高度变化事件
+         *
+         * 最低基础库： `2.9.2` */
+        offKeyboardHeightChange(
+            /** 键盘高度变化事件的回调函数 */
             callback: (...args: any[]) => any,
         ): void
         /** [wx.offLocalServiceDiscoveryStop(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/network/mdns/wx.offLocalServiceDiscoveryStop.html)
@@ -11271,7 +11331,7 @@ wx.onBLEConnectionStateChange(function(res) {
 })
 ```
 *
-* 最低基础库： `1.1.1` */
+* 最低基础库： `1.1.0` */
         onBLEConnectionStateChange(
             /** 低功耗蓝牙连接状态的改变事件的回调函数 */
             callback: OnBLEConnectionStateChangeCallback,
@@ -14230,6 +14290,10 @@ wx.writeBLECharacteristicValue({
     ) => void
     /** 音频中断结束事件的回调函数 */
     type OffAudioInterruptionEndCallback = (res: GeneralCallbackResult) => void
+    /** iBeacon 服务状态变化事件的回调函数 */
+    type OffBeaconServiceChangeCallback = (res: GeneralCallbackResult) => void
+    /** iBeacon 设备更新事件的回调函数 */
+    type OffBeaconUpdateCallback = (res: GeneralCallbackResult) => void
     /** 音频进入可以播放状态的事件的回调函数 */
     type OffCanplayCallback = (res: GeneralCallbackResult) => void
     /** 音频自然播放至结束的事件的回调函数 */

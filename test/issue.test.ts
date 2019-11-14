@@ -184,3 +184,22 @@ wx.request({
     },
   })
 }
+
+// https://github.com/wechat-miniprogram/api-typings/issues/85
+{
+  Behavior({
+    observers: {
+      value(v) {
+        expectType<any>(v)
+      },
+    },
+  })
+}
+
+// https://github.com/wechat-miniprogram/api-typings/issues/87
+import WX = WechatMiniprogram
+{
+  type ILoginResult = WX.LoginSuccessCallbackResult
+  const t: ILoginResult = { code: '', errMsg: '' }
+  expectType<WechatMiniprogram.LoginSuccessCallbackResult>(t)
+}
