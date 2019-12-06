@@ -94,11 +94,13 @@ declare namespace WechatMiniprogram {
             /** 属性初始值 */
             value?: ValueType<T>
             /** 属性值被更改时的响应函数 */
-            observer?(
-                newVal: ValueType<T>,
-                oldVal: ValueType<T>,
-                changedPath: Array<string | number>,
-            ): void
+            observer?:
+                | string
+                | ((
+                      newVal: ValueType<T>,
+                      oldVal: ValueType<T>,
+                      changedPath: Array<string | number>,
+                  ) => void)
             /** 属性的类型（可以指定多个） */
             optionalTypes?: ShortProperty[]
         }
@@ -206,6 +208,10 @@ declare namespace WechatMiniprogram {
                 | 'page-isolated'
                 | 'page-apply-shared'
                 | 'page-shared'
+            /**
+             * [纯数据字段](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/pure-data.html) 是一些不用于界面渲染的 data 字段，可以用于提升页面更新性能。从小程序基础库版本 2.8.2 开始支持。
+             */
+            pureDataPattern?: RegExp
         }
 
         interface TriggerEventOption {

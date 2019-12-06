@@ -256,3 +256,35 @@ expectError(
     },
   }),
 )
+
+Component({
+  options: {
+    pureDataPattern: /^_/,
+  },
+  data: {
+    a: true, // 普通数据字段
+    _b: true, // 纯数据字段
+  },
+  methods: {
+    myMethod() {
+      this.data._b // 纯数据字段可以在 this.data 中获取
+      this.setData({
+        c: true, // 普通数据字段
+        _d: true, // 纯数据字段
+      })
+    },
+  },
+})
+
+Component({
+  properties: {
+    a: {
+      type: Number,
+      observer: 'onAChange',
+      value: 1,
+    },
+  },
+  methods: {
+    onAChange() {},
+  },
+})

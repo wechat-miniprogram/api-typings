@@ -5098,7 +5098,7 @@ innerAudioContext.onError((res) => {
         USER_DATA_PATH: string
     }
     interface Animation {
-        /** [Array.<Object> Animation.export()](https://developers.weixin.qq.com/miniprogram/dev/api/ui/animation/Animation.export.html)
+        /** [Array.&lt;Object&gt; Animation.export()](https://developers.weixin.qq.com/miniprogram/dev/api/ui/animation/Animation.export.html)
          *
          * 导出动画队列。**export 方法每次调用后会清掉之前的动画操作。** */
         export(): IAnyObject[]
@@ -6514,7 +6514,7 @@ ctx.draw()
              * - 'square': 向线条的每个末端添加正方形线帽。; */
             lineCap: 'butt' | 'round' | 'square',
         ): void
-        /** [CanvasContext.setLineDash(Array.<number> pattern, number offset)](https://developers.weixin.qq.com/miniprogram/dev/api/canvas/CanvasContext.setLineDash.html)
+        /** [CanvasContext.setLineDash(Array.&lt;number&gt; pattern, number offset)](https://developers.weixin.qq.com/miniprogram/dev/api/canvas/CanvasContext.setLineDash.html)
 *
 * 设置虚线样式。
 *
@@ -7317,7 +7317,7 @@ this.editorCtx.insertImage({
         ): void
     }
     interface FileSystemManager {
-        /** [Array.<string> FileSystemManager.readdirSync(string dirPath)](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.readdirSync.html)
+        /** [Array.&lt;string&gt; FileSystemManager.readdirSync(string dirPath)](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.readdirSync.html)
          *
          * [FileSystemManager.readdir](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.readdir.html) 的同步版本 */
         readdirSync(
@@ -10961,7 +10961,7 @@ wx.notifyBLECharacteristicValueChange({
          *
          * 取消监听加速度数据事件，参数为空，则取消所有的事件监听。
          *
-         * 最低基础库： `2.8.1` */
+         * 最低基础库： `2.9.3` */
         offAccelerometerChange(
             /** 加速度数据事件的回调函数 */
             callback: (...args: any[]) => any,
@@ -11060,7 +11060,7 @@ wx.notifyBLECharacteristicValueChange({
          *
          * 取消监听罗盘数据变化事件，参数为空，则取消所有的事件监听。
          *
-         * 最低基础库： `2.8.1` */
+         * 最低基础库： `2.9.3` */
         offCompassChange(
             /** 罗盘数据变化事件的回调函数 */
             callback: (...args: any[]) => any,
@@ -11069,7 +11069,7 @@ wx.notifyBLECharacteristicValueChange({
          *
          * 取消监听设备方向变化事件，参数为空，则取消所有的事件监听。
          *
-         * 最低基础库： `2.8.1` */
+         * 最低基础库： `2.9.3` */
         offDeviceMotionChange(
             /** 设备方向变化事件的回调函数 */
             callback: (...args: any[]) => any,
@@ -11096,7 +11096,7 @@ wx.notifyBLECharacteristicValueChange({
          *
          * 取消监听陀螺仪数据变化事件。
          *
-         * 最低基础库： `2.8.1` */
+         * 最低基础库： `2.9.3` */
         offGyroscopeChange(
             /** 陀螺仪数据变化事件的回调函数 */
             callback: (...args: any[]) => any,
@@ -11177,7 +11177,7 @@ wx.notifyBLECharacteristicValueChange({
          *
          * 取消监听网络状态变化事件，参数为空，则取消所有的事件监听。
          *
-         * 最低基础库： `2.8.1` */
+         * 最低基础库： `2.9.3` */
         offNetworkStatusChange(
             /** 网络状态变化事件的回调函数 */
             callback: (...args: any[]) => any,
@@ -11195,7 +11195,7 @@ wx.notifyBLECharacteristicValueChange({
          *
          * 用户主动截屏事件。取消事件监听。
          *
-         * 最低基础库： `2.8.1` */
+         * 最低基础库： `2.9.3` */
         offUserCaptureScreen(
             /** 用户主动截屏事件的回调函数 */
             callback: (...args: any[]) => any,

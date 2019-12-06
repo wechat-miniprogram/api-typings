@@ -1,3 +1,8 @@
+## 2019-12-06 v2.9.3
+- 同步 API 定义到基础库 2.9.3
+- 补齐 `Component` 纯数据字段（`pureDataPattern`）
+- 支持 `Component` 的属性监听器使用 `string` 类型
+
 ## 2019-11-14 v2.9.2
 - 同步 API 定义到基础库 2.9.2
 - 补齐 `Behaviors` 中缺少的一些选项
