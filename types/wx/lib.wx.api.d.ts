@@ -29,7 +29,7 @@ declare namespace WechatMiniprogram {
         errMsg: string
     }
     interface AccessOption {
-        /** 要判断是否存在的文件/目录路径 */
+        /** 要判断是否存在的文件/目录路径 (本地路径) */
         path: string
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: AccessCompleteCallback
@@ -176,7 +176,7 @@ declare namespace WechatMiniprogram {
     interface AppendFileOption {
         /** 要追加的文本或二进制数据 */
         data: string | ArrayBuffer
-        /** 要追加内容的文件路径 */
+        /** 要追加内容的文件路径 (本地路径) */
         filePath: string
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: AppendFileCompleteCallback
@@ -532,13 +532,9 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
     }
     interface CanvasToTempFilePathOption {
         /** 画布标识，传入 [canvas](https://developers.weixin.qq.com/miniprogram/dev/component/canvas.html) 组件实例 （canvas type="2d" 时使用该属性）。 */
-        canvas: string
+        canvas?: string
         /** 画布标识，传入 [canvas](https://developers.weixin.qq.com/miniprogram/dev/component/canvas.html) 组件的 canvas-id */
-        canvasId: string
-        /** 图片的质量，目前仅对 jpg 有效。取值范围为 (0, 1]，不在范围内时当作 1.0 处理。
-         *
-         * 最低基础库： `1.7.0` */
-        quality: number
+        canvasId?: string
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: CanvasToTempFilePathCompleteCallback
         /** 输出的图片的高度
@@ -563,6 +559,10 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
          *
          * 最低基础库： `1.2.0` */
         height?: number
+        /** 图片的质量，目前仅对 jpg 有效。取值范围为 (0, 1]，不在范围内时当作 1.0 处理。
+         *
+         * 最低基础库： `1.7.0` */
+        quality?: number
         /** 接口调用成功的回调函数 */
         success?: CanvasToTempFilePathSuccessCallback
         /** 指定的画布区域的宽度
@@ -579,7 +579,7 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         y?: number
     }
     interface CanvasToTempFilePathSuccessCallbackResult {
-        /** 生成文件的临时路径 */
+        /** 生成文件的临时路径 (本地路径) */
         tempFilePath: string
         errMsg: string
     }
@@ -662,7 +662,7 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
     interface ChooseFile {
         /** 选择的文件名称 */
         name: string
-        /** 本地临时文件路径 */
+        /** 本地临时文件路径 (本地路径) */
         path: string
         /** 本地临时文件大小，单位 B */
         size: number
@@ -699,7 +699,7 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         success?: ChooseImageSuccessCallback
     }
     interface ChooseImageSuccessCallbackResult {
-        /** 图片的本地临时文件路径列表 */
+        /** 图片的本地临时文件路径列表 (本地路径) */
         tempFilePaths: string[]
         /** 图片的本地临时文件列表
          *
@@ -837,7 +837,7 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         height: number
         /** 选定视频的数据量大小 */
         size: number
-        /** 选定视频的临时文件路径 */
+        /** 选定视频的临时文件路径 (本地路径) */
         tempFilePath: string
         /** 返回选定视频的宽度 */
         width: number
@@ -1063,7 +1063,7 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
      * | YellowGreen          | #9ACD32 | */
     interface Color {}
     interface CompressImageOption {
-        /** 图片路径，图片的路径，可以是相对路径、临时文件路径、存储文件路径 */
+        /** 图片路径，图片的路径，支持本地路径、代码包路径 */
         src: string
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: CompressImageCompleteCallback
@@ -1075,7 +1075,7 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         success?: CompressImageSuccessCallback
     }
     interface CompressImageSuccessCallbackResult {
-        /** 压缩后图片的临时文件路径 */
+        /** 压缩后图片的临时文件路径 (本地路径) */
         tempFilePath: string
         errMsg: string
     }
@@ -1088,6 +1088,10 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         fail?: ConnectSocketFailCallback
         /** HTTP Header，Header 中不能设置 Referer */
         header?: IAnyObject
+        /** 是否开启压缩扩展
+         *
+         * 最低基础库： `2.8.0` */
+        perMessageDeflate?: boolean
         /** 子协议数组
          *
          * 最低基础库： `1.4.0` */
@@ -1127,9 +1131,9 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         errMsg: string
     }
     interface CopyFileOption {
-        /** 目标文件路径 */
+        /** 目标文件路径，支持本地路径 */
         destPath: string
-        /** 源文件路径，只可以是普通文件 */
+        /** 源文件路径，支持本地路径 */
         srcPath: string
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: CopyFileCompleteCallback
@@ -1228,7 +1232,7 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         complete?: DownloadFileCompleteCallback
         /** 接口调用失败的回调函数 */
         fail?: DownloadFileFailCallback
-        /** 指定文件下载后存储的路径
+        /** 指定文件下载后存储的路径 (本地路径)
          *
          * 最低基础库： `1.8.0` */
         filePath?: string
@@ -1238,11 +1242,11 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         success?: DownloadFileSuccessCallback
     }
     interface DownloadFileSuccessCallbackResult {
-        /** 用户文件路径。传入 filePath 时会返回，跟传入的 filePath 一致 */
+        /** 用户文件路径 (本地路径)。传入 filePath 时会返回，跟传入的 filePath 一致 */
         filePath: string
         /** 开发者服务器返回的 HTTP 状态码 */
         statusCode: number
-        /** 临时文件路径。没传入 filePath 指定文件存储路径时会返回，下载后的文件会存储到一个临时文件 */
+        /** 临时文件路径 (本地路径)。没传入 filePath 指定文件存储路径时会返回，下载后的文件会存储到一个临时文件 */
         tempFilePath: string
         errMsg: string
     }
@@ -1265,10 +1269,6 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         fail?: ExitFullScreenFailCallback
         /** 接口调用成功的回调函数 */
         success?: ExitFullScreenSuccessCallback
-    }
-    interface ExtInfo {
-        /** 第三方平台自定义的数据 */
-        extConfig: IAnyObject
     }
     interface ExtractDataSourceOption {
         /** 视频源地址，只支持本地文件 */
@@ -1303,7 +1303,7 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         size?: boolean
     }
     interface FileSystemManagerGetFileInfoOption {
-        /** 要读取的文件路径 */
+        /** 要读取的文件路径 (本地路径) */
         filePath: string
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: FileSystemManagerGetFileInfoCompleteCallback
@@ -1334,13 +1334,13 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
     interface FileSystemManagerGetSavedFileListSuccessCallbackResultFileItem {
         /** 文件保存时的时间戳，从1970/01/01 08:00:00 到当前时间的秒数 */
         createTime: number
-        /** 本地路径 */
+        /** 文件路径 (本地路径) */
         filePath: string
         /** 本地文件大小，以字节为单位 */
         size: number
     }
     interface FileSystemManagerRemoveSavedFileOption {
-        /** 需要删除的文件路径 */
+        /** 需要删除的文件路径 (本地路径) */
         filePath: string
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: FileSystemManagerRemoveSavedFileCompleteCallback
@@ -1350,19 +1350,19 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         success?: FileSystemManagerRemoveSavedFileSuccessCallback
     }
     interface FileSystemManagerSaveFileOption {
-        /** 临时存储文件路径 */
+        /** 临时存储文件路径 (本地路径) */
         tempFilePath: string
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: FileSystemManagerSaveFileCompleteCallback
         /** 接口调用失败的回调函数 */
         fail?: FileSystemManagerSaveFileFailCallback
-        /** 要存储的文件路径 */
+        /** 要存储的文件路径 (本地路径) */
         filePath?: string
         /** 接口调用成功的回调函数 */
         success?: FileSystemManagerSaveFileSuccessCallback
     }
     interface FileSystemManagerSaveFileSuccessCallbackResult {
-        /** 存储后的文件路径 */
+        /** 存储后的文件路径 (本地路径) */
         savedFilePath: number
         errMsg: string
     }
@@ -1644,7 +1644,7 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         success?: GetHCEStateSuccessCallback
     }
     interface GetImageInfoOption {
-        /** 图片的路径，可以是相对路径、临时文件路径、存储文件路径、网络图片路径 */
+        /** 图片的路径，支持网络路径、本地路径、代码包路径 */
         src: string
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: GetImageInfoCompleteCallback
@@ -1789,7 +1789,7 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         errMsg: string
     }
     interface GetSavedFileInfoOption {
-        /** 文件路径 */
+        /** 文件路径 (本地路径) */
         filePath: string
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: GetSavedFileInfoCompleteCallback
@@ -2327,7 +2327,7 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
      *
      * 最低基础库： `1.2.0` */
     interface ImageFile {
-        /** 本地临时文件路径 */
+        /** 本地临时文件路径 (本地路径) */
         path: string
         /** 本地临时文件大小，单位 B */
         size: number
@@ -2487,7 +2487,7 @@ innerAudioContext.onError((res) => {
     }
     /** 启动参数 */
     interface LaunchOptionsApp {
-        /** 启动小程序的路径 */
+        /** 启动小程序的路径 (代码包路径) */
         path: string
         /** 启动小程序的 query 参数 */
         query: IAnyObject
@@ -2684,7 +2684,7 @@ innerAudioContext.onError((res) => {
         errMsg: string
     }
     interface MkdirOption {
-        /** 创建的目录路径 */
+        /** 创建的目录路径 (本地路径) */
         dirPath: string
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: MkdirCompleteCallback
@@ -2763,7 +2763,7 @@ innerAudioContext.onError((res) => {
         success?: NavigateToMiniProgramSuccessCallback
     }
     interface NavigateToOption {
-        /** 需要跳转的应用内非 tabBar 的页面的路径, 路径后可以带参数。参数与路径之间使用 `?` 分隔，参数键与参数值用 `=` 相连，不同参数用 `&` 分隔；如 'path?key=value&key2=value2' */
+        /** 需要跳转的应用内非 tabBar 的页面的路径 (代码包路径), 路径后可以带参数。参数与路径之间使用 `?` 分隔，参数键与参数值用 `=` 相连，不同参数用 `&` 分隔；如 'path?key=value&key2=value2' */
         url: string
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: NavigateToCompleteCallback
@@ -2822,7 +2822,7 @@ innerAudioContext.onError((res) => {
         z: number
     }
     interface OnAppShowCallbackResult {
-        /** 小程序切前台的路径 */
+        /** 小程序切前台的路径 (代码包路径) */
         path: string
         /** 小程序切前台的 query 参数 */
         query: IAnyObject
@@ -3015,7 +3015,7 @@ innerAudioContext.onError((res) => {
     interface OnPageNotFoundCallbackResult {
         /** 是否本次启动的首个页面（例如从分享等入口进来，首个页面是开发者配置的分享页面） */
         isEntryPage: boolean
-        /** 不存在页面的路径 */
+        /** 不存在页面的路径 (代码包路径) */
         path: string
         /** 打开不存在页面的 query 参数 */
         query: IAnyObject
@@ -3045,7 +3045,7 @@ innerAudioContext.onError((res) => {
         duration: number
         /** 录音文件大小，单位：Byte */
         fileSize: number
-        /** 录音文件的临时路径 */
+        /** 录音文件的临时路径 (本地路径) */
         tempFilePath: string
     }
     interface OnWifiConnectedCallbackResult {
@@ -3083,7 +3083,7 @@ innerAudioContext.onError((res) => {
         code: string
     }
     interface OpenDocumentOption {
-        /** 文件路径，可通过 downloadFile 获得 */
+        /** 文件路径 (本地路径) ，可通过 downloadFile 获得 */
         filePath: string
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: OpenDocumentCompleteCallback
@@ -3211,7 +3211,7 @@ innerAudioContext.onError((res) => {
         success?: PlaySuccessCallback
     }
     interface PlayVoiceOption {
-        /** 需要播放的语音文件的文件路径 */
+        /** 需要播放的语音文件的文件路径 (本地路径) */
         filePath: string
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: PlayVoiceCompleteCallback
@@ -3255,7 +3255,7 @@ innerAudioContext.onError((res) => {
         write: boolean
     }
     interface ReLaunchOption {
-        /** 需要跳转的应用内页面路径，路径后可以带参数。参数与路径之间使用?分隔，参数键与参数值用=相连，不同参数用&分隔；如 'path?key=value&key2=value2' */
+        /** 需要跳转的应用内页面路径 (代码包路径)，路径后可以带参数。参数与路径之间使用?分隔，参数键与参数值用=相连，不同参数用&分隔；如 'path?key=value&key2=value2' */
         url: string
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: ReLaunchCompleteCallback
@@ -3287,7 +3287,7 @@ innerAudioContext.onError((res) => {
         errMsg: string
     }
     interface ReadFileOption {
-        /** 要读取的文件的路径 */
+        /** 要读取的文件的路径 (本地路径) */
         filePath: string
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: ReadFileCompleteCallback
@@ -3337,7 +3337,7 @@ innerAudioContext.onError((res) => {
         errMsg: string
     }
     interface ReaddirOption {
-        /** 要读取的目录路径 */
+        /** 要读取的目录路径 (本地路径) */
         dirPath: string
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: ReaddirCompleteCallback
@@ -3433,7 +3433,7 @@ innerAudioContext.onError((res) => {
         width: number
     }
     interface RedirectToOption {
-        /** 需要跳转的应用内非 tabBar 的页面的路径, 路径后可以带参数。参数与路径之间使用 `?` 分隔，参数键与参数值用 `=` 相连，不同参数用 `&` 分隔；如 'path?key=value&key2=value2' */
+        /** 需要跳转的应用内非 tabBar 的页面的路径 (代码包路径), 路径后可以带参数。参数与路径之间使用 `?` 分隔，参数键与参数值用 `=` 相连，不同参数用 `&` 分隔；如 'path?key=value&key2=value2' */
         url: string
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: RedirectToCompleteCallback
@@ -3538,9 +3538,9 @@ innerAudioContext.onError((res) => {
         errMsg: string
     }
     interface RenameOption {
-        /** 新文件路径 */
+        /** 新文件路径，支持本地路径 */
         newPath: string
-        /** 源文件路径，可以是普通文件或目录 */
+        /** 源文件路径，支持本地路径 */
         oldPath: string
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: RenameCompleteCallback
@@ -3635,7 +3635,7 @@ innerAudioContext.onError((res) => {
         errMsg: string
     }
     interface RequestSubscribeMessageOption {
-        /** 需要订阅的消息模板的id的集合（注意：iOS客户端7.0.6版本、Android客户端7.0.7版本之后的一次性订阅/长期订阅才支持多个模板消息，iOS客户端7.0.5版本、Android客户端7.0.6版本之前的一次订阅只支持一个模板消息）消息模板id在[微信公众平台(mp.weixin.qq.com)-功能-订阅消息]中配置 */
+        /** 需要订阅的消息模板的id的集合，一次调用最多可订阅3条消息（注意：iOS客户端7.0.6版本、Android客户端7.0.7版本之后的一次性订阅/长期订阅才支持多个模板消息，iOS客户端7.0.5版本、Android客户端7.0.6版本之前的一次订阅只支持一个模板消息）消息模板id在[微信公众平台(mp.weixin.qq.com)-功能-订阅消息]中配置 */
         tmplIds: any[]
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: RequestSubscribeMessageCompleteCallback
@@ -3715,7 +3715,7 @@ innerAudioContext.onError((res) => {
         errMsg: string
     }
     interface RmdirOption {
-        /** 要删除的目录路径 */
+        /** 要删除的目录路径 (本地路径) */
         dirPath: string
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: RmdirCompleteCallback
@@ -3756,7 +3756,7 @@ innerAudioContext.onError((res) => {
         errMsg: string
     }
     interface SaveImageToPhotosAlbumOption {
-        /** 图片文件路径，可以是临时文件路径或永久文件路径，不支持网络图片路径 */
+        /** 图片文件路径，可以是临时文件路径或永久文件路径 (本地路径) ，不支持网络路径 */
         filePath: string
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: SaveImageToPhotosAlbumCompleteCallback
@@ -3766,7 +3766,7 @@ innerAudioContext.onError((res) => {
         success?: SaveImageToPhotosAlbumSuccessCallback
     }
     interface SaveVideoToPhotosAlbumOption {
-        /** 视频文件路径，可以是临时文件路径也可以是永久文件路径 */
+        /** 视频文件路径，可以是临时文件路径也可以是永久文件路径 (本地路径) */
         filePath: string
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: SaveVideoToPhotosAlbumCompleteCallback
@@ -4234,7 +4234,7 @@ innerAudioContext.onError((res) => {
     interface SnapshotSuccessCallbackResult {
         /** 图片的高度 */
         height: string
-        /** 图片文件的临时路径 */
+        /** 图片文件的临时路径 (本地路径) */
         tempImagePath: string
         /** 图片的宽度 */
         width: string
@@ -4406,14 +4406,14 @@ innerAudioContext.onError((res) => {
         success?: StartPullDownRefreshSuccessCallback
     }
     interface StartRecordSuccessCallbackResult {
-        /** 录音文件的临时路径 */
+        /** 录音文件的临时路径 (本地路径) */
         tempFilePath: string
         errMsg: string
     }
     interface StartRecordTimeoutCallbackResult {
-        /** 封面图片文件的临时路径 */
+        /** 封面图片文件的临时路径 (本地路径) */
         tempThumbPath: string
-        /** 视频的文件的临时路径 */
+        /** 视频的文件的临时路径 (本地路径) */
         tempVideoPath: string
     }
     interface StartSoterAuthenticationOption {
@@ -4464,7 +4464,7 @@ innerAudioContext.onError((res) => {
         errMsg: string
     }
     interface StatOption {
-        /** 文件/目录路径 */
+        /** 文件/目录路径 (本地路径) */
         path: string
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: StatCompleteCallback
@@ -4632,9 +4632,9 @@ innerAudioContext.onError((res) => {
         success?: StopPullDownRefreshSuccessCallback
     }
     interface StopRecordSuccessCallbackResult {
-        /** 封面图片文件的临时路径 */
+        /** 封面图片文件的临时路径 (本地路径) */
         tempThumbPath: string
-        /** 视频的文件的临时路径 */
+        /** 视频的文件的临时路径 (本地路径) */
         tempVideoPath: string
         errMsg: string
     }
@@ -4663,7 +4663,7 @@ innerAudioContext.onError((res) => {
         success?: SwitchCameraSuccessCallback
     }
     interface SwitchTabOption {
-        /** 需要跳转的 tabBar 页面的路径（需在 app.json 的 [tabBar](https://developers.weixin.qq.com/miniprogram/dev/reference/configuration/app.html#tabbar) 字段定义的页面），路径后不能带参数。 */
+        /** 需要跳转的 tabBar 页面的路径 (代码包路径)（需在 app.json 的 [tabBar](https://developers.weixin.qq.com/miniprogram/dev/reference/configuration/app.html#tabbar) 字段定义的页面），路径后不能带参数。 */
         url: string
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: SwitchTabCompleteCallback
@@ -4688,7 +4688,7 @@ innerAudioContext.onError((res) => {
         success?: TakePhotoSuccessCallback
     }
     interface TakePhotoSuccessCallbackResult {
-        /** 照片文件的临时路径，安卓是jpg图片格式，ios是png */
+        /** 照片文件的临时路径 (本地路径)，安卓是jpg图片格式，ios是png */
         tempImagePath: string
         errMsg: string
     }
@@ -4735,7 +4735,7 @@ innerAudioContext.onError((res) => {
         remoteInfo: RemoteInfo
     }
     interface UDPSocketSendOption {
-        /** 要发消息的地址。可以是一个和本机同网段的 IP 地址，也可以是在安全域名列表内的域名地址 */
+        /** 要发消息的地址。在基础库 2.9.3 及之前版本可以是一个和本机同网段的 IP 地址，也可以是在安全域名列表内的域名地址；在基础库 2.9.4 及之后版本，可以是任意 IP 和域名 */
         address: string
         /** 要发送的数据 */
         message: string | ArrayBuffer
@@ -4764,7 +4764,7 @@ innerAudioContext.onError((res) => {
         errMsg: string
     }
     interface UnlinkOption {
-        /** 要删除的文件路径 */
+        /** 要删除的文件路径 (本地路径) */
         filePath: string
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: UnlinkCompleteCallback
@@ -4782,9 +4782,9 @@ innerAudioContext.onError((res) => {
         errMsg: string
     }
     interface UnzipOption {
-        /** 目标目录路径 */
+        /** 目标目录路径, 支持本地路径 */
         targetPath: string
-        /** 源文件路径，只可以是 zip 压缩文件 */
+        /** 源文件路径，支持本地路径, 只可以是 zip 压缩文件 */
         zipFilePath: string
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: UnzipCompleteCallback
@@ -4830,7 +4830,7 @@ innerAudioContext.onError((res) => {
         withShareTicket?: boolean
     }
     interface UploadFileOption {
-        /** 要上传文件资源的路径 */
+        /** 要上传文件资源的路径 (网络路径) */
         filePath: string
         /** 文件对应的 key，开发者在服务端可以通过这个 key 获取文件的二进制内容 */
         name: string
@@ -4972,7 +4972,7 @@ innerAudioContext.onError((res) => {
     interface WriteFileOption {
         /** 要写入的文本或二进制数据 */
         data: string | ArrayBuffer
-        /** 要写入的文件路径 */
+        /** 要写入的文件路径 (本地路径) */
         filePath: string
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: WriteFileCompleteCallback
@@ -5008,7 +5008,7 @@ innerAudioContext.onError((res) => {
         success?: WriteFileSuccessCallback
     }
     interface WxGetFileInfoOption {
-        /** 本地文件路径 */
+        /** 本地文件路径 (本地路径) */
         filePath: string
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: WxGetFileInfoCompleteCallback
@@ -5047,13 +5047,13 @@ innerAudioContext.onError((res) => {
     interface WxGetSavedFileListSuccessCallbackResultFileItem {
         /** 文件保存时的时间戳，从1970/01/01 08:00:00 到当前时间的秒数 */
         createTime: number
-        /** 本地路径 */
+        /** 文件路径 (本地路径) */
         filePath: string
         /** 本地文件大小，以字节为单位 */
         size: number
     }
     interface WxRemoveSavedFileOption {
-        /** 需要删除的文件路径 */
+        /** 需要删除的文件路径 (本地路径) */
         filePath: string
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: WxRemoveSavedFileCompleteCallback
@@ -5063,7 +5063,7 @@ innerAudioContext.onError((res) => {
         success?: WxRemoveSavedFileSuccessCallback
     }
     interface WxSaveFileOption {
-        /** 需要保存的文件的临时路径 */
+        /** 需要保存的文件的临时路径 (本地路径) */
         tempFilePath: string
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: WxSaveFileCompleteCallback
@@ -5073,7 +5073,7 @@ innerAudioContext.onError((res) => {
         success?: WxSaveFileSuccessCallback
     }
     interface WxSaveFileSuccessCallbackResult {
-        /** 存储后的文件路径 */
+        /** 存储后的文件路径 (本地路径) */
         savedFilePath: number
         errMsg: string
     }
@@ -5093,8 +5093,8 @@ innerAudioContext.onError((res) => {
         /** 接口调用成功的回调函数 */
         success?: WxStopRecordSuccessCallback
     }
-    interface envObj {
-        /** 文件系统中的用户目录路径 */
+    interface env {
+        /** 文件系统中的用户目录路径 (本地路径) */
         USER_DATA_PATH: string
     }
     interface Animation {
@@ -5900,7 +5900,7 @@ ctx.draw()
          *
          * 最低基础库： `1.9.90` */
         createPattern(
-            /** 重复的图像源，仅支持包内路径和临时路径 */
+            /** 重复的图像源，支持代码包路径和本地临时路径 (本地路径) */
             image: string,
             /** 如何重复图像
              *
@@ -7321,7 +7321,7 @@ this.editorCtx.insertImage({
          *
          * [FileSystemManager.readdir](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.readdir.html) 的同步版本 */
         readdirSync(
-            /** 要读取的目录路径 */
+            /** 要读取的目录路径 (本地路径) */
             dirPath: string,
         ): string[]
         /** [FileSystemManager.access(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.access.html)
@@ -7332,7 +7332,7 @@ this.editorCtx.insertImage({
          *
          * [FileSystemManager.access](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.access.html) 的同步版本 */
         accessSync(
-            /** 要判断是否存在的文件/目录路径 */
+            /** 要判断是否存在的文件/目录路径 (本地路径) */
             path: string,
         ): void
         /** [FileSystemManager.appendFile(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.appendFile.html)
@@ -7347,7 +7347,7 @@ this.editorCtx.insertImage({
          *
          * 最低基础库： `2.1.0` */
         appendFileSync(
-            /** 要追加内容的文件路径 */
+            /** 要追加内容的文件路径 (本地路径) */
             filePath: string,
             /** 要追加的文本或二进制数据 */
             data: string | ArrayBuffer,
@@ -7386,9 +7386,9 @@ this.editorCtx.insertImage({
          *
          * [FileSystemManager.copyFile](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.copyFile.html) 的同步版本 */
         copyFileSync(
-            /** 源文件路径，只可以是普通文件 */
+            /** 源文件路径，支持本地路径 */
             srcPath: string,
-            /** 目标文件路径 */
+            /** 目标文件路径，支持本地路径 */
             destPath: string,
         ): void
         /** [FileSystemManager.getFileInfo(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.getFileInfo.html)
@@ -7407,7 +7407,7 @@ this.editorCtx.insertImage({
          *
          * [FileSystemManager.mkdir](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.mkdir.html) 的同步版本 */
         mkdirSync(
-            /** 创建的目录路径 */
+            /** 创建的目录路径 (本地路径) */
             dirPath: string,
             /** 是否在递归创建该目录的上级目录后再创建该目录。如果对应的上级目录已经存在，则不创建该上级目录。如 dirPath 为 a/b/c/d 且 recursive 为 true，将创建 a 目录，再在 a 目录下创建 b 目录，以此类推直至创建 a/b/c 目录下的 d 目录。
              *
@@ -7434,9 +7434,9 @@ this.editorCtx.insertImage({
          *
          * [FileSystemManager.rename](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.rename.html) 的同步版本 */
         renameSync(
-            /** 源文件路径，可以是普通文件或目录 */
+            /** 源文件路径，支持本地路径 */
             oldPath: string,
-            /** 新文件路径 */
+            /** 新文件路径，支持本地路径 */
             newPath: string,
         ): void
         /** [FileSystemManager.rmdir(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.rmdir.html)
@@ -7447,7 +7447,7 @@ this.editorCtx.insertImage({
          *
          * [FileSystemManager.rmdir](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.rmdir.html) 的同步版本 */
         rmdirSync(
-            /** 要删除的目录路径 */
+            /** 要删除的目录路径 (本地路径) */
             dirPath: string,
             /** 是否递归删除目录。如果为 true，则删除该目录和该目录下的所有子目录以及文件。
              *
@@ -7470,7 +7470,7 @@ this.editorCtx.insertImage({
          *
          * [FileSystemManager.unlink](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.unlink.html) 的同步版本 */
         unlinkSync(
-            /** 要删除的文件路径 */
+            /** 要删除的文件路径 (本地路径) */
             filePath: string,
         ): void
         /** [FileSystemManager.unzip(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.unzip.html)
@@ -7485,7 +7485,7 @@ this.editorCtx.insertImage({
          *
          * [FileSystemManager.writeFile](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.writeFile.html) 的同步版本 */
         writeFileSync(
-            /** 要写入的文件路径 */
+            /** 要写入的文件路径 (本地路径) */
             filePath: string,
             /** 要写入的文本或二进制数据 */
             data: string | ArrayBuffer,
@@ -7520,7 +7520,7 @@ this.editorCtx.insertImage({
          *
          * [FileSystemManager.stat](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.stat.html) 的同步版本 */
         statSync(
-            /** 文件/目录路径 */
+            /** 文件/目录路径 (本地路径) */
             path: string,
             /** 是否递归获取目录下的每个文件的 Stats 信息
              *
@@ -7531,16 +7531,16 @@ this.editorCtx.insertImage({
          *
          * [FileSystemManager.saveFile](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.saveFile.html) 的同步版本 */
         saveFileSync(
-            /** 临时存储文件路径 */
+            /** 临时存储文件路径 (本地路径) */
             tempFilePath: string,
-            /** 要存储的文件路径 */
+            /** 要存储的文件路径 (本地路径) */
             filePath?: string,
         ): number
         /** [string|ArrayBuffer FileSystemManager.readFileSync(string filePath, string encoding)](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.readFileSync.html)
          *
          * [FileSystemManager.readFile](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.readFile.html) 的同步版本 */
         readFileSync(
-            /** 要读取的文件的路径 */
+            /** 要读取的文件的路径 (本地路径) */
             filePath: string,
             /** 指定读取文件的字符编码，如果不传 encoding，则以 ArrayBuffer 格式读取文件的二进制内容
              *
@@ -8798,10 +8798,10 @@ Component({
          *
          * 绑定一个系统随机分配的可用端口，或绑定一个指定的端口号 */
         bind(
-            /** 指定要绑定的端口号
+            /** 指定要绑定的端口号，不传则返回系统随机分配的可用端口
              *
              * 最低基础库： `2.9.0` */
-            port: number,
+            port?: number,
         ): number
     }
     interface UpdateManager {
@@ -9062,7 +9062,7 @@ console.log(extConfig)
 ```
 *
 * 最低基础库： `1.1.0` */
-        getExtConfigSync(): ExtInfo
+        getExtConfigSync(): IAnyObject
         /** [Object wx.getLaunchOptionsSync()](https://developers.weixin.qq.com/miniprogram/dev/api/base/app/life-cycle/wx.getLaunchOptionsSync.html)
          *
          * 获取小程序启动时的参数。与 [`App.onLaunch`](https://developers.weixin.qq.com/miniprogram/dev/reference/api/App.html#onlaunchobject-object) 的回调参数一致。
@@ -9195,7 +9195,7 @@ try {
         ): CanvasContext
         /** [[DownloadTask](https://developers.weixin.qq.com/miniprogram/dev/api/network/download/DownloadTask.html) wx.downloadFile(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/network/download/wx.downloadFile.html)
 *
-* 下载文件资源到本地。客户端直接发起一个 HTTPS GET 请求，返回文件的本地临时路径，单次下载允许的最大文件为 50MB。使用前请注意阅读[相关说明](https://developers.weixin.qq.com/miniprogram/dev/framework/ability/network.html)。
+* 下载文件资源到本地。客户端直接发起一个 HTTPS GET 请求，返回文件的本地临时路径 (本地路径)，单次下载允许的最大文件为 50MB。使用前请注意阅读[相关说明](https://developers.weixin.qq.com/miniprogram/dev/framework/ability/network.html)。
 *
 * 注意：请在服务端响应的 header 中指定合理的 `Content-Type` 字段，以保证客户端正确处理文件类型。
 *
