@@ -3041,3 +3041,16 @@ import { expectType } from 'tsd'
     },
   })
 }
+
+// Test case from `wx.getSetting`
+{
+  wx.getSetting({
+    withSubscriptions: true,
+    success(res) {
+      expectType<WechatMiniprogram.AuthSetting>(res.authSetting)
+      expectType<boolean | undefined>(res.authSetting['scope.userInfo'])
+      expectType<boolean | undefined>(res.authSetting['scope.subscribeMessage'])
+      expectType<Record<string, any>>(res.subscriptionsSetting)
+    },
+  })
+}
