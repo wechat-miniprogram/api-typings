@@ -1981,7 +1981,7 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
          *
          * 用户授权结果 */
         authSetting: AuthSetting
-        /** 用户订阅消息（包括一次性订阅消息和永久订阅消息）的订阅状态，需要接口参数withSubscriptions值为true时才会返回。subscriptionsSetting对象的键为**一次性订阅消息的模板id**或**永久订阅消息的类型**，值为'accept'、'reject'、'ban'中的其中一种，'accept'表示用户同意订阅该条订阅消息，'reject'表示用户拒绝订阅该订阅消息，'ban'表示已被后台封禁。一次性订阅消息使用方法详见 [wx.requestSubscribeMessage](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/subscribe-message/wx.requestSubscribeMessage.html)，永久订阅消息（仅小游戏可用）使用方法详见[wx.requestSubscribeSystemMessage](#)
+        /** 用户订阅消息（包括一次性订阅消息和系统订阅消息）的订阅状态，需要接口参数withSubscriptions值为true时才会返回。subscriptionsSetting对象的键为**一次性订阅消息的模板id**或**系统订阅消息的类型**，值为'accept'、'reject'、'ban'中的其中一种，'accept'表示用户同意订阅该条订阅消息，'reject'表示用户拒绝订阅该订阅消息，'ban'表示已被后台封禁。一次性订阅消息使用方法详见 [wx.requestSubscribeMessage](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/subscribe-message/wx.requestSubscribeMessage.html)，系统订阅消息（仅小游戏可用）使用方法详见[wx.requestSubscribeSystemMessage](#)
          *
          * 最低基础库： `2.10.0` */
         subscriptionsSetting: IAnyObject
@@ -4338,6 +4338,11 @@ innerAudioContext.onError((res) => {
         /** 接口调用成功的回调函数 */
         success?: SetZoomSuccessCallback
     }
+    interface SetZoomSuccessCallbackResult {
+        /** 实际设置的缩放级别。由于系统限制，某些机型可能无法设置成指定值，会改用最接近的可设值。 */
+        zoom: number
+        errMsg: string
+    }
     interface ShowActionSheetOption {
         /** 按钮的文字数组，数组长度最大为 6 */
         itemList: string[]
@@ -4933,8 +4938,8 @@ innerAudioContext.onError((res) => {
         success?: TakePhotoSuccessCallback
     }
     interface TakePhotoSuccessCallbackResult {
-        /** 实际设置的缩放级别。由于系统限制，某些机型可能无法设置成指定值，会改用最接近的可设值。 */
-        zoom: number
+        /** 照片文件的临时路径 (本地路径)，安卓是jpg图片格式，ios是png */
+        tempImagePath: string
         errMsg: string
     }
     interface TextMetrics {
@@ -12610,6 +12615,10 @@ wx.requestPayment({
         requestPayment(option: RequestPaymentOption): void
         /** [wx.requestSubscribeMessage(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/subscribe-message/wx.requestSubscribeMessage.html)
 *
+* 调起客户端小程序订阅消息界面，返回用户订阅消息的操作结果。
+*
+* 注意：[2.8.2](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html) 版本开始，用户发生点击行为或者发起支付回调后，才可以调起订阅消息界面。
+*
 * 当用户勾选了订阅面板中的“总是保持以上选择，不再询问”时，模板消息会被添加到用户的小程序设置页，通过 [wx.getSetting](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/setting/wx.getSetting.html) 接口可获取用户对相关模板消息的订阅状态。
 *
 * **示例代码**
@@ -15451,7 +15460,7 @@ wx.writeBLECharacteristicValue({
     /** 接口调用失败的回调函数 */
     type SetZoomFailCallback = (res: GeneralCallbackResult) => void
     /** 接口调用成功的回调函数 */
-    type SetZoomSuccessCallback = (res: GeneralCallbackResult) => void
+    type SetZoomSuccessCallback = (result: SetZoomSuccessCallbackResult) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type ShowActionSheetCompleteCallback = (res: GeneralCallbackResult) => void
     /** 接口调用失败的回调函数 */

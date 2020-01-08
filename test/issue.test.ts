@@ -227,3 +227,44 @@ import WX = WechatMiniprogram
     },
   })
 }
+
+// https://github.com/wechat-miniprogram/api-typings/issues/95
+{
+  Page({
+    ctx: {} as WechatMiniprogram.CameraContext,
+    onLoad() {
+      this.ctx = wx.createCameraContext()
+    },
+    takePhoto() {
+      this.ctx.takePhoto({
+        quality: 'high',
+        success: (res) => {
+          expectType<string>(res.tempImagePath)
+          this.setData({
+            src: res.tempImagePath,
+          })
+        },
+      })
+    },
+    startRecord() {
+      this.ctx.startRecord({
+        success: (res) => {
+          expectType<string>(res.errMsg)
+          console.log('startRecord')
+        },
+      })
+    },
+    stopRecord() {
+      this.ctx.stopRecord({
+        success: (res) => {
+          expectType<string>(res.tempThumbPath)
+          expectType<string>(res.tempVideoPath)
+          this.setData({
+            src: res.tempThumbPath,
+            videoSrc: res.tempVideoPath,
+          })
+        },
+      })
+    },
+  })
+}
