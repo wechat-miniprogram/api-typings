@@ -18,8 +18,8 @@ Behavior({
       type: Number,
       value: 0,
       observer(newVal, oldVal) {
-        expectType<number>(newVal)
-        expectType<string>(oldVal.toExponential())
+        expectType<any>(newVal)
+        expectType<any>(oldVal.toExponential())
       },
     },
   },

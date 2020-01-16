@@ -1,22 +1,22 @@
 /*! *****************************************************************************
 Copyright (c) 2020 Tencent, Inc. All rights reserved.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of 
-this software and associated documentation files (the "Software"), to deal in 
-the Software without restriction, including without limitation the rights to 
-use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies 
-of the Software, and to permit persons to whom the Software is furnished to do 
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+of the Software, and to permit persons to whom the Software is furnished to do
 so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all 
+The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ***************************************************************************** */
 
@@ -97,12 +97,12 @@ declare namespace WechatMiniprogram {
             observer?:
                 | string
                 | ((
-                      newVal: ValueType<T>,
-                      oldVal: ValueType<T>,
+                      newVal: any,
+                      oldVal: any,
                       changedPath: Array<string | number>,
                   ) => void)
             /** 属性的类型（可以指定多个） */
-            optionalTypes?: ShortProperty[]
+            optionalTypes?: PropertyType[]
         }
         type AllFullProperty =
             | FullProperty<StringConstructor>
@@ -111,20 +111,15 @@ declare namespace WechatMiniprogram {
             | FullProperty<ArrayConstructor>
             | FullProperty<ObjectConstructor>
             | FullProperty<null>
-        type ShortProperty =
-            | StringConstructor
-            | NumberConstructor
-            | BooleanConstructor
-            | ArrayConstructor
-            | ObjectConstructor
-            | null
-        type AllProperty = AllFullProperty | ShortProperty
-        type PropertyToData<T extends AllProperty> = T extends ShortProperty
+        type AllProperty = AllFullProperty | PropertyType
+        type PropertyToData<T extends AllProperty> = T extends PropertyType
             ? ValueType<T>
-            : FullPropertyToData<Exclude<T, ShortProperty>>
-        type FullPropertyToData<T extends AllFullProperty> = ValueType<
-            T['type']
-        >
+            : FullPropertyToData<Exclude<T, PropertyType>>
+        type FullPropertyToData<T extends AllFullProperty> =
+            T['optionalTypes'] extends OptionalTypes<infer V>
+                ? ValueType<V | T['type']>
+                : ValueType<T['type']>
+        type OptionalTypes<T extends PropertyType> = T[]
         type PropertyOptionToData<P extends PropertyOption> = {
             [name in keyof P]: PropertyToData<P[name]>
         }
