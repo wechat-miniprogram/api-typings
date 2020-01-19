@@ -150,17 +150,6 @@ declare namespace WechatMiniprogram {
         /** 工作电话 */
         workPhoneNumber?: string
     }
-    /** 广播自定义参数 */
-    interface AdvertiseReqObj {
-        /** 当前Service是否可连接 */
-        connectable?: boolean
-        /** 广播中deviceName字段，默认为当前设备名 */
-        deviceName?: string
-        /** 广播的制造商信息, 默认为空 */
-        manufacturerData?: ManufacturerData[]
-        /** 要广播的serviceUuid列表 */
-        serviceUuids?: string[]
-    }
     /** 动画效果 */
     interface AnimationOption {
         /** 动画变化时间，单位 ms */
@@ -234,8 +223,6 @@ declare namespace WechatMiniprogram {
         'scope.invoiceTitle'?: boolean
         /** 是否授权录音功能，对应接口 [wx.startRecord](https://developers.weixin.qq.com/miniprogram/dev/api/media/recorder/wx.startRecord.html) */
         'scope.record'?: boolean
-        /** 是否授权订阅消息推送功能，对应接口 [wx.requestSubscribeMessage](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/subscribe-message/wx.requestSubscribeMessage.html) */
-        'scope.subscribeMessage'?: boolean
         /** 是否授权用户信息，对应接口 [wx.getUserInfo](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/user-info/wx.getUserInfo.html) */
         'scope.userInfo'?: boolean
         /** 是否授权地理位置，对应接口 [wx.getLocation](https://developers.weixin.qq.com/miniprogram/dev/api/location/wx.getLocation.html), [wx.chooseLocation](https://developers.weixin.qq.com/miniprogram/dev/api/location/wx.chooseLocation.html) */
@@ -258,20 +245,9 @@ declare namespace WechatMiniprogram {
     /** 设备特征值列表 */
     interface BLECharacteristic {
         /** 该特征值支持的操作类型 */
-        properties: BLECharacteristicProperties
+        properties: Properties
         /** 蓝牙设备特征值的 uuid */
         uuid: string
-    }
-    /** 该特征值支持的操作类型 */
-    interface BLECharacteristicProperties {
-        /** 该特征值是否支持 indicate 操作 */
-        indicate: boolean
-        /** 该特征值是否支持 notify 操作 */
-        notify: boolean
-        /** 该特征值是否支持 read 操作 */
-        read: boolean
-        /** 该特征值是否支持 write 操作 */
-        write: boolean
     }
     /** 设备服务列表 */
     interface BLEService {
@@ -609,41 +585,6 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         tempFilePath: string
         errMsg: string
     }
-    /** characteristics列表 */
-    interface Characteristic {
-        /** Characteristic 的 uuid */
-        uuid: string
-        /** 描述符数据 */
-        descriptors?: Descriptor
-        /** 特征值权限 */
-        permission?: CharacteristicPermission
-        /** 特征值支持的操作 */
-        properties?: CharacteristicProperties
-        /** 特征值对应的二进制值 */
-        value?: ArrayBuffer
-    }
-    /** 特征值权限 */
-    interface CharacteristicPermission {
-        /** 加密读请求 */
-        readEncryptionRequired?: boolean
-        /** 可读 */
-        readable?: boolean
-        /** 加密写请求 */
-        writeEncryptionRequired?: boolean
-        /** 可写 */
-        writeable?: boolean
-    }
-    /** 特征值支持的操作 */
-    interface CharacteristicProperties {
-        /** 回包 */
-        indicate?: boolean
-        /** 订阅 */
-        notify?: boolean
-        /** 读 */
-        read?: boolean
-        /** 写 */
-        write?: boolean
-    }
     interface CheckIsSoterEnrolledInDeviceOption {
         /** 认证方式
          *
@@ -853,6 +794,12 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         fail?: ChooseMediaFailCallback
         /** 拍摄视频最长拍摄时间，单位秒。时间范围为 3s 至 30s 之间 */
         maxDuration?: number
+        /** 文件类型
+         *
+         * 可选值：
+         * - 'image': 只能拍摄图片或从相册选择图片;
+         * - 'video': 只能拍摄视频或从相册选择视频; */
+        mediaType?: Array<'image' | 'video'>
         /** 仅对 mediaType 为 image 时有效，是否压缩所选文件 */
         sizeType?: string[]
         /** 图片和视频选择的来源
@@ -1315,22 +1262,6 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         variant?: string
         /** 字体粗细，可选值为 normal / bold / 100 / 200../ 900 */
         weight?: string
-    }
-    /** 描述符数据 */
-    interface Descriptor {
-        /** Descriptor 的 uuid */
-        uuid: string
-        /** 描述符的权限 */
-        permission?: DescriptorPermission
-        /** 描述符数据 */
-        value?: ArrayBuffer
-    }
-    /** 描述符的权限 */
-    interface DescriptorPermission {
-        /** 读 */
-        read?: boolean
-        /** 写 */
-        write?: boolean
     }
     /** 指定 marker 移动到的目标点 */
     interface DestinationOption {
@@ -1973,7 +1904,7 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         success?: GetSettingSuccessCallback
         /** 是否同时获取用户订阅消息的订阅状态，默认不获取
          *
-         * 最低基础库： `2.10.0` */
+         * 最低基础库： `2.10.1` */
         withSubscriptions?: boolean
     }
     interface GetSettingSuccessCallbackResult {
@@ -1981,10 +1912,12 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
          *
          * 用户授权结果 */
         authSetting: AuthSetting
-        /** 用户订阅消息（包括一次性订阅消息和系统订阅消息）的订阅状态，需要接口参数withSubscriptions值为true时才会返回。subscriptionsSetting对象的键为**一次性订阅消息的模板id**或**系统订阅消息的类型**，值为'accept'、'reject'、'ban'中的其中一种，'accept'表示用户同意订阅该条订阅消息，'reject'表示用户拒绝订阅该订阅消息，'ban'表示已被后台封禁。一次性订阅消息使用方法详见 [wx.requestSubscribeMessage](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/subscribe-message/wx.requestSubscribeMessage.html)，系统订阅消息（仅小游戏可用）使用方法详见[wx.requestSubscribeSystemMessage](#)
+        /** [SubscriptionsSetting](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/setting/SubscriptionsSetting.html)
          *
-         * 最低基础库： `2.10.0` */
-        subscriptionsSetting: IAnyObject
+         * 用户订阅消息设置，接口参数`withSubscriptions`值为`true`时才会返回。
+         *
+         * 最低基础库： `2.10.1` */
+        subscriptionsSetting: SubscriptionsSetting
         errMsg: string
     }
     interface GetShareInfoOption {
@@ -2760,13 +2693,6 @@ innerAudioContext.onError((res) => {
         /** 接口调用成功的回调函数 */
         success?: MakePhoneCallSuccessCallback
     }
-    /** 广播的制造商信息, 默认为空 */
-    interface ManufacturerData {
-        /** 制造商ID */
-        manufacturerId: string
-        /** 制造商信息 */
-        manufacturerSpecificData: ArrayBuffer
-    }
     /** 要显示在可视区域内的坐标点列表 */
     interface MapPostion {
         /** 纬度 */
@@ -2995,14 +2921,6 @@ innerAudioContext.onError((res) => {
         /** 蓝牙设备ID */
         deviceId: string
     }
-    interface OnBLEPeripheralConnectionStateChangedCallbackResult {
-        /** 连接目前状态 */
-        connected: boolean
-        /** 连接状态变化的设备 id */
-        deviceId: string
-        /** server 的 uuid */
-        serverId: string
-    }
     interface OnBackgroundFetchDataOption {
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: OnBackgroundFetchDataCompleteCallback
@@ -3160,24 +3078,6 @@ innerAudioContext.onError((res) => {
          * - 'none': 无网络; */
         networkType: 'wifi' | '2g' | '3g' | '4g' | 'unknown' | 'none'
     }
-    interface OnOnCharacteristicReadRequestCallbackResult {
-        /** 唯一标识码，调用 writeCharacteristicValue 时使用 */
-        callbackId: number
-        /** characteristic对应的uuid */
-        characteristicId: string
-        /** service对应的uuid */
-        serviceId: string
-    }
-    interface OnOnCharacteristicWriteRequestCallbackResult {
-        /** 唯一标识码，调用 writeCharacteristicValue 时使用 */
-        callbackId: number
-        /** characteristic对应的uuid */
-        characteristicId: string
-        /** service对应的uuid */
-        serviceId: string
-        /** 请求写入的特征值数据 */
-        value: ArrayBuffer
-    }
     interface OnOpenCallbackResult {
         /** 连接成功的 HTTP 响应 Header
          *
@@ -3222,7 +3122,7 @@ innerAudioContext.onError((res) => {
     }
     interface OnUnhandledRejectionCallbackResult {
         /** 被拒绝的 Promise 对象 */
-        promise: string
+        promise: Promise<any>
         /** 拒绝原因，一般是一个 Error 对象 */
         reason: string
     }
@@ -3420,6 +3320,17 @@ innerAudioContext.onError((res) => {
         fail?: PreviewImageFailCallback
         /** 接口调用成功的回调函数 */
         success?: PreviewImageSuccessCallback
+    }
+    /** 该特征值支持的操作类型 */
+    interface Properties {
+        /** 该特征值是否支持 indicate 操作 */
+        indicate: boolean
+        /** 该特征值是否支持 notify 操作 */
+        notify: boolean
+        /** 该特征值是否支持 read 操作 */
+        read: boolean
+        /** 该特征值是否支持 write 操作 */
+        write: boolean
     }
     interface ReLaunchOption {
         /** 需要跳转的应用内页面路径 (代码包路径)，路径后可以带参数。参数与路径之间使用?分隔，参数键与参数值用=相连，不同参数用&分隔；如 'path?key=value&key2=value2' */
@@ -3816,21 +3727,7 @@ innerAudioContext.onError((res) => {
         errMsg: string
     }
     interface RequestSubscribeMessageOption {
-        /** 需要订阅的消息模板的id的集合，一次调用最多可订阅3条消息（注意：iOS客户端7.0.6版本、Android客户端7.0.7版本之后的一次性订阅/长期订阅才支持多个模板消息，iOS客户端7.0.5版本、Android客户端7.0.6版本之前的一次订阅只支持一个模板消息）消息模板id在[微信公众平台(mp.weixin.qq.com)-功能-订阅消息]中配置
-         *
-         * ####  错误码（errCode）
-         * | errCode | errMsg                                                 | 说明                                                           |
-         * | ------- | ------------------------------------------------------ | -------------------------------------------------------------- |
-         * | 10001   | TmplIds can't be empty                                 | 参数传空了                                                     |
-         * | 10002   | Request list fai                                       | 网络问题，请求消息列表失败                                     |
-         * | 10003   | Request subscribe fail                                 | 网络问题，订阅请求发送失败                                     |
-         * | 10004   | Invalid template id                                    | 参数类型错误                                                   |
-         * | 10005   | Cannot show subscribe message UI                       | 无法展示 UI，一般是小程序这个时候退后台了导致的                |
-         * | 20001   | No template data return, verify the template id exist  | 没有模板数据，一般是模板 ID 不存在 或者和模板类型不对应 导致的 |
-         * | 20002   | Templates type must be same                            | 模板消息类型 既有一次性的又有永久的                            |
-         * | 20003   | Templates count out of max bounds                      | 模板消息数量超过上限                                           |
-         * | 20004   | The main switch is switched off                        | 用户关闭了主开关，无法进行订阅                                 |
-         * | 20005   | This mini program was banned from subscribing messages | 小程序被禁封                                                   | */
+        /** 需要订阅的消息模板的id的集合，一次调用最多可订阅3条消息（注意：iOS客户端7.0.6版本、Android客户端7.0.7版本之后的一次性订阅/长期订阅才支持多个模板消息，iOS客户端7.0.5版本、Android客户端7.0.6版本之前的一次订阅只支持一个模板消息）消息模板id在[微信公众平台(mp.weixin.qq.com)-功能-订阅消息]中配置 */
         tmplIds: any[]
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: RequestSubscribeMessageCompleteCallback
@@ -4088,13 +3985,6 @@ innerAudioContext.onError((res) => {
         fail?: SendSocketMessageFailCallback
         /** 接口调用成功的回调函数 */
         success?: SendSocketMessageSuccessCallback
-    }
-    /** 描述service的Object */
-    interface Service {
-        /** characteristics列表 */
-        characteristics: Characteristic[]
-        /** service 的 uuid */
-        uuid: string
     }
     interface SetBGMVolumeOption {
         /** 音量大小，范围是 0-1 */
@@ -4412,6 +4302,8 @@ innerAudioContext.onError((res) => {
         success?: ShowNavigationBarLoadingSuccessCallback
     }
     interface ShowRedPackageOption {
+        /** 封面地址 */
+        url: string
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: ShowRedPackageCompleteCallback
         /** 接口调用失败的回调函数 */
@@ -4520,16 +4412,6 @@ innerAudioContext.onError((res) => {
         interval?: 'game' | 'ui' | 'normal'
         /** 接口调用成功的回调函数 */
         success?: StartAccelerometerSuccessCallback
-    }
-    interface StartAdvertisingObject {
-        /** 广播自定义参数 */
-        advertiseRequest: AdvertiseReqObj
-        /** 广播功率
-         *
-         * 可选值：
-         * - 'low': 功率低;
-         * - 'medium': 功率适中; */
-        powerLevel?: 'low' | 'medium'
     }
     interface StartBeaconDiscoveryOption {
         /** iBeacon 设备广播的 uuid 列表 */
@@ -4904,6 +4786,13 @@ innerAudioContext.onError((res) => {
         /** 接口调用成功的回调函数 */
         success?: StopWifiSuccessCallback
     }
+    /** 订阅消息设置 */
+    interface SubscriptionsSetting {
+        /** 每一项订阅消息的订阅状态。itemSettings对象的键为**一次性订阅消息的模板id**或**系统订阅消息的类型**，值为'accept'、'reject'、'ban'中的其中一种。'accept'表示用户同意订阅这条消息，'reject'表示用户拒绝订阅这条消息，'ban'表示已被后台封禁。一次性订阅消息使用方法详见 [wx.requestSubscribeMessage](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/subscribe-message/wx.requestSubscribeMessage.html)，永久订阅消息（仅小游戏可用）使用方法详见[wx.requestSubscribeSystemMessage](#) */
+        itemSettings: IAnyObject
+        /** 订阅消息总开关，true为开启，false为关闭 */
+        mainSwitch: boolean
+    }
     interface SwitchCameraOption {
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: SwitchCameraCompleteCallback
@@ -5213,18 +5102,6 @@ innerAudioContext.onError((res) => {
         fail?: WriteBLECharacteristicValueFailCallback
         /** 接口调用成功的回调函数 */
         success?: WriteBLECharacteristicValueSuccessCallback
-    }
-    interface WriteCharacteristicValueObject {
-        /** 可选，处理回包时使用 */
-        callbackId: number
-        /** characteristic对应的uuid */
-        characteristicId: string
-        /** 是否需要通知主机value已更新 */
-        needNotify: boolean
-        /** service 的 uuid */
-        serviceId: string
-        /** 特征值对应的二进制值 */
-        value: ArrayBuffer
     }
     interface WriteFileFailCallbackResult {
         /** 错误信息
@@ -5606,68 +5483,6 @@ innerAudioContext.onError((res) => {
             /** 音频地址 */
             src: string,
         ): void
-    }
-    interface BLEPeripheralServer {
-        /** [BLEPeripheralServer.offOnCharacteristicReadRequest(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/BLEPeripheralServer.offOnCharacteristicReadRequest.html)
-         *
-         * 取消监听已连接的设备请求读当前外围设备的特征值事件 */
-        offOnCharacteristicReadRequest(
-            /** 已连接的设备请求读当前外围设备的特征值事件的回调函数 */
-            callback: OffOnCharacteristicReadRequestCallback,
-        ): void
-        /** [BLEPeripheralServer.offOnCharacteristicWriteRequest(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/BLEPeripheralServer.offOnCharacteristicWriteRequest.html)
-         *
-         * 取消监听已连接的设备请求读当前外围设备的特征值事件 */
-        offOnCharacteristicWriteRequest(
-            /** 已连接的设备请求读当前外围设备的特征值事件的回调函数 */
-            callback: OffOnCharacteristicWriteRequestCallback,
-        ): void
-        /** [BLEPeripheralServer.onOnCharacteristicReadRequest(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/BLEPeripheralServer.onOnCharacteristicReadRequest.html)
-         *
-         * 监听已连接的设备请求读当前外围设备的特征值事件。收到该消息后需要立刻调用 `writeCharacteristicValue` 写回数据，否则主机不会收到响应 */
-        onOnCharacteristicReadRequest(
-            /** 已连接的设备请求读当前外围设备的特征值事件的回调函数 */
-            callback: OnOnCharacteristicReadRequestCallback,
-        ): void
-        /** [BLEPeripheralServer.onOnCharacteristicWriteRequest(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/BLEPeripheralServer.onOnCharacteristicWriteRequest.html)
-         *
-         * 监听已连接的设备请求读当前外围设备的特征值事件。收到该消息后需要立刻调用 `writeCharacteristicValue` 写回数据，否则主机不会收到响应 */
-        onOnCharacteristicWriteRequest(
-            /** 已连接的设备请求读当前外围设备的特征值事件的回调函数 */
-            callback: OnOnCharacteristicWriteRequestCallback,
-        ): void
-        /** [Promise BLEPeripheralServer.addService(Object service)](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/BLEPeripheralServer.addService.html)
-         *
-         * 添加服务 */
-        addService(
-            /** 描述service的Object */
-            service: Service,
-        ): Promise<any>
-        /** [Promise BLEPeripheralServer.close()](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/BLEPeripheralServer.close.html)
-         *
-         * 关闭当前服务端 */
-        close(): Promise<any>
-        /** [Promise BLEPeripheralServer.removeService(String serviceId)](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/BLEPeripheralServer.removeService.html)
-         *
-         * 移除服务 */
-        removeService(
-            /** service 的 uuid */
-            serviceId: string,
-        ): Promise<any>
-        /** [Promise BLEPeripheralServer.startAdvertising(Object Object)](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/BLEPeripheralServer.startAdvertising.html)
-         *
-         * 开始广播本地创建的外围设备 */
-        startAdvertising(Object: StartAdvertisingObject): Promise<any>
-        /** [Promise BLEPeripheralServer.stopAdvertising()](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/BLEPeripheralServer.stopAdvertising.html)
-         *
-         * 停止广播 */
-        stopAdvertising(): Promise<any>
-        /** [Promise BLEPeripheralServer.writeCharacteristicValue(Object Object)](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/BLEPeripheralServer.writeCharacteristicValue.html)
-         *
-         * 往指定特征值写入数据，并通知已连接的主机，从机的特征值已发生变化，该接口会处理是走回包还是走订阅 */
-        writeCharacteristicValue(
-            Object: WriteCharacteristicValueObject,
-        ): Promise<any>
     }
     interface BackgroundAudioError {
         /** 错误信息
@@ -9431,7 +9246,7 @@ console.log(accountInfo.plugin.version) // 插件版本号， 'a.b.c' 这样的�
          * 部分版本在无 `referrerInfo` 的时候会返回 `undefined`，建议使用 `options.referrerInfo && options.referrerInfo.appId` 进行判断。
          *
          * 最低基础库： `2.9.4` */
-        getEnterOptionsSync(): undefined
+        getEnterOptionsSync(): LaunchOptionsApp
         /** [Object wx.getExtConfigSync()](https://developers.weixin.qq.com/miniprogram/dev/api/ext/wx.getExtConfigSync.html)
 *
 * [wx.getExtConfig](https://developers.weixin.qq.com/miniprogram/dev/api/ext/wx.getExtConfig.html) 的同步版本。
@@ -10196,11 +10011,14 @@ wx.chooseInvoiceTitle({
 *
 * ```js
 wx.chooseMedia({
-  sourceType: ['album','camera'],
+  count: 9,
+  mediaType: ['image','video'],
+  sourceType: ['album', 'camera'],
   maxDuration: 30,
   camera: 'back',
   success(res) {
     console.log(res.tempFilePath)
+    console.log(res.size)
   }
 })
 ```
@@ -10812,14 +10630,17 @@ wx.getSetting({
     console.log(res.authSetting)
     // res.authSetting = {
     //   "scope.userInfo": true,
-    //   "scope.subscribeMessage": true
+    //   "scope.userLocation": true
     // }
     console.log(res.subscriptionsSetting)
     // res.subscriptionsSetting = {
-    //   SYS_MSG_TYPE_INTERACTIVE: 'accept',
-    //   SYS_MSG_TYPE_RANK: 'accept',
-    //   zun-LzcQyW-edafCVvzPkK4de2Rllr1fFpw2A_x0oXE: 'reject',
-    //   ke_OZC_66gZxALLcsuI7ilCJSP2OJ2vWo2ooUPpkWrw: 'ban',
+    //   mainSwitch: true, // 订阅消息总开关
+    //   itemSettings: {   // 每一项开关
+    //     SYS_MSG_TYPE_INTERACTIVE: 'accept', // 小游戏系统订阅消息
+    //     SYS_MSG_TYPE_RANK: 'accept'
+    //     zun-LzcQyW-edafCVvzPkK4de2Rllr1fFpw2A_x0oXE: 'reject', // 普通一次性订阅消息
+    //     ke_OZC_66gZxALLcsuI7ilCJSP2OJ2vWo2ooUPpkWrw: 'ban',
+    //   }
     // }
   }
 })
@@ -10846,7 +10667,8 @@ wx.getSetting({
 * **Tips**
 *
 *
-* - 如需要展示群名称，可以使用[开放数据组件](https://developers.weixin.qq.com/miniprogram/dev/component/open-ability/open-data.html)
+* - 如需要展示群名称，小程序可以使用[开放数据组件](https://developers.weixin.qq.com/miniprogram/dev/component/open-ability/open-data.html)
+* - 小游戏可以通过 `wx.getGroupInfo` 接口获取群名称
 *
 * 最低基础库： `1.1.0` */
         getShareInfo(option: GetShareInfoOption): void
@@ -11448,13 +11270,6 @@ wx.notifyBLECharacteristicValueChange({
             /** 低功耗蓝牙连接状态的改变事件的回调函数 */
             callback: (...args: any[]) => any,
         ): void
-        /** [wx.offBLEPeripheralConnectionStateChanged(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/wx.offBLEPeripheralConnectionStateChanged.html)
-         *
-         * 取消监听当前外围设备被连接或断开连接事件 */
-        offBLEPeripheralConnectionStateChanged(
-            /** 当前外围设备被连接或断开连接事件的回调函数 */
-            callback: OffBLEPeripheralConnectionStateChangedCallback,
-        ): void
         /** [wx.offBeaconServiceChange(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/device/ibeacon/wx.offBeaconServiceChange.html)
          *
          * 取消监听 iBeacon 服务状态变化事件
@@ -11779,13 +11594,6 @@ wx.onBLEConnectionStateChange(function(res) {
         onBLEConnectionStateChange(
             /** 低功耗蓝牙连接状态的改变事件的回调函数 */
             callback: OnBLEConnectionStateChangeCallback,
-        ): void
-        /** [wx.onBLEPeripheralConnectionStateChanged(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/wx.onBLEPeripheralConnectionStateChanged.html)
-         *
-         * 监听当前外围设备被连接或断开连接事件 */
-        onBLEPeripheralConnectionStateChanged(
-            /** 当前外围设备被连接或断开连接事件的回调函数 */
-            callback: OnBLEPeripheralConnectionStateChangedCallback,
         ): void
         /** [wx.onBackgroundAudioPause(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/media/background-audio/wx.onBackgroundAudioPause.html)
          *
@@ -12615,11 +12423,30 @@ wx.requestPayment({
         requestPayment(option: RequestPaymentOption): void
         /** [wx.requestSubscribeMessage(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/subscribe-message/wx.requestSubscribeMessage.html)
 *
-* 调起客户端小程序订阅消息界面，返回用户订阅消息的操作结果。
+* 调起客户端小程序订阅消息界面，返回用户订阅消息的操作结果。当用户勾选了订阅面板中的“总是保持以上选择，不再询问”时，模板消息会被添加到用户的小程序设置页，通过 [wx.getSetting](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/setting/wx.getSetting.html) 接口可获取用户对相关模板消息的订阅状态。
 *
-* 注意：[2.8.2](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html) 版本开始，用户发生点击行为或者发起支付回调后，才可以调起订阅消息界面。
+* ## 注意事项
+*  - 一次性模板 id 和永久模板 id 不可同时使用。
+*  - 低版本基础库2.4.4~2.8.3 已支持订阅消息接口调用，仅支持传入一个一次性 tmplId / 永久 tmplId。
+*  - [2.8.2](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html) 版本开始，用户发生点击行为或者发起支付回调后，才可以调起订阅消息界面。
+*  - [2.10.0](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html) 版本开始，开发版和体验版小程序将禁止使用模板消息 fomrId。
 *
-* 当用户勾选了订阅面板中的“总是保持以上选择，不再询问”时，模板消息会被添加到用户的小程序设置页，通过 [wx.getSetting](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/setting/wx.getSetting.html) 接口可获取用户对相关模板消息的订阅状态。
+* **错误码**
+*
+*
+*
+* | errCode | errMsg                                                 | 说明                                                           |
+* | ------- | ------------------------------------------------------ | -------------------------------------------------------------- |
+* | 10001   | TmplIds can't be empty                                 | 参数传空了                                                     |
+* | 10002   | Request list fai                                       | 网络问题，请求消息列表失败                                     |
+* | 10003   | Request subscribe fail                                 | 网络问题，订阅请求发送失败                                     |
+* | 10004   | Invalid template id                                    | 参数类型错误                                                   |
+* | 10005   | Cannot show subscribe message UI                       | 无法展示 UI，一般是小程序这个时候退后台了导致的                |
+* | 20001   | No template data return, verify the template id exist  | 没有模板数据，一般是模板 ID 不存在 或者和模板类型不对应 导致的 |
+* | 20002   | Templates type must be same                            | 模板消息类型 既有一次性的又有永久的                            |
+* | 20003   | Templates count out of max bounds                      | 模板消息数量超过上限                                           |
+* | 20004   | The main switch is switched off                        | 用户关闭了主开关，无法进行订阅                                 |
+* | 20005   | This mini program was banned from subscribing messages | 小程序被禁封                                                   |
 *
 * **示例代码**
 *
@@ -13153,14 +12980,12 @@ wx.showModal({
          *
          * 在当前页面显示导航条加载动画 */
         showNavigationBarLoading(option?: ShowNavigationBarLoadingOption): void
-        /** [wx.showRedPackage(Object object, number url)](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/redpackage/wx.showRedPackage.html)
+        /** [wx.showRedPackage(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/redpackage/wx.showRedPackage.html)
          *
-         * 拉取h5领取红包封面页 */
-        showRedPackage(
-            option: ShowRedPackageOption,
-            /** 红包封面地址 */
-            url?: number,
-        ): void
+         * 拉取h5领取红包封面页。获取参考红包封面地址参考 [微信红包封面开发平台](https://cover.weixin.qq.com/cgi-bin/mmcover-bin/readtemplate?t=page%2Fdoc%2Fguide%2Fintroduce.html)。
+         *
+         * 最低基础库： `2.10.0` */
+        showRedPackage(option: ShowRedPackageOption): void
         /** [wx.showShareMenu(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/share/wx.showShareMenu.html)
 *
 * 显示当前页面的转发按钮
@@ -14769,10 +14594,6 @@ wx.writeBLECharacteristicValue({
     ) => void
     /** 音频中断结束事件的回调函数 */
     type OffAudioInterruptionEndCallback = (res: GeneralCallbackResult) => void
-    /** 当前外围设备被连接或断开连接事件的回调函数 */
-    type OffBLEPeripheralConnectionStateChangedCallback = (
-        res: GeneralCallbackResult,
-    ) => void
     /** iBeacon 服务状态变化事件的回调函数 */
     type OffBeaconServiceChangeCallback = (res: GeneralCallbackResult) => void
     /** iBeacon 设备更新事件的回调函数 */
@@ -14799,14 +14620,6 @@ wx.writeBLECharacteristicValue({
     type OffLocationChangeCallback = (res: GeneralCallbackResult) => void
     /** 收到消息的事件的回调函数 */
     type OffMessageCallback = (res: GeneralCallbackResult) => void
-    /** 已连接的设备请求读当前外围设备的特征值事件的回调函数 */
-    type OffOnCharacteristicReadRequestCallback = (
-        res: GeneralCallbackResult,
-    ) => void
-    /** 已连接的设备请求读当前外围设备的特征值事件的回调函数 */
-    type OffOnCharacteristicWriteRequestCallback = (
-        res: GeneralCallbackResult,
-    ) => void
     /** 小程序要打开的页面不存在事件的回调函数 */
     type OffPageNotFoundCallback = (res: GeneralCallbackResult) => void
     /** 音频暂停事件的回调函数 */
@@ -14851,10 +14664,6 @@ wx.writeBLECharacteristicValue({
     /** 低功耗蓝牙连接状态的改变事件的回调函数 */
     type OnBLEConnectionStateChangeCallback = (
         result: OnBLEConnectionStateChangeCallbackResult,
-    ) => void
-    /** 当前外围设备被连接或断开连接事件的回调函数 */
-    type OnBLEPeripheralConnectionStateChangedCallback = (
-        result: OnBLEPeripheralConnectionStateChangedCallbackResult,
     ) => void
     /** 音乐暂停事件的回调函数 */
     type OnBackgroundAudioPauseCallback = (res: GeneralCallbackResult) => void
@@ -14953,14 +14762,6 @@ wx.writeBLECharacteristicValue({
     ) => void
     /** 用户在系统音乐播放面板点击下一曲事件的回调函数 */
     type OnNextCallback = (res: GeneralCallbackResult) => void
-    /** 已连接的设备请求读当前外围设备的特征值事件的回调函数 */
-    type OnOnCharacteristicReadRequestCallback = (
-        result: OnOnCharacteristicReadRequestCallbackResult,
-    ) => void
-    /** 已连接的设备请求读当前外围设备的特征值事件的回调函数 */
-    type OnOnCharacteristicWriteRequestCallback = (
-        result: OnOnCharacteristicWriteRequestCallbackResult,
-    ) => void
     /** WebSocket 连接打开事件的回调函数 */
     type OnOpenCallback = (result: OnOpenCallbackResult) => void
     /** 小程序要打开的页面不存在事件的回调函数 */

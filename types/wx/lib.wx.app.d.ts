@@ -231,6 +231,11 @@ declare namespace WechatMiniprogram {
              * 最低基础库： 1.9.90
              */
             onPageNotFound(options: PageNotFoundOption): void
+            /**
+             * 小程序有未处理的 Promise 拒绝时触发。也可以使用 [wx.onUnhandledRejection](https://developers.weixin.qq.com/miniprogram/dev/api/base/app/app-event/wx.onUnhandledRejection.html) 绑定监听。注意事项请参考 [wx.onUnhandledRejection](https://developers.weixin.qq.com/miniprogram/dev/api/base/app/app-event/wx.onUnhandledRejection.html)。
+             * **参数**：与 [wx.onUnhandledRejection](https://developers.weixin.qq.com/miniprogram/dev/api/base/app/app-event/wx.onUnhandledRejection.html) 一致
+             */
+            onUnhandledRejection: OnUnhandledRejectionCallback
         }
 
         type Instance<T extends IAnyObject> = Option & T

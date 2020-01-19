@@ -1,3 +1,8 @@
+## 2020-01-19 v2.10.1
+- 同步 API 定义到基础库 2.10.1
+- 补齐 `Component` `selectOwnerComponent`, `animate`, `clearAnimation`（#96）
+- 补齐 `App` `onUnhandledRejection`（#99）
+
 ## 2020-01-07 v2.10.0-1
 - 修复接口错误（#95）
 

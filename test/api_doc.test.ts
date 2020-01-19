@@ -933,10 +933,9 @@ import { expectType } from 'tsd'
 {
   wx.getSetting({
     success(res) {
-      res.authSetting = {
-        'scope.userInfo': true,
-        'scope.userLocation': true,
-      }
+      expectType<boolean | undefined>(res.authSetting['scope.address'])
+      expectType<boolean>(res.subscriptionsSetting.mainSwitch)
+      expectType<Record<string, any>>(res.subscriptionsSetting.itemSettings)
     },
   })
 }
@@ -3042,15 +3041,26 @@ import { expectType } from 'tsd'
   })
 }
 
-// Test case from `wx.getSetting`
+// Test case from `wx.chooseMedia`
 {
-  wx.getSetting({
-    withSubscriptions: true,
+  wx.chooseMedia({
+    count: 9,
+    mediaType: ['image', 'video'],
+    sourceType: ['album', 'camera'],
+    maxDuration: 30,
+    camera: 'back',
     success(res) {
-      expectType<WechatMiniprogram.AuthSetting>(res.authSetting)
-      expectType<boolean | undefined>(res.authSetting['scope.userInfo'])
-      expectType<boolean | undefined>(res.authSetting['scope.subscribeMessage'])
-      expectType<Record<string, any>>(res.subscriptionsSetting)
+      expectType<string>(res.tempFiles[0].tempFilePath)
+      expectType<string>(res.tempFiles[0].thumbTempFilePath)
+      expectType<number>(res.tempFiles[0].width)
+      expectType<number>(res.tempFiles[0].height)
+      expectType<number>(res.tempFiles[0].size)
+      expectType<number>(res.tempFiles[0].duration)
     },
   })
+}
+
+// Test case from `wx.reportPerformance`
+{
+  wx.reportPerformance(1101, 680)
 }

@@ -39,6 +39,10 @@ App({
   onPageNotFound(e) {
     expectType<boolean>(e.isEntryPage)
   },
+  onUnhandledRejection({ reason, promise }) {
+    expectType<string>(reason)
+    expectType<Promise<any>>(promise)
+  },
 })
 
 expectType<WechatMiniprogram.App.Instance<Record<string, any>>>(getApp())

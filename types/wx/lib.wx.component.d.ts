@@ -68,8 +68,7 @@ declare namespace WechatMiniprogram {
             properties: P
         }
         interface Method<M extends MethodOption> {
-            /** object组件的方法，包括事件响应函数和任意的自定义方法，关于事件响应函数的使用，参见 [组件事件](events.md) */
-
+            /** 组件的方法，包括事件响应函数和任意的自定义方法，关于事件响应函数的使用，参见 [组件间通信与事件](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/events.html) */
             methods: M
         }
         type PropertyType =
@@ -179,14 +178,70 @@ declare namespace WechatMiniprogram {
             selectComponent(selector: string): TrivialInstance
             /** 使用选择器选择组件实例节点，返回匹配到的全部组件实例对象组成的数组 */
             selectAllComponents(selector: string): TrivialInstance[]
+            /**
+             * 选取当前组件节点所在的组件实例（即组件的引用者），返回它的组件实例对象（会被 `wx://component-export` 影响）
+             *
+             * 最低基础库版本：[`2.8.2`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html)
+             **/
+            selectOwnerComponent(): TrivialInstance
             /** 获取这个关系所对应的所有关联节点，参见 组件间关系 */
             getRelationNodes(relationKey: string): TrivialInstance[]
-            /** 立刻执行 callback ，其中的多个 setData 之间不会触发界面绘制（只有某些特殊场景中需要，如用于在不同组件同时 setData 时进行界面绘制同步）*/
+            /**
+             * 立刻执行 callback ，其中的多个 setData 之间不会触发界面绘制（只有某些特殊场景中需要，如用于在不同组件同时 setData 时进行界面绘制同步）
+             *
+             * 最低基础库版本：[`2.4.0`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html)
+             **/
             groupSetData(callback?: () => void): void
-            /** 返回当前页面的 custom-tab-bar 的组件实例 */
+            /**
+             * 返回当前页面的 custom-tab-bar 的组件实例
+             *
+             * 最低基础库版本：[`2.6.2`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html)
+             **/
             getTabBar(): TrivialInstance
-            /** 返回页面标识符（一个字符串），可以用来判断几个自定义组件实例是不是在同一个页面内 */
+            /**
+             * 返回页面标识符（一个字符串），可以用来判断几个自定义组件实例是不是在同一个页面内
+             *
+             * 最低基础库版本：[`2.7.1`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html)
+             **/
             getPageId(): string
+            /**
+             * 执行关键帧动画，详见[动画](https://developers.weixin.qq.com/miniprogram/dev/framework/view/animation.html)
+             *
+             * 最低基础库版本：[`2.9.0`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html)
+             **/
+            animate(
+                selector: string,
+                keyFrames: KeyFrame[],
+                duration: number,
+                callback: () => void,
+            ): void
+            /**
+             * 执行关键帧动画，详见[动画](https://developers.weixin.qq.com/miniprogram/dev/framework/view/animation.html)
+             *
+             * 最低基础库版本：[`2.9.0`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html)
+             **/
+            animate(
+                selector: string,
+                keyFrames: ScrollTimelineKeyframe[],
+                duration: number,
+                scrollTimeline: ScrollTimelineOption,
+            ): void
+            /**
+             * 清除关键帧动画，详见[动画](https://developers.weixin.qq.com/miniprogram/dev/framework/view/animation.html)
+             *
+             * 最低基础库版本：[`2.9.0`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html)
+             **/
+            clearAnimation(selector: string, callback: () => void): void
+            /**
+             * 清除关键帧动画，详见[动画](https://developers.weixin.qq.com/miniprogram/dev/framework/view/animation.html)
+             *
+             * 最低基础库版本：[`2.9.0`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html)
+             **/
+            clearAnimation(
+                selector: string,
+                options: ClearAnimationOptions,
+                callback: () => void,
+            ): void
         }
 
         interface ComponentOptions {
@@ -276,7 +331,7 @@ declare namespace WechatMiniprogram {
              * 最低基础库： `2.2.3` */
             lifetimes: Partial<{
                 /**
-                 * 在组件实例刚刚被创建时执行
+                 * 在组件实例刚刚被创建时执行，注意此时不能调用 `setData`
                  *
                  * 最低基础库版本：[`1.6.3`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html)
                  */
@@ -363,27 +418,174 @@ declare namespace WechatMiniprogram {
         }
 
         interface OtherOption {
-            /** 类似于mixins和traits的组件间代码复用机制，参见 [behaviors](behaviors.md) */
+            /** 类似于mixins和traits的组件间代码复用机制，参见 [behaviors](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/behaviors.html) */
             behaviors: string[]
-            /** 组件数据字段监听器，用于监听 properties 和 data 的变化 */
+            /**
+             * 组件数据字段监听器，用于监听 properties 和 data 的变化，参见 [数据监听器](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/observer.html)
+             *
+             * 最低基础库版本：[`2.6.1`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html)
+             */
             observers: Record<string, (...args: any[]) => any>
-            /** 组件间关系定义，参见 [组件间关系](relations.md) */
+            /** 组件间关系定义，参见 [组件间关系](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/lifetimes.html) */
             relations: {
                 [componentName: string]: RelationOption,
             }
-            /** 组件接受的外部样式类，参见 [外部样式类](wxml-wxss.md) */
+            /** 组件接受的外部样式类，参见 [外部样式类](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/wxml-wxss.html) */
             externalClasses?: string[]
-            /** 组件所在页面的生命周期声明对象，目前仅支持页面的 `show` 和 `hide` 两个生命周期
+            /** 组件所在页面的生命周期声明对象，参见 [组件生命周期](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/lifetimes.html)
              *
-             * 最低基础库： `2.2.3` */
+             * 最低基础库版本： [`2.2.3`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html) */
             pageLifetimes?: Partial<PageLifetimes>
             /** 一些选项（文档中介绍相关特性时会涉及具体的选项设置，这里暂不列举） */
             options: ComponentOptions
 
-            /** 定义段过滤器，用于自定义组件扩展，参见 [自定义组件扩展](extend.md)
+            /** 定义段过滤器，用于自定义组件扩展，参见 [自定义组件扩展](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/extend.html)
              *
-             * 最低基础库： `2.2.3` */
+             * 最低基础库版本： [`2.2.3`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html) */
             definitionFilter?: DefinitionFilter
+        }
+
+        interface KeyFrame {
+            /** 关键帧的偏移，范围[0-1] */
+            offset?: number
+            /** 动画缓动函数 */
+            ease?: string
+            /** 基点位置，即 CSS transform-origin */
+            transformOrigin?: string
+            /** 背景颜色，即 CSS background-color */
+            backgroundColor?: string
+            /** 底边位置，即 CSS bottom */
+            bottom?: number | string
+            /** 高度，即 CSS height */
+            height?: number | string
+            /** 左边位置，即 CSS left */
+            left?: number | string
+            /** 宽度，即 CSS width */
+            width?: number | string
+            /** 不透明度，即 CSS opacity */
+            opacity?: number | string
+            /** 右边位置，即 CSS right */
+            right?: number | string
+            /** 顶边位置，即 CSS top */
+            top?: number | string
+            /** 变换矩阵，即 CSS transform matrix */
+            matrix?: number[]
+            /** 三维变换矩阵，即 CSS transform matrix3d */
+            matrix3d?: number[]
+            /** 旋转，即 CSS transform rotate */
+            rotate?: number
+            /** 三维旋转，即 CSS transform rotate3d */
+            rotate3d?: number[]
+            /** X 方向旋转，即 CSS transform rotateX */
+            rotateX?: number
+            /** Y 方向旋转，即 CSS transform rotateY */
+            rotateY?: number
+            /** Z 方向旋转，即 CSS transform rotateZ */
+            rotateZ?: number
+            /** 缩放，即 CSS transform scale */
+            scale?: number[]
+            /** 三维缩放，即 CSS transform scale3d */
+            scale3d?: number[]
+            /** X 方向缩放，即 CSS transform scaleX */
+            scaleX?: number
+            /** Y 方向缩放，即 CSS transform scaleY */
+            scaleY?: number
+            /** Z 方向缩放，即 CSS transform scaleZ */
+            scaleZ?: number
+            /** 倾斜，即 CSS transform skew */
+            skew?: number[]
+            /** X 方向倾斜，即 CSS transform skewX */
+            skewX?: number
+            /** Y 方向倾斜，即 CSS transform skewY */
+            skewY?: number
+            /** 位移，即 CSS transform translate */
+            translate?: Array<number | string>
+            /** 三维位移，即 CSS transform translate3d */
+            translate3d?: Array<number | string>
+            /** X 方向位移，即 CSS transform translateX */
+            translateX?: number | string
+            /** Y 方向位移，即 CSS transform translateY */
+            translateY?: number | string
+            /** Z 方向位移，即 CSS transform translateZ */
+            translateZ?: number | string
+        }
+        interface ClearAnimationOptions {
+            /** 基点位置，即 CSS transform-origin */
+            transformOrigin?: boolean
+            /** 背景颜色，即 CSS background-color */
+            backgroundColor?: boolean
+            /** 底边位置，即 CSS bottom */
+            bottom?: boolean
+            /** 高度，即 CSS height */
+            height?: boolean
+            /** 左边位置，即 CSS left */
+            left?: boolean
+            /** 宽度，即 CSS width */
+            width?: boolean
+            /** 不透明度，即 CSS opacity */
+            opacity?: boolean
+            /** 右边位置，即 CSS right */
+            right?: boolean
+            /** 顶边位置，即 CSS top */
+            top?: boolean
+            /** 变换矩阵，即 CSS transform matrix */
+            matrix?: boolean
+            /** 三维变换矩阵，即 CSS transform matrix3d */
+            matrix3d?: boolean
+            /** 旋转，即 CSS transform rotate */
+            rotate?: boolean
+            /** 三维旋转，即 CSS transform rotate3d */
+            rotate3d?: boolean
+            /** X 方向旋转，即 CSS transform rotateX */
+            rotateX?: boolean
+            /** Y 方向旋转，即 CSS transform rotateY */
+            rotateY?: boolean
+            /** Z 方向旋转，即 CSS transform rotateZ */
+            rotateZ?: boolean
+            /** 缩放，即 CSS transform scale */
+            scale?: boolean
+            /** 三维缩放，即 CSS transform scale3d */
+            scale3d?: boolean
+            /** X 方向缩放，即 CSS transform scaleX */
+            scaleX?: boolean
+            /** Y 方向缩放，即 CSS transform scaleY */
+            scaleY?: boolean
+            /** Z 方向缩放，即 CSS transform scaleZ */
+            scaleZ?: boolean
+            /** 倾斜，即 CSS transform skew */
+            skew?: boolean
+            /** X 方向倾斜，即 CSS transform skewX */
+            skewX?: boolean
+            /** Y 方向倾斜，即 CSS transform skewY */
+            skewY?: boolean
+            /** 位移，即 CSS transform translate */
+            translate?: boolean
+            /** 三维位移，即 CSS transform translate3d */
+            translate3d?: boolean
+            /** X 方向位移，即 CSS transform translateX */
+            translateX?: boolean
+            /** Y 方向位移，即 CSS transform translateY */
+            translateY?: boolean
+            /** Z 方向位移，即 CSS transform translateZ */
+            translateZ?: boolean
+        }
+        interface ScrollTimelineKeyframe {
+            composite?: 'replace' | 'add' | 'accumulate' | 'auto'
+            easing?: string
+            offset?: number | null
+            [property: string]: string | number | null | undefined
+        }
+        interface ScrollTimelineOption {
+            /** 指定滚动元素的选择器（只支持 scroll-view），该元素滚动时会驱动动画的进度 */
+            scrollSource: string
+            /** 指定滚动的方向。有效值为 horizontal 或 vertical */
+            orientation?: string
+            /** 指定开始驱动动画进度的滚动偏移量，单位 px */
+            startScrollOffset: number
+            /** 指定停止驱动动画进度的滚动偏移量，单位 px */
+            endScrollOffset: number
+            /** 起始和结束的滚动范围映射的时间长度，该时间可用于与关键帧动画里的时间 (duration) 相匹配，单位 ms */
+            timeRange: number
         }
     }
 }
