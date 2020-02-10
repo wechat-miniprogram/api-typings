@@ -127,6 +127,9 @@ declare namespace WechatMiniprogram {
 
             /** 到当前页面的路径 */
             route: string
+            
+            /** 打开当前页面路径中的参数 */
+            options: Record<string, string | undefined>
         }
 
         type DataOption = Record<string, any>
