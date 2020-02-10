@@ -63,4 +63,4 @@ declare namespace WechatMiniprogram {
     }
 }
 /** 注册一个 `behavior`，接受一个 `Object` 类型的参数。*/
-declare const Behavior: WechatMiniprogram.Behavior.Constructor
+declare let Behavior: WechatMiniprogram.Behavior.Constructor

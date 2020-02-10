@@ -262,5 +262,5 @@ declare namespace WechatMiniprogram {
     }
 }
 
-declare const App: WechatMiniprogram.App.Constructor
-declare const getApp: WechatMiniprogram.App.GetApp
+declare let App: WechatMiniprogram.App.Constructor
+declare let getApp: WechatMiniprogram.App.GetApp

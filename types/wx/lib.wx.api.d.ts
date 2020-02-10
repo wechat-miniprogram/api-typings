@@ -1902,7 +1902,7 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         fail?: GetSettingFailCallback
         /** 接口调用成功的回调函数 */
         success?: GetSettingSuccessCallback
-        /** 是否同时获取用户订阅消息的订阅状态，默认不获取
+        /** 是否同时获取用户订阅消息的订阅状态，默认不获取。注意：withSubscriptions 只返回用户勾选过订阅面板中的“总是保持以上选择，不再询问”的订阅消息。
          *
          * 最低基础库： `2.10.1` */
         withSubscriptions?: boolean
@@ -11932,7 +11932,8 @@ wx.onNetworkStatusChange(function (res) {
          * **注意**
          *
          *
-         * 安卓平台暂时不会派发该事件
+         * - 安卓平台暂时不支持该事件
+         * - 所有的 unhandledRejection 都可以被这一监听捕获，但只有 Error 类型的才会在小程序后台触发报警。
          *
          * 最低基础库： `2.10.0` */
         onUnhandledRejection(
