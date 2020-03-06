@@ -1412,7 +1412,7 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
     }
     interface FileSystemManagerSaveFileSuccessCallbackResult {
         /** 存储后的文件路径 (本地路径) */
-        savedFilePath: number
+        savedFilePath: string
         errMsg: string
     }
     interface GetAvailableAudioSourcesOption {
@@ -1664,6 +1664,15 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         /** 接口调用成功的回调函数 */
         success?: GetContentsSuccessCallback
     }
+    interface GetContentsSuccessCallbackResult {
+        /** 表示内容的delta对象 */
+        delta: IAnyObject
+        /** 带标签的HTML内容 */
+        html: string
+        /** 纯文本内容 */
+        text: string
+        errMsg: string
+    }
     interface GetExtConfigOption {
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: GetExtConfigCompleteCallback
@@ -1893,6 +1902,19 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         end: number
         /** 输入框光标起始位置 */
         start: number
+        errMsg: string
+    }
+    interface GetSelectionTextOption {
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: GetSelectionTextCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: GetSelectionTextFailCallback
+        /** 接口调用成功的回调函数 */
+        success?: GetSelectionTextSuccessCallback
+    }
+    interface GetSelectionTextSuccessCallbackResult {
+        /** 纯文本内容 */
+        text: string
         errMsg: string
     }
     interface GetSettingOption {
@@ -2745,6 +2767,10 @@ innerAudioContext.onError((res) => {
          *
          * 最低基础库： `2.10.0` */
         envVersion: 'develop' | 'trial' | 'release'
+        /** 线上小程序版本号
+         *
+         * 最低基础库： `2.10.2` */
+        version: string
     }
     interface MkdirFailCallbackResult {
         /** 错误信息
@@ -3642,7 +3668,15 @@ innerAudioContext.onError((res) => {
      * ****
      *
      * - 通过 Canvas.getContext('2d') 接口可以获取 CanvasRenderingContext2D 对象，实现了 [HTML Canvas 2D Context](https://www.w3.org/TR/2dcontext/) 定义的属性、方法。
-     * - 通过 Canvas.getContext('webgl') 或 OffscreenCanvas.getContext('webgl') 接口可以获取 WebGLRenderingContext 对象，实现了 [WebGL 1.0](https://www.khronos.org/registry/webgl/specs/latest/1.0/) 定义的所有属性、方法、常量。 */
+     * - 通过 Canvas.getContext('webgl') 或 OffscreenCanvas.getContext('webgl') 接口可以获取 WebGLRenderingContext 对象，实现了 [WebGL 1.0](https://www.khronos.org/registry/webgl/specs/latest/1.0/) 定义的所有属性、方法、常量。
+     * - CanvasRenderingContext2D 的 drawImage 方法 2.10.0 起支持传入通过 [SelectorQuery](https://developers.weixin.qq.com/miniprogram/dev/api/wxml/SelectorQuery.html) 获取的 video 对象
+     *
+     * **示例代码**
+     *
+     *
+     *
+     * video 画到 2D Canvas 示例
+     * [在微信开发者工具中查看示例](https://developers.weixin.qq.com/s/tJTak7mU7sfX) */
     interface RenderingContext {}
     interface RequestOption {
         /** 开发者服务器接口地址 */
@@ -4969,7 +5003,7 @@ innerAudioContext.onError((res) => {
         withShareTicket?: boolean
     }
     interface UploadFileOption {
-        /** 要上传文件资源的路径 (网络路径) */
+        /** 要上传文件资源的路径 (本地路径) */
         filePath: string
         /** 文件对应的 key，开发者在服务端可以通过这个 key 获取文件的二进制内容 */
         name: string
@@ -5727,7 +5761,7 @@ listener.start()
          * 支持获取 2D 和 WebGL 绘图上下文
          *
          * 最低基础库： `2.7.0` */
-        getContext(contextType: string): RenderingContext
+        getContext(contextType: string): any
         /** [number Canvas.requestAnimationFrame(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/canvas/Canvas.requestAnimationFrame.html)
          *
          * 在下次进行重绘时执行。 支持在 2D Canvas 和 WebGL Canvas 下使用, 但不支持混用 2D 和 WebGL 的方法。
@@ -6962,7 +6996,7 @@ ctx.draw()
              * - 'normal': ; */
             textBaseline: 'top' | 'bottom' | 'middle' | 'normal',
         ): void
-        /** [CanvasContext.setTransform(number scaleX, number scaleY, number skewX, number skewY, number translateX, number translateY)](https://developers.weixin.qq.com/miniprogram/dev/api/canvas/CanvasContext.setTransform.html)
+        /** [CanvasContext.setTransform(number scaleX, number skewX, number skewY, number scaleY, number translateX, number translateY)](https://developers.weixin.qq.com/miniprogram/dev/api/canvas/CanvasContext.setTransform.html)
          *
          * 使用矩阵重新设置（覆盖）当前变换的方法
          *
@@ -6970,12 +7004,12 @@ ctx.draw()
         setTransform(
             /** 水平缩放 */
             scaleX: number,
-            /** 垂直缩放 */
-            scaleY: number,
             /** 水平倾斜 */
             skewX: number,
             /** 垂直倾斜 */
             skewY: number,
+            /** 垂直缩放 */
+            scaleY: number,
             /** 水平移动 */
             translateX: number,
             /** 垂直移动 */
@@ -7064,7 +7098,7 @@ ctx.draw()
             /** 需要绘制的最大宽度，可选 */
             maxWidth?: number,
         ): void
-        /** [CanvasContext.transform(number scaleX, number scaleY, number skewX, number skewY, number translateX, number translateY)](https://developers.weixin.qq.com/miniprogram/dev/api/canvas/CanvasContext.transform.html)
+        /** [CanvasContext.transform(number scaleX, number skewX, number skewY, number scaleY, number translateX, number translateY)](https://developers.weixin.qq.com/miniprogram/dev/api/canvas/CanvasContext.transform.html)
          *
          * 使用矩阵多次叠加当前变换的方法
          *
@@ -7072,12 +7106,12 @@ ctx.draw()
         transform(
             /** 水平缩放 */
             scaleX: number,
-            /** 垂直缩放 */
-            scaleY: number,
             /** 水平倾斜 */
             skewX: number,
             /** 垂直倾斜 */
             skewY: number,
+            /** 垂直缩放 */
+            scaleY: number,
             /** 水平移动 */
             translateX: number,
             /** 垂直移动 */
@@ -7325,7 +7359,9 @@ ctx.draw()
         blur(option?: BlurOption): void
         /** [EditorContext.clear(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/editor/EditorContext.clear.html)
          *
-         * 清空编辑器内容 */
+         * 清空编辑器内容
+         *
+         * 最低基础库： `2.7.0` */
         clear(option?: ClearOption): void
         /** [EditorContext.format(string name, string value)](https://developers.weixin.qq.com/miniprogram/dev/api/media/editor/EditorContext.format.html)
          *
@@ -7334,30 +7370,35 @@ ctx.draw()
          * ****
          *
          * ## 支持设置的样式列表
-         * | name | value |
-         * | ------| ------ |
-         * | bold  |        |
-         * | italic  |        |
-         * | underline  |        |
-         * | strike  |        |
-         * | ins  |        |
-         * | script  | sub / super |
-         * | header  | H1 / H2 / h3 / H4 / h5 /  H6 |
-         * | align  | left / center / right / justify |
-         * | direction  | rtl  |
-         * | indent | -1 / +1 |
-         * | list | ordered / bullet / check |
-         * | color | hex color |
-         * | backgroundColor| hex color |
-         * | margin/marginTop/marginBottom/marginLeft/marginRight  |  css style  |
-         * | padding/paddingTop/paddingBottom/paddingLeft/paddingRight  | css style |
-         * | font/fontSize/fontStyle/fontVariant/fontWeight/fontFamily  |  css style |
-         * | lineHeight | css style |
-         * | letterSpacing |  css style |
-         * | textDecoration |  css style |
-         * | textIndent    | css style |
+         * | name                                                      | value                           | verson |
+         * | --------------------------------------------------------- | ------------------------------- | ------ |
+         * | bold                                                      |                                 | 2.7.0  |
+         * | italic                                                    |                                 | 2.7.0  |
+         * | underline                                                 |                                 | 2.7.0  |
+         * | strike                                                    |                                 | 2.7.0  |
+         * | ins                                                       |                                 | 2.7.0  |
+         * | script                                                    | sub / super                     | 2.7.0  |
+         * | header                                                    | H1 / H2 / h3 / H4 / h5 /  H6    | 2.7.0  |
+         * | align                                                     | left / center / right / justify | 2.7.0  |
+         * | direction                                                 | rtl                             | 2.7.0  |
+         * | indent                                                    | -1 / +1                         | 2.7.0  |
+         * | list                                                      | ordered / bullet / check        | 2.7.0  |
+         * | color                                                     | hex color                       | 2.7.0  |
+         * | backgroundColor                                           | hex color                       | 2.7.0  |
+         * | margin/marginTop/marginBottom/marginLeft/marginRight      | css style                       | 2.7.0  |
+         * | padding/paddingTop/paddingBottom/paddingLeft/paddingRight | css style                       | 2.7.0  |
+         * | font/fontSize/fontStyle/fontVariant/fontWeight/fontFamily | css style                       | 2.7.0  |
+         * | lineHeight                                                | css style                       | 2.7.0  |
+         * | letterSpacing                                             | css style                       | 2.7.0  |
+         * | textDecoration                                            | css style                       | 2.7.0  |
+         * | textIndent                                                | css style                       | 2.8.0  |
+         * | wordWrap                                                  | css style                       | 2.10.2 |
+         * | wordBreak                                                 | css style                       | 2.10.2 |
+         * | whiteSpace                                                | css style                       | 2.10.2 |
          *
-         * 对已经应用样式的选区设置会取消样式。css style 表示 css 中规定的允许值。 */
+         * 对已经应用样式的选区设置会取消样式。css style 表示 css 中规定的允许值。
+         *
+         * 最低基础库： `2.7.0` */
         format(
             /** 属性 */
             name: string,
@@ -7366,11 +7407,21 @@ ctx.draw()
         ): void
         /** [EditorContext.getContents(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/editor/EditorContext.getContents.html)
          *
-         * 获取编辑器内容 */
+         * 获取编辑器内容
+         *
+         * 最低基础库： `2.7.0` */
         getContents(option?: GetContentsOption): void
+        /** [EditorContext.getSelectionText(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/editor/EditorContext.getSelectionText.html)
+         *
+         * 获取编辑器已选区域内的纯文本内容。当编辑器失焦或未选中一段区间时，返回内容为空。
+         *
+         * 最低基础库： `2.10.2` */
+        getSelectionText(option?: GetSelectionTextOption): void
         /** [EditorContext.insertDivider(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/editor/EditorContext.insertDivider.html)
          *
-         * 插入分割线 */
+         * 插入分割线
+         *
+         * 最低基础库： `2.7.0` */
         insertDivider(option?: InsertDividerOption): void
         /** [EditorContext.insertImage(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/editor/EditorContext.insertImage.html)
 *
@@ -7390,19 +7441,27 @@ this.editorCtx.insertImage({
   height: '50px',
   extClass: className
 })
-``` */
+```
+*
+* 最低基础库： `2.7.0` */
         insertImage(option: InsertImageOption): void
         /** [EditorContext.insertText(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/editor/EditorContext.insertText.html)
          *
-         * 覆盖当前选区，设置一段文本 */
+         * 覆盖当前选区，设置一段文本
+         *
+         * 最低基础库： `2.7.0` */
         insertText(option: InsertTextOption): void
         /** [EditorContext.redo(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/editor/EditorContext.redo.html)
          *
-         * 恢复 */
+         * 恢复
+         *
+         * 最低基础库： `2.7.0` */
         redo(option?: RedoOption): void
         /** [EditorContext.removeFormat(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/editor/EditorContext.removeFormat.html)
          *
-         * 清除当前选区的样式 */
+         * 清除当前选区的样式
+         *
+         * 最低基础库： `2.7.0` */
         removeFormat(option?: RemoveFormatOption): void
         /** [EditorContext.scrollIntoView()](https://developers.weixin.qq.com/miniprogram/dev/api/media/editor/EditorContext.scrollIntoView.html)
          *
@@ -7412,11 +7471,15 @@ this.editorCtx.insertImage({
         scrollIntoView(): void
         /** [EditorContext.setContents(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/editor/EditorContext.setContents.html)
          *
-         * 初始化编辑器内容，html和delta同时存在时仅delta生效 */
+         * 初始化编辑器内容，html和delta同时存在时仅delta生效
+         *
+         * 最低基础库： `2.7.0` */
         setContents(option: SetContentsOption): void
         /** [EditorContext.undo(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/editor/EditorContext.undo.html)
          *
-         * 撤销 */
+         * 撤销
+         *
+         * 最低基础库： `2.7.0` */
         undo(option?: UndoOption): void
     }
     interface EventChannel {
@@ -7676,7 +7739,7 @@ this.editorCtx.insertImage({
              * 最低基础库： `2.3.0` */
             recursive?: boolean,
         ): Stats | IAnyObject
-        /** [number FileSystemManager.saveFileSync(string tempFilePath, string filePath)](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.saveFileSync.html)
+        /** [string FileSystemManager.saveFileSync(string tempFilePath, string filePath)](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.saveFileSync.html)
          *
          * [FileSystemManager.saveFile](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.saveFile.html) 的同步版本 */
         saveFileSync(
@@ -7684,7 +7747,7 @@ this.editorCtx.insertImage({
             tempFilePath: string,
             /** 要存储的文件路径 (本地路径) */
             filePath?: string,
-        ): number
+        ): string
         /** [string|ArrayBuffer FileSystemManager.readFileSync(string filePath, string encoding, string position, string length)](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.readFileSync.html)
          *
          * [FileSystemManager.readFile](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.readFile.html) 的同步版本 */
@@ -8531,7 +8594,7 @@ Page({
          * 当前仅支持获取 WebGL 绘图上下文
          *
          * 最低基础库： `2.7.0` */
-        getContext(contextType: string): RenderingContext
+        getContext(contextType: string): any
     }
     interface RealtimeLogManager {
         /** [RealtimeLogManager.addFilterMsg(string msg)](https://developers.weixin.qq.com/miniprogram/dev/api/base/debug/RealtimeLogManager.addFilterMsg.html)
@@ -9206,7 +9269,7 @@ worker.postMessage({
         ): ArrayBuffer
         /** [Object wx.getAccountInfoSync()](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/account-info/wx.getAccountInfoSync.html)
 *
-* 获取当前帐号信息
+* 获取当前帐号信息。线上小程序版本号仅支持在正式版小程序中获取，开发版和体验版中无法获取。
 *
 * **示例代码**
 *
@@ -9280,6 +9343,7 @@ console.log(extConfig)
          * | 1037   | 小程序打开小程序                | 来源小程序 |
          * | 1038   | 从另一个小程序返回              | 来源小程序 |
          * | 1043   | 公众号模板消息                  | 来源公众号 |
+         * | 1069   | 移动应用                    | 来源App |
          *
          * **注意**
          *
@@ -12459,7 +12523,7 @@ wx.requestSubscribeMessage({
 })
 ```
 *
-* 最低基础库： `2.8.2` */
+* 最低基础库： `2.4.4` */
         requestSubscribeMessage(option: RequestSubscribeMessageOption): void
         /** [wx.saveFile(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/file/wx.saveFile.html)
 *
@@ -14118,7 +14182,9 @@ wx.writeBLECharacteristicValue({
     /** 接口调用失败的回调函数 */
     type GetContentsFailCallback = (res: GeneralCallbackResult) => void
     /** 接口调用成功的回调函数 */
-    type GetContentsSuccessCallback = (res: GeneralCallbackResult) => void
+    type GetContentsSuccessCallback = (
+        result: GetContentsSuccessCallbackResult,
+    ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type GetExtConfigCompleteCallback = (res: GeneralCallbackResult) => void
     /** 接口调用失败的回调函数 */
@@ -14208,6 +14274,14 @@ wx.writeBLECharacteristicValue({
     /** 接口调用成功的回调函数 */
     type GetSelectedTextRangeSuccessCallback = (
         result: GetSelectedTextRangeSuccessCallbackResult,
+    ) => void
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type GetSelectionTextCompleteCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用失败的回调函数 */
+    type GetSelectionTextFailCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用成功的回调函数 */
+    type GetSelectionTextSuccessCallback = (
+        result: GetSelectionTextSuccessCallbackResult,
     ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type GetSettingCompleteCallback = (res: GeneralCallbackResult) => void
@@ -15778,10 +15852,6 @@ declare function require(module: string): any
 declare let module: { exports: any }
 declare let exports: any
 
-/** [Promise createBLEPeripheralServer()](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/createBLEPeripheralServer.html)
- *
- * 建立本地作为外围设备的服务端，可创建多个 */
-declare function createBLEPeripheralServer(): Promise<any>
 /** [clearInterval(number intervalID)](https://developers.weixin.qq.com/miniprogram/dev/api/base/timer/clearInterval.html)
  *
  * 取消由 setInterval 设置的定时器。 */
