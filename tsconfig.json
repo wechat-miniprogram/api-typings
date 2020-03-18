@@ -5,7 +5,7 @@
     "experimentalDecorators": true,
     "inlineSourceMap": true,
     "inlineSources": true,
-    "lib": ["es5"],
+    "lib": ["es6"],
     "module": "CommonJS",
     "noFallthroughCasesInSwitch": true,
     "noImplicitAny": true,
