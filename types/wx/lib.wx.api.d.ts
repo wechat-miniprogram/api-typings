@@ -150,6 +150,27 @@ declare namespace WechatMiniprogram {
         /** 工作电话 */
         workPhoneNumber?: string
     }
+    interface AddServiceOption {
+        /** 描述service的Object */
+        service: BLEPeripheralService
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: AddServiceCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: AddServiceFailCallback
+        /** 接口调用成功的回调函数 */
+        success?: AddServiceSuccessCallback
+    }
+    /** 广播自定义参数 */
+    interface AdvertiseReqObj {
+        /** 当前Service是否可连接 */
+        connectable?: boolean
+        /** 广播中deviceName字段，默认为空 */
+        deviceName?: string
+        /** 广播的制造商信息, 仅安卓支持 */
+        manufacturerData?: ManufacturerData[]
+        /** 要广播的serviceUuid列表 */
+        serviceUuids?: string[]
+    }
     /** 动画效果 */
     interface AnimationOption {
         /** 动画变化时间，单位 ms */
@@ -245,8 +266,34 @@ declare namespace WechatMiniprogram {
     /** 设备特征值列表 */
     interface BLECharacteristic {
         /** 该特征值支持的操作类型 */
-        properties: Properties
+        properties: BLECharacteristicProperties
         /** 蓝牙设备特征值的 uuid */
+        uuid: string
+    }
+    /** 该特征值支持的操作类型 */
+    interface BLECharacteristicProperties {
+        /** 该特征值是否支持 indicate 操作 */
+        indicate: boolean
+        /** 该特征值是否支持 notify 操作 */
+        notify: boolean
+        /** 该特征值是否支持 read 操作 */
+        read: boolean
+        /** 该特征值是否支持 write 操作 */
+        write: boolean
+    }
+    interface BLEPeripheralServerCloseOption {
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: BLEPeripheralServerCloseCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: BLEPeripheralServerCloseFailCallback
+        /** 接口调用成功的回调函数 */
+        success?: BLEPeripheralServerCloseSuccessCallback
+    }
+    /** 描述service的Object */
+    interface BLEPeripheralService {
+        /** characteristics列表 */
+        characteristics: Characteristic[]
+        /** service 的 uuid */
         uuid: string
     }
     /** 设备服务列表 */
@@ -534,7 +581,7 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
     }
     interface CanvasToTempFilePathOption {
         /** 画布标识，传入 [canvas](https://developers.weixin.qq.com/miniprogram/dev/component/canvas.html) 组件实例 （canvas type="2d" 时使用该属性）。 */
-        canvas?: string
+        canvas?: IAnyObject
         /** 画布标识，传入 [canvas](https://developers.weixin.qq.com/miniprogram/dev/component/canvas.html) 组件的 canvas-id */
         canvasId?: string
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
@@ -584,6 +631,41 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         /** 生成文件的临时路径 (本地路径) */
         tempFilePath: string
         errMsg: string
+    }
+    /** characteristics列表 */
+    interface Characteristic {
+        /** Characteristic 的 uuid */
+        uuid: string
+        /** 描述符数据 */
+        descriptors?: Descriptor[]
+        /** 特征值权限 */
+        permission?: CharacteristicPermission
+        /** 特征值支持的操作 */
+        properties?: CharacteristicProperties
+        /** 特征值对应的二进制值 */
+        value?: ArrayBuffer
+    }
+    /** 特征值权限 */
+    interface CharacteristicPermission {
+        /** 加密读请求 */
+        readEncryptionRequired?: boolean
+        /** 可读 */
+        readable?: boolean
+        /** 加密写请求 */
+        writeEncryptionRequired?: boolean
+        /** 可写 */
+        writeable?: boolean
+    }
+    /** 特征值支持的操作 */
+    interface CharacteristicProperties {
+        /** 回包 */
+        indicate?: boolean
+        /** 订阅 */
+        notify?: boolean
+        /** 读 */
+        read?: boolean
+        /** 写 */
+        write?: boolean
     }
     interface CheckIsSoterEnrolledInDeviceOption {
         /** 认证方式
@@ -659,6 +741,22 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         telNumber: string
         /** 收货人姓名 */
         userName: string
+    }
+    interface ChooseContactOption {
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: ChooseContactCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: ChooseContactFailCallback
+        /** 接口调用成功的回调函数 */
+        success?: ChooseContactSuccessCallback
+    }
+    interface ChooseContactSuccessCallbackOption {
+        /** 联系人姓名 */
+        displayName: string
+        /** 手机号 */
+        phoneNumber: string
+        /** 选定联系人的所有手机号（部分 Android 系统只能选联系人而不能选特定手机号） */
+        phoneNumberList: string
     }
     /** 返回选择的文件的本地临时文件对象数组 */
     interface ChooseFile {
@@ -917,18 +1015,6 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         fail?: CloseBluetoothAdapterFailCallback
         /** 接口调用成功的回调函数 */
         success?: CloseBluetoothAdapterSuccessCallback
-    }
-    interface CloseOption {
-        /** 一个数字值表示关闭连接的状态号，表示连接被关闭的原因。 */
-        code?: number
-        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
-        complete?: CloseCompleteCallback
-        /** 接口调用失败的回调函数 */
-        fail?: CloseFailCallback
-        /** 一个可读的字符串，表示连接被关闭的原因。这个字符串必须是不长于 123 字节的 UTF-8 文本（不是字符）。 */
-        reason?: string
-        /** 接口调用成功的回调函数 */
-        success?: CloseSuccessCallback
     }
     interface CloseSocketOption {
         /** 一个数字值表示关闭连接的状态号，表示连接被关闭的原因。 */
@@ -1224,6 +1310,21 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         /** 超时时间，单位ms，不填表示不会超时 */
         timeout?: number
     }
+    interface CreateBLEPeripheralServerOption {
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: CreateBLEPeripheralServerCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: CreateBLEPeripheralServerFailCallback
+        /** 接口调用成功的回调函数 */
+        success?: CreateBLEPeripheralServerSuccessCallback
+    }
+    interface CreateBLEPeripheralServerSuccessCallbackResult {
+        /** [BLEPeripheralServer](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/BLEPeripheralServer.html)
+         *
+         * 外围设备的服务端。 */
+        server: BLEPeripheralServer
+        errMsg: string
+    }
     /** 选项 */
     interface CreateIntersectionObserverOption {
         /** 初始的相交比例，如果调用时检测到的相交比例与这个值不相等且达到阈值，则会触发一次监听器的回调函数。 */
@@ -1262,6 +1363,22 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         variant?: string
         /** 字体粗细，可选值为 normal / bold / 100 / 200../ 900 */
         weight?: string
+    }
+    /** 描述符数据 */
+    interface Descriptor {
+        /** Descriptor 的 uuid */
+        uuid: string
+        /** 描述符的权限 */
+        permission?: DescriptorPermission
+        /** 描述符数据 */
+        value?: ArrayBuffer
+    }
+    /** 描述符的权限 */
+    interface DescriptorPermission {
+        /** 读 */
+        read?: boolean
+        /** 写 */
+        write?: boolean
     }
     /** 指定 marker 移动到的目标点 */
     interface DestinationOption {
@@ -1692,6 +1809,26 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
          * 可选值：
          * - 'fail file not exist': 指定的 filePath 找不到文件; */
         errMsg: string
+    }
+    interface GetGroupEnterInfoOption {
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: GetGroupEnterInfoCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: GetGroupEnterInfoFailCallback
+        /** 接口调用成功的回调函数 */
+        success?: GetGroupEnterInfoSuccessCallback
+    }
+    interface GetGroupEnterInfoSuccessCallbackResult {
+        /** 敏感数据对应的云 ID，开通[云开发](https://developers.weixin.qq.com/miniprogram/dev/wxcloud/basis/getting-started.html)的小程序才会返回，可通过云调用直接获取开放数据，详细见[云调用直接获取开放数据](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/signature.html#method-cloud)
+         *
+         * 最低基础库： `2.7.0` */
+        cloudID: string
+        /** 包括敏感数据在内的完整转发信息的加密数据，详细见[加密数据解密算法](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/signature.html) */
+        encryptedData: string
+        /** 错误信息 */
+        errMsg: string
+        /** 加密算法的初始向量，详细见[加密数据解密算法](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/signature.html) */
+        iv: string
     }
     interface GetHCEStateOption {
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
@@ -2715,6 +2852,13 @@ innerAudioContext.onError((res) => {
         /** 接口调用成功的回调函数 */
         success?: MakePhoneCallSuccessCallback
     }
+    /** 广播的制造商信息, 仅安卓支持 */
+    interface ManufacturerData {
+        /** 制造商ID，0x 开头的十六进制 */
+        manufacturerId: string
+        /** 制造商信息 */
+        manufacturerSpecificData?: ArrayBuffer
+    }
     /** 要显示在可视区域内的坐标点列表 */
     interface MapPostion {
         /** 纬度 */
@@ -2947,6 +3091,14 @@ innerAudioContext.onError((res) => {
         /** 蓝牙设备ID */
         deviceId: string
     }
+    interface OnBLEPeripheralConnectionStateChangedCallbackResult {
+        /** 连接目前状态 */
+        connected: boolean
+        /** 连接状态变化的设备 id */
+        deviceId: string
+        /** server 的 uuid */
+        serverId: string
+    }
     interface OnBackgroundFetchDataOption {
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: OnBackgroundFetchDataCompleteCallback
@@ -2982,6 +3134,24 @@ innerAudioContext.onError((res) => {
         height: number
         /** 图像数据矩形的宽度 */
         width: number
+    }
+    interface OnCharacteristicReadRequestCallbackResult {
+        /** 唯一标识码，调用 writeCharacteristicValue 时使用 */
+        callbackId: number
+        /** characteristic对应的uuid */
+        characteristicId: string
+        /** service对应的uuid */
+        serviceId: string
+    }
+    interface OnCharacteristicWriteRequestCallbackResult {
+        /** 唯一标识码，调用 writeCharacteristicValue 时使用 */
+        callbackId: number
+        /** characteristic对应的uuid */
+        characteristicId: string
+        /** service对应的uuid */
+        serviceId: string
+        /** 请求写入的特征值数据 */
+        value: ArrayBuffer
     }
     interface OnCheckForUpdateCallbackResult {
         /** 是否有新版本 */
@@ -3206,6 +3376,8 @@ innerAudioContext.onError((res) => {
          *
          * 最低基础库： `1.4.0` */
         fileType?: 'doc' | 'docx' | 'xls' | 'xlsx' | 'ppt' | 'pptx' | 'pdf'
+        /** 是否显示右上角菜单 */
+        showMenu?: boolean
         /** 接口调用成功的回调函数 */
         success?: OpenDocumentSuccessCallback
     }
@@ -3346,17 +3518,6 @@ innerAudioContext.onError((res) => {
         fail?: PreviewImageFailCallback
         /** 接口调用成功的回调函数 */
         success?: PreviewImageSuccessCallback
-    }
-    /** 该特征值支持的操作类型 */
-    interface Properties {
-        /** 该特征值是否支持 indicate 操作 */
-        indicate: boolean
-        /** 该特征值是否支持 notify 操作 */
-        notify: boolean
-        /** 该特征值是否支持 read 操作 */
-        read: boolean
-        /** 该特征值是否支持 write 操作 */
-        write: boolean
     }
     interface ReLaunchOption {
         /** 需要跳转的应用内页面路径 (代码包路径)，路径后可以带参数。参数与路径之间使用?分隔，参数键与参数值用=相连，不同参数用&分隔；如 'path?key=value&key2=value2' */
@@ -3622,6 +3783,16 @@ innerAudioContext.onError((res) => {
          * 可选值：
          * - 'fail file not exist': 指定的 tempFilePath 找不到文件; */
         errMsg: string
+    }
+    interface RemoveServiceOption {
+        /** service 的 uuid */
+        serviceId: string
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: RemoveServiceCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: RemoveServiceFailCallback
+        /** 接口调用成功的回调函数 */
+        success?: RemoveServiceSuccessCallback
     }
     interface RemoveStorageOption {
         /** 本地缓存中指定的 key */
@@ -4252,6 +4423,18 @@ innerAudioContext.onError((res) => {
         /** 接口调用成功的回调函数 */
         success?: SetWifiListSuccessCallback
     }
+    interface SetWindowSizeOption {
+        /** 窗口高度，以像素为单位 */
+        height: number
+        /** 窗口宽度，以像素为单位 */
+        width: number
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: SetWindowSizeCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: SetWindowSizeFailCallback
+        /** 接口调用成功的回调函数 */
+        success?: SetWindowSizeSuccessCallback
+    }
     interface SetZoomOption {
         /** 缩放级别，范围[1, maxZoom]。zoom 可取小时，精确到小数后一位。maxZoom 可在 bindinitdone 返回值中获取。 */
         zoom: number
@@ -4406,6 +4589,18 @@ innerAudioContext.onError((res) => {
         /** 变化后的窗口宽度，单位 px */
         windowWidth: number
     }
+    interface SocketTaskCloseOption {
+        /** 一个数字值表示关闭连接的状态号，表示连接被关闭的原因。 */
+        code?: number
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: SocketTaskCloseCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: SocketTaskCloseFailCallback
+        /** 一个可读的字符串，表示连接被关闭的原因。这个字符串必须是不长于 123 字节的 UTF-8 文本（不是字符）。 */
+        reason?: string
+        /** 接口调用成功的回调函数 */
+        success?: SocketTaskCloseSuccessCallback
+    }
     interface SocketTaskOnCloseCallbackResult {
         /** 一个数字值表示关闭连接的状态号，表示连接被关闭的原因。 */
         code: number
@@ -4446,6 +4641,17 @@ innerAudioContext.onError((res) => {
         interval?: 'game' | 'ui' | 'normal'
         /** 接口调用成功的回调函数 */
         success?: StartAccelerometerSuccessCallback
+    }
+    interface StartAdvertisingObject {
+        /** 广播自定义参数 */
+        advertiseRequest: AdvertiseReqObj
+        /** 广播功率
+         *
+         * 可选值：
+         * - 'low': 功率低;
+         * - 'medium': 功率适中;
+         * - 'high': 功率高; */
+        powerLevel?: 'low' | 'medium' | 'high'
     }
     interface StartBeaconDiscoveryOption {
         /** iBeacon 设备广播的 uuid 列表 */
@@ -4693,6 +4899,14 @@ innerAudioContext.onError((res) => {
         fail?: StopAccelerometerFailCallback
         /** 接口调用成功的回调函数 */
         success?: StopAccelerometerSuccessCallback
+    }
+    interface StopAdvertisingOption {
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: StopAdvertisingCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: StopAdvertisingFailCallback
+        /** 接口调用成功的回调函数 */
+        success?: StopAdvertisingSuccessCallback
     }
     interface StopBGMOption {
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
@@ -5137,6 +5351,18 @@ innerAudioContext.onError((res) => {
         /** 接口调用成功的回调函数 */
         success?: WriteBLECharacteristicValueSuccessCallback
     }
+    interface WriteCharacteristicValueObject {
+        /** characteristic对应的uuid */
+        characteristicId: string
+        /** 是否需要通知主机value已更新 */
+        needNotify: boolean
+        /** service 的 uuid */
+        serviceId: string
+        /** 特征值对应的二进制值 */
+        value: ArrayBuffer
+        /** 可选，处理回包时使用 */
+        callbackId?: number
+    }
     interface WriteFileFailCallbackResult {
         /** 错误信息
          *
@@ -5517,6 +5743,80 @@ innerAudioContext.onError((res) => {
             /** 音频地址 */
             src: string,
         ): void
+    }
+    interface BLEPeripheralServer {
+        /** [BLEPeripheralServer.addService(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/BLEPeripheralServer.addService.html)
+         *
+         * 添加服务。
+         *
+         * 最低基础库： `2.10.3` */
+        addService(option: AddServiceOption): void
+        /** [BLEPeripheralServer.close(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/BLEPeripheralServer.close.html)
+         *
+         * 关闭当前服务端。
+         *
+         * 最低基础库： `2.10.3` */
+        close(option?: BLEPeripheralServerCloseOption): void
+        /** [BLEPeripheralServer.offCharacteristicReadRequest(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-peripheral/BLEPeripheralServer.offCharacteristicReadRequest.html)
+         *
+         * 取消监听已连接的设备请求读当前外围设备的特征值事件
+         *
+         * 最低基础库： `2.10.3` */
+        offCharacteristicReadRequest(
+            /** 已连接的设备请求读当前外围设备的特征值事件的回调函数 */
+            callback: OffCharacteristicReadRequestCallback,
+        ): void
+        /** [BLEPeripheralServer.offCharacteristicWriteRequest(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-peripheral/BLEPeripheralServer.offCharacteristicWriteRequest.html)
+         *
+         * 取消监听已连接的设备请求写当前外围设备的特征值事件
+         *
+         * 最低基础库： `2.10.3` */
+        offCharacteristicWriteRequest(
+            /** 已连接的设备请求写当前外围设备的特征值事件的回调函数 */
+            callback: OffCharacteristicWriteRequestCallback,
+        ): void
+        /** [BLEPeripheralServer.onCharacteristicReadRequest(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-peripheral/BLEPeripheralServer.onCharacteristicReadRequest.html)
+         *
+         * 监听已连接的设备请求读当前外围设备的特征值事件。收到该消息后需要立刻调用 `writeCharacteristicValue` 写回数据，否则主机不会收到响应。
+         *
+         * 最低基础库： `2.10.3` */
+        onCharacteristicReadRequest(
+            /** 已连接的设备请求读当前外围设备的特征值事件的回调函数 */
+            callback: OnCharacteristicReadRequestCallback,
+        ): void
+        /** [BLEPeripheralServer.onCharacteristicWriteRequest(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-peripheral/BLEPeripheralServer.onCharacteristicWriteRequest.html)
+         *
+         * 监听已连接的设备请求写当前外围设备的特征值事件。收到该消息后需要立刻调用 `writeCharacteristicValue` 写回数据，否则主机不会收到响应。
+         *
+         * 最低基础库： `2.10.3` */
+        onCharacteristicWriteRequest(
+            /** 已连接的设备请求写当前外围设备的特征值事件的回调函数 */
+            callback: OnCharacteristicWriteRequestCallback,
+        ): void
+        /** [BLEPeripheralServer.removeService(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/BLEPeripheralServer.removeService.html)
+         *
+         * 移除服务。
+         *
+         * 最低基础库： `2.10.3` */
+        removeService(option: RemoveServiceOption): void
+        /** [BLEPeripheralServer.startAdvertising(Object Object)](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/BLEPeripheralServer.startAdvertising.html)
+         *
+         * 开始广播本地创建的外围设备。
+         *
+         * 最低基础库： `2.10.3` */
+        startAdvertising(Object: StartAdvertisingObject): void
+        /** [BLEPeripheralServer.stopAdvertising(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/BLEPeripheralServer.stopAdvertising.html)
+         *
+         * 停止广播。
+         *
+         * 最低基础库： `2.10.3` */
+        stopAdvertising(option?: StopAdvertisingOption): void
+        /** [BLEPeripheralServer.writeCharacteristicValue(Object Object)](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/BLEPeripheralServer.writeCharacteristicValue.html)
+         *
+         * 往指定特征值写入数据，并通知已连接的主机，从机的特征值已发生变化，该接口会处理是走回包还是走订阅。
+         *
+         * 最低基础库： `2.10.3` */
+        writeCharacteristicValue(Object: WriteCharacteristicValueObject): void
     }
     interface BackgroundAudioError {
         /** 错误信息
@@ -8150,6 +8450,10 @@ Page({
          *
          * 退出全屏 */
         exitFullScreen(option?: ExitFullScreenOption): void
+        /** [LivePlayerContext.exitPictureInPicture()](https://developers.weixin.qq.com/miniprogram/dev/api/media/live/LivePlayerContext.exitPictureInPicture.html)
+         *
+         * 退出小窗，该方法可在任意页面调用。 */
+        exitPictureInPicture(): void
         /** [LivePlayerContext.mute(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/live/LivePlayerContext.mute.html)
          *
          * 静音 */
@@ -8927,7 +9231,7 @@ Component({
         /** [SocketTask.close(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/network/websocket/SocketTask.close.html)
          *
          * 关闭 WebSocket 连接 */
-        close(option: CloseOption): void
+        close(option: SocketTaskCloseOption): void
         /** [SocketTask.onClose(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/network/websocket/SocketTask.onClose.html)
          *
          * 监听 WebSocket 连接关闭事件 */
@@ -10032,6 +10336,12 @@ wx.chooseAddress({
         chooseAddress<TOption extends ChooseAddressOption>(
             option?: TOption,
         ): PromisifySuccessResult<TOption, ChooseAddressOption>
+        /** [wx.chooseContact(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/device/contact/wx.chooseContact.html)
+         *
+         * 拉起手机通讯录，选择联系人。
+         *
+         * 最低基础库： `2.8.0` */
+        chooseContact(option?: ChooseContactOption): void
         /** [wx.chooseImage(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/image/wx.chooseImage.html)
 *
 * 从本地相册选择图片或使用相机拍照。
@@ -10334,6 +10644,16 @@ wx.createBLEConnection({
         createBLEConnection<TOption extends CreateBLEConnectionOption>(
             option: TOption,
         ): PromisifySuccessResult<TOption, CreateBLEConnectionOption>
+        /** [wx.createBLEPeripheralServer(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-peripheral/wx.createBLEPeripheralServer.html)
+         *
+         * 建立本地作为外围设备的服务端，可创建多个。
+         *
+         * 最低基础库： `2.10.3` */
+        createBLEPeripheralServer<
+            TOption extends CreateBLEPeripheralServerOption
+        >(
+            option?: TOption,
+        ): PromisifySuccessResult<TOption, CreateBLEPeripheralServerOption>
         /** [wx.getAvailableAudioSources(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/wx.getAvailableAudioSources.html)
          *
          * 获取当前支持的音频输入源
@@ -10601,6 +10921,24 @@ wx.getFileInfo({
         getFileInfo<TOption extends WxGetFileInfoOption>(
             option: TOption,
         ): PromisifySuccessResult<TOption, WxGetFileInfoOption>
+        /** [wx.getGroupEnterInfo(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/share/wx.getGroupEnterInfo.html)
+*
+* 获取群工具栏启动信息
+*
+* **示例代码**
+*
+*
+* 敏感数据有两种获取方式，一是使用 [加密数据解密算法]((open-ability/signature#加密数据解密算法)) 。
+* 获取得到的开放数据为以下 json 结构（其中 openGId 为当前群的唯一标识）：
+*
+* ```json
+{
+ "openGId": "OPENGID"
+}
+```
+*
+* 最低基础库： `2.10.4` */
+        getGroupEnterInfo(option: GetGroupEnterInfoOption): void
         /** [wx.getHCEState(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/device/nfc/wx.getHCEState.html)
 *
 * 判断当前设备是否支持 HCE 能力。
@@ -11474,6 +11812,15 @@ wx.notifyBLECharacteristicValueChange({
             /** 低功耗蓝牙连接状态的改变事件的回调函数 */
             callback: (...args: any[]) => any,
         ): void
+        /** [wx.offBLEPeripheralConnectionStateChanged(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/wx.offBLEPeripheralConnectionStateChanged.html)
+         *
+         * 取消监听当前外围设备被连接或断开连接事件
+         *
+         * 最低基础库： `2.10.3` */
+        offBLEPeripheralConnectionStateChanged(
+            /** 当前外围设备被连接或断开连接事件的回调函数 */
+            callback: OffBLEPeripheralConnectionStateChangedCallback,
+        ): void
         /** [wx.offBeaconServiceChange(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/device/ibeacon/wx.offBeaconServiceChange.html)
          *
          * 取消监听 iBeacon 服务状态变化事件
@@ -11798,6 +12145,15 @@ wx.onBLEConnectionStateChange(function(res) {
         onBLEConnectionStateChange(
             /** 低功耗蓝牙连接状态的改变事件的回调函数 */
             callback: OnBLEConnectionStateChangeCallback,
+        ): void
+        /** [wx.onBLEPeripheralConnectionStateChanged(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/wx.onBLEPeripheralConnectionStateChanged.html)
+         *
+         * 监听当前外围设备被连接或断开连接事件
+         *
+         * 最低基础库： `2.10.3` */
+        onBLEPeripheralConnectionStateChanged(
+            /** 当前外围设备被连接或断开连接事件的回调函数 */
+            callback: OnBLEPeripheralConnectionStateChangedCallback,
         ): void
         /** [wx.onBackgroundAudioPause(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/media/background-audio/wx.onBackgroundAudioPause.html)
          *
@@ -12245,7 +12601,7 @@ wx.openCard({
         ): PromisifySuccessResult<TOption, OpenCardOption>
         /** [wx.openDocument(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/file/wx.openDocument.html)
          *
-         * 新开页面打开文档 */
+         * 新开页面打开文档。微信客户端 `7.0.12` 版本前默认显示右上角菜单按钮，之后的版本默认不显示，需主动传入 `showMenu`。 */
         openDocument<TOption extends OpenDocumentOption>(
             option: TOption,
         ): PromisifySuccessResult<TOption, OpenDocumentOption>
@@ -13190,6 +13546,12 @@ wx.getWifiList()
         setWifiList<TOption extends SetWifiListOption>(
             option: TOption,
         ): PromisifySuccessResult<TOption, SetWifiListOption>
+        /** [wx.setWindowSize(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/ui/window/wx.setWindowSize.html)
+         *
+         * 设置窗口大小，该接口仅适用于 PC 平台，使用细则请参见指南
+         *
+         * 最低基础库： `2.10.1` */
+        setWindowSize(option: SetWindowSizeOption): void
         /** [wx.showActionSheet(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/ui/interaction/wx.showActionSheet.html)
 *
 * 显示操作菜单
@@ -13961,6 +14323,12 @@ wx.writeBLECharacteristicValue({
     /** 接口调用成功的回调函数 */
     type AddPhoneContactSuccessCallback = (res: GeneralCallbackResult) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type AddServiceCompleteCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用失败的回调函数 */
+    type AddServiceFailCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用成功的回调函数 */
+    type AddServiceSuccessCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type AppendFileCompleteCallback = (res: GeneralCallbackResult) => void
     /** 接口调用失败的回调函数 */
     type AppendFileFailCallback = (result: AppendFileFailCallbackResult) => void
@@ -13972,6 +14340,18 @@ wx.writeBLECharacteristicValue({
     type AuthorizeFailCallback = (res: GeneralCallbackResult) => void
     /** 接口调用成功的回调函数 */
     type AuthorizeSuccessCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type BLEPeripheralServerCloseCompleteCallback = (
+        res: GeneralCallbackResult,
+    ) => void
+    /** 接口调用失败的回调函数 */
+    type BLEPeripheralServerCloseFailCallback = (
+        res: GeneralCallbackResult,
+    ) => void
+    /** 接口调用成功的回调函数 */
+    type BLEPeripheralServerCloseSuccessCallback = (
+        res: GeneralCallbackResult,
+    ) => void
     /** 背景音频进入可播放状态事件的回调函数 */
     type BackgroundAudioManagerOnCanplayCallback = (
         res: GeneralCallbackResult,
@@ -14139,6 +14519,14 @@ wx.writeBLECharacteristicValue({
         result: ChooseAddressSuccessCallbackResult,
     ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type ChooseContactCompleteCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用失败的回调函数 */
+    type ChooseContactFailCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用成功的回调函数 */
+    type ChooseContactSuccessCallback = (
+        option: ChooseContactSuccessCallbackOption,
+    ) => void
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type ChooseImageCompleteCallback = (res: GeneralCallbackResult) => void
     /** 接口调用失败的回调函数 */
     type ChooseImageFailCallback = (res: GeneralCallbackResult) => void
@@ -14223,17 +14611,11 @@ wx.writeBLECharacteristicValue({
     /** 接口调用成功的回调函数 */
     type CloseBluetoothAdapterSuccessCallback = (res: BluetoothError) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
-    type CloseCompleteCallback = (res: GeneralCallbackResult) => void
-    /** 接口调用失败的回调函数 */
-    type CloseFailCallback = (res: GeneralCallbackResult) => void
-    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type CloseSocketCompleteCallback = (res: GeneralCallbackResult) => void
     /** 接口调用失败的回调函数 */
     type CloseSocketFailCallback = (res: GeneralCallbackResult) => void
     /** 接口调用成功的回调函数 */
     type CloseSocketSuccessCallback = (res: GeneralCallbackResult) => void
-    /** 接口调用成功的回调函数 */
-    type CloseSuccessCallback = (res: GeneralCallbackResult) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type CompressImageCompleteCallback = (res: GeneralCallbackResult) => void
     /** 接口调用失败的回调函数 */
@@ -14268,6 +14650,18 @@ wx.writeBLECharacteristicValue({
     type CreateBLEConnectionFailCallback = (res: BluetoothError) => void
     /** 接口调用成功的回调函数 */
     type CreateBLEConnectionSuccessCallback = (res: BluetoothError) => void
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type CreateBLEPeripheralServerCompleteCallback = (
+        res: GeneralCallbackResult,
+    ) => void
+    /** 接口调用失败的回调函数 */
+    type CreateBLEPeripheralServerFailCallback = (
+        res: GeneralCallbackResult,
+    ) => void
+    /** 接口调用成功的回调函数 */
+    type CreateBLEPeripheralServerSuccessCallback = (
+        result: CreateBLEPeripheralServerSuccessCallbackResult,
+    ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type DownloadFileCompleteCallback = (res: GeneralCallbackResult) => void
     /** 接口调用失败的回调函数 */
@@ -14509,6 +14903,16 @@ wx.writeBLECharacteristicValue({
     /** 接口调用成功的回调函数 */
     type GetExtConfigSuccessCallback = (
         result: GetExtConfigSuccessCallbackResult,
+    ) => void
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type GetGroupEnterInfoCompleteCallback = (
+        res: GeneralCallbackResult,
+    ) => void
+    /** 接口调用失败的回调函数 */
+    type GetGroupEnterInfoFailCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用成功的回调函数 */
+    type GetGroupEnterInfoSuccessCallback = (
+        result: GetGroupEnterInfoSuccessCallbackResult,
     ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type GetHCEStateCompleteCallback = (res: NFCError) => void
@@ -14986,12 +15390,24 @@ wx.writeBLECharacteristicValue({
     ) => void
     /** 音频中断结束事件的回调函数 */
     type OffAudioInterruptionEndCallback = (res: GeneralCallbackResult) => void
+    /** 当前外围设备被连接或断开连接事件的回调函数 */
+    type OffBLEPeripheralConnectionStateChangedCallback = (
+        res: GeneralCallbackResult,
+    ) => void
     /** iBeacon 服务状态变化事件的回调函数 */
     type OffBeaconServiceChangeCallback = (res: GeneralCallbackResult) => void
     /** iBeacon 设备更新事件的回调函数 */
     type OffBeaconUpdateCallback = (res: GeneralCallbackResult) => void
     /** 音频进入可以播放状态的事件的回调函数 */
     type OffCanplayCallback = (res: GeneralCallbackResult) => void
+    /** 已连接的设备请求读当前外围设备的特征值事件的回调函数 */
+    type OffCharacteristicReadRequestCallback = (
+        res: GeneralCallbackResult,
+    ) => void
+    /** 已连接的设备请求写当前外围设备的特征值事件的回调函数 */
+    type OffCharacteristicWriteRequestCallback = (
+        res: GeneralCallbackResult,
+    ) => void
     /** 音频自然播放至结束的事件的回调函数 */
     type OffEndedCallback = (res: GeneralCallbackResult) => void
     /** 开始监听数据包消息的事件的回调函数 */
@@ -15057,6 +15473,10 @@ wx.writeBLECharacteristicValue({
     type OnBLEConnectionStateChangeCallback = (
         result: OnBLEConnectionStateChangeCallbackResult,
     ) => void
+    /** 当前外围设备被连接或断开连接事件的回调函数 */
+    type OnBLEPeripheralConnectionStateChangedCallback = (
+        result: OnBLEPeripheralConnectionStateChangedCallbackResult,
+    ) => void
     /** 音乐暂停事件的回调函数 */
     type OnBackgroundAudioPauseCallback = (res: GeneralCallbackResult) => void
     /** 音乐播放事件的回调函数 */
@@ -15091,6 +15511,14 @@ wx.writeBLECharacteristicValue({
     ) => void
     /** 回调函数 */
     type OnCameraFrameCallback = (result: OnCameraFrameCallbackResult) => void
+    /** 已连接的设备请求读当前外围设备的特征值事件的回调函数 */
+    type OnCharacteristicReadRequestCallback = (
+        result: OnCharacteristicReadRequestCallbackResult,
+    ) => void
+    /** 已连接的设备请求写当前外围设备的特征值事件的回调函数 */
+    type OnCharacteristicWriteRequestCallback = (
+        result: OnCharacteristicWriteRequestCallbackResult,
+    ) => void
     /** 向微信后台请求检查更新结果事件的回调函数 */
     type OnCheckForUpdateCallback = (
         result: OnCheckForUpdateCallbackResult,
@@ -15340,6 +15768,12 @@ wx.writeBLECharacteristicValue({
     type RemoveFormatFailCallback = (res: GeneralCallbackResult) => void
     /** 接口调用成功的回调函数 */
     type RemoveFormatSuccessCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type RemoveServiceCompleteCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用失败的回调函数 */
+    type RemoveServiceFailCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用成功的回调函数 */
+    type RemoveServiceSuccessCallback = (res: GeneralCallbackResult) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type RemoveStorageCompleteCallback = (res: GeneralCallbackResult) => void
     /** 接口调用失败的回调函数 */
@@ -15649,6 +16083,12 @@ wx.writeBLECharacteristicValue({
     /** 接口调用成功的回调函数 */
     type SetWifiListSuccessCallback = (res: WifiError) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type SetWindowSizeCompleteCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用失败的回调函数 */
+    type SetWindowSizeFailCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用成功的回调函数 */
+    type SetWindowSizeSuccessCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type SetZoomCompleteCallback = (res: GeneralCallbackResult) => void
     /** 接口调用失败的回调函数 */
     type SetZoomFailCallback = (res: GeneralCallbackResult) => void
@@ -15718,6 +16158,12 @@ wx.writeBLECharacteristicValue({
     type ShowToastFailCallback = (res: GeneralCallbackResult) => void
     /** 接口调用成功的回调函数 */
     type ShowToastSuccessCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type SocketTaskCloseCompleteCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用失败的回调函数 */
+    type SocketTaskCloseFailCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用成功的回调函数 */
+    type SocketTaskCloseSuccessCallback = (res: GeneralCallbackResult) => void
     /** WebSocket 连接关闭事件的回调函数 */
     type SocketTaskOnCloseCallback = (
         result: SocketTaskOnCloseCallbackResult,
@@ -15874,6 +16320,12 @@ wx.writeBLECharacteristicValue({
     type StopAccelerometerFailCallback = (res: GeneralCallbackResult) => void
     /** 接口调用成功的回调函数 */
     type StopAccelerometerSuccessCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type StopAdvertisingCompleteCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用失败的回调函数 */
+    type StopAdvertisingFailCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用成功的回调函数 */
+    type StopAdvertisingSuccessCallback = (res: GeneralCallbackResult) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type StopBGMCompleteCallback = (res: GeneralCallbackResult) => void
     /** 接口调用失败的回调函数 */
