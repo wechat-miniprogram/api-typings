@@ -137,9 +137,7 @@ declare namespace WechatMiniprogram {
 
         type InstanceMethods<D extends DataOption> = Component.InstanceMethods<
             D
-        > & {
-            getOpenerEventChannel(): EventChannel,
-        }
+        >
 
         interface Data<D extends DataOption> {
             /** 页面的初始数据
