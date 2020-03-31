@@ -57,7 +57,7 @@ declare namespace WechatMiniprogram {
         }
         type DataOption = Record<string, any>
         type PropertyOption = Record<string, AllProperty>
-        type MethodOption = Record<string, (...args: any[]) => any>
+        type MethodOption = Record<string, (...args: any[]) => any> & Partial<Page.ILifetime>
 
         interface Data<D extends DataOption> {
             /** 组件的内部数据，和 `properties` 一同用于组件的模板渲染 */
