@@ -242,6 +242,8 @@ declare namespace WechatMiniprogram {
                 options: ClearAnimationOptions,
                 callback: () => void,
             ): void
+
+            getOpenerEventChannel(): EventChannel
         }
 
         interface ComponentOptions {
