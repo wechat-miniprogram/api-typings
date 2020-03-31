@@ -386,3 +386,15 @@ Component({
     },
   },
 })
+
+Component({
+  methods: {
+    test() {
+      const channel = this.getOpenerEventChannel()
+      expectType<WechatMiniprogram.EventChannel>(channel)
+      channel.emit('test', {})
+      channel.on('xxx', () => {})
+      expectError(channel.emit(1, 2))
+    },
+  },
+})

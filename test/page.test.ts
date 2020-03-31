@@ -199,3 +199,13 @@ Page<DataType, CustomOption>({
     expectType<string[]>(this.data.logs)
   },
 })
+
+Page({
+  test() {
+    const channel = this.getOpenerEventChannel()
+    expectType<WechatMiniprogram.EventChannel>(channel)
+    channel.emit('test', {})
+    channel.on('xxx', () => {})
+    expectError(channel.emit(1, 2))
+  },
+})
