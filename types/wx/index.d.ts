@@ -26,6 +26,7 @@ SOFTWARE.
 /// <reference path="./lib.wx.cloud.d.ts" />
 /// <reference path="./lib.wx.component.d.ts" />
 /// <reference path="./lib.wx.behavior.d.ts" />
+/// <reference path="./lib.wx.event.d.ts" />
 
 declare namespace WechatMiniprogram {
     type IAnyObject = Record<string, any>
