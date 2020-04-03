@@ -37,6 +37,11 @@ Definitions of Wechat APIs (`lib.wx.api.d.ts`) are auto-generated together with 
 
 Both PR and issue are welcomed for definitions of pages (`Page`), custom components (`Component`) and other else, since they are written manually. Help us improve this definition if you have any bug reports or suggestions! Thanks for contributing!
 
+### Contributors
+
+- [Baran](https://github.com/baranwang)
+- [MinLiang Zeng](https://github.com/zenml/)
+
 ### Automated tests
 
 We use [`tsd`](https://github.com/SamVerschueren/tsd) to check if this definition is working properly. All test cases are under folder `test`.

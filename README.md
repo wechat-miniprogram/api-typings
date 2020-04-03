@@ -36,6 +36,11 @@ API 的定义文件（`lib.wx.api.d.ts`）是随 [文档](https://developers.wei
 
 如果有针对页面（`Page`）、自定义组件（`Component`）等接口的 bug 和建议，欢迎 PR 或提一个 issue 给我们。非常感谢！
 
+### 贡献者
+
+- [Baran](https://github.com/baranwang)
+- [MinLiang Zeng](https://github.com/zenml/)
+
 ### 测试
 
 本定义文件使用 [`tsd`](https://github.com/SamVerschueren/tsd) 进行测试，所有的测试样例放在 `test` 目录下。
