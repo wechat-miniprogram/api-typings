@@ -226,13 +226,10 @@ declare namespace DB {
 
     class CollectionReference extends Query {
         readonly collectionName: string
-        readonly database: Database
 
         private constructor(name: string, database: Database)
 
         doc(docId: string | number): DocumentReference
-
-        // add(options: IAddDocumentOptions): Promise<IAddResult> | void
 
         add(options: OQ<IAddDocumentOptions>): void
         add(options: RQ<IAddDocumentOptions>): Promise<IAddResult>
@@ -258,6 +255,13 @@ declare namespace DB {
         remove(
             options?: RQ<IRemoveSingleDocumentOptions>,
         ): Promise<IRemoveResult>
+
+        watch(options: IWatchOptions): RealtimeListener
+    }
+
+    class RealtimeListener {
+        // "And Now His Watch Is Ended"
+        close: () => Promise<void>
     }
 
     class Query {
@@ -276,6 +280,8 @@ declare namespace DB {
 
         count(options: OQ<ICountDocumentOptions>): void
         count(options?: RQ<ICountDocumentOptions>): Promise<ICountResult>
+
+        watch(options: IWatchOptions): RealtimeListener
     }
 
     interface DatabaseCommand {
@@ -300,17 +306,153 @@ declare namespace DB {
         or(
             ...expressions: Array<DatabaseLogicCommand | IQueryCondition>
         ): DatabaseLogicCommand
+        nor(
+            ...expressions: Array<DatabaseLogicCommand | IQueryCondition>
+        ): DatabaseLogicCommand
+        not(expression: DatabaseLogicCommand): DatabaseLogicCommand
+
+        exists(val: boolean): DatabaseQueryCommand
+
+        mod(divisor: number, remainder: number): DatabaseQueryCommand
+
+        all(val: any[]): DatabaseQueryCommand
+        elemMatch(val: any): DatabaseQueryCommand
+        size(val: number): DatabaseQueryCommand
 
         set(val: any): DatabaseUpdateCommand
         remove(): DatabaseUpdateCommand
         inc(val: number): DatabaseUpdateCommand
         mul(val: number): DatabaseUpdateCommand
+        min(val: number): DatabaseUpdateCommand
+        max(val: number): DatabaseUpdateCommand
+        rename(val: string): DatabaseUpdateCommand
+        bit(val: number): DatabaseUpdateCommand
 
         push(...values: any[]): DatabaseUpdateCommand
         pop(): DatabaseUpdateCommand
         shift(): DatabaseUpdateCommand
         unshift(...values: any[]): DatabaseUpdateCommand
+        addToSet(val: any): DatabaseUpdateCommand
+        pull(val: any): DatabaseUpdateCommand
+        pullAll(val: any): DatabaseUpdateCommand
+
+        project: {
+            slice(val: number | [number, number]): DatabaseProjectionCommand,
+        }
+
+        aggregate: {
+            __safe_props__?: Set<string>
+
+            abs(val: any): DatabaseAggregateCommand
+            add(val: any): DatabaseAggregateCommand
+            addToSet(val: any): DatabaseAggregateCommand
+            allElementsTrue(val: any): DatabaseAggregateCommand
+            and(val: any): DatabaseAggregateCommand
+            anyElementTrue(val: any): DatabaseAggregateCommand
+            arrayElemAt(val: any): DatabaseAggregateCommand
+            arrayToObject(val: any): DatabaseAggregateCommand
+            avg(val: any): DatabaseAggregateCommand
+            ceil(val: any): DatabaseAggregateCommand
+            cmp(val: any): DatabaseAggregateCommand
+            concat(val: any): DatabaseAggregateCommand
+            concatArrays(val: any): DatabaseAggregateCommand
+            cond(val: any): DatabaseAggregateCommand
+            convert(val: any): DatabaseAggregateCommand
+            dateFromParts(val: any): DatabaseAggregateCommand
+            dateToParts(val: any): DatabaseAggregateCommand
+            dateFromString(val: any): DatabaseAggregateCommand
+            dateToString(val: any): DatabaseAggregateCommand
+            dayOfMonth(val: any): DatabaseAggregateCommand
+            dayOfWeek(val: any): DatabaseAggregateCommand
+            dayOfYear(val: any): DatabaseAggregateCommand
+            divide(val: any): DatabaseAggregateCommand
+            eq(val: any): DatabaseAggregateCommand
+            exp(val: any): DatabaseAggregateCommand
+            filter(val: any): DatabaseAggregateCommand
+            first(val: any): DatabaseAggregateCommand
+            floor(val: any): DatabaseAggregateCommand
+            gt(val: any): DatabaseAggregateCommand
+            gte(val: any): DatabaseAggregateCommand
+            hour(val: any): DatabaseAggregateCommand
+            ifNull(val: any): DatabaseAggregateCommand
+            in(val: any): DatabaseAggregateCommand
+            indexOfArray(val: any): DatabaseAggregateCommand
+            indexOfBytes(val: any): DatabaseAggregateCommand
+            indexOfCP(val: any): DatabaseAggregateCommand
+            isArray(val: any): DatabaseAggregateCommand
+            isoDayOfWeek(val: any): DatabaseAggregateCommand
+            isoWeek(val: any): DatabaseAggregateCommand
+            isoWeekYear(val: any): DatabaseAggregateCommand
+            last(val: any): DatabaseAggregateCommand
+            let(val: any): DatabaseAggregateCommand
+            literal(val: any): DatabaseAggregateCommand
+            ln(val: any): DatabaseAggregateCommand
+            log(val: any): DatabaseAggregateCommand
+            log10(val: any): DatabaseAggregateCommand
+            lt(val: any): DatabaseAggregateCommand
+            lte(val: any): DatabaseAggregateCommand
+            ltrim(val: any): DatabaseAggregateCommand
+            map(val: any): DatabaseAggregateCommand
+            max(val: any): DatabaseAggregateCommand
+            mergeObjects(val: any): DatabaseAggregateCommand
+            meta(val: any): DatabaseAggregateCommand
+            min(val: any): DatabaseAggregateCommand
+            millisecond(val: any): DatabaseAggregateCommand
+            minute(val: any): DatabaseAggregateCommand
+            mod(val: any): DatabaseAggregateCommand
+            month(val: any): DatabaseAggregateCommand
+            multiply(val: any): DatabaseAggregateCommand
+            neq(val: any): DatabaseAggregateCommand
+            not(val: any): DatabaseAggregateCommand
+            objectToArray(val: any): DatabaseAggregateCommand
+            or(val: any): DatabaseAggregateCommand
+            pow(val: any): DatabaseAggregateCommand
+            push(val: any): DatabaseAggregateCommand
+            range(val: any): DatabaseAggregateCommand
+            reduce(val: any): DatabaseAggregateCommand
+            reverseArray(val: any): DatabaseAggregateCommand
+            rtrim(val: any): DatabaseAggregateCommand
+            second(val: any): DatabaseAggregateCommand
+            setDifference(val: any): DatabaseAggregateCommand
+            setEquals(val: any): DatabaseAggregateCommand
+            setIntersection(val: any): DatabaseAggregateCommand
+            setIsSubset(val: any): DatabaseAggregateCommand
+            setUnion(val: any): DatabaseAggregateCommand
+            size(val: any): DatabaseAggregateCommand
+            slice(val: any): DatabaseAggregateCommand
+            split(val: any): DatabaseAggregateCommand
+            sqrt(val: any): DatabaseAggregateCommand
+            stdDevPop(val: any): DatabaseAggregateCommand
+            stdDevSamp(val: any): DatabaseAggregateCommand
+            strcasecmp(val: any): DatabaseAggregateCommand
+            strLenBytes(val: any): DatabaseAggregateCommand
+            strLenCP(val: any): DatabaseAggregateCommand
+            substr(val: any): DatabaseAggregateCommand
+            substrBytes(val: any): DatabaseAggregateCommand
+            substrCP(val: any): DatabaseAggregateCommand
+            subtract(val: any): DatabaseAggregateCommand
+            sum(val: any): DatabaseAggregateCommand
+            switch(val: any): DatabaseAggregateCommand
+            toBool(val: any): DatabaseAggregateCommand
+            toDate(val: any): DatabaseAggregateCommand
+            toDecimal(val: any): DatabaseAggregateCommand
+            toDouble(val: any): DatabaseAggregateCommand
+            toInt(val: any): DatabaseAggregateCommand
+            toLong(val: any): DatabaseAggregateCommand
+            toObjectId(val: any): DatabaseAggregateCommand
+            toString(val: any): DatabaseAggregateCommand
+            toLower(val: any): DatabaseAggregateCommand
+            toUpper(val: any): DatabaseAggregateCommand
+            trim(val: any): DatabaseAggregateCommand
+            trunc(val: any): DatabaseAggregateCommand
+            type(val: any): DatabaseAggregateCommand
+            week(val: any): DatabaseAggregateCommand
+            year(val: any): DatabaseAggregateCommand
+            zip(val: any): DatabaseAggregateCommand,
+        }
     }
+
+    class DatabaseAggregateCommand {}
 
     enum LOGIC_COMMANDS_LITERAL {
         AND = 'and',
@@ -320,22 +462,14 @@ declare namespace DB {
     }
 
     class DatabaseLogicCommand {
-        fieldName: string | InternalSymbol
-        operator: LOGIC_COMMANDS_LITERAL | string
-        operands: any[]
-
-        _setFieldName(fieldName: string): DatabaseLogicCommand
-
-        and(
-            ...expressions: Array<DatabaseLogicCommand | IQueryCondition>
-        ): DatabaseLogicCommand
-        or(
-            ...expressions: Array<DatabaseLogicCommand | IQueryCondition>
-        ): DatabaseLogicCommand
+        and(...expressions: DatabaseLogicCommand[]): DatabaseLogicCommand
+        or(...expressions: DatabaseLogicCommand[]): DatabaseLogicCommand
+        nor(...expressions: DatabaseLogicCommand[]): DatabaseLogicCommand
+        not(expression: DatabaseLogicCommand): DatabaseLogicCommand
     }
 
     enum QUERY_COMMANDS_LITERAL {
-        // normal
+        // comparison
         EQ = 'eq',
         NEQ = 'neq',
         GT = 'gt',
@@ -348,13 +482,17 @@ declare namespace DB {
         GEO_NEAR = 'geoNear',
         GEO_WITHIN = 'geoWithin',
         GEO_INTERSECTS = 'geoIntersects',
+        // element
+        EXISTS = 'exists',
+        // evaluation
+        MOD = 'mod',
+        // array
+        ALL = 'all',
+        ELEM_MATCH = 'elemMatch',
+        SIZE = 'size',
     }
 
     class DatabaseQueryCommand extends DatabaseLogicCommand {
-        operator: QUERY_COMMANDS_LITERAL | string
-
-        _setFieldName(fieldName: string): DatabaseQueryCommand
-
         eq(val: any): DatabaseLogicCommand
         neq(val: any): DatabaseLogicCommand
         gt(val: any): DatabaseLogicCommand
@@ -364,6 +502,14 @@ declare namespace DB {
         in(val: any[]): DatabaseLogicCommand
         nin(val: any[]): DatabaseLogicCommand
 
+        exists(val: boolean): DatabaseLogicCommand
+
+        mod(divisor: number, remainder: number): DatabaseLogicCommand
+
+        all(val: any[]): DatabaseLogicCommand
+        elemMatch(val: any): DatabaseLogicCommand
+        size(val: number): DatabaseLogicCommand
+
         geoNear(options: IGeoNearCommandOptions): DatabaseLogicCommand
         geoWithin(options: IGeoWithinCommandOptions): DatabaseLogicCommand
         geoIntersects(
@@ -371,30 +517,34 @@ declare namespace DB {
         ): DatabaseLogicCommand
     }
 
+    enum PROJECTION_COMMANDS_LITERAL {
+        SLICE = 'slice',
+    }
+
+    class DatabaseProjectionCommand {}
+
     enum UPDATE_COMMANDS_LITERAL {
+        // field
         SET = 'set',
         REMOVE = 'remove',
         INC = 'inc',
         MUL = 'mul',
+        MIN = 'min',
+        MAX = 'max',
+        RENAME = 'rename',
+        // bitwise
+        BIT = 'bit',
+        // array
         PUSH = 'push',
         POP = 'pop',
         SHIFT = 'shift',
         UNSHIFT = 'unshift',
+        ADD_TO_SET = 'addToSet',
+        PULL = 'pull',
+        PULL_ALL = 'pullAll',
     }
 
-    class DatabaseUpdateCommand {
-        fieldName: string | InternalSymbol
-        operator: UPDATE_COMMANDS_LITERAL
-        operands: any[]
-
-        constructor(
-            operator: UPDATE_COMMANDS_LITERAL,
-            operands: any[],
-            fieldName?: string | InternalSymbol,
-        )
-
-        _setFieldName(fieldName: string): DatabaseUpdateCommand
-    }
+    class DatabaseUpdateCommand {}
 
     class Batch {}
 
@@ -648,6 +798,36 @@ declare namespace DB {
     }
 
     type IRemoveSingleDocumentOptions = IDBAPIParam
+
+    interface IWatchOptions {
+        // server realtime data init & change event
+        onChange: (snapshot: ISnapshot) => void
+        // error while connecting / listening
+        onError: (error: any) => void
+    }
+
+    interface ISnapshot {
+        id: number
+        docChanges: ISingleDBEvent[]
+        docs: Record<string, any>
+        type?: SnapshotType
+    }
+
+    type SnapshotType = 'init'
+
+    interface ISingleDBEvent {
+        id: number
+        dataType: DataType
+        queueType: QueueType
+        docId: string
+        doc: Record<string, any>
+        updatedFields?: Record<string, any>
+        removedFields?: string[]
+    }
+
+    type DataType = 'init' | 'update' | 'replace' | 'add' | 'remove' | 'limit'
+
+    type QueueType = 'init' | 'enqueue' | 'dequeue' | 'update'
 
     interface IQueryCondition {
         [key: string]: any
