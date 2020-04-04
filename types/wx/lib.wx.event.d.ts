@@ -22,7 +22,7 @@ declare namespace WechatMiniprogram {
         touches: Touch[]
         type: string
     }
-    interface TapEvent extends Event {
+    interface TouchEvent {
         changedTouches: Touch[]
         detail: {
             x: number,
@@ -32,6 +32,9 @@ declare namespace WechatMiniprogram {
             [key: string]: string
         }
         mut: boolean
+        type: string
+    }
+    interface TapEvent extends TouchEvent {
         type: "tap"
     }
     interface InputEvent extends Event {
@@ -42,57 +45,25 @@ declare namespace WechatMiniprogram {
         }
         type: "input"
     }
-    interface TouchStartEvent extends Event {
-        changedTouches: Touch[]
-        detail: {
-            x: number,
-            y: number
-        }
-        mark: {
-            [key: string]: string
-        }
-        mut: boolean
+    interface TouchStartEvent extends TouchEvent {
         type: "touchstart"
         _requireActive: boolean
     }
-    interface TouchMoveEvent extends Event {
-        changedTouches: Touch[]
-        detail: {
-            x: number,
-            y: number
-        }
-        mark: {
-            [key: string]: string
-        }
-        mut: boolean
+    interface TouchMoveEvent extends TouchEvent {
         type: "touchmove"
         _requireActive: boolean
     }
-    interface TouchEndEvent extends Event {
-        changedTouches: Touch[]
-        detail: {
-            x: number,
-            y: number
-        }
-        mark: {
-            [key: string]: string
-        }
-        mut: boolean
+    interface TouchEndEvent extends TouchEvent {
         type: "touchend"
         _requireActive: boolean
     }
-    interface LongPressEvent extends Event {
-        changedTouches: Touch[]
-        detail: {
-            x: number,
-            y: number
-        }
-        mark: {
-            [key: string]: string
-        }
-        mut: boolean
+    interface LongPressEvent extends TouchEvent {
         type: "longpress"
     }
+    interface LongTapEvent extends TouchEvent {
+        type: "longtap"
+    }
+    
 }
 
 
