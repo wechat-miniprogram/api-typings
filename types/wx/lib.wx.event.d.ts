@@ -19,7 +19,6 @@ declare namespace WechatMiniprogram {
         currentTarget: Target
         target: Target
         timeStamp: number
-        touches: Touch[]
         type: string
     }
     interface TouchEvent {
@@ -32,6 +31,7 @@ declare namespace WechatMiniprogram {
             [key: string]: string
         }
         mut: boolean
+        touches: Touch[]
         type: string
     }
     interface TapEvent extends TouchEvent {
@@ -63,7 +63,64 @@ declare namespace WechatMiniprogram {
     interface LongTapEvent extends TouchEvent {
         type: "longtap"
     }
-    
+
+    interface AnimationEvent extends Event {
+        mark: {
+            [key: string]: string
+        }
+        mut: boolean
+        type: string
+    }
+    interface TransitionEndEvent extends AnimationEvent {
+        detail: {
+            elapsedTime: number
+        }
+        type: "transitionend"
+    }
+    interface AnimationStartEvent extends AnimationEvent {
+        detail: {
+            animationName: string,
+            elapsedTime: number
+        }
+        type: "animationstart"
+    }
+    interface AnimationIterationEvent extends AnimationEvent {
+        detail: {
+            animationName: string,
+            elapsedTime: number
+        }
+        type: "animationiteration"
+    }
+    interface AnimationEndEvent extends AnimationEvent {
+        detail: {
+            animationName: string, elapsedTime: number
+        }
+        type: "animationend"
+    }
+    interface SumbmitEvent extends Event {
+        detail: {
+            value: {
+                [key: string]: any
+            },
+            target: Target
+        }
+        mark: {
+            [key: string]: string
+        }
+        mut: boolean
+        type: "submit"
+    }
+    interface ResetEvent extends Event {
+        detail: {
+            target: Target
+        }
+        mark: {
+            [key: string]: string
+        }
+        mut: false
+        type: "reset"
+    }
+
 }
 
 
