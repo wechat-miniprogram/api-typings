@@ -55,6 +55,19 @@ declare namespace WechatMiniprogram {
         type: "touchstart"
         _requireActive: boolean
     }
+    interface TouchMoveEvent extends Event {
+        changedTouches: Touch[]
+        detail: {
+            x: number,
+            y: number
+        }
+        mark: {
+            [key: string]: string
+        }
+        mut: boolean
+        type: "touchmove"
+        _requireActive: boolean
+    }
 }
 
 
