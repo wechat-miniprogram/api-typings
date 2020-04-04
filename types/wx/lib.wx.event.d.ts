@@ -81,6 +81,18 @@ declare namespace WechatMiniprogram {
         type: "touchend"
         _requireActive: boolean
     }
+    interface LongPressEvent extends Event {
+        changedTouches: Touch[]
+        detail: {
+            x: number,
+            y: number
+        }
+        mark: {
+            [key: string]: string
+        }
+        mut: boolean
+        type: "longpress"
+    }
 }
 
 
