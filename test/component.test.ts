@@ -28,12 +28,13 @@ Component({
     },
     max: {
       type: Number,
+      optionalTypes: [String],
       value: 0,
       observer(newVal, oldVal) {
-        expectType<number>(newVal)
-        expectType<number>(oldVal)
+        expectType<any>(newVal)
+        expectType<any>(oldVal)
         expectType<void>(this.onMyButtonTap())
-        expectType<number>(this.data.max)
+        expectType<number | string>(this.data.max)
       },
     },
     lastLeaf: {
