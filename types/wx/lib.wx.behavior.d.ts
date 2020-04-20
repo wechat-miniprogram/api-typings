@@ -45,7 +45,7 @@ declare namespace WechatMiniprogram {
                 TProperty extends PropertyOption,
                 TMethod extends MethodOption
             >(
-                options: Options<TData, TProperty, TMethod>,
+                options: Options<TData, TProperty, TMethod>
             ): string
         }
 

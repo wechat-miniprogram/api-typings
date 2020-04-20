@@ -53,7 +53,7 @@ interface IInitCloudConfig {
         | {
               database?: string
               functions?: string
-              storage?: string,
+              storage?: string
           }
     traceUser?: boolean
 }
@@ -100,29 +100,29 @@ interface WxCloud {
 
     callFunction(param: OQ<ICloud.CallFunctionParam>): void
     callFunction(
-        param: RQ<ICloud.CallFunctionParam>,
+        param: RQ<ICloud.CallFunctionParam>
     ): Promise<ICloud.CallFunctionResult>
 
     uploadFile(param: OQ<ICloud.UploadFileParam>): WechatMiniprogram.UploadTask
     uploadFile(
-        param: RQ<ICloud.UploadFileParam>,
+        param: RQ<ICloud.UploadFileParam>
     ): Promise<ICloud.UploadFileResult>
 
     downloadFile(
-        param: OQ<ICloud.DownloadFileParam>,
+        param: OQ<ICloud.DownloadFileParam>
     ): WechatMiniprogram.DownloadTask
     downloadFile(
-        param: RQ<ICloud.DownloadFileParam>,
+        param: RQ<ICloud.DownloadFileParam>
     ): Promise<ICloud.DownloadFileResult>
 
     getTempFileURL(param: OQ<ICloud.GetTempFileURLParam>): void
     getTempFileURL(
-        param: RQ<ICloud.GetTempFileURLParam>,
+        param: RQ<ICloud.GetTempFileURLParam>
     ): Promise<ICloud.GetTempFileURLResult>
 
     deleteFile(param: OQ<ICloud.DeleteFileParam>): void
     deleteFile(
-        param: RQ<ICloud.DeleteFileParam>,
+        param: RQ<ICloud.DeleteFileParam>
     ): Promise<ICloud.DeleteFileResult>
 
     database: (config?: ICloudConfig) => DB.Database
@@ -248,12 +248,12 @@ declare namespace DB {
 
         update(options: OQ<IUpdateSingleDocumentOptions>): void
         update(
-            options?: RQ<IUpdateSingleDocumentOptions>,
+            options?: RQ<IUpdateSingleDocumentOptions>
         ): Promise<IUpdateResult>
 
         remove(options: OQ<IRemoveSingleDocumentOptions>): void
         remove(
-            options?: RQ<IRemoveSingleDocumentOptions>,
+            options?: RQ<IRemoveSingleDocumentOptions>
         ): Promise<IRemoveResult>
 
         watch(options: IWatchOptions): RealtimeListener
@@ -297,7 +297,7 @@ declare namespace DB {
         geoNear(options: IGeoNearCommandOptions): DatabaseQueryCommand
         geoWithin(options: IGeoWithinCommandOptions): DatabaseQueryCommand
         geoIntersects(
-            options: IGeoIntersectsCommandOptions,
+            options: IGeoIntersectsCommandOptions
         ): DatabaseQueryCommand
 
         and(
@@ -337,7 +337,7 @@ declare namespace DB {
         pullAll(val: any): DatabaseUpdateCommand
 
         project: {
-            slice(val: number | [number, number]): DatabaseProjectionCommand,
+            slice(val: number | [number, number]): DatabaseProjectionCommand
         }
 
         aggregate: {
@@ -448,7 +448,7 @@ declare namespace DB {
             type(val: any): DatabaseAggregateCommand
             week(val: any): DatabaseAggregateCommand
             year(val: any): DatabaseAggregateCommand
-            zip(val: any): DatabaseAggregateCommand,
+            zip(val: any): DatabaseAggregateCommand
         }
     }
 
@@ -513,7 +513,7 @@ declare namespace DB {
         geoNear(options: IGeoNearCommandOptions): DatabaseLogicCommand
         geoWithin(options: IGeoWithinCommandOptions): DatabaseLogicCommand
         geoIntersects(
-            options: IGeoIntersectsCommandOptions,
+            options: IGeoIntersectsCommandOptions
         ): DatabaseLogicCommand
     }
 
@@ -588,10 +588,10 @@ declare namespace DB {
 
     interface IGeoMultiLineStringConstructor {
         new (
-            lineStrings: GeoLineString[] | IGeoJSONMultiLineString,
+            lineStrings: GeoLineString[] | IGeoJSONMultiLineString
         ): GeoMultiLineString
         (
-            lineStrings: GeoLineString[] | IGeoJSONMultiLineString,
+            lineStrings: GeoLineString[] | IGeoJSONMultiLineString
         ): GeoMultiLineString
     }
 
@@ -855,7 +855,7 @@ declare namespace DB {
 
     interface IUpdateResult extends IAPISuccessParam {
         stats: {
-            updated: number,
+            updated: number
             // created: number,
         }
     }
@@ -864,13 +864,13 @@ declare namespace DB {
         _id: DocumentId
         stats: {
             updated: number
-            created: number,
+            created: number
         }
     }
 
     interface IRemoveResult extends IAPISuccessParam {
         stats: {
-            removed: number,
+            removed: number
         }
     }
 

@@ -206,10 +206,13 @@ import WX = WechatMiniprogram
 
 // https://github.com/wechat-miniprogram/api-typings/issues/88
 {
-  wx.createSelectorQuery().select('#canvas').fields({ node: true }).exec(res => {
-    wx.canvasToTempFilePath({ canvas: res[0].node })
-    wx.canvasToTempFilePath({ canvas: res[0].node, quality: 0.5 })
-  })
+  wx.createSelectorQuery()
+    .select('#canvas')
+    .fields({ node: true })
+    .exec(res => {
+      wx.canvasToTempFilePath({ canvas: res[0].node })
+      wx.canvasToTempFilePath({ canvas: res[0].node, quality: 0.5 })
+    })
   wx.canvasToTempFilePath({ canvasId: '' })
 }
 

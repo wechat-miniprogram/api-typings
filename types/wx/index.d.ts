@@ -41,8 +41,8 @@ declare namespace WechatMiniprogram {
     > = P extends { success: any }
         ? void
         : P extends { fail: any }
-            ? void
-            : P extends { complete: any }
-                ? void
-                : Promise<Parameters<Exclude<T['success'], undefined>>[0]>
+        ? void
+        : P extends { complete: any }
+        ? void
+        : Promise<Parameters<Exclude<T['success'], undefined>>[0]>
 }

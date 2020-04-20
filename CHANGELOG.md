@@ -1,3 +1,8 @@
+## 2020-04-20 v2.10.4
+- 同步 API 定义到基础库 2.10.4
+- 在之前的版本中，分属于不同接口的两个 interface / callback 即使完全相同，也会拥有不同的名字。在这次更新中，他们将合并为同一个（如 `FileSystemManagerGetFileInfoCompleteCallback` 和 `WxGetFileInfoCompleteCallback` 都变成了 `GetFileInfoCompleteCallback`）。这是一个 **破坏性改动**，原本字面上引用了这些 interface / callback 的代码可能会报错。
+- 修复了一些取消监听接口（off callback）的参数错误 ([#120](https://github.com/wechat-miniprogram/api-typings/issues/120))
+
 ## 2020-04-03 v2.10.3-1
 - 补齐 `Component` 的 `getOpenerEventChannel` ([#112](https://github.com/wechat-miniprogram/api-typings/issues/113) by [@baranwang](https://github.com/baranwang))
 - 加入了部分事件的定义 ([#115](https://github.com/wechat-miniprogram/api-typings/issues/115) by [@zenml](https://github.com/zenml))

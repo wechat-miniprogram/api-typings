@@ -38,7 +38,7 @@ declare namespace WechatMiniprogram {
         type TrivialInstance = Instance<IAnyObject, IAnyObject>
         interface Constructor {
             <TData extends DataOption, TCustom extends CustomOption>(
-                options: Options<TData, TCustom>,
+                options: Options<TData, TCustom>
             ): void
         }
         interface ILifetime {
@@ -48,7 +48,7 @@ declare namespace WechatMiniprogram {
              */
             onLoad(
                 /** 打开当前页面路径中的参数 */
-                query: Record<string, string | undefined>,
+                query: Record<string, string | undefined>
             ): void
             /** 生命周期回调—监听页面显示
              *
@@ -98,7 +98,7 @@ declare namespace WechatMiniprogram {
              */
             onShareAppMessage(
                 /** 分享发起来源参数 */
-                options: IShareAppMessageOption,
+                options: IShareAppMessageOption
             ): ICustomShareContent
             /** 页面滚动触发事件的处理函数
              *
@@ -106,19 +106,19 @@ declare namespace WechatMiniprogram {
              */
             onPageScroll(
                 /** 页面滚动参数 */
-                options: IPageScrollOption,
+                options: IPageScrollOption
             ): void
 
             /** 当前是 tab 页时，点击 tab 时触发，最低基础库： `1.9.0` */
             onTabItemTap(
                 /** tab 点击参数 */
-                options: ITabItemTapOption,
+                options: ITabItemTapOption
             ): void
 
             /** 窗口尺寸改变时触发，最低基础库：`2.4.0` */
             onResize(
                 /** 窗口尺寸参数 */
-                options: IResizeOption,
+                options: IResizeOption
             ): void
         }
         interface InstanceProperties {
@@ -200,7 +200,7 @@ declare namespace WechatMiniprogram {
                 /** 变化后的窗口宽度，单位 px */
                 windowWidth: number
                 /** 变化后的窗口高度，单位 px */
-                windowHeight: number,
+                windowHeight: number
             }
         }
 

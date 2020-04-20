@@ -32,7 +32,7 @@ declare namespace WechatMiniprogram {
                 /** 组件数据，**包括内部数据和属性值** */
                 data: TData & PropertyOptionToData<TProperty>
                 /** 组件数据，**包括内部数据和属性值**（与 `data` 一致） */
-                properties: TData & PropertyOptionToData<TProperty>,
+                properties: TData & PropertyOptionToData<TProperty>
             }
         type TrivialInstance = Instance<IAnyObject, IAnyObject, IAnyObject>
         type TrivialOption = Options<IAnyObject, IAnyObject, IAnyObject>
@@ -52,7 +52,7 @@ declare namespace WechatMiniprogram {
                 TProperty extends PropertyOption,
                 TMethod extends MethodOption
             >(
-                options: Options<TData, TProperty, TMethod>,
+                options: Options<TData, TProperty, TMethod>
             ): string
         }
         type DataOption = Record<string, any>
@@ -81,13 +81,15 @@ declare namespace WechatMiniprogram {
         type ValueType<T extends PropertyType> = T extends StringConstructor
             ? string
             : T extends NumberConstructor
-                ? number
-                : T extends BooleanConstructor
-                    ? boolean
-                    : T extends ArrayConstructor
-                        ? any[]
-                        : T extends ObjectConstructor ? IAnyObject : any
-        interface FullProperty<T extends PropertyType> {
+            ? number
+            : T extends BooleanConstructor
+            ? boolean
+            : T extends ArrayConstructor
+            ? any[]
+            : T extends ObjectConstructor
+            ? IAnyObject
+            : any
+        type FullProperty<T extends PropertyType> = {
             /** 属性类型 */
             type: T
             /** 属性初始值 */
@@ -98,7 +100,7 @@ declare namespace WechatMiniprogram {
                 | ((
                       newVal: ValueType<T>,
                       oldVal: ValueType<T>,
-                      changedPath: Array<string | number>,
+                      changedPath: Array<string | number>
                   ) => void)
             /** 属性的类型（可以指定多个） */
             optionalTypes?: ShortProperty[]
@@ -157,7 +159,7 @@ declare namespace WechatMiniprogram {
                  */
                 data: Partial<D> & IAnyObject,
                 /** setData引起的界面更新渲染完毕后的回调函数，最低基础库： `1.5.0` */
-                callback?: () => void,
+                callback?: () => void
             ): void
 
             /** 检查组件是否具有 `behavior` （检查时会递归检查被直接或间接引入的所有behavior） */
@@ -166,13 +168,13 @@ declare namespace WechatMiniprogram {
             triggerEvent(
                 name: string,
                 detail?: object,
-                options?: TriggerEventOption,
+                options?: TriggerEventOption
             ): void
             /** 创建一个 SelectorQuery 对象，选择器选取范围为这个组件实例内 */
             createSelectorQuery(): SelectorQuery
             /** 创建一个 IntersectionObserver 对象，选择器选取范围为这个组件实例内 */
             createIntersectionObserver(
-                options: CreateIntersectionObserverOption,
+                options: CreateIntersectionObserverOption
             ): IntersectionObserver
             /** 使用选择器选择组件实例节点，返回匹配到的第一个组件实例对象（会被 `wx://component-export` 影响） */
             selectComponent(selector: string): TrivialInstance
@@ -213,7 +215,7 @@ declare namespace WechatMiniprogram {
                 selector: string,
                 keyFrames: KeyFrame[],
                 duration: number,
-                callback: () => void,
+                callback: () => void
             ): void
             /**
              * 执行关键帧动画，详见[动画](https://developers.weixin.qq.com/miniprogram/dev/framework/view/animation.html)
@@ -224,7 +226,7 @@ declare namespace WechatMiniprogram {
                 selector: string,
                 keyFrames: ScrollTimelineKeyframe[],
                 duration: number,
-                scrollTimeline: ScrollTimelineOption,
+                scrollTimeline: ScrollTimelineOption
             ): void
             /**
              * 清除关键帧动画，详见[动画](https://developers.weixin.qq.com/miniprogram/dev/framework/view/animation.html)
@@ -240,7 +242,7 @@ declare namespace WechatMiniprogram {
             clearAnimation(
                 selector: string,
                 options: ClearAnimationOptions,
-                callback: () => void,
+                callback: () => void
             ): void
             getOpenerEventChannel(): EventChannel
         }
@@ -323,7 +325,7 @@ declare namespace WechatMiniprogram {
             /** 使用该 behavior 的 component/behavior 的定义对象 */
             defFields: T,
             /** 该 behavior 所使用的 behavior 的 definitionFilter 函数列表 */
-            definitionFilterArr?: DefinitionFilter[],
+            definitionFilterArr?: DefinitionFilter[]
         ) => void
 
         interface Lifetimes {
@@ -366,7 +368,7 @@ declare namespace WechatMiniprogram {
                  *
                  * 最低基础库版本：[`2.4.1`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html)
                  */
-                error(err: Error): void,
+                error(err: Error): void
             }>
             /**
              * @deprecated 旧式的定义方式，基础库 `2.2.3` 起请在 lifetimes 中定义
@@ -429,7 +431,7 @@ declare namespace WechatMiniprogram {
             observers: Record<string, (...args: any[]) => any>
             /** 组件间关系定义，参见 [组件间关系](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/lifetimes.html) */
             relations: {
-                [componentName: string]: RelationOption,
+                [componentName: string]: RelationOption
             }
             /** 组件接受的外部样式类，参见 [外部样式类](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/wxml-wxss.html) */
             externalClasses?: string[]
