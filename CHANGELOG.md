@@ -1,3 +1,8 @@
+## 2020-05-20 v2.11.0
+- 同步 API 定义到基础库 2.11.0
+- 该版本继续合并了一部分完全相同的 interface / callback，是一个 **破坏性改动**，原本字面上引用了这些 interface / callback 的代码可能会报错。
+- 修复接口错误 ([#126](https://github.com/wechat-miniprogram/api-typings/issues/126))
+
 ## 2020-04-20 v2.10.4
 - 同步 API 定义到基础库 2.10.4
 - 在之前的版本中，分属于不同接口的两个 interface / callback 即使完全相同，也会拥有不同的名字。在这次更新中，他们将合并为同一个（如 `FileSystemManagerGetFileInfoCompleteCallback` 和 `WxGetFileInfoCompleteCallback` 都变成了 `GetFileInfoCompleteCallback`）。这是一个 **破坏性改动**，原本字面上引用了这些 interface / callback 的代码可能会报错。

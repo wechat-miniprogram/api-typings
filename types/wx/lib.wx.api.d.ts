@@ -331,6 +331,10 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         epname: string
         /** 当前是否暂停或停止。（只读） */
         paused: boolean
+        /** 播放速度。范围 0.5-2.0，默认为 1。（Android 需要 6 及以上版本）
+         *
+         * 最低基础库： `2.11.0` */
+        playbackRate: number
         /** 音频协议。默认值为 'http'，设置 'hls' 可以支持播放 HLS 协议的直播音频。
          *
          * 最低基础库： `1.9.94` */
@@ -438,14 +442,6 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         fail?: StartFailCallback
         /** 接口调用成功的回调函数 */
         success?: StartSuccessCallback
-    }
-    interface CameraFrameListenerStopOption {
-        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
-        complete?: StopCompleteCallback
-        /** 接口调用失败的回调函数 */
-        fail?: StopFailCallback
-        /** 接口调用成功的回调函数 */
-        success?: StopSuccessCallback
     }
     /** Canvas 实例，可通过 [SelectorQuery](https://developers.weixin.qq.com/miniprogram/dev/api/wxml/SelectorQuery.html) 获取。
      *
@@ -1190,6 +1186,36 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         tempFilePath: string
         errMsg: string
     }
+    interface CompressVideoOption {
+        /** 码率，单位 kbps */
+        bitrate: number
+        /** 帧率 */
+        fps: number
+        /** 压缩质量
+         *
+         * 可选值：
+         * - 'low': 低;
+         * - 'medium': 中;
+         * - 'high': 高; */
+        quality: 'low' | 'medium' | 'high'
+        /** 相对于原视频的分辨率比例，取值范围(0, 1] */
+        resolution: number
+        /** 视频文件路径，可以是临时文件路径也可以是永久文件路径 */
+        src: string
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: CompressVideoCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: CompressVideoFailCallback
+        /** 接口调用成功的回调函数 */
+        success?: CompressVideoSuccessCallback
+    }
+    interface CompressVideoSuccessCallbackResult {
+        /** 压缩后的大小，单位 kB */
+        size: string
+        /** 压缩后的临时文件地址 */
+        tempFilePath: string
+        errMsg: string
+    }
     interface ConnectSocketOption {
         /** 开发者服务器 wss 接口地址 */
         url: string
@@ -1299,6 +1325,16 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         /** 广告单元 id */
         adUnitId: string
     }
+    interface CreateMediaRecorderOption {
+        /** 指定录制的时长（s)，到达自动停止。最大 7200，最小 5 */
+        duration?: number
+        /** 视频 fps */
+        fps?: number
+        /** 视频关键帧间隔 */
+        gop?: number
+        /** 视频比特率（kbps），最小值 600，最大值 3000 */
+        videoBitsPerSecond?: number
+    }
     interface CreateRewardedVideoAdOption {
         /** 广告单元 id */
         adUnitId: string
@@ -1369,15 +1405,68 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
     interface DownloadFileSuccessCallbackResult {
         /** 用户文件路径 (本地路径)。传入 filePath 时会返回，跟传入的 filePath 一致 */
         filePath: string
-        /** 网络请求过程中一些关键时间点的耗时信息
+        /** 网络请求过程中一些调试信息
          *
          * 最低基础库： `2.10.4` */
-        profile: IAnyObject
+        profile: DownloadProfile
         /** 开发者服务器返回的 HTTP 状态码 */
         statusCode: number
         /** 临时文件路径 (本地路径)。没传入 filePath 指定文件存储路径时会返回，下载后的文件会存储到一个临时文件 */
         tempFilePath: string
         errMsg: string
+    }
+    /** 网络请求过程中一些调试信息
+     *
+     * 最低基础库： `2.10.4` */
+    interface DownloadProfile {
+        /** SSL建立完成的时间,如果不是安全连接,则值为 0 */
+        SSLconnectionEnd: number
+        /** SSL建立连接的时间,如果不是安全连接,则值为 0 */
+        SSLconnectionStart: number
+        /** HTTP（TCP） 完成建立连接的时间（完成握手），如果是持久连接，则与 fetchStart 值相等。注意如果在传输层发生了错误且重新建立连接，则这里显示的是新建立的连接完成的时间。注意这里握手结束，包括安全连接建立完成、SOCKS 授权通过 */
+        connectEnd: number
+        /** HTTP（TCP） 开始建立连接的时间，如果是持久连接，则与 fetchStart 值相等。注意如果在传输层发生了错误且重新建立连接，则这里显示的是新建立的连接开始的时间 */
+        connectStart: number
+        /** DNS 域名查询完成的时间，如果使用了本地缓存（即无 DNS 查询）或持久连接，则与 fetchStart 值相等 */
+        domainLookupEnd: number
+        /** DNS 域名查询开始的时间，如果使用了本地缓存（即无 DNS 查询）或持久连接，则与 fetchStart 值相等 */
+        domainLookupStart: number
+        /** 评估当前网络下载的kbps */
+        downstreamThroughputKbpsEstimate: number
+        /** 评估的网络状态 slow 2g/2g/3g/4g */
+        estimate_nettype: string
+        /** 组件准备好使用 HTTP 请求抓取资源的时间，这发生在检查本地缓存之前 */
+        fetchStart: number
+        /** 协议层根据多个请求评估当前网络的 rtt（仅供参考） */
+        httpRttEstimate: number
+        /** 当前请求的IP */
+        peerIP: string
+        /** 当前请求的端口 */
+        port: number
+        /** 收到字节数 */
+        receivedBytedCount: number
+        /** 最后一个 HTTP 重定向完成时的时间。有跳转且是同域名内部的重定向才算，否则值为 0 */
+        redirectEnd: number
+        /** 第一个 HTTP 重定向发生时的时间。有跳转且是同域名内的重定向才算，否则值为 0 */
+        redirectStart: number
+        /** HTTP请求读取真实文档结束的时间 */
+        requestEnd: number
+        /** HTTP请求读取真实文档开始的时间（完成建立连接），包括从本地读取缓存。连接错误重连时，这里显示的也是新建立连接的时间 */
+        requestStart: number
+        /** HTTP 响应全部接收完成的时间（获取到最后一个字节），包括从本地读取缓存 */
+        responseEnd: number
+        /** HTTP 开始接收响应的时间（获取到第一个字节），包括从本地读取缓存 */
+        responseStart: number
+        /** 当次请求连接过程中实时 rtt */
+        rtt: number
+        /** 发送的字节数 */
+        sendBytesCount: number
+        /** 是否复用连接 */
+        socketReused: boolean
+        /** 当前网络的实际下载kbps */
+        throughputKbps: number
+        /** 传输层根据多个请求评估的当前网络的 rtt（仅供参考） */
+        transportRttEstimate: number
     }
     interface DownloadTaskOnProgressUpdateCallbackResult {
         /** 下载进度百分比 */
@@ -1394,6 +1483,14 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         fail?: ExitFullScreenFailCallback
         /** 接口调用成功的回调函数 */
         success?: ExitFullScreenSuccessCallback
+    }
+    interface ExitPictureInPictureOption {
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: ExitPictureInPictureCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: ExitPictureInPictureFailCallback
+        /** 接口调用成功的回调函数 */
+        success?: ExitPictureInPictureSuccessCallback
     }
     interface ExtractDataSourceOption {
         /** 视频源地址，只支持本地文件 */
@@ -1536,6 +1633,21 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
     interface GetBLEDeviceCharacteristicsSuccessCallbackResult {
         /** 设备特征值列表 */
         characteristics: BLECharacteristic[]
+        errMsg: string
+    }
+    interface GetBLEDeviceRSSIOption {
+        /** 蓝牙设备 id */
+        deviceId: string
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: GetBLEDeviceRSSICompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: GetBLEDeviceRSSIFailCallback
+        /** 接口调用成功的回调函数 */
+        success?: GetBLEDeviceRSSISuccessCallback
+    }
+    interface GetBLEDeviceRSSISuccessCallbackResult {
+        /** 信号强度 */
+        RSSI: number
         errMsg: string
     }
     interface GetBLEDeviceServicesOption {
@@ -2188,6 +2300,10 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         statusBarHeight: number
         /** 操作系统及版本 */
         system: string
+        /** 系统当前主题，取值为`light`或`dark`，全局配置`"darkmode":true`时才能获取，否则为 undefined （不支持小游戏）
+         *
+         * 最低基础库： `2.11.0` */
+        theme: string
         /** 微信版本号 */
         version: string
         /** Wi-Fi 的系统开关
@@ -2283,6 +2399,10 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         statusBarHeight: number
         /** 操作系统及版本 */
         system: string
+        /** 系统当前主题，取值为`light`或`dark`，全局配置`"darkmode":true`时才能获取，否则为 undefined （不支持小游戏）
+         *
+         * 最低基础库： `2.11.0` */
+        theme: string
         /** 微信版本号 */
         version: string
         /** Wi-Fi 的系统开关
@@ -2328,6 +2448,53 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
          *
          * 用户信息对象，不包含 openid 等敏感信息 */
         userInfo: UserInfo
+        errMsg: string
+    }
+    interface GetVideoInfoOption {
+        /** 视频文件路径，可以是临时文件路径也可以是永久文件路径 */
+        src: string
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: GetVideoInfoCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: GetVideoInfoFailCallback
+        /** 接口调用成功的回调函数 */
+        success?: GetVideoInfoSuccessCallback
+    }
+    interface GetVideoInfoSuccessCallbackResult {
+        /** 视频码率，单位 kbps */
+        bitrate: number
+        /** 视频长度 */
+        duration: number
+        /** 视频帧率 */
+        fps: number
+        /** 视频的长，单位 px */
+        height: number
+        /** 画面方向
+         *
+         * 可选值：
+         * - 'up': 默认;
+         * - 'down': 180度旋转;
+         * - 'left': 逆时针旋转90度;
+         * - 'right': 顺时针旋转90度;
+         * - 'up-mirrored': 同up，但水平翻转;
+         * - 'down-mirrored': 同down，但水平翻转;
+         * - 'left-mirrored': 同left，但垂直翻转;
+         * - 'right-mirrored': 同right，但垂直翻转; */
+        orientation:
+            | 'up'
+            | 'down'
+            | 'left'
+            | 'right'
+            | 'up-mirrored'
+            | 'down-mirrored'
+            | 'left-mirrored'
+            | 'right-mirrored'
+        /** 视频大小，单位 kB */
+        size: number
+        /** 视频格式 */
+        type: string
+        /** 视频的宽，单位 px */
+        width: number
         errMsg: string
     }
     interface GetWeRunDataOption {
@@ -2449,7 +2616,7 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         onerror: (...args: any[]) => any
         /** 图片加载完成后触发的回调函数 */
         onload: (...args: any[]) => any
-        /** 图片的 URL */
+        /** 图片的 URL。v2.11.0 起支持传递 base64 Data URI */
         src: string
         /** 图片的真实宽度 */
         width: number
@@ -2536,6 +2703,10 @@ innerAudioContext.onError((res) => {
         obeyMuteSwitch: boolean
         /** 当前是是否暂停或停止状态（只读） */
         paused: boolean
+        /** 播放速度。范围 0.5-2.0，默认为 1。（Android 需要 6 及以上版本）
+         *
+         * 最低基础库： `2.11.0` */
+        playbackRate: number
         /** 音频资源的地址，用于直接播放。[2.2.3](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html) 开始支持云文件ID */
         src: string
         /** 开始播放的位置（单位：s），默认为 0 */
@@ -2638,15 +2809,7 @@ innerAudioContext.onError((res) => {
         /** 启动小程序的[场景值](https://developers.weixin.qq.com/miniprogram/dev/framework/app-service/scene.html) */
         scene: number
         /** shareTicket，详见[获取更多转发信息](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/share.html) */
-        shareTicket: string
-    }
-    interface LivePlayerContextPauseOption {
-        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
-        complete?: PauseCompleteCallback
-        /** 接口调用失败的回调函数 */
-        fail?: PauseFailCallback
-        /** 接口调用成功的回调函数 */
-        success?: PauseSuccessCallback
+        shareTicket?: string
     }
     interface LivePlayerContextRequestFullScreenOption {
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
@@ -2662,54 +2825,6 @@ innerAudioContext.onError((res) => {
         fail?: RequestFullScreenFailCallback
         /** 接口调用成功的回调函数 */
         success?: RequestFullScreenSuccessCallback
-    }
-    interface LivePlayerContextResumeOption {
-        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
-        complete?: ResumeCompleteCallback
-        /** 接口调用失败的回调函数 */
-        fail?: ResumeFailCallback
-        /** 接口调用成功的回调函数 */
-        success?: ResumeSuccessCallback
-    }
-    interface LivePlayerContextStopOption {
-        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
-        complete?: StopCompleteCallback
-        /** 接口调用失败的回调函数 */
-        fail?: StopFailCallback
-        /** 接口调用成功的回调函数 */
-        success?: StopSuccessCallback
-    }
-    interface LivePusherContextPauseOption {
-        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
-        complete?: PauseCompleteCallback
-        /** 接口调用失败的回调函数 */
-        fail?: PauseFailCallback
-        /** 接口调用成功的回调函数 */
-        success?: PauseSuccessCallback
-    }
-    interface LivePusherContextResumeOption {
-        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
-        complete?: ResumeCompleteCallback
-        /** 接口调用失败的回调函数 */
-        fail?: ResumeFailCallback
-        /** 接口调用成功的回调函数 */
-        success?: ResumeSuccessCallback
-    }
-    interface LivePusherContextStartOption {
-        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
-        complete?: StartCompleteCallback
-        /** 接口调用失败的回调函数 */
-        fail?: StartFailCallback
-        /** 接口调用成功的回调函数 */
-        success?: StartSuccessCallback
-    }
-    interface LivePusherContextStopOption {
-        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
-        complete?: StopCompleteCallback
-        /** 接口调用失败的回调函数 */
-        fail?: StopFailCallback
-        /** 接口调用成功的回调函数 */
-        success?: StopSuccessCallback
     }
     interface LoadFontFaceCompleteCallbackResult {
         /** 加载字体结果 */
@@ -2974,27 +3089,6 @@ innerAudioContext.onError((res) => {
         /** 相交检测时的时间戳 */
         time: number
     }
-    interface OffAppShowCallbackResult {
-        /** 小程序切前台的路径 (代码包路径) */
-        path: string
-        /** 小程序切前台的 query 参数 */
-        query: IAnyObject
-        /** 来源信息。从另一个小程序、公众号或 App 进入小程序时返回。否则返回 `{}`。(参见后文注意) */
-        referrerInfo: ReferrerInfo
-        /** 小程序切前台的[场景值](https://developers.weixin.qq.com/miniprogram/dev/framework/app-service/scene.html) */
-        scene: number
-        /** shareTicket，详见[获取更多转发信息](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/share.html) */
-        shareTicket: string
-    }
-    interface OffMessageCallbackResult {
-        /** 收到的消息 */
-        message: ArrayBuffer
-        /** 消息来源的结构化信息 */
-        remoteInfo: RemoteInfo
-    }
-    interface OffWindowResizeCallbackResult {
-        size: Size
-    }
     interface OnAccelerometerChangeCallbackResult {
         /** X 轴 */
         x: number
@@ -3013,7 +3107,7 @@ innerAudioContext.onError((res) => {
         /** 小程序切前台的[场景值](https://developers.weixin.qq.com/miniprogram/dev/framework/app-service/scene.html) */
         scene: number
         /** shareTicket，详见[获取更多转发信息](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/share.html) */
-        shareTicket: string
+        shareTicket?: string
     }
     interface OnBLECharacteristicValueChangeCallbackResult {
         /** 蓝牙特征值的 uuid */
@@ -3217,10 +3311,10 @@ innerAudioContext.onError((res) => {
          *
          * 最低基础库： `2.0.0` */
         header: IAnyObject
-        /** 网络请求过程中一些关键时间点的耗时信息
+        /** 网络请求过程中一些调试信息
          *
          * 最低基础库： `2.10.4` */
-        profile: IAnyObject
+        profile: SocketProfile
     }
     interface OnPageNotFoundCallbackResult {
         /** 是否本次启动的首个页面（例如从分享等入口进来，首个页面是开发者配置的分享页面） */
@@ -3244,6 +3338,10 @@ innerAudioContext.onError((res) => {
         /** 录音文件的临时路径 (本地路径) */
         tempFilePath: string
     }
+    interface OnThemeChangeCallbackResult {
+        /** 系统当前的主题，取值为`light`或`dark` */
+        theme: string
+    }
     interface OnUnhandledRejectionCallbackResult {
         /** 被拒绝的 Promise 对象 */
         promise: Promise<any>
@@ -3266,8 +3364,12 @@ innerAudioContext.onError((res) => {
         fail?: OpenBluetoothAdapterFailCallback
         /** 蓝牙模式，可作为主/从设备，仅 iOS 需要。
          *
+         * 可选值：
+         * - 'central': 主机模式;
+         * - 'peripheral': 丛机模式;
+         *
          * 最低基础库： `2.10.0` */
-        mode?: string
+        mode?: 'central' | 'peripheral'
         /** 接口调用成功的回调函数 */
         success?: OpenBluetoothAdapterSuccessCallback
     }
@@ -3308,7 +3410,9 @@ innerAudioContext.onError((res) => {
          *
          * 最低基础库： `1.4.0` */
         fileType?: 'doc' | 'docx' | 'xls' | 'xlsx' | 'ppt' | 'pptx' | 'pdf'
-        /** 是否显示右上角菜单 */
+        /** 是否显示右上角菜单
+         *
+         * 最低基础库： `2.11.0` */
         showMenu?: boolean
         /** 接口调用成功的回调函数 */
         success?: OpenDocumentSuccessCallback
@@ -3374,6 +3478,10 @@ innerAudioContext.onError((res) => {
         /** 接口调用成功的回调函数 */
         success?: PageScrollToSuccessCallback
     }
+    /** Canvas 2D API 的接口 Path2D 用来声明路径，此路径稍后会被CanvasRenderingContext2D 对象使用。CanvasRenderingContext2D 接口的 路径方法 也存在于 Path2D 这个接口中，允许你在 canvas 中根据需要创建可以保留并重用的路径。
+     *
+     * 最低基础库： `2.11.0` */
+    interface Path2D {}
     interface PauseBGMOption {
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: PauseBGMCompleteCallback
@@ -3390,6 +3498,14 @@ innerAudioContext.onError((res) => {
         /** 接口调用成功的回调函数 */
         success?: PauseBackgroundAudioSuccessCallback
     }
+    interface PauseOption {
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: PauseCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: PauseFailCallback
+        /** 接口调用成功的回调函数 */
+        success?: PauseSuccessCallback
+    }
     interface PauseVoiceOption {
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: PauseVoiceCompleteCallback
@@ -3397,6 +3513,13 @@ innerAudioContext.onError((res) => {
         fail?: PauseVoiceFailCallback
         /** 接口调用成功的回调函数 */
         success?: PauseVoiceSuccessCallback
+    }
+    /** PerformanceObserver 对象， 用于监听性能相关事件
+     *
+     * 最低基础库： `2.11.0` */
+    interface PerformanceObserver {
+        /** 获取当前支持的所有性能指标类型 */
+        supportedEntryTypes: any[]
     }
     interface PlayBGMOption {
         /** 加入背景混音的资源地址 */
@@ -3862,6 +3985,59 @@ innerAudioContext.onError((res) => {
         /** 接口调用成功的回调函数 */
         success?: RequestPaymentSuccessCallback
     }
+    /** 网络请求过程中一些调试信息
+     *
+     * 最低基础库： `2.10.4` */
+    interface RequestProfile {
+        /** SSL建立完成的时间,如果不是安全连接,则值为 0 */
+        SSLconnectionEnd: number
+        /** SSL建立连接的时间,如果不是安全连接,则值为 0 */
+        SSLconnectionStart: number
+        /** HTTP（TCP） 完成建立连接的时间（完成握手），如果是持久连接，则与 fetchStart 值相等。注意如果在传输层发生了错误且重新建立连接，则这里显示的是新建立的连接完成的时间。注意这里握手结束，包括安全连接建立完成、SOCKS 授权通过 */
+        connectEnd: number
+        /** HTTP（TCP） 开始建立连接的时间，如果是持久连接，则与 fetchStart 值相等。注意如果在传输层发生了错误且重新建立连接，则这里显示的是新建立的连接开始的时间 */
+        connectStart: number
+        /** DNS 域名查询完成的时间，如果使用了本地缓存（即无 DNS 查询）或持久连接，则与 fetchStart 值相等 */
+        domainLookupEnd: number
+        /** DNS 域名查询开始的时间，如果使用了本地缓存（即无 DNS 查询）或持久连接，则与 fetchStart 值相等 */
+        domainLookupStart: number
+        /** 评估当前网络下载的kbps */
+        downstreamThroughputKbpsEstimate: number
+        /** 评估的网络状态 slow 2g/2g/3g/4g */
+        estimate_nettype: string
+        /** 组件准备好使用 HTTP 请求抓取资源的时间，这发生在检查本地缓存之前 */
+        fetchStart: number
+        /** 协议层根据多个请求评估当前网络的 rtt（仅供参考） */
+        httpRttEstimate: number
+        /** 当前请求的IP */
+        peerIP: string
+        /** 当前请求的端口 */
+        port: number
+        /** 收到字节数 */
+        receivedBytedCount: number
+        /** 最后一个 HTTP 重定向完成时的时间。有跳转且是同域名内部的重定向才算，否则值为 0 */
+        redirectEnd: number
+        /** 第一个 HTTP 重定向发生时的时间。有跳转且是同域名内的重定向才算，否则值为 0 */
+        redirectStart: number
+        /** HTTP请求读取真实文档结束的时间 */
+        requestEnd: number
+        /** HTTP请求读取真实文档开始的时间（完成建立连接），包括从本地读取缓存。连接错误重连时，这里显示的也是新建立连接的时间 */
+        requestStart: number
+        /** HTTP 响应全部接收完成的时间（获取到最后一个字节），包括从本地读取缓存 */
+        responseEnd: number
+        /** HTTP 开始接收响应的时间（获取到第一个字节），包括从本地读取缓存 */
+        responseStart: number
+        /** 当次请求连接过程中实时 rtt */
+        rtt: number
+        /** 发送的字节数 */
+        sendBytesCount: number
+        /** 是否复用连接 */
+        socketReused: boolean
+        /** 当前网络的实际下载kbps */
+        throughputKbps: number
+        /** 传输层根据多个请求评估的当前网络的 rtt（仅供参考） */
+        transportRttEstimate: number
+    }
     interface RequestSubscribeMessageFailCallbackResult {
         /** 接口调用失败错误码 */
         errCode: number
@@ -3895,10 +4071,10 @@ innerAudioContext.onError((res) => {
          *
          * 最低基础库： `1.2.0` */
         header: IAnyObject
-        /** 网络请求过程中一些关键时间点的耗时信息
+        /** 网络请求过程中一些调试信息
          *
          * 最低基础库： `2.10.4` */
-        profile: IAnyObject
+        profile: RequestProfile
         /** 开发者服务器返回的 HTTP 状态码 */
         statusCode: number
         errMsg: string
@@ -3910,6 +4086,14 @@ innerAudioContext.onError((res) => {
         fail?: ResumeBGMFailCallback
         /** 接口调用成功的回调函数 */
         success?: ResumeBGMSuccessCallback
+    }
+    interface ResumeOption {
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: ResumeCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: ResumeFailCallback
+        /** 接口调用成功的回调函数 */
+        success?: ResumeSuccessCallback
     }
     interface RewardedVideoAdOnCloseCallbackResult {
         /** 视频是否是在用户完整观看的情况下被关闭的
@@ -3985,6 +4169,16 @@ innerAudioContext.onError((res) => {
          * - 'fail no such file or directory "${dirPath}"': 上级目录不存在;
          * - 'fail the maximum size of the file storage limit is exceeded': 存储空间不足; */
         errMsg: string
+    }
+    interface SaveFileToDiskOption {
+        /** 待保存文件路径 */
+        filePath: string
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: SaveFileToDiskCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: SaveFileToDiskFailCallback
+        /** 接口调用成功的回调函数 */
+        success?: SaveFileToDiskSuccessCallback
     }
     interface SaveImageToPhotosAlbumOption {
         /** 图片文件路径，可以是临时文件路径或永久文件路径 (本地路径) ，不支持网络路径 */
@@ -4130,6 +4324,19 @@ innerAudioContext.onError((res) => {
         fail?: SetBGMVolumeFailCallback
         /** 接口调用成功的回调函数 */
         success?: SetBGMVolumeSuccessCallback
+    }
+    interface SetBLEMTUOption {
+        /** 用于区分设备的 id */
+        deviceId: string
+        /** 最大传输单元(22,512) 区间内，单位 bytes
+         * ``` */
+        mtu: number
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: SetBLEMTUCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: SetBLEMTUFailCallback
+        /** 接口调用成功的回调函数 */
+        success?: SetBLEMTUSuccessCallback
     }
     interface SetBackgroundColorOption {
         /** 窗口的背景色，必须为十六进制颜色值 */
@@ -4366,7 +4573,7 @@ innerAudioContext.onError((res) => {
         success?: SetWindowSizeSuccessCallback
     }
     interface SetZoomOption {
-        /** 缩放级别，范围[1, maxZoom]。zoom 可取小时，精确到小数后一位。maxZoom 可在 bindinitdone 返回值中获取。 */
+        /** 缩放级别，范围[1, maxZoom]。zoom 可取小数，精确到小数后一位。maxZoom 可在 bindinitdone 返回值中获取。 */
         zoom: number
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: SetZoomCompleteCallback
@@ -4518,6 +4725,27 @@ innerAudioContext.onError((res) => {
         windowHeight: number
         /** 变化后的窗口宽度，单位 px */
         windowWidth: number
+    }
+    /** 网络请求过程中一些调试信息
+     *
+     * 最低基础库： `2.10.4` */
+    interface SocketProfile {
+        /** 完成建立连接的时间（完成握手），如果是持久连接，则与 fetchStart 值相等。注意如果在传输层发生了错误且重新建立连接，则这里显示的是新建立的连接完成的时间。注意这里握手结束，包括安全连接建立完成、SOCKS 授权通过 */
+        connectEnd: number
+        /** 开始建立连接的时间，如果是持久连接，则与 fetchStart 值相等。注意如果在传输层发生了错误且重新建立连接，则这里显示的是新建立的连接开始的时间 */
+        connectStart: number
+        /** 上层请求到返回的耗时 */
+        cost: number
+        /** DNS 域名查询完成的时间，如果使用了本地缓存（即无 DNS 查询）或持久连接，则与 fetchStart 值相等 */
+        domainLookupEnd: number
+        /** DNS 域名查询开始的时间，如果使用了本地缓存（即无 DNS 查询）或持久连接，则与 fetchStart 值相等 */
+        domainLookupStart: number
+        /** 组件准备好使用 SOCKET 建立请求的时间，这发生在检查本地缓存之前 */
+        fetchStart: number
+        /** 握手耗时 */
+        handshakeCost: number
+        /** 单次连接的耗时，包括 connect ，tls */
+        rtt: number
     }
     interface SocketTaskCloseOption {
         /** 一个数字值表示关闭连接的状态号，表示连接被关闭的原因。 */
@@ -4921,6 +5149,14 @@ innerAudioContext.onError((res) => {
         /** 接口调用成功的回调函数 */
         success?: StopLocationUpdateSuccessCallback
     }
+    interface StopOption {
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: StopCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: StopFailCallback
+        /** 接口调用成功的回调函数 */
+        success?: StopSuccessCallback
+    }
     interface StopPreviewOption {
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: StopPreviewCompleteCallback
@@ -5139,9 +5375,9 @@ innerAudioContext.onError((res) => {
          *
          * 最低基础库： `2.4.0` */
         templateInfo?: UpdatableMessageFrontEndTemplateInfo
-        /** 群待办消息的id，通过toDoActivityId可以把多个群代办消息聚合为同一个。通过 [updatableMessage.createActivityId](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/updatable-message/updatableMessage.createActivityId.html) 接口获取。（目前仅iOS支持）
+        /** 群待办消息的id，通过toDoActivityId可以把多个群待办消息聚合为同一个。通过 [updatableMessage.createActivityId](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/updatable-message/updatableMessage.createActivityId.html) 接口获取。详见[群待办消息](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/share.html)
          *
-         * 最低基础库： `2.10.4` */
+         * 最低基础库： `2.11.0` */
         toDoActivityId?: string
         /** 是否使用带 shareTicket 的转发[详情](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/share.html) */
         withShareTicket?: boolean
@@ -5236,6 +5472,12 @@ innerAudioContext.onError((res) => {
          *
          * 最低基础库： `1.7.0` */
         direction?: 0 | 90 | -90
+    }
+    interface VideoDecoderStartOption {
+        /** 需要解码的视频源文件，只支持本地路径 */
+        source: string
+        /** 解码模式。0：按 pts 解码；1：以最快速度解码 */
+        mode?: number
     }
     /** 提供预设的 Wi-Fi 信息列表 */
     interface WifiData {
@@ -5958,7 +6200,7 @@ listener.start()
         /** [CameraFrameListener.stop(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/camera/CameraFrameListener.stop.html)
          *
          * 停止监听帧数据 */
-        stop(option?: CameraFrameListenerStopOption): void
+        stop(option?: StopOption): void
     }
     interface Canvas {
         /** [Canvas.cancelAnimationFrame(number requestID)](https://developers.weixin.qq.com/miniprogram/dev/api/canvas/Canvas.cancelAnimationFrame.html)
@@ -5979,6 +6221,17 @@ listener.start()
          *
          * 最低基础库： `2.7.0` */
         createImage(): Image
+        /** [[Path2D](https://developers.weixin.qq.com/miniprogram/dev/api/canvas/Path2D.html) Canvas.createPath2D([Path2D](https://developers.weixin.qq.com/miniprogram/dev/api/canvas/Path2D.html) path)](https://developers.weixin.qq.com/miniprogram/dev/api/canvas/Canvas.createPath2D.html)
+         *
+         * 创建 Path2D 对象
+         *
+         * 最低基础库： `2.11.0` */
+        createPath2D(
+            /** [Path2D](https://developers.weixin.qq.com/miniprogram/dev/api/canvas/Path2D.html)
+             *
+             *  */
+            path: Path2D
+        ): Path2D
         /** [[RenderingContext](https://developers.weixin.qq.com/miniprogram/dev/api/canvas/RenderingContext.html) Canvas.getContext(string contextType)](https://developers.weixin.qq.com/miniprogram/dev/api/canvas/Canvas.getContext.html)
          *
          * 该方法返回 Canvas 的绘图上下文
@@ -5998,6 +6251,17 @@ listener.start()
             /** 执行的 callback */
             callback: (...args: any[]) => any
         ): number
+        /** [string Canvas.toDataURL(string type, number encoderOptions)](https://developers.weixin.qq.com/miniprogram/dev/api/canvas/Canvas.toDataURL.html)
+         *
+         * 返回一个包含图片展示的 data URI 。可以使用 type 参数其类型，默认为 PNG 格式。
+         *
+         * 最低基础库： `2.11.0` */
+        toDataURL(
+            /** 图片格式，默认为 image/png */
+            type: string,
+            /** 在指定图片格式为 image/jpeg 或 image/webp的情况下，可以从 0 到 1 的区间内选择图片的质量。如果超出取值范围，将会使用默认值 0.92。其他参数会被忽略。 */
+            encoderOptions: number
+        ): string
     }
     interface CanvasContext {
         /** [CanvasContext.arc(number x, number y, number r, number sAngle, number eAngle, boolean counterclockwise)](https://developers.weixin.qq.com/miniprogram/dev/api/canvas/CanvasContext.arc.html)
@@ -7547,7 +7811,7 @@ ctx.draw()
          * 最低基础库： `2.1.0` */
         offHeadersReceived(
             /** HTTP Response Header 事件的回调函数 */
-            callback: DownloadTaskOffHeadersReceivedCallback
+            callback: OffHeadersReceivedCallback
         ): void
         /** [DownloadTask.offProgressUpdate(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/network/download/DownloadTask.offProgressUpdate.html)
          *
@@ -7565,7 +7829,7 @@ ctx.draw()
          * 最低基础库： `2.1.0` */
         onHeadersReceived(
             /** HTTP Response Header 事件的回调函数 */
-            callback: DownloadTaskOnHeadersReceivedCallback
+            callback: OnHeadersReceivedCallback
         ): void
         /** [DownloadTask.onProgressUpdate(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/network/download/DownloadTask.onProgressUpdate.html)
          *
@@ -7708,6 +7972,26 @@ this.editorCtx.insertImage({
          *
          * 最低基础库： `2.7.0` */
         undo(option?: UndoOption): void
+    }
+    interface EntryList {
+        /** [Array EntryList.getEntries()](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/performance/EntryList.getEntries.html)
+         *
+         * 该方法返回当前列表中的所有性能数据
+         *
+         * 最低基础库： `2.11.0` */
+        getEntries(): any[]
+        /** [Array EntryList.getEntriesByName(string name, string entryType)](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/performance/EntryList.getEntriesByName.html)
+         *
+         * 获取当前列表中所有名称为 [name] 且类型为 [entryType] 的性能数据
+         *
+         * 最低基础库： `2.11.0` */
+        getEntriesByName(name: string, entryType?: string): any[]
+        /** [Array EntryList.getEntriesByType(string entryType)](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/performance/EntryList.getEntriesByType.html)
+         *
+         * 获取当前列表中所有类型为 [entryType] 的性能数据
+         *
+         * 最低基础库： `2.11.0` */
+        getEntriesByType(entryType: string): any[]
     }
     interface EventChannel {
         /** [EventChannel.emit(string eventName, any args)](https://developers.weixin.qq.com/miniprogram/dev/api/route/EventChannel.emit.html)
@@ -8377,10 +8661,10 @@ Page({
          *
          * 退出全屏 */
         exitFullScreen(option?: ExitFullScreenOption): void
-        /** [LivePlayerContext.exitPictureInPicture()](https://developers.weixin.qq.com/miniprogram/dev/api/media/live/LivePlayerContext.exitPictureInPicture.html)
+        /** [LivePlayerContext.exitPictureInPicture(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/live/LivePlayerContext.exitPictureInPicture.html)
          *
-         * 退出小窗，该方法可在任意页面调用。 */
-        exitPictureInPicture(): void
+         * 退出小窗，该方法可在任意页面调用 */
+        exitPictureInPicture(option?: ExitPictureInPictureOption): void
         /** [LivePlayerContext.mute(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/live/LivePlayerContext.mute.html)
          *
          * 静音 */
@@ -8390,7 +8674,7 @@ Page({
          * 暂停
          *
          * 最低基础库： `1.9.90` */
-        pause(option?: LivePlayerContextPauseOption): void
+        pause(option?: PauseOption): void
         /** [LivePlayerContext.play(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/live/LivePlayerContext.play.html)
          *
          * 播放 */
@@ -8406,7 +8690,7 @@ Page({
          * 恢复
          *
          * 最低基础库： `1.9.90` */
-        resume(option?: LivePlayerContextResumeOption): void
+        resume(option?: ResumeOption): void
         /** [LivePlayerContext.snapshot(string quality)](https://developers.weixin.qq.com/miniprogram/dev/api/media/live/LivePlayerContext.snapshot.html)
          *
          * 截图
@@ -8421,13 +8705,13 @@ Page({
         /** [LivePlayerContext.stop(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/live/LivePlayerContext.stop.html)
          *
          * 停止 */
-        stop(option?: LivePlayerContextStopOption): void
+        stop(option?: StopOption): void
     }
     interface LivePusherContext {
         /** [LivePusherContext.pause(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/live/LivePusherContext.pause.html)
          *
          * 暂停推流 */
-        pause(option?: LivePusherContextPauseOption): void
+        pause(option?: PauseOption): void
         /** [LivePusherContext.pauseBGM(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/live/LivePusherContext.pauseBGM.html)
          *
          * 暂停背景音
@@ -8443,7 +8727,7 @@ Page({
         /** [LivePusherContext.resume(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/live/LivePusherContext.resume.html)
          *
          * 恢复推流 */
-        resume(option?: LivePusherContextResumeOption): void
+        resume(option?: ResumeOption): void
         /** [LivePusherContext.resumeBGM(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/live/LivePusherContext.resumeBGM.html)
          *
          * 恢复背景音
@@ -8476,7 +8760,7 @@ Page({
         /** [LivePusherContext.start(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/live/LivePusherContext.start.html)
          *
          * 开始推流，同时开启摄像头预览 */
-        start(option?: LivePusherContextStartOption): void
+        start(option?: CameraFrameListenerStartOption): void
         /** [LivePusherContext.startPreview(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/live/LivePusherContext.startPreview.html)
          *
          * 开启摄像头预览
@@ -8486,7 +8770,7 @@ Page({
         /** [LivePusherContext.stop(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/live/LivePusherContext.stop.html)
          *
          * 停止推流，同时停止摄像头预览 */
-        stop(option?: LivePusherContextStopOption): void
+        stop(option?: StopOption): void
         /** [LivePusherContext.stopBGM(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/live/LivePusherContext.stopBGM.html)
          *
          * 停止背景音
@@ -8635,6 +8919,70 @@ Page({
              * 要移除的音频或视频轨道 */
             track: MediaTrack
         ): void
+    }
+    interface MediaRecorder {
+        /** [MediaRecorder.destroy()](https://developers.weixin.qq.com/miniprogram/dev/api/media/media-recorder/MediaRecorder.destroy.html)
+         *
+         * 销毁录制器
+         *
+         * 最低基础库： `2.11.0` */
+        destroy(): void
+        /** [MediaRecorder.off(string eventName, function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/media/media-recorder/MediaRecorder.off.html)
+         *
+         * 取消监听录制事件。当对应事件触发时，该回调函数不再执行。
+         *
+         * 最低基础库： `2.11.0` */
+        off(
+            /** 事件名 */
+            eventName: string,
+            /** 事件触发时执行的回调函数 */
+            callback: (...args: any[]) => any
+        ): void
+        /** [MediaRecorder.on(string eventName, function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/media/media-recorder/MediaRecorder.on.html)
+         *
+         * 注册监听录制事件的回调函数。当对应事件触发时，回调函数会被执行。
+         *
+         * 最低基础库： `2.11.0` */
+        on(
+            /** 事件名
+             *
+             * 参数 eventName 可选值：
+             * - 'start': 录制开始事件。;
+             * - 'stop': 录制结束事件。返回 {tempFilePath, duration, fileSize}; */
+            eventName: 'start' | 'stop',
+            /** 事件触发时执行的回调函数 */
+            callback: (...args: any[]) => any
+        ): void
+        /** [MediaRecorder.pause()](https://developers.weixin.qq.com/miniprogram/dev/api/media/media-recorder/MediaRecorder.pause.html)
+         *
+         * 暂停录制
+         *
+         * 最低基础库： `2.11.0` */
+        pause(): void
+        /** [MediaRecorder.requestFrame(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/media/media-recorder/MediaRecorder.requestFrame.html)
+         *
+         * 请求下一帧录制，在 callback 里完成一帧渲染后开始录制当前帧
+         *
+         * 最低基础库： `2.11.0` */
+        requestFrame(callback: (...args: any[]) => any): void
+        /** [MediaRecorder.resume()](https://developers.weixin.qq.com/miniprogram/dev/api/media/media-recorder/MediaRecorder.resume.html)
+         *
+         * 恢复录制
+         *
+         * 最低基础库： `2.11.0` */
+        resume(): void
+        /** [MediaRecorder.start()](https://developers.weixin.qq.com/miniprogram/dev/api/media/media-recorder/MediaRecorder.start.html)
+         *
+         * 开始录制
+         *
+         * 最低基础库： `2.11.0` */
+        start(): void
+        /** [MediaRecorder.stop()](https://developers.weixin.qq.com/miniprogram/dev/api/media/media-recorder/MediaRecorder.stop.html)
+         *
+         * 结束录制
+         *
+         * 最低基础库： `2.11.0` */
+        stop(): void
     }
     interface NFCError {
         /** 错误信息
@@ -8827,6 +9175,55 @@ Page({
          * 最低基础库： `2.7.0` */
         getContext(contextType: string): any
     }
+    interface Performance {
+        /** [Array Performance.getEntries()](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/performance/Performance.getEntries.html)
+         *
+         * 该方法返回当前缓冲区中的所有性能数据
+         *
+         * 最低基础库： `2.11.0` */
+        getEntries(): any[]
+        /** [Array Performance.getEntriesByName(string name, string entryType)](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/performance/Performance.getEntriesByName.html)
+         *
+         * 获取当前缓冲区中所有名称为 [name] 且类型为 [entryType] 的性能数据
+         *
+         * 最低基础库： `2.11.0` */
+        getEntriesByName(name: string, entryType?: string): any[]
+        /** [Array Performance.getEntriesByType(string entryType)](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/performance/Performance.getEntriesByType.html)
+         *
+         * 获取当前缓冲区中所有类型为 [entryType] 的性能数据
+         *
+         * 最低基础库： `2.11.0` */
+        getEntriesByType(entryType: string): any[]
+        /** [Performance.setBufferSize(number size)](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/performance/Performance.setBufferSize.html)
+         *
+         * 设置缓冲区大小， 默认缓冲 30 条性能数据
+         *
+         * 最低基础库： `2.11.0` */
+        setBufferSize(size: number): void
+        /** [[PerformanceObserver](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/performance/PerformanceObserver.html) Performance.createObserver(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/performance/Performance.createObserver.html)
+         *
+         * 创建全局性能事件监听器
+         *
+         * 最低基础库： `2.11.0` */
+        createObserver(callback: (...args: any[]) => any): PerformanceObserver
+    }
+    interface PerformanceObserver {
+        /** [PerformanceObserver.disconnect()](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/performance/PerformanceObserver.disconnect.html)
+         *
+         * 停止监听
+         *
+         * 最低基础库： `2.11.0` */
+        disconnect(): void
+        /** [PerformanceObserver.observe(Object options)](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/performance/PerformanceObserver.observe.html)
+         *
+         * 开始监听
+         *
+         * 最低基础库： `2.11.0` */
+        observe(
+            /** 设置 type 监听单个类型的指标，设置 entryTypes 监听多个类型指标。 */
+            options: IAnyObject
+        ): void
+    }
     interface RealtimeLogManager {
         /** [RealtimeLogManager.addFilterMsg(string msg)](https://developers.weixin.qq.com/miniprogram/dev/api/base/debug/RealtimeLogManager.addFilterMsg.html)
          *
@@ -8992,7 +9389,7 @@ Page({
          * 最低基础库： `2.1.0` */
         offHeadersReceived(
             /** HTTP Response Header 事件的回调函数 */
-            callback: RequestTaskOffHeadersReceivedCallback
+            callback: OffHeadersReceivedCallback
         ): void
         /** [RequestTask.onHeadersReceived(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/network/request/RequestTask.onHeadersReceived.html)
          *
@@ -9001,7 +9398,7 @@ Page({
          * 最低基础库： `2.1.0` */
         onHeadersReceived(
             /** HTTP Response Header 事件的回调函数 */
-            callback: RequestTaskOnHeadersReceivedCallback
+            callback: OnHeadersReceivedCallback
         ): void
     }
     interface RewardedVideoAd {
@@ -9318,7 +9715,7 @@ Component({
          * 最低基础库： `2.1.0` */
         offHeadersReceived(
             /** HTTP Response Header 事件的回调函数 */
-            callback: UploadTaskOffHeadersReceivedCallback
+            callback: OffHeadersReceivedCallback
         ): void
         /** [UploadTask.offProgressUpdate(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/network/upload/UploadTask.offProgressUpdate.html)
          *
@@ -9336,7 +9733,7 @@ Component({
          * 最低基础库： `2.1.0` */
         onHeadersReceived(
             /** HTTP Response Header 事件的回调函数 */
-            callback: UploadTaskOnHeadersReceivedCallback
+            callback: OnHeadersReceivedCallback
         ): void
         /** [UploadTask.onProgressUpdate(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/network/upload/UploadTask.onProgressUpdate.html)
          *
@@ -9355,6 +9752,10 @@ Component({
          *
          * 最低基础库： `1.4.0` */
         exitFullScreen(): void
+        /** [VideoContext.exitPictureInPicture(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/video/VideoContext.exitPictureInPicture.html)
+         *
+         * 退出小窗，该方法可在任意页面调用 */
+        exitPictureInPicture(option?: ExitPictureInPictureOption): void
         /** [VideoContext.hideStatusBar()](https://developers.weixin.qq.com/miniprogram/dev/api/media/video/VideoContext.hideStatusBar.html)
          *
          * 隐藏状态栏，仅在iOS全屏下有效
@@ -9409,6 +9810,68 @@ Component({
          * 停止视频
          *
          * 最低基础库： `1.7.0` */
+        stop(): void
+    }
+    interface VideoDecoder {
+        /** [Object VideoDecoder.getFrameData()](https://developers.weixin.qq.com/miniprogram/dev/api/media/video-decoder/VideoDecoder.getFrameData.html)
+         *
+         * 获取下一帧的解码数据
+         *
+         * 最低基础库： `2.11.0` */
+        getFrameData(): IAnyObject
+        /** [VideoDecoder.off(string eventName, function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/media/video-decoder/VideoDecoder.off.html)
+         *
+         * 取消监听录制事件。当对应事件触发时，该回调函数不再执行
+         *
+         * 最低基础库： `2.11.0` */
+        off(
+            /** 事件名 */
+            eventName: string,
+            /** 事件触发时执行的回调函数 */
+            callback: (...args: any[]) => any
+        ): void
+        /** [VideoDecoder.on(string eventName, function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/media/video-decoder/VideoDecoder.on.html)
+         *
+         * 注册监听录制事件的回调函数。当对应事件触发时，回调函数会被执行
+         *
+         * 最低基础库： `2.11.0` */
+        on(
+            /** 事件名
+             *
+             * 参数 eventName 可选值：
+             * - 'start': 开始事件。返回 {width, height};
+             * - 'stop': 结束事件。;
+             * - 'seek': seek 完成事件。; */
+            eventName: 'start' | 'stop' | 'seek',
+            /** 事件触发时执行的回调函数 */
+            callback: (...args: any[]) => any
+        ): void
+        /** [VideoDecoder.remove()](https://developers.weixin.qq.com/miniprogram/dev/api/media/video-decoder/VideoDecoder.remove.html)
+         *
+         * 移除解码器
+         *
+         * 最低基础库： `2.11.0` */
+        remove(): void
+        /** [VideoDecoder.seek(number position)](https://developers.weixin.qq.com/miniprogram/dev/api/media/video-decoder/VideoDecoder.seek.html)
+         *
+         * 跳到某个时间点解码
+         *
+         * 最低基础库： `2.11.0` */
+        seek(
+            /** 跳转的解码位置，单位 ms */
+            position: number
+        ): void
+        /** [VideoDecoder.start(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/video-decoder/VideoDecoder.start.html)
+         *
+         * 开始解码
+         *
+         * 最低基础库： `2.11.0` */
+        start(option: VideoDecoderStartOption): void
+        /** [VideoDecoder.stop()](https://developers.weixin.qq.com/miniprogram/dev/api/media/video-decoder/VideoDecoder.stop.html)
+         *
+         * 停止解码
+         *
+         * 最低基础库： `2.11.0` */
         stop(): void
     }
     interface WifiError {
@@ -9796,6 +10259,16 @@ logger.warn({str: 'hello world'}, 'warn log', 100, [1, 2, 3])
          *
          * 最低基础库： `2.9.0` */
         createMediaContainer(): MediaContainer
+        /** [[MediaRecorder](https://developers.weixin.qq.com/miniprogram/dev/api/media/media-recorder/MediaRecorder.html) wx.createMediaRecorder(Object canvas, Object options)](https://developers.weixin.qq.com/miniprogram/dev/api/media/media-recorder/wx.createMediaRecorder.html)
+         *
+         * 创建 WebGL 画面录制器，可逐帧录制在 WebGL 上渲染的画面并导出视频文件
+         *
+         * 最低基础库： `2.11.0` */
+        createMediaRecorder(
+            /** WebGL 对象，通过 [SelectorQuery](https://developers.weixin.qq.com/miniprogram/dev/api/wxml/SelectorQuery.html) 获取到的 node 对象 */
+            canvas: IAnyObject,
+            options: CreateMediaRecorderOption
+        ): MediaRecorder
         /** [[OffscreenCanvas](https://developers.weixin.qq.com/miniprogram/dev/api/canvas/OffscreenCanvas.html) wx.createOffscreenCanvas()](https://developers.weixin.qq.com/miniprogram/dev/api/canvas/wx.createOffscreenCanvas.html)
          *
          * 创建离屏 canvas 实例
@@ -9953,6 +10426,12 @@ wx.chooseImage({
             /** 在自定义组件下，当前组件实例的this，以操作组件内 [video](https://developers.weixin.qq.com/miniprogram/dev/component/video.html) 组件 */
             component?: Component.TrivialInstance | Page.TrivialInstance
         ): VideoContext
+        /** [[VideoDecoder](https://developers.weixin.qq.com/miniprogram/dev/api/media/video-decoder/VideoDecoder.html) wx.createVideoDecoder()](https://developers.weixin.qq.com/miniprogram/dev/api/media/video-decoder/wx.createVideoDecoder.html)
+         *
+         * 创建视频解码器，可逐帧获取解码后的数据
+         *
+         * 最低基础库： `2.11.0` */
+        createVideoDecoder(): VideoDecoder
         /** [[Worker](https://developers.weixin.qq.com/miniprogram/dev/api/worker/Worker.html) wx.createWorker(string scriptPath)](https://developers.weixin.qq.com/miniprogram/dev/api/worker/wx.createWorker.html)
          *
          * 创建一个 [Worker 线程](https://developers.weixin.qq.com/miniprogram/dev/framework/workers.html)。目前限制最多只能创建一个 Worker，创建下一个 Worker 前请先调用 [Worker.terminate](https://developers.weixin.qq.com/miniprogram/dev/api/worker/Worker.terminate.html)
@@ -10337,8 +10816,8 @@ wx.chooseMedia({
   maxDuration: 30,
   camera: 'back',
   success(res) {
-    console.log(res.tempFilePath)
-    console.log(res.size)
+    console.log(res.tempFiles.tempFilePath)
+    console.log(res.tempFiles.size)
   }
 })
 ```
@@ -10513,6 +10992,14 @@ wx.compressImage({
         compressImage<TOption extends CompressImageOption>(
             option: TOption
         ): PromisifySuccessResult<TOption, CompressImageOption>
+        /** [wx.compressVideo(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/video/wx.compressVideo.html)
+         *
+         * 压缩视频接口。开发者可指定压缩质量 `quality` 进行压缩。当需要更精细的控制时，可指定 `bitrate`、`fps`、和 `resolution`，当 `quality` 传入时，这三个参数将被忽略。原视频的相关信息可通过 [getVideoInfo](https://developers.weixin.qq.com/miniprogram/dev/api/media/video/wx.getVideoInfo.html) 获取。
+         *
+         * 最低基础库： `2.11.0` */
+        compressVideo<TOption extends CompressVideoOption>(
+            option: TOption
+        ): PromisifySuccessResult<TOption, CompressVideoOption>
         /** [wx.connectWifi(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/device/wifi/wx.connectWifi.html)
 *
 * 连接 Wi-Fi。若已知 Wi-Fi 信息，可以直接利用该接口连接。仅 Android 与 iOS 11 以上版本支持。
@@ -10611,6 +11098,14 @@ wx.getBLEDeviceCharacteristics({
         >(
             option: TOption
         ): PromisifySuccessResult<TOption, GetBLEDeviceCharacteristicsOption>
+        /** [wx.getBLEDeviceRSSI(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-ble/wx.getBLEDeviceRSSI.html)
+         *
+         * 获取蓝牙设备的信号强度。
+         *
+         * 最低基础库： `2.11.0` */
+        getBLEDeviceRSSI<TOption extends GetBLEDeviceRSSIOption>(
+            option: TOption
+        ): PromisifySuccessResult<TOption, GetBLEDeviceRSSIOption>
         /** [wx.getBLEDeviceServices(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-ble/wx.getBLEDeviceServices.html)
 *
 * 获取蓝牙设备所有服务(service)。
@@ -10896,7 +11391,7 @@ wx.chooseImage({
         ): PromisifySuccessResult<TOption, GetImageInfoOption>
         /** [wx.getLocation(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/location/wx.getLocation.html)
 *
-* 获取当前的地理位置、速度。当用户离开小程序后，此接口无法调用。开启高精度定位，接口耗时会增加，可指定 highAccuracyExpireTime 作为超时时间。
+* 获取当前的地理位置、速度。当用户离开小程序后，此接口无法调用。开启高精度定位，接口耗时会增加，可指定 highAccuracyExpireTime 作为超时时间。地图相关使用的坐标格式应为 gcj02。
 *
 * **示例代码**
 *
@@ -10938,6 +11433,38 @@ wx.getNetworkType({
         getNetworkType<TOption extends GetNetworkTypeOption>(
             option?: TOption
         ): PromisifySuccessResult<TOption, GetNetworkTypeOption>
+        /** [wx.getPerformance()](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/performance/wx.getPerformance.html)
+*
+* 获取当前小程序性能相关的信息。
+*
+* ****
+*
+* 目前支持获取以下几类性能指标：
+*
+* | 类别 | 名称 (entryType) | 指标             |
+* | ---- | ---------------- | ---------------- |
+* | 路由 | navigation       | route, appLaunch |
+* | 渲染 | render           | firstRender      |
+* | 脚本 | script           | evaluateScript   |
+*
+*  - route: 路由性能
+*  - appLaunch: 小程序启动耗时
+*  - firstRender: 页面首次渲染耗时
+*  - evaluateScript: 注入脚本耗时
+*
+* **示例代码**
+*
+*
+* ```js
+const performance = wx.getPerformance()
+const observer = performance.createObserver((entryList) => {
+  console.log(entryList.getEntries())
+})
+observer.observe({ entryTypes: ['render', 'script'] })
+```
+*
+* 最低基础库： `2.11.0` */
+        getPerformance(): void
         /** [wx.getSavedFileInfo(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/file/wx.getSavedFileInfo.html)
 *
 * 获取本地文件的文件信息。此接口只能用于获取已保存到本地的文件，若需要获取临时文件信息，请使用 [wx.getFileInfo()](https://developers.weixin.qq.com/miniprogram/dev/api/file/wx.getFileInfo.html) 接口。
@@ -11257,6 +11784,14 @@ Page({
 })
 ``` */
         getUserInfo(option: GetUserInfoOption): void
+        /** [wx.getVideoInfo(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/video/wx.getVideoInfo.html)
+         *
+         * 获取视频详细信息。
+         *
+         * 最低基础库： `2.11.0` */
+        getVideoInfo<TOption extends GetVideoInfoOption>(
+            option: TOption
+        ): PromisifySuccessResult<TOption, GetVideoInfoOption>
         /** [wx.getWeRunData(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/werun/wx.getWeRunData.html)
 *
 * 获取用户过去三十天微信运动步数。需要先调用 [wx.login](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/login/wx.login.html) 接口。步数信息会在用户主动进入小程序时更新。
@@ -11547,12 +12082,18 @@ Page({
 * **使用限制**
 *
 *
-* ##### 需要用户触发跳转
-* 从 2.3.0 版本开始，若用户未点击小程序页面任意位置，则开发者将无法调用此接口自动跳转至其他小程序。
-* ##### 需要用户确认跳转
-* 从 2.3.0 版本开始，在跳转至其他小程序前，将统一增加弹窗，询问是否跳转，用户确认后才可以跳转其他小程序。如果用户点击取消，则回调 `fail cancel`。
-* ##### 每个小程序可跳转的其他小程序数量限制为不超过 10 个
-* 从 2.4.0 版本以及指定日期（具体待定）开始，开发者提交新版小程序代码时，如使用了跳转其他小程序功能，则需要在代码配置中声明将要跳转的小程序名单，限定不超过 10 个，否则将无法通过审核。该名单可在发布新版时更新，不支持动态修改。配置方法详见 [小程序全局配置](https://developers.weixin.qq.com/miniprogram/dev/reference/configuration/app.html)。调用此接口时，所跳转的 appId 必须在配置列表中，否则回调 `fail appId "${appId}" is not in navigateToMiniProgramAppIdList`。
+*  ##### 需要用户触发跳转
+*  从 2.3.0 版本开始，若用户未点击小程序页面任意位置，则开发者将无法调用此接口自动跳转至其他小程序。
+*  ##### 需要用户确认跳转
+*  从 2.3.0 版本开始，在跳转至其他小程序前，将统一增加弹窗，询问是否跳转，用户确认后才可以跳转其他小程序。如果用户点击取消，则回调 `fail cancel`。
+*  ##### 无需声明跳转名单，不限跳转数量（众测中）
+* 1. 从2020年4月24日起，使用跳转其他小程序功能将无需在全局配置中声明跳转名单，调用此接口时将不再校验所跳转的 AppID 是否在 navigateToMiniProgramAppIdList 中。
+* 2. 从2020年4月24日起，跳转其他小程序将不再受数量限制，使用此功能时请注意遵守运营规范。
+*
+* **运营规范**
+*
+*
+* 平台将坚决打击小程序盒子等互推行为，使用此功能时请严格遵守[《微信小程序平台运营规范》](https://developers.weixin.qq.com/miniprogram/product/#_5-10-%E4%BA%92%E6%8E%A8%E8%A1%8C%E4%B8%BA)，若发现小程序违反运营规范将被下架处理。
 *
 * **关于调试**
 *
@@ -11894,6 +12435,15 @@ wx.notifyBLECharacteristicValueChange({
         offPageNotFound(
             /** 小程序要打开的页面不存在事件的回调函数 */
             callback: OffPageNotFoundCallback
+        ): void
+        /** [wx.offThemeChange(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/base/app/app-event/wx.offThemeChange.html)
+         *
+         * 取消监听系统主题改变事件
+         *
+         * 最低基础库： `2.11.0` */
+        offThemeChange(
+            /** 系统主题改变事件的回调函数 */
+            callback: OffThemeChangeCallback
         ): void
         /** [wx.offUnhandledRejection(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/base/app/app-event/wx.offUnhandledRejection.html)
          *
@@ -12390,6 +12940,20 @@ wx.onNetworkStatusChange(function (res) {
             /** WebSocket 连接打开事件的回调函数 */
             callback: OnSocketOpenCallback
         ): void
+        /** [wx.onThemeChange(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/base/app/app-event/wx.onThemeChange.html)
+         *
+         * 监听系统主题改变事件。该事件与 [`App.onThemeChange`](https://developers.weixin.qq.com/miniprogram/dev/reference/api/App.html#onThemeChange-Object-object) 的回调时机一致。
+         *
+         * **注意**
+         *
+         *
+         * - 只有在全局配置"darkmode": true时才会触发此事件。
+         *
+         * 最低基础库： `2.11.0` */
+        onThemeChange(
+            /** 系统主题改变事件的回调函数 */
+            callback: OnThemeChangeCallback
+        ): void
         /** [wx.onUnhandledRejection(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/base/app/app-event/wx.onUnhandledRejection.html)
          *
          * 监听未处理的 Promise 拒绝事件。该事件与 `App.onUnhandledRejection` 的回调时机与参数一致。
@@ -12881,7 +13445,7 @@ wx.reportMonitor('1', 1)
             /** 上报数值，经处理后会在「小程序管理后台」上展示每分钟的上报总量 */
             value: number
         ): void
-        /** [wx.reportPerformance(Number id, Number value)](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/performance/wx.reportPerformance.html)
+        /** [wx.reportPerformance(Number id, Number value, String|Array dimensions)](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/performance/wx.reportPerformance.html)
 *
 * 小程序测速上报。使用前，需要在小程序管理后台配置。 详情参见[小程序测速](#)指南。
 *
@@ -12890,6 +13454,7 @@ wx.reportMonitor('1', 1)
 *
 * ```js
 wx.reportPerformance(1101, 680)
+wx.reportPerformance(1101, 680, 'custom')
 ```
 *
 * 最低基础库： `2.9.2` */
@@ -12897,7 +13462,9 @@ wx.reportPerformance(1101, 680)
             /** 指标 id */
             id: number,
             /** 需要上报的数值 */
-            value: number
+            value: number,
+            /** 自定义维度 (选填) */
+            dimensions?: string | any[]
         ): void
         /** [wx.requestPayment(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/payment/wx.requestPayment.html)
 *
@@ -12937,7 +13504,7 @@ wx.requestPayment({
 * | errCode | errMsg                                                 | 说明                                                           |
 * | ------- | ------------------------------------------------------ | -------------------------------------------------------------- |
 * | 10001   | TmplIds can't be empty                                 | 参数传空了                                                     |
-* | 10002   | Request list fai                                       | 网络问题，请求消息列表失败                                     |
+* | 10002   | Request list fail                                       | 网络问题，请求消息列表失败                                     |
 * | 10003   | Request subscribe fail                                 | 网络问题，订阅请求发送失败                                     |
 * | 10004   | Invalid template id                                    | 参数类型错误                                                   |
 * | 10005   | Cannot show subscribe message UI                       | 无法展示 UI，一般是小程序这个时候退后台了导致的                |
@@ -12989,6 +13556,12 @@ wx.chooseImage({
         saveFile<TOption extends WxSaveFileOption>(
             option: TOption
         ): PromisifySuccessResult<TOption, WxSaveFileOption>
+        /** [wx.saveFileToDisk(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/file/wx.saveFileToDisk.html)
+         *
+         * 保存文件系统的文件到用户磁盘，仅在 PC 端支持
+         *
+         * 最低基础库： `2.11.0` */
+        saveFileToDisk(option: SaveFileToDiskOption): void
         /** [wx.saveImageToPhotosAlbum(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/image/wx.saveImageToPhotosAlbum.html)
 *
 * 保存图片到系统相册。
@@ -13129,6 +13702,14 @@ function sendSocketMessage(msg) {
         sendSocketMessage<TOption extends SendSocketMessageOption>(
             option: TOption
         ): PromisifySuccessResult<TOption, SendSocketMessageOption>
+        /** [wx.setBLEMTU(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-ble/wx.setBLEMTU.html)
+         *
+         * 设置蓝牙最大传输单元。需在 wx.createBLEConnection调用成功后调用，mtu 设置范围 (22,512)。安卓5.1以上有效。
+         *
+         * 最低基础库： `2.11.0` */
+        setBLEMTU<TOption extends SetBLEMTUOption>(
+            option: TOption
+        ): PromisifySuccessResult<TOption, SetBLEMTUOption>
         /** [wx.setBackgroundColor(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/ui/background/wx.setBackgroundColor.html)
 *
 * 动态设置窗口的背景色
@@ -14467,6 +15048,14 @@ wx.writeBLECharacteristicValue({
         result: CompressImageSuccessCallbackResult
     ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type CompressVideoCompleteCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用失败的回调函数 */
+    type CompressVideoFailCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用成功的回调函数 */
+    type CompressVideoSuccessCallback = (
+        result: CompressVideoSuccessCallbackResult
+    ) => void
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type ConnectSocketCompleteCallback = (res: GeneralCallbackResult) => void
     /** 接口调用失败的回调函数 */
     type ConnectSocketFailCallback = (res: GeneralCallbackResult) => void
@@ -14512,17 +15101,9 @@ wx.writeBLECharacteristicValue({
     type DownloadFileSuccessCallback = (
         result: DownloadFileSuccessCallbackResult
     ) => void
-    /** HTTP Response Header 事件的回调函数 */
-    type DownloadTaskOffHeadersReceivedCallback = (
-        result: OnHeadersReceivedCallbackResult
-    ) => void
     /** 下载进度变化事件的回调函数 */
     type DownloadTaskOffProgressUpdateCallback = (
         result: DownloadTaskOnProgressUpdateCallbackResult
-    ) => void
-    /** HTTP Response Header 事件的回调函数 */
-    type DownloadTaskOnHeadersReceivedCallback = (
-        result: OnHeadersReceivedCallbackResult
     ) => void
     /** 下载进度变化事件的回调函数 */
     type DownloadTaskOnProgressUpdateCallback = (
@@ -14539,6 +15120,16 @@ wx.writeBLECharacteristicValue({
     type ExitFullScreenFailCallback = (res: GeneralCallbackResult) => void
     /** 接口调用成功的回调函数 */
     type ExitFullScreenSuccessCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type ExitPictureInPictureCompleteCallback = (
+        res: GeneralCallbackResult
+    ) => void
+    /** 接口调用失败的回调函数 */
+    type ExitPictureInPictureFailCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用成功的回调函数 */
+    type ExitPictureInPictureSuccessCallback = (
+        res: GeneralCallbackResult
+    ) => void
     /** 回调函数 */
     type FieldsCallback = (
         /** 节点的相关信息 */
@@ -14589,6 +15180,14 @@ wx.writeBLECharacteristicValue({
     /** 接口调用成功的回调函数 */
     type GetBLEDeviceCharacteristicsSuccessCallback = (
         result: GetBLEDeviceCharacteristicsSuccessCallbackResult
+    ) => void
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type GetBLEDeviceRSSICompleteCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用失败的回调函数 */
+    type GetBLEDeviceRSSIFailCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用成功的回调函数 */
+    type GetBLEDeviceRSSISuccessCallback = (
+        result: GetBLEDeviceRSSISuccessCallbackResult
     ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type GetBLEDeviceServicesCompleteCallback = (res: BluetoothError) => void
@@ -14873,6 +15472,14 @@ wx.writeBLECharacteristicValue({
         result: GetUserInfoSuccessCallbackResult
     ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type GetVideoInfoCompleteCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用失败的回调函数 */
+    type GetVideoInfoFailCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用成功的回调函数 */
+    type GetVideoInfoSuccessCallback = (
+        result: GetVideoInfoSuccessCallbackResult
+    ) => void
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type GetWeRunDataCompleteCallback = (res: GeneralCallbackResult) => void
     /** 接口调用失败的回调函数 */
     type GetWeRunDataFailCallback = (res: GeneralCallbackResult) => void
@@ -15111,7 +15718,7 @@ wx.writeBLECharacteristicValue({
     /** 小程序切后台事件的回调函数 */
     type OffAppHideCallback = (res: GeneralCallbackResult) => void
     /** 小程序切前台事件的回调函数 */
-    type OffAppShowCallback = (result: OffAppShowCallbackResult) => void
+    type OffAppShowCallback = (result: OnAppShowCallbackResult) => void
     /** 音频因为受到系统占用而被中断开始事件的回调函数 */
     type OffAudioInterruptionBeginCallback = (
         res: GeneralCallbackResult
@@ -15138,6 +15745,10 @@ wx.writeBLECharacteristicValue({
     ) => void
     /** 音频自然播放至结束的事件的回调函数 */
     type OffEndedCallback = (res: GeneralCallbackResult) => void
+    /** HTTP Response Header 事件的回调函数 */
+    type OffHeadersReceivedCallback = (
+        result: OnHeadersReceivedCallbackResult
+    ) => void
     /** 开始监听数据包消息的事件的回调函数 */
     type OffListeningCallback = (res: GeneralCallbackResult) => void
     /** mDNS 服务停止搜索的事件的回调函数 */
@@ -15161,7 +15772,7 @@ wx.writeBLECharacteristicValue({
         result: OnLocationChangeCallbackResult
     ) => void
     /** 收到消息的事件的回调函数 */
-    type OffMessageCallback = (result: OffMessageCallbackResult) => void
+    type OffMessageCallback = (result: UDPSocketOnMessageCallbackResult) => void
     /** 小程序要打开的页面不存在事件的回调函数 */
     type OffPageNotFoundCallback = (
         result: OnPageNotFoundCallbackResult
@@ -15176,6 +15787,8 @@ wx.writeBLECharacteristicValue({
     type OffSeekingCallback = (res: GeneralCallbackResult) => void
     /** 音频停止事件的回调函数 */
     type OffStopCallback = (res: GeneralCallbackResult) => void
+    /** 系统主题改变事件的回调函数 */
+    type OffThemeChangeCallback = (result: OnThemeChangeCallbackResult) => void
     /** 音频播放进度更新事件的回调函数 */
     type OffTimeUpdateCallback = (res: GeneralCallbackResult) => void
     /** 未处理的 Promise 拒绝事件的回调函数 */
@@ -15186,7 +15799,7 @@ wx.writeBLECharacteristicValue({
     type OffWaitingCallback = (res: GeneralCallbackResult) => void
     /** 窗口尺寸变化事件的回调函数 */
     type OffWindowResizeCallback = (
-        result: OffWindowResizeCallbackResult
+        result: OnWindowResizeCallbackResult
     ) => void
     /** 加速度数据事件的回调函数 */
     type OnAccelerometerChangeCallback = (
@@ -15283,6 +15896,10 @@ wx.writeBLECharacteristicValue({
     ) => void
     /** 接收 NFC 设备消息事件的回调函数 */
     type OnHCEMessageCallback = (result: OnHCEMessageCallbackResult) => void
+    /** HTTP Response Header 事件的回调函数 */
+    type OnHeadersReceivedCallback = (
+        result: OnHeadersReceivedCallbackResult
+    ) => void
     /** 录音因为受到系统占用而被中断开始事件的回调函数 */
     type OnInterruptionBeginCallback = (res: GeneralCallbackResult) => void
     /** 录音中断结束事件的回调函数 */
@@ -15346,6 +15963,8 @@ wx.writeBLECharacteristicValue({
     type OnSocketOpenCallback = (result: OnSocketOpenCallbackResult) => void
     /** 录音开始事件的回调函数 */
     type OnStartCallback = (res: GeneralCallbackResult) => void
+    /** 系统主题改变事件的回调函数 */
+    type OnThemeChangeCallback = (result: OnThemeChangeCallbackResult) => void
     /** 未处理的 Promise 拒绝事件的回调函数 */
     type OnUnhandledRejectionCallback = (
         result: OnUnhandledRejectionCallbackResult
@@ -15582,14 +16201,6 @@ wx.writeBLECharacteristicValue({
     ) => void
     /** 接口调用成功的回调函数 */
     type RequestSuccessCallback = (result: RequestSuccessCallbackResult) => void
-    /** HTTP Response Header 事件的回调函数 */
-    type RequestTaskOffHeadersReceivedCallback = (
-        result: OnHeadersReceivedCallbackResult
-    ) => void
-    /** HTTP Response Header 事件的回调函数 */
-    type RequestTaskOnHeadersReceivedCallback = (
-        result: OnHeadersReceivedCallbackResult
-    ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type ResumeBGMCompleteCallback = (res: GeneralCallbackResult) => void
     /** 接口调用失败的回调函数 */
@@ -15630,6 +16241,12 @@ wx.writeBLECharacteristicValue({
     type RmdirSuccessCallback = (res: GeneralCallbackResult) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type SaveFileCompleteCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type SaveFileToDiskCompleteCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用失败的回调函数 */
+    type SaveFileToDiskFailCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用成功的回调函数 */
+    type SaveFileToDiskSuccessCallback = (res: GeneralCallbackResult) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type SaveImageToPhotosAlbumCompleteCallback = (
         res: GeneralCallbackResult
@@ -15700,6 +16317,12 @@ wx.writeBLECharacteristicValue({
     type SetBGMVolumeFailCallback = (res: GeneralCallbackResult) => void
     /** 接口调用成功的回调函数 */
     type SetBGMVolumeSuccessCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type SetBLEMTUCompleteCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用失败的回调函数 */
+    type SetBLEMTUFailCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用成功的回调函数 */
+    type SetBLEMTUSuccessCallback = (res: GeneralCallbackResult) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type SetBackgroundColorCompleteCallback = (
         res: GeneralCallbackResult
@@ -16302,17 +16925,9 @@ wx.writeBLECharacteristicValue({
     type UploadFileSuccessCallback = (
         result: UploadFileSuccessCallbackResult
     ) => void
-    /** HTTP Response Header 事件的回调函数 */
-    type UploadTaskOffHeadersReceivedCallback = (
-        result: OnHeadersReceivedCallbackResult
-    ) => void
     /** 上传进度变化事件的回调函数 */
     type UploadTaskOffProgressUpdateCallback = (
         result: UploadTaskOnProgressUpdateCallbackResult
-    ) => void
-    /** HTTP Response Header 事件的回调函数 */
-    type UploadTaskOnHeadersReceivedCallback = (
-        result: OnHeadersReceivedCallbackResult
     ) => void
     /** 上传进度变化事件的回调函数 */
     type UploadTaskOnProgressUpdateCallback = (
