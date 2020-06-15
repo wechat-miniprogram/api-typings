@@ -209,3 +209,17 @@ Page({
     expectError(channel.emit(1, 2))
   },
 })
+
+Page({
+  onAddToFavorites(res) {
+    // webview 页面返回 webviewUrl
+    if (res.webviewUrl) {
+      console.log('WebviewUrl: ', res.webviewUrl)
+    }
+    return {
+      title: '自定义标题',
+      imageUrl: 'http://demo.png',
+      query: 'name=xxx&age=xxx',
+    }
+  },
+})

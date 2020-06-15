@@ -236,6 +236,12 @@ declare namespace WechatMiniprogram {
              * **参数**：与 [wx.onUnhandledRejection](https://developers.weixin.qq.com/miniprogram/dev/api/base/app/app-event/wx.onUnhandledRejection.html) 一致
              */
             onUnhandledRejection: OnUnhandledRejectionCallback
+            /**
+             * 系统切换主题时触发。也可以使用 wx.onThemeChange 绑定监听。
+             *
+             * 最低基础库： 2.11.0
+             */
+            onThemeChange: OnThemeChangeCallback
         }
 
         type Instance<T extends IAnyObject> = Option & T

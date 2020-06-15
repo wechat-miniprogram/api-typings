@@ -120,6 +120,14 @@ declare namespace WechatMiniprogram {
                 /** 窗口尺寸参数 */
                 options: IResizeOption
             ): void
+
+            /**
+             * 监听用户点击右上角菜单“收藏”按钮的行为，并自定义收藏内容。
+             * 基础库 2.10.3，安卓 7.0.15 版本起支持，iOS 暂不支持
+             */
+            onAddToFavorites(
+                options: IAddToFavoritesOption
+            ): IAddToFavoritesContent
         }
         interface InstanceProperties {
             /** 页面的文件路径 */
@@ -202,6 +210,20 @@ declare namespace WechatMiniprogram {
                 /** 变化后的窗口高度，单位 px */
                 windowHeight: number
             }
+        }
+
+        interface IAddToFavoritesOption {
+            /** 页面中包含web-view组件时，返回当前web-view的url */
+            webviewUrl?: string
+        }
+
+        interface IAddToFavoritesContent {
+            /** 自定义标题，默认值：页面标题或账号名称 */
+            title?: string
+            /** 自定义图片，显示图片长宽比为 1：1，默认值：页面截图 */
+            imageUrl?: string
+            /** 自定义query字段，默认值：当前页面的query */
+            query?: string
         }
 
         interface getCurrentPages {

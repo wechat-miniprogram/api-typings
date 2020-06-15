@@ -1,3 +1,10 @@
+## 2020-06-15 v2.11.0-1
+- 该版本继续合并了一部分完全相同的 interface / callback，是一个 **破坏性改动**，原本字面上引用了这些 interface / callback 的代码可能会报错。
+- 为 `Component` 构造器增加第四个泛型，以允许在自定义组件上挂载自定义的字段 ([#133](https://github.com/wechat-miniprogram/api-typings/issues/133))
+- 修复一些接口错误 ([#134](https://github.com/wechat-miniprogram/api-typings/issues/134))
+- 补齐 `App` 的 `onThemeChange` ([#135](https://github.com/wechat-miniprogram/api-typings/issues/135))
+- 补齐 `Page` 的 `onAddToFavorites` ([#136](https://github.com/wechat-miniprogram/api-typings/issues/136))
+
 ## 2020-05-20 v2.11.0
 - 同步 API 定义到基础库 2.11.0
 - 该版本继续合并了一部分完全相同的 interface / callback，是一个 **破坏性改动**，原本字面上引用了这些 interface / callback 的代码可能会报错。

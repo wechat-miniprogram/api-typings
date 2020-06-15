@@ -350,6 +350,22 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         /** 页面链接，原生音频播放器中的分享功能，分享出去的卡片简介，也将使用该值。 */
         webUrl: string
     }
+    interface BlueToothDevice {
+        /** 当前蓝牙设备的信号强度 */
+        RSSI: number
+        /** 当前蓝牙设备的广播数据段中的 ManufacturerData 数据段。 */
+        advertisData: ArrayBuffer
+        /** 当前蓝牙设备的广播数据段中的 ServiceUUIDs 数据段 */
+        advertisServiceUUIDs: string[]
+        /** 用于区分设备的 id */
+        deviceId: string
+        /** 当前蓝牙设备的广播数据段中的 LocalName 数据段 */
+        localName: string
+        /** 蓝牙设备名称，某些设备可能没有 */
+        name: string
+        /** 当前蓝牙设备的广播数据段中的 ServiceData 数据段 */
+        serviceData: IAnyObject
+    }
     /** 搜索到的设备列表 */
     interface BluetoothDeviceInfo {
         /** 用于区分设备的 id */
@@ -397,23 +413,6 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         top: number
         /** 宽度 */
         width: number
-    }
-    /** 新搜索到的设备列表 */
-    interface CallbackResultBlueToothDevice {
-        /** 当前蓝牙设备的信号强度 */
-        RSSI: number
-        /** 当前蓝牙设备的广播数据段中的 ManufacturerData 数据段。 */
-        advertisData: ArrayBuffer
-        /** 当前蓝牙设备的广播数据段中的 ServiceUUIDs 数据段 */
-        advertisServiceUUIDs: string[]
-        /** 用于区分设备的 id */
-        deviceId: string
-        /** 当前蓝牙设备的广播数据段中的 LocalName 数据段 */
-        localName: string
-        /** 蓝牙设备名称，某些设备可能没有 */
-        name: string
-        /** 当前蓝牙设备的广播数据段中的 ServiceData 数据段 */
-        serviceData: IAnyObject
     }
     interface CameraContextStartRecordOption {
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
@@ -1524,6 +1523,14 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         /** 是否返回节点尺寸（`width` `height`） */
         size?: boolean
     }
+    interface FileItem {
+        /** 文件保存时的时间戳，从1970/01/01 08:00:00 到当前时间的秒数 */
+        createTime: number
+        /** 文件路径 (本地路径) */
+        filePath: string
+        /** 本地文件大小，以字节为单位 */
+        size: number
+    }
     interface FileSystemManagerGetFileInfoOption {
         /** 要读取的文件路径 (本地路径) */
         filePath: string
@@ -1549,17 +1556,8 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
     }
     interface FileSystemManagerGetSavedFileListSuccessCallbackResult {
         /** 文件数组 */
-        fileList: FileSystemManagerGetSavedFileListSuccessCallbackResultFileItem[]
+        fileList: FileItem[]
         errMsg: string
-    }
-    /** 文件数组 */
-    interface FileSystemManagerGetSavedFileListSuccessCallbackResultFileItem {
-        /** 文件保存时的时间戳，从1970/01/01 08:00:00 到当前时间的秒数 */
-        createTime: number
-        /** 文件路径 (本地路径) */
-        filePath: string
-        /** 本地文件大小，以字节为单位 */
-        size: number
     }
     interface FileSystemManagerRemoveSavedFileOption {
         /** 需要删除的文件路径 (本地路径) */
@@ -1768,25 +1766,8 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
     }
     interface GetBluetoothDevicesSuccessCallbackResult {
         /** uuid 对应的的已连接设备列表 */
-        devices: GetBluetoothDevicesSuccessCallbackResultBlueToothDevice[]
+        devices: BlueToothDevice[]
         errMsg: string
-    }
-    /** uuid 对应的的已连接设备列表 */
-    interface GetBluetoothDevicesSuccessCallbackResultBlueToothDevice {
-        /** 当前蓝牙设备的信号强度 */
-        RSSI: number
-        /** 当前蓝牙设备的广播数据段中的 ManufacturerData 数据段。 */
-        advertisData: ArrayBuffer
-        /** 当前蓝牙设备的广播数据段中的 ServiceUUIDs 数据段 */
-        advertisServiceUUIDs: string[]
-        /** 用于区分设备的 id */
-        deviceId: string
-        /** 当前蓝牙设备的广播数据段中的 LocalName 数据段 */
-        localName: string
-        /** 蓝牙设备名称，某些设备可能没有 */
-        name: string
-        /** 当前蓝牙设备的广播数据段中的 ServiceData 数据段 */
-        serviceData: IAnyObject
     }
     interface GetCenterLocationOption {
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
@@ -2018,9 +1999,9 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
     }
     interface GetRegionSuccessCallbackResult {
         /** 东北角经纬度 */
-        northeast: number
+        northeast: MapPostion
         /** 西南角经纬度 */
-        southwest: number
+        southwest: MapPostion
         errMsg: string
     }
     interface GetRotateOption {
@@ -2300,10 +2281,6 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         statusBarHeight: number
         /** 操作系统及版本 */
         system: string
-        /** 系统当前主题，取值为`light`或`dark`，全局配置`"darkmode":true`时才能获取，否则为 undefined （不支持小游戏）
-         *
-         * 最低基础库： `2.11.0` */
-        theme: string
         /** 微信版本号 */
         version: string
         /** Wi-Fi 的系统开关
@@ -2314,6 +2291,14 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         windowHeight: number
         /** 可使用窗口宽度，单位px */
         windowWidth: number
+        /** 系统当前主题，取值为`light`或`dark`，全局配置`"darkmode":true`时才能获取，否则为 undefined （不支持小游戏）
+         *
+         * 可选值：
+         * - 'dark': 深色主题;
+         * - 'light': 浅色主题;
+         *
+         * 最低基础库： `2.11.0` */
+        theme?: 'dark' | 'light'
         errMsg: string
     }
     interface GetSystemInfoSyncResult {
@@ -2399,10 +2384,6 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         statusBarHeight: number
         /** 操作系统及版本 */
         system: string
-        /** 系统当前主题，取值为`light`或`dark`，全局配置`"darkmode":true`时才能获取，否则为 undefined （不支持小游戏）
-         *
-         * 最低基础库： `2.11.0` */
-        theme: string
         /** 微信版本号 */
         version: string
         /** Wi-Fi 的系统开关
@@ -2413,6 +2394,14 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         windowHeight: number
         /** 可使用窗口宽度，单位px */
         windowWidth: number
+        /** 系统当前主题，取值为`light`或`dark`，全局配置`"darkmode":true`时才能获取，否则为 undefined （不支持小游戏）
+         *
+         * 可选值：
+         * - 'dark': 深色主题;
+         * - 'light': 浅色主题;
+         *
+         * 最低基础库： `2.11.0` */
+        theme?: 'dark' | 'light'
     }
     interface GetUserInfoOption {
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
@@ -2882,7 +2871,6 @@ innerAudioContext.onError((res) => {
         /** 制造商信息 */
         manufacturerSpecificData?: ArrayBuffer
     }
-    /** 要显示在可视区域内的坐标点列表 */
     interface MapPostion {
         /** 纬度 */
         latitude: number
@@ -3159,7 +3147,7 @@ innerAudioContext.onError((res) => {
     }
     interface OnBluetoothDeviceFoundCallbackResult {
         /** 新搜索到的设备列表 */
-        devices: CallbackResultBlueToothDevice[]
+        devices: BlueToothDevice[]
     }
     interface OnCameraFrameCallbackResult {
         /** 图像像素点数据，一维数组，每四项表示一个像素点的 rgba */
@@ -3339,8 +3327,12 @@ innerAudioContext.onError((res) => {
         tempFilePath: string
     }
     interface OnThemeChangeCallbackResult {
-        /** 系统当前的主题，取值为`light`或`dark` */
-        theme: string
+        /** 系统当前的主题，取值为`light`或`dark`
+         *
+         * 可选值：
+         * - 'dark': 深色主题;
+         * - 'light': 浅色主题; */
+        theme: 'dark' | 'light'
     }
     interface OnUnhandledRejectionCallbackResult {
         /** 被拒绝的 Promise 对象 */
@@ -5611,17 +5603,8 @@ innerAudioContext.onError((res) => {
     }
     interface WxGetSavedFileListSuccessCallbackResult {
         /** 文件数组，每一项是一个 FileItem */
-        fileList: WxGetSavedFileListSuccessCallbackResultFileItem[]
+        fileList: FileItem[]
         errMsg: string
-    }
-    /** 文件数组，每一项是一个 FileItem */
-    interface WxGetSavedFileListSuccessCallbackResultFileItem {
-        /** 文件保存时的时间戳，从1970/01/01 08:00:00 到当前时间的秒数 */
-        createTime: number
-        /** 文件路径 (本地路径) */
-        filePath: string
-        /** 本地文件大小，以字节为单位 */
-        size: number
     }
     interface WxRemoveSavedFileOption {
         /** 需要删除的文件路径 (本地路径) */
@@ -6013,14 +5996,14 @@ innerAudioContext.onError((res) => {
          * 监听背景音频进入可播放状态事件。 但不保证后面可以流畅播放 */
         onCanplay(
             /** 背景音频进入可播放状态事件的回调函数 */
-            callback: BackgroundAudioManagerOnCanplayCallback
+            callback: OnCanplayCallback
         ): void
         /** [BackgroundAudioManager.onEnded(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/media/background-audio/BackgroundAudioManager.onEnded.html)
          *
          * 监听背景音频自然播放结束事件 */
         onEnded(
             /** 背景音频自然播放结束事件的回调函数 */
-            callback: BackgroundAudioManagerOnEndedCallback
+            callback: OnEndedCallback
         ): void
         /** [BackgroundAudioManager.onError(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/media/background-audio/BackgroundAudioManager.onError.html)
          *
@@ -6041,14 +6024,14 @@ innerAudioContext.onError((res) => {
          * 监听背景音频暂停事件 */
         onPause(
             /** 背景音频暂停事件的回调函数 */
-            callback: BackgroundAudioManagerOnPauseCallback
+            callback: OnPauseCallback
         ): void
         /** [BackgroundAudioManager.onPlay(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/media/background-audio/BackgroundAudioManager.onPlay.html)
          *
          * 监听背景音频播放事件 */
         onPlay(
             /** 背景音频播放事件的回调函数 */
-            callback: BackgroundAudioManagerOnPlayCallback
+            callback: OnPlayCallback
         ): void
         /** [BackgroundAudioManager.onPrev(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/media/background-audio/BackgroundAudioManager.onPrev.html)
          *
@@ -6062,28 +6045,28 @@ innerAudioContext.onError((res) => {
          * 监听背景音频完成跳转操作事件 */
         onSeeked(
             /** 背景音频完成跳转操作事件的回调函数 */
-            callback: BackgroundAudioManagerOnSeekedCallback
+            callback: OnSeekedCallback
         ): void
         /** [BackgroundAudioManager.onSeeking(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/media/background-audio/BackgroundAudioManager.onSeeking.html)
          *
          * 监听背景音频开始跳转操作事件 */
         onSeeking(
             /** 背景音频开始跳转操作事件的回调函数 */
-            callback: BackgroundAudioManagerOnSeekingCallback
+            callback: OnSeekingCallback
         ): void
         /** [BackgroundAudioManager.onStop(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/media/background-audio/BackgroundAudioManager.onStop.html)
          *
          * 监听背景音频停止事件 */
         onStop(
             /** 背景音频停止事件的回调函数 */
-            callback: BackgroundAudioManagerOnStopCallback
+            callback: InnerAudioContextOnStopCallback
         ): void
         /** [BackgroundAudioManager.onTimeUpdate(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/media/background-audio/BackgroundAudioManager.onTimeUpdate.html)
          *
          * 监听背景音频播放进度更新事件，只有小程序在前台时会回调。 */
         onTimeUpdate(
             /** 背景音频播放进度更新事件的回调函数 */
-            callback: BackgroundAudioManagerOnTimeUpdateCallback
+            callback: OnTimeUpdateCallback
         ): void
         /** [BackgroundAudioManager.onWaiting(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/media/background-audio/BackgroundAudioManager.onWaiting.html)
          *
@@ -8430,14 +8413,14 @@ this.editorCtx.insertImage({
          * 监听音频进入可以播放状态的事件。但不保证后面可以流畅播放 */
         onCanplay(
             /** 音频进入可以播放状态的事件的回调函数 */
-            callback: InnerAudioContextOnCanplayCallback
+            callback: OnCanplayCallback
         ): void
         /** [InnerAudioContext.onEnded(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/InnerAudioContext.onEnded.html)
          *
          * 监听音频自然播放至结束的事件 */
         onEnded(
             /** 音频自然播放至结束的事件的回调函数 */
-            callback: InnerAudioContextOnEndedCallback
+            callback: OnEndedCallback
         ): void
         /** [InnerAudioContext.onError(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/InnerAudioContext.onError.html)
          *
@@ -8451,28 +8434,28 @@ this.editorCtx.insertImage({
          * 监听音频暂停事件 */
         onPause(
             /** 音频暂停事件的回调函数 */
-            callback: InnerAudioContextOnPauseCallback
+            callback: OnPauseCallback
         ): void
         /** [InnerAudioContext.onPlay(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/InnerAudioContext.onPlay.html)
          *
          * 监听音频播放事件 */
         onPlay(
             /** 音频播放事件的回调函数 */
-            callback: InnerAudioContextOnPlayCallback
+            callback: OnPlayCallback
         ): void
         /** [InnerAudioContext.onSeeked(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/InnerAudioContext.onSeeked.html)
          *
          * 监听音频完成跳转操作的事件 */
         onSeeked(
             /** 音频完成跳转操作的事件的回调函数 */
-            callback: InnerAudioContextOnSeekedCallback
+            callback: OnSeekedCallback
         ): void
         /** [InnerAudioContext.onSeeking(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/InnerAudioContext.onSeeking.html)
          *
          * 监听音频进行跳转操作的事件 */
         onSeeking(
             /** 音频进行跳转操作的事件的回调函数 */
-            callback: InnerAudioContextOnSeekingCallback
+            callback: OnSeekingCallback
         ): void
         /** [InnerAudioContext.onStop(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/InnerAudioContext.onStop.html)
          *
@@ -8486,7 +8469,7 @@ this.editorCtx.insertImage({
          * 监听音频播放进度更新事件 */
         onTimeUpdate(
             /** 音频播放进度更新事件的回调函数 */
-            callback: InnerAudioContextOnTimeUpdateCallback
+            callback: OnTimeUpdateCallback
         ): void
         /** [InnerAudioContext.onWaiting(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/InnerAudioContext.onWaiting.html)
          *
@@ -8577,7 +8560,7 @@ Page({
          * 取消监听插屏广告关闭事件 */
         offClose(
             /** 插屏广告关闭事件的回调函数 */
-            callback: InterstitialAdOffCloseCallback
+            callback: UDPSocketOffCloseCallback
         ): void
         /** [InterstitialAd.offError(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/ad/InterstitialAd.offError.html)
          *
@@ -8591,14 +8574,14 @@ Page({
          * 取消监听插屏广告加载事件 */
         offLoad(
             /** 插屏广告加载事件的回调函数 */
-            callback: InterstitialAdOffLoadCallback
+            callback: OffLoadCallback
         ): void
         /** [InterstitialAd.onClose(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/ad/InterstitialAd.onClose.html)
          *
          * 监听插屏广告关闭事件。 */
         onClose(
             /** 插屏广告关闭事件的回调函数 */
-            callback: InterstitialAdOnCloseCallback
+            callback: UDPSocketOnCloseCallback
         ): void
         /** [InterstitialAd.onError(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/ad/InterstitialAd.onError.html)
          *
@@ -8630,7 +8613,7 @@ Page({
          * 监听插屏广告加载事件。 */
         onLoad(
             /** 插屏广告加载事件的回调函数 */
-            callback: InterstitialAdOnLoadCallback
+            callback: OnLoadCallback
         ): void
         /** [Promise InterstitialAd.load()](https://developers.weixin.qq.com/miniprogram/dev/api/ad/InterstitialAd.load.html)
          *
@@ -9286,7 +9269,7 @@ Page({
          * 监听录音错误事件 */
         onError(
             /** 录音错误事件的回调函数 */
-            callback: RecorderManagerOnErrorCallback
+            callback: UDPSocketOnErrorCallback
         ): void
         /** [RecorderManager.onFrameRecorded(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/media/recorder/RecorderManager.onFrameRecorded.html)
          *
@@ -9318,7 +9301,7 @@ Page({
          * 监听录音暂停事件 */
         onPause(
             /** 录音暂停事件的回调函数 */
-            callback: RecorderManagerOnPauseCallback
+            callback: OnPauseCallback
         ): void
         /** [RecorderManager.onResume(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/media/recorder/RecorderManager.onResume.html)
          *
@@ -9435,7 +9418,7 @@ Page({
          * 取消监听激励视频广告加载事件 */
         offLoad(
             /** 激励视频广告加载事件的回调函数 */
-            callback: RewardedVideoAdOffLoadCallback
+            callback: OffLoadCallback
         ): void
         /** [RewardedVideoAd.onClose(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/ad/RewardedVideoAd.onClose.html)
          *
@@ -9474,7 +9457,7 @@ Page({
          * 监听激励视频广告加载事件。 */
         onLoad(
             /** 激励视频广告加载事件的回调函数 */
-            callback: RewardedVideoAdOnLoadCallback
+            callback: OnLoadCallback
         ): void
     }
     interface SelectorQuery {
@@ -9568,7 +9551,7 @@ Component({
          * 监听 WebSocket 错误事件 */
         onError(
             /** WebSocket 错误事件的回调函数 */
-            callback: SocketTaskOnErrorCallback
+            callback: UDPSocketOnErrorCallback
         ): void
         /** [SocketTask.onMessage(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/network/websocket/SocketTask.onMessage.html)
          *
@@ -11575,7 +11558,7 @@ wx.getSetting({
 *
 * 最低基础库： `1.2.0` */
         getSetting<TOption extends GetSettingOption>(
-            option: TOption
+            option?: TOption
         ): PromisifySuccessResult<TOption, GetSettingOption>
         /** [wx.getShareInfo(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/share/wx.getShareInfo.html)
 *
@@ -14821,40 +14804,8 @@ wx.writeBLECharacteristicValue({
     type AuthorizeFailCallback = (res: GeneralCallbackResult) => void
     /** 接口调用成功的回调函数 */
     type AuthorizeSuccessCallback = (res: GeneralCallbackResult) => void
-    /** 背景音频进入可播放状态事件的回调函数 */
-    type BackgroundAudioManagerOnCanplayCallback = (
-        res: GeneralCallbackResult
-    ) => void
-    /** 背景音频自然播放结束事件的回调函数 */
-    type BackgroundAudioManagerOnEndedCallback = (
-        res: GeneralCallbackResult
-    ) => void
     /** 背景音频播放错误事件的回调函数 */
     type BackgroundAudioManagerOnErrorCallback = (
-        res: GeneralCallbackResult
-    ) => void
-    /** 背景音频暂停事件的回调函数 */
-    type BackgroundAudioManagerOnPauseCallback = (
-        res: GeneralCallbackResult
-    ) => void
-    /** 背景音频播放事件的回调函数 */
-    type BackgroundAudioManagerOnPlayCallback = (
-        res: GeneralCallbackResult
-    ) => void
-    /** 背景音频完成跳转操作事件的回调函数 */
-    type BackgroundAudioManagerOnSeekedCallback = (
-        res: GeneralCallbackResult
-    ) => void
-    /** 背景音频开始跳转操作事件的回调函数 */
-    type BackgroundAudioManagerOnSeekingCallback = (
-        res: GeneralCallbackResult
-    ) => void
-    /** 背景音频停止事件的回调函数 */
-    type BackgroundAudioManagerOnStopCallback = (
-        res: GeneralCallbackResult
-    ) => void
-    /** 背景音频播放进度更新事件的回调函数 */
-    type BackgroundAudioManagerOnTimeUpdateCallback = (
         res: GeneralCallbackResult
     ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
@@ -15557,34 +15508,11 @@ wx.writeBLECharacteristicValue({
     type InnerAudioContextOffErrorCallback = (
         result: InnerAudioContextOnErrorCallbackResult
     ) => void
-    /** 音频进入可以播放状态的事件的回调函数 */
-    type InnerAudioContextOnCanplayCallback = (
-        res: GeneralCallbackResult
-    ) => void
-    /** 音频自然播放至结束的事件的回调函数 */
-    type InnerAudioContextOnEndedCallback = (res: GeneralCallbackResult) => void
     /** 音频播放错误事件的回调函数 */
     type InnerAudioContextOnErrorCallback = (
         result: InnerAudioContextOnErrorCallbackResult
     ) => void
-    /** 音频暂停事件的回调函数 */
-    type InnerAudioContextOnPauseCallback = (res: GeneralCallbackResult) => void
-    /** 音频播放事件的回调函数 */
-    type InnerAudioContextOnPlayCallback = (res: GeneralCallbackResult) => void
-    /** 音频完成跳转操作的事件的回调函数 */
-    type InnerAudioContextOnSeekedCallback = (
-        res: GeneralCallbackResult
-    ) => void
-    /** 音频进行跳转操作的事件的回调函数 */
-    type InnerAudioContextOnSeekingCallback = (
-        res: GeneralCallbackResult
-    ) => void
-    /** 音频停止事件的回调函数 */
     type InnerAudioContextOnStopCallback = (res: GeneralCallbackResult) => void
-    /** 音频播放进度更新事件的回调函数 */
-    type InnerAudioContextOnTimeUpdateCallback = (
-        res: GeneralCallbackResult
-    ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type InsertDividerCompleteCallback = (res: GeneralCallbackResult) => void
     /** 接口调用失败的回调函数 */
@@ -15603,22 +15531,14 @@ wx.writeBLECharacteristicValue({
     type InsertTextFailCallback = (res: GeneralCallbackResult) => void
     /** 接口调用成功的回调函数 */
     type InsertTextSuccessCallback = (res: GeneralCallbackResult) => void
-    /** 插屏广告关闭事件的回调函数 */
-    type InterstitialAdOffCloseCallback = (res: GeneralCallbackResult) => void
     /** 插屏错误事件的回调函数 */
     type InterstitialAdOffErrorCallback = (
         result: InterstitialAdOnErrorCallbackResult
     ) => void
-    /** 插屏广告加载事件的回调函数 */
-    type InterstitialAdOffLoadCallback = (res: GeneralCallbackResult) => void
-    /** 插屏广告关闭事件的回调函数 */
-    type InterstitialAdOnCloseCallback = (res: GeneralCallbackResult) => void
     /** 插屏错误事件的回调函数 */
     type InterstitialAdOnErrorCallback = (
         result: InterstitialAdOnErrorCallbackResult
     ) => void
-    /** 插屏广告加载事件的回调函数 */
-    type InterstitialAdOnLoadCallback = (res: GeneralCallbackResult) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type LoadFontFaceCompleteCallback = (
         result: LoadFontFaceCompleteCallbackResult
@@ -15751,6 +15671,7 @@ wx.writeBLECharacteristicValue({
     ) => void
     /** 开始监听数据包消息的事件的回调函数 */
     type OffListeningCallback = (res: GeneralCallbackResult) => void
+    type OffLoadCallback = (res: GeneralCallbackResult) => void
     /** mDNS 服务停止搜索的事件的回调函数 */
     type OffLocalServiceDiscoveryStopCallback = (
         res: GeneralCallbackResult
@@ -15864,6 +15785,7 @@ wx.writeBLECharacteristicValue({
     ) => void
     /** 回调函数 */
     type OnCameraFrameCallback = (result: OnCameraFrameCallbackResult) => void
+    type OnCanplayCallback = (res: GeneralCallbackResult) => void
     /** 已连接的设备请求读当前外围设备的特征值事件的回调函数 */
     type OnCharacteristicReadRequestCallback = (
         result: OnCharacteristicReadRequestCallbackResult
@@ -15884,6 +15806,7 @@ wx.writeBLECharacteristicValue({
     type OnDeviceMotionChangeCallback = (
         result: OnDeviceMotionChangeCallbackResult
     ) => void
+    type OnEndedCallback = (res: GeneralCallbackResult) => void
     /** 已录制完指定帧大小的文件事件的回调函数 */
     type OnFrameRecordedCallback = (
         result: OnFrameRecordedCallbackResult
@@ -15909,6 +15832,7 @@ wx.writeBLECharacteristicValue({
     ) => void
     /** 开始监听数据包消息的事件的回调函数 */
     type OnListeningCallback = (res: GeneralCallbackResult) => void
+    type OnLoadCallback = (res: GeneralCallbackResult) => void
     /** mDNS 服务停止搜索的事件的回调函数 */
     type OnLocalServiceDiscoveryStopCallback = (
         res: GeneralCallbackResult
@@ -15943,10 +15867,14 @@ wx.writeBLECharacteristicValue({
     type OnOpenCallback = (result: OnOpenCallbackResult) => void
     /** 小程序要打开的页面不存在事件的回调函数 */
     type OnPageNotFoundCallback = (result: OnPageNotFoundCallbackResult) => void
+    type OnPauseCallback = (res: GeneralCallbackResult) => void
+    type OnPlayCallback = (res: GeneralCallbackResult) => void
     /** 用户在系统音乐播放面板点击上一曲事件的回调函数 */
     type OnPrevCallback = (res: GeneralCallbackResult) => void
     /** 录音继续事件的回调函数 */
     type OnResumeCallback = (res: GeneralCallbackResult) => void
+    type OnSeekedCallback = (res: GeneralCallbackResult) => void
+    type OnSeekingCallback = (res: GeneralCallbackResult) => void
     /** WebSocket 连接关闭事件的回调函数 */
     type OnSocketCloseCallback = (
         result: SocketTaskOnCloseCallbackResult
@@ -15965,6 +15893,7 @@ wx.writeBLECharacteristicValue({
     type OnStartCallback = (res: GeneralCallbackResult) => void
     /** 系统主题改变事件的回调函数 */
     type OnThemeChangeCallback = (result: OnThemeChangeCallbackResult) => void
+    type OnTimeUpdateCallback = (res: GeneralCallbackResult) => void
     /** 未处理的 Promise 拒绝事件的回调函数 */
     type OnUnhandledRejectionCallback = (
         result: OnUnhandledRejectionCallbackResult
@@ -16113,12 +16042,6 @@ wx.writeBLECharacteristicValue({
     type ReaddirFailCallback = (result: ReaddirFailCallbackResult) => void
     /** 接口调用成功的回调函数 */
     type ReaddirSuccessCallback = (result: ReaddirSuccessCallbackResult) => void
-    /** 录音错误事件的回调函数 */
-    type RecorderManagerOnErrorCallback = (
-        result: UDPSocketOnErrorCallbackResult
-    ) => void
-    /** 录音暂停事件的回调函数 */
-    type RecorderManagerOnPauseCallback = (res: GeneralCallbackResult) => void
     /** 录音结束事件的回调函数 */
     type RecorderManagerOnStopCallback = (result: OnStopCallbackResult) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
@@ -16221,8 +16144,6 @@ wx.writeBLECharacteristicValue({
     type RewardedVideoAdOffErrorCallback = (
         result: RewardedVideoAdOnErrorCallbackResult
     ) => void
-    /** 激励视频广告加载事件的回调函数 */
-    type RewardedVideoAdOffLoadCallback = (res: GeneralCallbackResult) => void
     /** 用户点击 `关闭广告` 按钮的事件的回调函数 */
     type RewardedVideoAdOnCloseCallback = (
         result: RewardedVideoAdOnCloseCallbackResult
@@ -16231,8 +16152,6 @@ wx.writeBLECharacteristicValue({
     type RewardedVideoAdOnErrorCallback = (
         result: RewardedVideoAdOnErrorCallbackResult
     ) => void
-    /** 激励视频广告加载事件的回调函数 */
-    type RewardedVideoAdOnLoadCallback = (res: GeneralCallbackResult) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type RmdirCompleteCallback = (res: GeneralCallbackResult) => void
     /** 接口调用失败的回调函数 */
@@ -16552,10 +16471,6 @@ wx.writeBLECharacteristicValue({
     /** WebSocket 连接关闭事件的回调函数 */
     type SocketTaskOnCloseCallback = (
         result: SocketTaskOnCloseCallbackResult
-    ) => void
-    /** WebSocket 错误事件的回调函数 */
-    type SocketTaskOnErrorCallback = (
-        result: UDPSocketOnErrorCallbackResult
     ) => void
     /** WebSocket 接受到服务器的消息事件的回调函数 */
     type SocketTaskOnMessageCallback = (
@@ -16877,15 +16792,12 @@ wx.writeBLECharacteristicValue({
     type TranslateMarkerFailCallback = (res: GeneralCallbackResult) => void
     /** 接口调用成功的回调函数 */
     type TranslateMarkerSuccessCallback = (res: GeneralCallbackResult) => void
-    /** 关闭事件的回调函数 */
     type UDPSocketOffCloseCallback = (res: GeneralCallbackResult) => void
     /** 错误事件的回调函数 */
     type UDPSocketOffErrorCallback = (
         result: UDPSocketOnErrorCallbackResult
     ) => void
-    /** 关闭事件的回调函数 */
     type UDPSocketOnCloseCallback = (res: GeneralCallbackResult) => void
-    /** 错误事件的回调函数 */
     type UDPSocketOnErrorCallback = (
         result: UDPSocketOnErrorCallbackResult
     ) => void

@@ -43,6 +43,9 @@ App({
     expectType<string>(reason)
     expectType<Promise<any>>(promise)
   },
+  onThemeChange(res) {
+    expectType<'dark' | 'light'>(res.theme)
+  },
 })
 
 expectType<WechatMiniprogram.App.Instance<Record<string, any>>>(getApp())

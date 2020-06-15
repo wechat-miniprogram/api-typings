@@ -56,7 +56,7 @@
       ]
     },
     "interface-name": false,
-    "interface-over-type-literal": true,
+    "interface-over-type-literal": false,
     "no-angle-bracket-type-assertion": true,
     "no-arg": true,
     "no-conditional-assignment": true,

@@ -25,34 +25,55 @@ declare namespace WechatMiniprogram {
         type Instance<
             TData extends DataOption,
             TProperty extends PropertyOption,
-            TMethod extends Partial<MethodOption>
+            TMethod extends Partial<MethodOption>,
+            TCustomInstanceProperty extends IAnyObject = {}
         > = InstanceProperties &
             InstanceMethods<TData> &
-            TMethod & {
+            TMethod &
+            TCustomInstanceProperty & {
                 /** 组件数据，**包括内部数据和属性值** */
                 data: TData & PropertyOptionToData<TProperty>
                 /** 组件数据，**包括内部数据和属性值**（与 `data` 一致） */
                 properties: TData & PropertyOptionToData<TProperty>
             }
-        type TrivialInstance = Instance<IAnyObject, IAnyObject, IAnyObject>
-        type TrivialOption = Options<IAnyObject, IAnyObject, IAnyObject>
+        type TrivialInstance = Instance<
+            IAnyObject,
+            IAnyObject,
+            IAnyObject,
+            IAnyObject
+        >
+        type TrivialOption = Options<
+            IAnyObject,
+            IAnyObject,
+            IAnyObject,
+            IAnyObject
+        >
         type Options<
             TData extends DataOption,
             TProperty extends PropertyOption,
-            TMethod extends MethodOption
+            TMethod extends MethodOption,
+            TCustomInstanceProperty extends IAnyObject = {}
         > = Partial<Data<TData>> &
             Partial<Property<TProperty>> &
             Partial<Method<TMethod>> &
             Partial<OtherOption> &
             Partial<Lifetimes> &
-            ThisType<Instance<TData, TProperty, TMethod>>
+            ThisType<
+                Instance<TData, TProperty, TMethod, TCustomInstanceProperty>
+            >
         interface Constructor {
             <
                 TData extends DataOption,
                 TProperty extends PropertyOption,
-                TMethod extends MethodOption
+                TMethod extends MethodOption,
+                TCustomInstanceProperty extends IAnyObject = {}
             >(
-                options: Options<TData, TProperty, TMethod>
+                options: Options<
+                    TData,
+                    TProperty,
+                    TMethod,
+                    TCustomInstanceProperty
+                >
             ): string
         }
         type DataOption = Record<string, any>

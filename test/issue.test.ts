@@ -273,3 +273,74 @@ import WX = WechatMiniprogram
     },
   })
 }
+
+// https://github.com/wechat-miniprogram/api-typings/issues/133
+{
+  type IData = {
+    name: string,
+  }
+  type IProperty = {
+    id: typeof Number,
+  }
+  type IMethod = {
+    setJob(job: string): void,
+  }
+  type ICustomInstanceProperty = {
+    job: string,
+  }
+  Component<IData, IProperty, IMethod, ICustomInstanceProperty>({
+    properties: {
+      id: Number,
+    },
+
+    data: {
+      name: '',
+    },
+
+    methods: {
+      setJob(job) {
+        this.job = job
+        expectType<string>(this.job)
+      },
+    },
+  })
+}
+
+// https://github.com/wechat-miniprogram/api-typings/issues/134
+{
+  const ctx = wx.createMapContext('map')
+  ctx.getRegion({
+    success(res) {
+      expectType<number>(res.southwest.longitude)
+      expectType<number>(res.southwest.latitude)
+      expectType<number>(res.northeast.longitude)
+      expectType<number>(res.northeast.latitude)
+    },
+  })
+}
+
+// https://github.com/wechat-miniprogram/api-typings/issues/135
+{
+  App({
+    onThemeChange(res) {
+      expectType<'light' | 'dark'>(res.theme)
+    },
+  })
+}
+
+// https://github.com/wechat-miniprogram/api-typings/issues/136
+{
+  Page({
+    onAddToFavorites(res) {
+      if (res.webviewUrl) {
+        // webview 页面返回 webviewUrl
+        expectType<string>(res.webviewUrl)
+      }
+      return {
+        title: '自定义标题',
+        imageUrl: 'http://demo.png',
+        query: 'name=xxx&age=xxx',
+      }
+    },
+  })
+}
