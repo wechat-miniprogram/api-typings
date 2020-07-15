@@ -20,14 +20,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ***************************************************************************** */
 
-/////////////////////
-///// WX Cloud Apis
-/////////////////////
-
-/**
- * Common interfaces and types
- */
-
 interface IAPIError {
     errMsg: string
 }
@@ -126,6 +118,9 @@ interface WxCloud {
     ): Promise<ICloud.DeleteFileResult>
 
     database: (config?: ICloudConfig) => DB.Database
+
+    CloudID: ICloud.ICloudIDConstructor
+    CDN: ICloud.ICDNConstructor
 }
 
 declare namespace ICloud {
@@ -203,6 +198,34 @@ declare namespace ICloud {
 
     interface DeleteFileParam extends ICloudAPIParam<DeleteFileResult> {
         fileList: string[]
+    }
+    // === end ===
+
+    // === API: CloudID ===
+    abstract class CloudID {
+        constructor(cloudID: string)
+    }
+
+    interface ICloudIDConstructor {
+        new (cloudId: string): CloudID
+        (cloudId: string): CloudID
+    }
+    // === end ===
+
+    // === API: CDN ===
+    abstract class CDN {
+        target: string | ArrayBuffer | ICDNFilePathSpec
+        constructor(target: string | ArrayBuffer | ICDNFilePathSpec)
+    }
+
+    interface ICDNFilePathSpec {
+        type: 'filePath'
+        filePath: string
+    }
+
+    interface ICDNConstructor {
+        new (options: string | ArrayBuffer | ICDNFilePathSpec): CDN
+        (options: string | ArrayBuffer | ICDNFilePathSpec): CDN
     }
     // === end ===
 }
