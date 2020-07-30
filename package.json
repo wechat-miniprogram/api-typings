@@ -1,6 +1,6 @@
 {
   "name": "miniprogram-api-typings",
-  "version": "2.12.0",
+  "version": "3.0.0",
   "beta": "true",
   "description": "Type definitions for APIs of Wechat Mini Program in TypeScript",
   "main": "./index.d.ts",
@@ -32,7 +32,6 @@
   "files": [
     "LICENSE",
     "CHANGELOG.md",
-    "VERSIONS.md",
     "README.md",
     "README-en.md",
     "index.d.ts",

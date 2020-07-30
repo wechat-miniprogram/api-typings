@@ -1,3 +1,7 @@
+## 2020-07-30 v3.0.0
+- 由于基础库接口基本向前兼容，不再与基础库保持版本同步
+- 更新 API 定义到 2.12.0
+
 ## 2020-06-15 v2.11.0-1
 - 该版本继续合并了一部分完全相同的 interface / callback，是一个 **破坏性改动**，原本字面上引用了这些 interface / callback 的代码可能会报错。
 - 为 `Component` 构造器增加第四个泛型，以允许在自定义组件上挂载自定义的字段 ([#133](https://github.com/wechat-miniprogram/api-typings/issues/133))

@@ -2,6 +2,7 @@
 
 > [English version](./README-en.md)
 
+[![已在 DefinitelyTyped 发布](https://img.shields.io/npm/v/@types/wechat-miniprogram?label=%40types)](https://www.npmjs.com/package/@types/wechat-miniprogram)
 [![已在 NPM 发布](https://img.shields.io/npm/v/miniprogram-api-typings.svg?style=flat)](https://www.npmjs.com/package/miniprogram-api-typings)
 [![MIT 协议](https://img.shields.io/github/license/wechat-miniprogram/api-typings.svg)](https://github.com/wechat-miniprogram/api-typings)
 [![Travis CI 测试状况](https://travis-ci.org/wechat-miniprogram/api-typings.svg?branch=master)](https://travis-ci.org/wechat-miniprogram/api-typings)
@@ -10,21 +11,25 @@
 
 ## 安装
 
-通过 npm 安装：
+### 通过 DefinitelyTyped
 ```bash
-# 安装对应最新基础库的定义文件
+npm install @types/wechat-miniprogram
+```
+
+或：
+
+### 通过独立 npm 包
+```bash
 npm install miniprogram-api-typings
 ```
+安装后手动导入：
+- `import 'miniprogram-api-typings';`
 
-或者通过版本号指定一个基础库版本：
-```bash
-# 安装对应基础库版本 2.4.1 的定义文件
-npm install miniprogram-api-typings@2.4.1
-```
+或者在 ts 配置中指定：
+- 在 `tsconfig.json` 中指定 `types: ["miniprogram-api-typings"]`
 
-## 版本
-
-所有可用的版本和对应的基础库版本，参考 [VERSIONS.md](https://github.com/wechat-miniprogram/api-typings/blob/master/VERSIONS.md)
+或者通过 [三斜杠指令](https://www.tslang.cn/docs/handbook/triple-slash-directives.html) 引用：
+- `/// <reference path="node_modules/miniprogram-api-typings/index.d.ts" />`
 
 ## 更新日志
 

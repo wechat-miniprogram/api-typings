@@ -2,6 +2,7 @@
 
 > [中文版本](./README.md)
 
+[![Published on DefinitelyTyped](https://img.shields.io/npm/v/@types/wechat-miniprogram?label=%40types)](https://www.npmjs.com/package/@types/wechat-miniprogram)
 [![Published on NPM](https://img.shields.io/npm/v/miniprogram-api-typings.svg?style=flat)](https://www.npmjs.com/package/miniprogram-api-typings)
 [![MIT License](https://img.shields.io/github/license/wechat-miniprogram/api-typings.svg)](https://github.com/wechat-miniprogram/api-typings)
 [![Travis CI Test Status](https://travis-ci.org/wechat-miniprogram/api-typings.svg?branch=master)](https://travis-ci.org/wechat-miniprogram/api-typings)
@@ -10,22 +11,25 @@ Type definitions for APIs of Wechat Mini Program in TypeScript
 
 ## Install
 
-Install by NPM:
+### By DefinitelyTyped
 ```bash
-# install definitions for latest base library
+npm install @types/wechat-miniprogram
+```
+
+or:
+
+### By standalone npm package
+```bash
 npm install miniprogram-api-typings
 ```
+Manually import it after installed:
+- `import 'miniprogram-api-typings';`
 
-or specify a base library version:
+Or specify types in typescript config:
+- 在 `tsconfig.json` 中指定 `types: ["miniprogram-api-typings"]`
 
-```bash
-# install definitions for base library version 2.4.1
-npm install miniprogram-api-typings@2.4.1
-```
-
-## Versions
-
-Check out all available versions corresponding to base library version in [VERSIONS.md](https://github.com/wechat-miniprogram/api-typings/blob/master/VERSIONS.md)
+Or reference by [Triple-Slash Directives](https://www.typescriptlang.org/docs/handbook/triple-slash-directives.html):
+- `/// <reference path="node_modules/miniprogram-api-typings/index.d.ts" />`
 
 ## Changelog
 
