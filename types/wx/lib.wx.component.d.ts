@@ -236,7 +236,7 @@ declare namespace WechatMiniprogram {
                 selector: string,
                 keyFrames: KeyFrame[],
                 duration: number,
-                callback: () => void
+                callback?: () => void
             ): void
             /**
              * 执行关键帧动画，详见[动画](https://developers.weixin.qq.com/miniprogram/dev/framework/view/animation.html)
@@ -262,8 +262,8 @@ declare namespace WechatMiniprogram {
              **/
             clearAnimation(
                 selector: string,
-                options: ClearAnimationOptions,
-                callback: () => void
+                options?: ClearAnimationOptions,
+                callback?: () => void
             ): void
             getOpenerEventChannel(): EventChannel
         }
