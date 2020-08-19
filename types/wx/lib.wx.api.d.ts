@@ -78,16 +78,6 @@ declare namespace WechatMiniprogram {
         cardList: AddCardResponseInfo[]
         errMsg: string
     }
-    interface AddCustomLayerOption {
-        /** 个性化图层id */
-        layerId: string
-        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
-        complete?: AddCustomLayerCompleteCallback
-        /** 接口调用失败的回调函数 */
-        fail?: AddCustomLayerFailCallback
-        /** 接口调用成功的回调函数 */
-        success?: AddCustomLayerSuccessCallback
-    }
     interface AddPhoneContactOption {
         /** 名字 */
         firstName: string
@@ -180,6 +170,10 @@ declare namespace WechatMiniprogram {
         manufacturerData?: ManufacturerData[]
         /** 要广播的serviceUuid列表 */
         serviceUuids?: string[]
+    }
+    /** animationData */
+    interface AnimationExportResult {
+        actions: IAnyObject[]
     }
     /** 动画效果 */
     interface AnimationOption {
@@ -2312,7 +2306,7 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
          *
          * 最低基础库： `2.6.0` */
         albumAuthorized: boolean
-        /** 设备性能等级（仅Android小游戏）。取值为：-2 或 0（该设备无法运行小游戏），-1（性能未知），>=1（设备性能值，该值越高，设备性能越好，目前最高不到50）
+        /** 设备性能等级（仅 Android）。取值为：-2 或 0（该设备无法运行小游戏），-1（性能未知），>=1（设备性能值，该值越高，设备性能越好，目前最高不到50）
          *
          * 最低基础库： `1.8.0` */
         benchmarkLevel: number
@@ -2415,7 +2409,7 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
          *
          * 最低基础库： `2.6.0` */
         albumAuthorized: boolean
-        /** 设备性能等级（仅Android小游戏）。取值为：-2 或 0（该设备无法运行小游戏），-1（性能未知），>=1（设备性能值，该值越高，设备性能越好，目前最高不到50）
+        /** 设备性能等级（仅 Android）。取值为：-2 或 0（该设备无法运行小游戏），-1（性能未知），>=1（设备性能值，该值越高，设备性能越好，目前最高不到50）
          *
          * 最低基础库： `1.8.0` */
         benchmarkLevel: number
@@ -2907,6 +2901,34 @@ innerAudioContext.onError((res) => {
         errCode: 1000 | 1001 | 1002 | 1003 | 1004 | 1005 | 1006 | 1007 | 1008
         /** 错误信息 */
         errMsg: string
+    }
+    interface Join1v1ChatOption {
+        /** 呼叫方信息 */
+        caller: VoIP1v1ChatUser
+        /** 接听方信息 */
+        listener: VoIP1v1ChatUser
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: Join1v1ChatCompleteCallback
+        /** 不允许切换到语音通话 */
+        disableSwitchVoice?: boolean
+        /** 接口调用失败的回调函数 */
+        fail?: Join1v1ChatFailCallback
+        /** 忽略自身版本不支持的情况 */
+        ignoreSelfVersion?: boolean
+        /** 忽略对方版本不支持的情况 */
+        ignoreTargetVersion?: boolean
+        /** 小窗样式 */
+        minWindowType?: number
+        /** 静音设置 */
+        muteConfig?: MuteConfig
+        /** 通话类型
+         *
+         * 可选值：
+         * - 'voice': 语音通话;
+         * - 'video': 视频通话; */
+        roomType?: 'voice' | 'video'
+        /** 接口调用成功的回调函数 */
+        success?: Join1v1ChatSuccessCallback
     }
     interface JoinVoIPChatOption {
         /** 小游戏内此房间/群聊的 ID。同一时刻传入相同 groupId 的用户会进入到同个实时语音房间。 */
@@ -4089,16 +4111,6 @@ innerAudioContext.onError((res) => {
         /** message 的大小，单位：字节 */
         size: number
     }
-    interface RemoveCustomLayerOption {
-        /** 个性化图层id */
-        layerId: string
-        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
-        complete?: RemoveCustomLayerCompleteCallback
-        /** 接口调用失败的回调函数 */
-        fail?: RemoveCustomLayerFailCallback
-        /** 接口调用成功的回调函数 */
-        success?: RemoveCustomLayerSuccessCallback
-    }
     interface RemoveFormatOption {
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: RemoveFormatCompleteCallback
@@ -4689,6 +4701,20 @@ innerAudioContext.onError((res) => {
         html?: string
         /** 接口调用成功的回调函数 */
         success?: SetContentsSuccessCallback
+    }
+    interface SetEnable1v1ChatOption {
+        /** 是否开启 */
+        enable: boolean
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: SetEnable1v1ChatCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: SetEnable1v1ChatFailCallback
+        /** 忽略自身版本不支持的情况 */
+        ignoreSelfVersion?: boolean
+        /** 小窗样式 */
+        minWindowType?: number
+        /** 接口调用成功的回调函数 */
+        success?: SetEnable1v1ChatSuccessCallback
     }
     interface SetEnableDebugOption {
         /** 是否打开调试 */
@@ -5859,6 +5885,14 @@ innerAudioContext.onError((res) => {
         /** 解码模式。0：按 pts 解码；1：以最快速度解码 */
         mode?: number
     }
+    interface VoIP1v1ChatUser {
+        /** 昵称 */
+        nickname: string
+        /** 小程序内 openid */
+        openid: string
+        /** 头像 */
+        headImage?: string
+    }
     /** 提供预设的 Wi-Fi 信息列表 */
     interface WifiData {
         /** Wi-Fi 的 BSSID */
@@ -6059,12 +6093,10 @@ innerAudioContext.onError((res) => {
         USER_DATA_PATH: string
     }
     interface Animation {
-        /** [Array.&lt;Object&gt; Animation.export()](https://developers.weixin.qq.com/miniprogram/dev/api/ui/animation/Animation.export.html)
+        /** [Object Animation.export()](https://developers.weixin.qq.com/miniprogram/dev/api/ui/animation/Animation.export.html)
          *
          * 导出动画队列。**export 方法每次调用后会清掉之前的动画操作。** */
-        export(): {
-            actions: IAnyObject[]
-        }
+        export(): AnimationExportResult
         /** [[Animation](https://developers.weixin.qq.com/miniprogram/dev/api/ui/animation/Animation.html) Animation.backgroundColor(string value)](https://developers.weixin.qq.com/miniprogram/dev/api/ui/animation/Animation.backgroundColor.html)
          *
          * 设置背景色 */
@@ -9087,6 +9119,42 @@ Page({
          * 最低基础库： `2.11.2` */
         transceive(option: TransceiveOption): void
     }
+    interface Join1v1ChatError {
+        /** 错误信息
+         *
+         * | 错误码 | 错误信息 | 说明 |
+         * | - | - | - |
+         * | -20000 | not open 1v1 Chat | 未开通双人通话 |
+         * | -20001 | device not support | 当前设备不支持 |
+         * | -20002 | on call | 正在通话中 |
+         * | -20003 | occupied by other miniprogram | 其它小程序正在通话中 |
+         * | -30000 | system error | 内部系统错误 |
+         * | -30001 | wechat has no camera authorization | 微信缺失相机权限 |
+         * | -30002 | wechat has no record authorization | 微信缺失录音权限 |
+         * | -30003 | miniprogram has no camera authorization | 小程序缺失相机权限 |
+         * | -30004 | miniprogram has no record authorization | 小程序缺失录音权限 |
+         * | -1 |  | 当前已在房间内 |
+         * | -2 |  | 录音设备被占用，可能是当前正在使用微信内语音通话或系统通话 |
+         * | -3 |  | 加入会话期间退出（可能是用户主动退出，或者退后台、来电等原因），因此加入失败 |
+         * | -1000 |  | 系统错误 | */ errMsg: string
+        /** 错误码
+         *
+         * | 错误码 | 错误信息 | 说明 |
+         * | - | - | - |
+         * | -20000 | not open 1v1 Chat | 未开通双人通话 |
+         * | -20001 | device not support | 当前设备不支持 |
+         * | -20002 | on call | 正在通话中 |
+         * | -20003 | occupied by other miniprogram | 其它小程序正在通话中 |
+         * | -30000 | system error | 内部系统错误 |
+         * | -30001 | wechat has no camera authorization | 微信缺失相机权限 |
+         * | -30002 | wechat has no record authorization | 微信缺失录音权限 |
+         * | -30003 | miniprogram has no camera authorization | 小程序缺失相机权限 |
+         * | -30004 | miniprogram has no record authorization | 小程序缺失录音权限 |
+         * | -1 |  | 当前已在房间内 |
+         * | -2 |  | 录音设备被占用，可能是当前正在使用微信内语音通话或系统通话 |
+         * | -3 |  | 加入会话期间退出（可能是用户主动退出，或者退后台、来电等原因），因此加入失败 |
+         * | -1000 |  | 系统错误 | */ errCode: number
+    }
     interface JoinVoIPChatError {
         /** 错误信息
          *
@@ -9274,12 +9342,6 @@ Page({
         ): void
     }
     interface MapContext {
-        /** [MapContext.addCustomLayer(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/map/MapContext.addCustomLayer.html)
-         *
-         * 添加个性化图层。
-         *
-         * 最低基础库： `2.12.0` */
-        addCustomLayer(option: AddCustomLayerOption): void
         /** [MapContext.getCenterLocation(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/map/MapContext.getCenterLocation.html)
          *
          * 获取当前地图中心的经纬度。返回的是 gcj02 坐标系，可以用于 [wx.openLocation()](https://developers.weixin.qq.com/miniprogram/dev/api/location/wx.openLocation.html) */
@@ -9320,12 +9382,6 @@ Page({
          *
          * 最低基础库： `1.2.0` */
         moveToLocation(option?: MoveToLocationOption): void
-        /** [MapContext.removeCustomLayer(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/map/MapContext.removeCustomLayer.html)
-         *
-         * 移除个性化图层。
-         *
-         * 最低基础库： `2.12.0` */
-        removeCustomLayer(option: RemoveCustomLayerOption): void
         /** [MapContext.setCenterOffset(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/map/MapContext.setCenterOffset.html)
          *
          * 设置地图中心点偏移，向后向下为增长，屏幕比例范围(0.25~0.75)，默认偏移为[0.5, 0.5]
@@ -12812,6 +12868,12 @@ wx.hideShareMenu({
         hideToast<TOption extends HideToastOption>(
             option?: TOption
         ): PromisifySuccessResult<TOption, HideToastOption>
+        /** [wx.join1v1Chat(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/voip/wx.join1v1Chat.html)
+         *
+         * 加入（创建）双人通话。使用前需先调用 [wx.setEnable1v1Chat](https://developers.weixin.qq.com/miniprogram/dev/api/media/voip/wx.setEnable1v1Chat.html) 开启双人通话。
+         *
+         * 最低基础库： `2.12.1` */
+        join1v1Chat(option: Join1v1ChatOption): void
         /** [wx.joinVoIPChat(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/voip/wx.joinVoIPChat.html)
          *
          * 加入 (创建) 实时语音通话，更多信息可见 [实时语音指南](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/voip-chat.html)
@@ -13358,7 +13420,7 @@ wx.notifyBLECharacteristicValueChange({
          * 最低基础库： `2.9.3` */
         offUserCaptureScreen(
             /** 用户主动截屏事件的回调函数 */
-            callback: (...args: any[]) => any
+            callback?: (...args: any[]) => any
         ): void
         /** [wx.offVoIPChatInterrupted(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/media/voip/wx.offVoIPChatInterrupted.html)
          *
@@ -14756,6 +14818,12 @@ wx.setClipboardData({
         setClipboardData<TOption extends SetClipboardDataOption>(
             option: TOption
         ): PromisifySuccessResult<TOption, SetClipboardDataOption>
+        /** [wx.setEnable1v1Chat(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/voip/wx.setEnable1v1Chat.html)
+         *
+         * 开启双人通话。设置 `enable` 为 `false` 时，无法拨打和接听呼叫。
+         *
+         * 最低基础库： `2.12.1` */
+        setEnable1v1Chat(option: SetEnable1v1ChatOption): void
         /** [wx.setEnableDebug(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/base/debug/wx.setEnableDebug.html)
 *
 * 设置是否打开调试开关。此开关对正式版也能生效。
@@ -15808,12 +15876,6 @@ wx.writeBLECharacteristicValue({
     /** 接口调用成功的回调函数 */
     type AddCardSuccessCallback = (result: AddCardSuccessCallbackResult) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
-    type AddCustomLayerCompleteCallback = (res: GeneralCallbackResult) => void
-    /** 接口调用失败的回调函数 */
-    type AddCustomLayerFailCallback = (res: GeneralCallbackResult) => void
-    /** 接口调用成功的回调函数 */
-    type AddCustomLayerSuccessCallback = (res: GeneralCallbackResult) => void
-    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type AddPhoneContactCompleteCallback = (res: GeneralCallbackResult) => void
     /** 接口调用失败的回调函数 */
     type AddPhoneContactFailCallback = (res: GeneralCallbackResult) => void
@@ -16647,6 +16709,12 @@ wx.writeBLECharacteristicValue({
         result: InterstitialAdOnErrorCallbackResult
     ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type Join1v1ChatCompleteCallback = (res: Join1v1ChatError) => void
+    /** 接口调用失败的回调函数 */
+    type Join1v1ChatFailCallback = (res: Join1v1ChatError) => void
+    /** 接口调用成功的回调函数 */
+    type Join1v1ChatSuccessCallback = (res: Join1v1ChatError) => void
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type JoinVoIPChatCompleteCallback = (res: JoinVoIPChatError) => void
     /** 接口调用失败的回调函数 */
     type JoinVoIPChatFailCallback = (res: JoinVoIPChatError) => void
@@ -17212,14 +17280,6 @@ wx.writeBLECharacteristicValue({
     /** 接口调用成功的回调函数 */
     type RedoSuccessCallback = (res: GeneralCallbackResult) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
-    type RemoveCustomLayerCompleteCallback = (
-        res: GeneralCallbackResult
-    ) => void
-    /** 接口调用失败的回调函数 */
-    type RemoveCustomLayerFailCallback = (res: GeneralCallbackResult) => void
-    /** 接口调用成功的回调函数 */
-    type RemoveCustomLayerSuccessCallback = (res: GeneralCallbackResult) => void
-    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type RemoveFormatCompleteCallback = (res: GeneralCallbackResult) => void
     /** 接口调用失败的回调函数 */
     type RemoveFormatFailCallback = (res: GeneralCallbackResult) => void
@@ -17457,6 +17517,12 @@ wx.writeBLECharacteristicValue({
     type SetContentsFailCallback = (res: GeneralCallbackResult) => void
     /** 接口调用成功的回调函数 */
     type SetContentsSuccessCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type SetEnable1v1ChatCompleteCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用失败的回调函数 */
+    type SetEnable1v1ChatFailCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用成功的回调函数 */
+    type SetEnable1v1ChatSuccessCallback = (res: GeneralCallbackResult) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type SetEnableDebugCompleteCallback = (res: GeneralCallbackResult) => void
     /** 接口调用失败的回调函数 */
