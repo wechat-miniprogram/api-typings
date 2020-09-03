@@ -180,7 +180,7 @@ declare namespace WechatMiniprogram {
             /** 自定义标题，即朋友圈列表页上显示的标题。默认值：当前小程序名称 */
             title?: string
             /** 自定义页面路径中携带的参数，如 `path?a=1&b=2` 的 “?” 后面部分 默认值：当前页面路径携带的参数 */
-            query?: string
+            query?: Record<string, string>
             /** 自定义图片路径，可以是本地文件路径、代码包文件路径或者网络图片路径。支持 PNG 及 JPG。显示图片长宽比是 1:1。默认值：默认使用小程序 Logo*/
             imageUrl?: string
         }
