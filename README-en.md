@@ -45,6 +45,8 @@ Both PR and issue are welcomed for definitions of pages (`Page`), custom compone
 
 - [Baran](https://github.com/baranwang)
 - [MinLiang Zeng](https://github.com/zenml/)
+- [Garfield Lee](https://github.com/Garfield550)
+- [Mr.Hope](https://github.com/Mister-Hope)
 
 ### Automated tests
 

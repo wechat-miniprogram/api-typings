@@ -45,6 +45,8 @@ API 的定义文件（`lib.wx.api.d.ts`）是随 [文档](https://developers.wei
 
 - [Baran](https://github.com/baranwang)
 - [MinLiang Zeng](https://github.com/zenml/)
+- [Garfield Lee](https://github.com/Garfield550)
+- [Mr.Hope](https://github.com/Mister-Hope)
 
 ### 测试
 
