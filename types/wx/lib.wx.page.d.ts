@@ -100,6 +100,14 @@ declare namespace WechatMiniprogram {
                 /** 分享发起来源参数 */
                 options: IShareAppMessageOption
             ): ICustomShareContent | void
+            /**
+              * 监听右上角菜单“分享到朋友圈”按钮的行为，并自定义分享内容
+              *
+              * 本接口为 Beta 版本，暂只在 Android 平台支持，详见 [分享到朋友圈 (Beta)](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/share-timeline.html)
+              *
+              * 基础库 2.11.3 开始支持，低版本需做兼容处理。
+             */
+            onShareTimeline(): ICustomTimelineContent | void
             /** 页面滚动触发事件的处理函数
              *
              * 监听用户滑动页面事件。
@@ -165,6 +173,15 @@ declare namespace WechatMiniprogram {
             /** 转发路径，必须是以 / 开头的完整路径。默认值：当前页面 path */
             path?: string
             /** 自定义图片路径，可以是本地文件路径、代码包文件路径或者网络图片路径。支持PNG及JPG。显示图片长宽比是 5:4，最低基础库： `1.5.0`。默认值：使用默认截图 */
+            imageUrl?: string
+        }
+
+        interface ICustomTimelineContent {
+            /** 自定义标题，即朋友圈列表页上显示的标题。默认值：当前小程序名称 */
+            title?: string
+            /** 自定义页面路径中携带的参数，如 `path?a=1&b=2` 的 “?” 后面部分 默认值：当前页面路径携带的参数 */
+            query?: Record<string, string>
+            /** 自定义图片路径，可以是本地文件路径、代码包文件路径或者网络图片路径。支持 PNG 及 JPG。显示图片长宽比是 1:1。默认值：默认使用小程序 Logo*/
             imageUrl?: string
         }
 
