@@ -223,3 +223,17 @@ Page({
     }
   },
 })
+
+Page({
+  data: { a: '123' },
+  onShow() {
+    expectType<() => number>(this.fn)
+  },
+  fn() {
+    const a: number = 1
+    return a
+  },
+  onShareAppMessage(): WechatMiniprogram.Page.ICustomShareContent {
+    return { title: this.data.a, imageUrl: '', path: '' }
+  },
+})

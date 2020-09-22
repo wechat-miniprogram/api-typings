@@ -101,6 +101,20 @@ Component({
   },
 })
 
+Component({
+  methods: {
+    f() {
+      this.triggerEvent('someEvent', {
+        a: 'test',
+        b: 123,
+        c: {
+          t: 'test',
+        },
+      })
+    },
+  },
+})
+
 expectError(
   Component({
     custom: 1,
