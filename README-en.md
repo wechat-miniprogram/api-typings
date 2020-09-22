@@ -26,7 +26,7 @@ Manually import it after installed:
 - `import 'miniprogram-api-typings';`
 
 Or specify types in typescript config:
-- 在 `tsconfig.json` 中指定 `types: ["miniprogram-api-typings"]`
+- Specify `types: ["miniprogram-api-typings"]` in `tsconfig.json`
 
 Or reference by [Triple-Slash Directives](https://www.typescriptlang.org/docs/handbook/triple-slash-directives.html):
 - `/// <reference path="node_modules/miniprogram-api-typings/index.d.ts" />`
