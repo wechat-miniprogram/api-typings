@@ -2,7 +2,8 @@ import { expectType } from 'tsd'
 
 /// <reference path="./computed.test.d.ts" />
 
-(Component as ComputedComponent)({
+const ComputedComponent = Component as ComputedComponent
+ComputedComponent({
   properties: {
     a: String,
   },
@@ -23,7 +24,13 @@ import { expectType } from 'tsd'
   },
 })
 
-Behavior({
+type IMethods = {
+  _setData: WechatMiniprogram.Component.InstanceMethods<{}>['setData'],
+}
+type ICustomProperty = {
+  _originalSetData: WechatMiniprogram.Component.InstanceMethods<{}>['setData'],
+}
+Behavior<{}, {}, IMethods, ICustomProperty>({
   lifetimes: {
     created() {
       this._originalSetData = this.setData

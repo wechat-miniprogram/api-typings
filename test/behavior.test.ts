@@ -1,4 +1,4 @@
-import { expectType, expectError } from 'tsd'
+import { expectType } from 'tsd'
 
 expectType<string>(Behavior({}))
 
@@ -31,7 +31,7 @@ Behavior({
   attached() {},
   methods: {
     myBehaviorMethod() {
-      expectError(this.created())
+      expectType<never>(this.created)
       expectType<string>(this.data.text)
       expectType<string>(this.properties.text)
       expectType<number>(this.data.max)
