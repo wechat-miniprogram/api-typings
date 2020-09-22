@@ -101,13 +101,14 @@ declare namespace WechatMiniprogram {
                 options: IShareAppMessageOption
             ): ICustomShareContent | void
             /**
-              * 监听右上角菜单“分享到朋友圈”按钮的行为，并自定义分享内容
-              *
-              * 本接口为 Beta 版本，暂只在 Android 平台支持，详见 [分享到朋友圈 (Beta)](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/share-timeline.html)
-              *
-              * 基础库 2.11.3 开始支持，低版本需做兼容处理。
+             * 监听右上角菜单“分享到朋友圈”按钮的行为，并自定义分享内容
+             *
+             * 本接口为 Beta 版本，暂只在 Android 平台支持，详见 [分享到朋友圈 (Beta)](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/share-timeline.html)
+             *
+             * 基础库 2.11.3 开始支持，低版本需做兼容处理。
              */
             onShareTimeline(): ICustomTimelineContent | void
+
             /** 页面滚动触发事件的处理函数
              *
              * 监听用户滑动页面事件。
