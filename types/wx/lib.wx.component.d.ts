@@ -25,10 +25,12 @@ declare namespace WechatMiniprogram.Component {
         TData extends DataOption,
         TProperty extends PropertyOption,
         TMethod extends Partial<MethodOption>,
-        TCustomInstanceProperty extends IAnyObject = Record<string, never>
+        TCustomInstanceProperty extends IAnyObject = {},
+        TIsPage extends boolean = false
     > = InstanceProperties &
         InstanceMethods<TData> &
         TMethod &
+        (TIsPage extends true ? Page.ILifetime : {}) &
         TCustomInstanceProperty & {
             /** 组件数据，**包括内部数据和属性值** */
             data: TData & PropertyOptionToData<TProperty>
@@ -46,21 +48,37 @@ declare namespace WechatMiniprogram.Component {
         TData extends DataOption,
         TProperty extends PropertyOption,
         TMethod extends MethodOption,
-        TCustomInstanceProperty extends IAnyObject = Record<string, never>
+        TCustomInstanceProperty extends IAnyObject = {},
+        TIsPage extends boolean = false
     > = Partial<Data<TData>> &
         Partial<Property<TProperty>> &
-        Partial<Method<TMethod>> &
+        Partial<Method<TMethod, TIsPage>> &
         Partial<OtherOption> &
         Partial<Lifetimes> &
-        ThisType<Instance<TData, TProperty, TMethod, TCustomInstanceProperty>>
+        ThisType<
+            Instance<
+                TData,
+                TProperty,
+                TMethod,
+                TCustomInstanceProperty,
+                TIsPage
+            >
+        >
     interface Constructor {
         <
             TData extends DataOption,
             TProperty extends PropertyOption,
             TMethod extends MethodOption,
-            TCustomInstanceProperty extends IAnyObject = Record<string, never>
+            TCustomInstanceProperty extends IAnyObject = {},
+            TIsPage extends boolean = false
         >(
-            options: Options<TData, TProperty, TMethod, TCustomInstanceProperty>
+            options: Options<
+                TData,
+                TProperty,
+                TMethod,
+                TCustomInstanceProperty,
+                TIsPage
+            >
         ): string
     }
     type DataOption = Record<string, any>
@@ -75,9 +93,9 @@ declare namespace WechatMiniprogram.Component {
         /** 组件的对外属性，是属性名到属性设置的映射表 */
         properties: P
     }
-    interface Method<M extends MethodOption> {
+    interface Method<M extends MethodOption, TIsPage extends boolean = false> {
         /** 组件的方法，包括事件响应函数和任意的自定义方法，关于事件响应函数的使用，参见 [组件间通信与事件](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/events.html) */
-        methods: M
+        methods: M & (TIsPage extends true ? Partial<Page.ILifetime> : {})
     }
     type PropertyType =
         | StringConstructor

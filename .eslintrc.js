@@ -15,31 +15,14 @@ module.exports = {
         '@typescript-eslint/ban-ts-comment': ['off'],
         '@typescript-eslint/adjacent-overload-signatures': ['error'],
         '@typescript-eslint/ban-types': ['error', {
+            extendDefaults: true,
             types: {
-                Object: {
-                    message: 'Avoid using the `Object` type. Did you mean `object`?',
-                    fixWith: 'object'
-                },
-                Function: {
-                    message: 'Avoid using the `Function` type. Prefer a specific function type, like `() => void`.',
-                    fixWith: 'function'
-                },
-                Boolean: {
-                    message: 'Avoid using the `Boolean` type. Did you mean `boolean`?',
-                    fixWith: 'boolean'
-                },
-                Number: {
-                    message: 'Avoid using the `Number` type. Did you mean `number`?',
-                    fixWith: 'number'
-                },
-                String: {
-                    message: 'Avoid using the `String` type. Did you mean `string`?',
-                    fixWith: 'string'
-                },
-                Symbol: {
-                    message: 'Avoid using the `Symbol` type. Did you mean `symbol`?',
-                    fixWith: 'symbol'
-                },
+                /**
+                 * we are using `{}` as noop, such as:
+                 * `type A<P> = B & (P extends Q ? C : {})`
+                 * gets `B & C` when `P extends Q` and `B` otherwise
+                 */
+                '{}': false
             }
         }],
         '@typescript-eslint/member-delimiter-style': ['error', {

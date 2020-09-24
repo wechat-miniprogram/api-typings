@@ -412,3 +412,45 @@ Component({
     },
   },
 })
+
+Component<{}, {}, { fn(): void }>({
+  methods: {
+    fn() {
+      expectError(this.notExists)
+    },
+  },
+})
+
+{
+  const data = {
+    a: 1,
+    b: '',
+  }
+  const properties = {
+    c: String,
+    d: {
+      type: Number,
+      value: 4,
+    },
+  }
+  Component<
+    typeof data,
+    typeof properties,
+    /* methods= */{ fn(): string },
+    /* customProperties= */{},
+    /* isPage= */true
+  >({
+    data,
+    properties,
+    methods: {
+      onLoad(q) {
+        expectType<string[]>(Object.keys(q))
+      },
+      fn() {
+        expectType<() => (void | Promise<void>)>(this.onShow)
+        expectError(this.notExists)
+        return 'test'
+      },
+    },
+  })
+}

@@ -5842,7 +5842,7 @@ innerAudioContext.onError((res) => {
         complete?: UpdateShareMenuCompleteCallback
         /** 接口调用失败的回调函数 */
         fail?: UpdateShareMenuFailCallback
-        /** 是否是私密消息。详见 [小程序私密消息](#)
+        /** 是否是私密消息。详见 [小程序私密消息](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/share/private-message.html)
          *
          * 最低基础库： `2.13.0` */
         isPrivateMessage?: boolean
@@ -11654,7 +11654,7 @@ wx.addCard({
         ): PromisifySuccessResult<TOption, AddPhoneContactOption>
         /** [wx.authPrivateMessage(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/share/wx.authPrivateMessage.html)
 *
-* 验证私密消息。用法详情见 [小程序私密消息使用指南](#)
+* 验证私密消息。用法详情见 [小程序私密消息使用指南](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/share/private-message.html)
 *
 * **示例代码**
 *
