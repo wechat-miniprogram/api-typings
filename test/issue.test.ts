@@ -344,3 +344,31 @@ import WX = WechatMiniprogram
     },
   })
 }
+
+// https://github.com/wechat-miniprogram/api-typings/issues/154
+{
+  wx.requestPayment({
+    timeStamp: '',
+    nonceStr: '',
+    package: '',
+    signType: 'MD5',
+    paySign: '',
+  })
+  wx.requestPayment({
+    timeStamp: '',
+    nonceStr: '',
+    package: '',
+    signType: 'RSA',
+    paySign: '',
+  })
+}
+
+// https://github.com/wechat-miniprogram/api-typings/issues/157
+{
+  wx.saveFile({
+    tempFilePath: '',
+    success(res) {
+      expectType<string>(res.savedFilePath)
+    }
+  })
+}

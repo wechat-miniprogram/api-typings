@@ -246,15 +246,25 @@ declare namespace WechatMiniprogram {
         /** 接口调用成功的回调函数 */
         success?: AuthPrivateMessageSuccessCallback
     }
+    interface AuthPrivateMessageSuccessCallbackResult {
+        /** 经过加密的activityId，解密后可得到原始的activityId。若解密后得到的activityId可以与开发者后台的活动id对应上则验证通过，否则表明valid字段不可靠（被篡改） 详细见[加密数据解密算法](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/signature.html) */
+        encryptedData: string
+        /** 错误信息 */
+        errMsg: string
+        /** 加密算法的初始向量，详细见[加密数据解密算法](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/signature.html) */
+        iv: string
+        /** 验证是否通过 */
+        valid: boolean
+    }
     /** 用户授权设置信息，详情参考[权限](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/authorize.html) */
     interface AuthSetting {
-        /** 是否授权通讯地址，对应接口 [wx.chooseAddress](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/address/wx.chooseAddress.html) */
+        /** 是否授权通讯地址，已取消此项授权，会默认返回true */
         'scope.address'?: boolean
         /** 是否授权摄像头，对应[[camera](https://developers.weixin.qq.com/miniprogram/dev/component/camera.html)](https://developers.weixin.qq.com/miniprogram/dev/component/camera.html) 组件 */
         'scope.camera'?: boolean
-        /** 是否授权获取发票，对应接口 [wx.chooseInvoice](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/invoice/wx.chooseInvoice.html) */
+        /** 是否授权获取发票，已取消此项授权，会默认返回true */
         'scope.invoice'?: boolean
-        /** 是否授权发票抬头，对应接口 [wx.chooseInvoiceTitle](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/invoice/wx.chooseInvoiceTitle.html) */
+        /** 是否授权发票抬头，已取消此项授权，会默认返回true */
         'scope.invoiceTitle'?: boolean
         /** 是否授权录音功能，对应接口 [wx.startRecord](https://developers.weixin.qq.com/miniprogram/dev/api/media/recorder/wx.startRecord.html) */
         'scope.record'?: boolean
@@ -1642,12 +1652,7 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         /** 要存储的文件路径 (本地路径) */
         filePath?: string
         /** 接口调用成功的回调函数 */
-        success?: FileSystemManagerSaveFileSuccessCallback
-    }
-    interface FileSystemManagerSaveFileSuccessCallbackResult {
-        /** 存储后的文件路径 (本地路径) */
-        savedFilePath: string
-        errMsg: string
+        success?: SaveFileSuccessCallback
     }
     /** 视频帧数据，若取不到则返回 null。当缓冲区为空的时候可能暂停取不到数据。 */
     interface FrameDataOptions {
@@ -3120,6 +3125,11 @@ innerAudioContext.onError((res) => {
         /** 节点布局区域的上边界 */
         top?: number
     }
+    /** MediaAudioPlayer 实例，可通过 [wx.createMediaAudioPlayer](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/wx.createMediaAudioPlayer.html) 接口获取实例。 */
+    interface MediaAudioPlayer {
+        /** 音量。范围 0~1。默认为 1 */
+        volume: number
+    }
     /** 本地临时文件列表 */
     interface MediaFile {
         /** 视频的时间长度 */
@@ -4334,7 +4344,7 @@ innerAudioContext.onError((res) => {
         nonceStr: string
         /** 统一下单接口返回的 prepay_id 参数值，提交格式如：prepay_id=*** */
         package: string
-        /** 签名，具体签名方案参见 [小程序支付接口文档](https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=7_7&index=3) */
+        /** 签名，具体见微信支付文档 */
         paySign: string
         /** 时间戳，从 1970 年 1 月 1 日 00:00:00 至今的秒数，即当前的时间 */
         timeStamp: string
@@ -4342,12 +4352,13 @@ innerAudioContext.onError((res) => {
         complete?: RequestPaymentCompleteCallback
         /** 接口调用失败的回调函数 */
         fail?: RequestPaymentFailCallback
-        /** 签名算法
+        /** 签名算法，应与后台下单时的值一致
          *
          * 可选值：
-         * - 'MD5': MD5;
-         * - 'HMAC-SHA256': HMAC-SHA256; */
-        signType?: 'MD5' | 'HMAC-SHA256'
+         * - 'MD5': 仅在 v2 版本接口适用;
+         * - 'HMAC-SHA256': 仅在 v2 版本接口适用;
+         * - 'RSA': 仅在 v3 版本接口适用; */
+        signType?: 'MD5' | 'HMAC-SHA256' | 'RSA'
         /** 接口调用成功的回调函数 */
         success?: RequestPaymentSuccessCallback
     }
@@ -4534,6 +4545,11 @@ innerAudioContext.onError((res) => {
          * - 'fail permission denied, open "${filePath}"': 指定的 filePath 路径没有写权限;
          * - 'fail no such file or directory "${dirPath}"': 上级目录不存在;
          * - 'fail the maximum size of the file storage limit is exceeded': 存储空间不足; */
+        errMsg: string
+    }
+    interface SaveFileSuccessCallbackResult {
+        /** 存储后的文件路径 (本地路径) */
+        savedFilePath: string
         errMsg: string
     }
     interface SaveFileToDiskOption {
@@ -5973,7 +5989,7 @@ innerAudioContext.onError((res) => {
         direction?: 0 | 90 | -90
     }
     interface VideoDecoderStartOption {
-        /** 需要解码的视频源文件，只支持本地路径 */
+        /** 需要解码的视频源文件。基础库 2.13.0 以下的版本只支持本地路径。 2.13.0 开始支持 http:// 和 https:// 协议的远程路径。 */
         source: string
         /** 解码模式。0：按 pts 解码；1：以最快速度解码 */
         mode?: number
@@ -6157,12 +6173,7 @@ innerAudioContext.onError((res) => {
         /** 接口调用失败的回调函数 */
         fail?: WxSaveFileFailCallback
         /** 接口调用成功的回调函数 */
-        success?: WxSaveFileSuccessCallback
-    }
-    interface WxSaveFileSuccessCallbackResult {
-        /** 存储后的文件路径 (本地路径) */
-        savedFilePath: number
-        errMsg: string
+        success?: SaveFileSuccessCallback
     }
     interface WxStartRecordOption {
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
@@ -9525,6 +9536,38 @@ Page({
          * 最低基础库： `1.2.0` */
         translateMarker(option: TranslateMarkerOption): void
     }
+    interface MediaAudioPlayer {
+        /** [Promise MediaAudioPlayer.addAudioSource([VideoDecoder](https://developers.weixin.qq.com/miniprogram/dev/api/media/video-decoder/VideoDecoder.html) source)](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/MediaAudioPlayer.addAudioSource.html)
+         *
+         * 添加音频源 */
+        addAudioSource(
+            /** [VideoDecoder](https://developers.weixin.qq.com/miniprogram/dev/api/media/video-decoder/VideoDecoder.html)
+             *
+             * 视频解码器实例。作为音频源添加到音频播放器中 */
+            source: VideoDecoder
+        ): Promise<any>
+        /** [Promise MediaAudioPlayer.destroy()](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/MediaAudioPlayer.destroy.html)
+         *
+         * 销毁播放器 */
+        destroy(): Promise<any>
+        /** [Promise MediaAudioPlayer.removeAudioSource([VideoDecoder](https://developers.weixin.qq.com/miniprogram/dev/api/media/video-decoder/VideoDecoder.html) source)](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/MediaAudioPlayer.removeAudioSource.html)
+         *
+         * 移除音频源 */
+        removeAudioSource(
+            /** [VideoDecoder](https://developers.weixin.qq.com/miniprogram/dev/api/media/video-decoder/VideoDecoder.html)
+             *
+             * 视频解码器实例 */
+            source: VideoDecoder
+        ): Promise<any>
+        /** [Promise MediaAudioPlayer.start()](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/MediaAudioPlayer.start.html)
+         *
+         * 启动播放器 */
+        start(): Promise<any>
+        /** [Promise MediaAudioPlayer.stop()](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/MediaAudioPlayer.stop.html)
+         *
+         * 停止播放器 */
+        stop(): Promise<any>
+    }
     interface MediaContainer {
         /** [MediaContainer.addTrack([MediaTrack](https://developers.weixin.qq.com/miniprogram/dev/api/media/video-processing/MediaTrack.html) track)](https://developers.weixin.qq.com/miniprogram/dev/api/media/video-processing/MediaContainer.addTrack.html)
          *
@@ -11183,7 +11226,7 @@ try {
         ): CanvasContext
         /** [[DownloadTask](https://developers.weixin.qq.com/miniprogram/dev/api/network/download/DownloadTask.html) wx.downloadFile(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/network/download/wx.downloadFile.html)
 *
-* 下载文件资源到本地。客户端直接发起一个 HTTPS GET 请求，返回文件的本地临时路径 (本地路径)，单次下载允许的最大文件为 50MB。使用前请注意阅读[相关说明](https://developers.weixin.qq.com/miniprogram/dev/framework/ability/network.html)。
+* 下载文件资源到本地。客户端直接发起一个 HTTPS GET 请求，返回文件的本地临时路径 (本地路径)，单次下载允许的最大文件为 200MB。使用前请注意阅读[相关说明](https://developers.weixin.qq.com/miniprogram/dev/framework/ability/network.html)。
 *
 * 注意：请在服务端响应的 header 中指定合理的 `Content-Type` 字段，以保证客户端正确处理文件类型。
 *
@@ -11281,6 +11324,46 @@ logger.warn({str: 'hello world'}, 'warn log', 100, [1, 2, 3])
             /** 在自定义组件下，当前组件实例的this，以操作组件内 [map](https://developers.weixin.qq.com/miniprogram/dev/component/map.html) 组件 */
             component?: Component.TrivialInstance | Page.TrivialInstance
         ): MapContext
+        /** [[MediaAudioPlayer](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/MediaAudioPlayer.html) wx.createMediaAudioPlayer()](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/wx.createMediaAudioPlayer.html)
+*
+* 创建媒体音频播放器对象 [MediaAudioPlayer](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/MediaAudioPlayer.html) 对象，可用于播放视频解码器 [VideoDecoder](https://developers.weixin.qq.com/miniprogram/dev/api/media/video-decoder/VideoDecoder.html) 输出的音频。
+*
+* **示例代码**
+*
+*
+* ```js
+  // 创建视频解码器，具体参数见 createVideoDecoder 文档
+  const videoDecoder = wx.createVideoDecoder()
+  // 创建媒体音频播放器
+  const mediaAudioPlayer = wx.createMediaAudioPlayer()
+  // 启动视频解码器
+  videoDecoder.start()
+  // 启动播放器
+  mediaAudioPlayer.start().then(() => {
+    // 添加播放器音频来源
+    mediaAudioPlayer.addAudioSource(videoDecoder).then(res => {
+      videoDecoder.getFrameData() // 建议在 requestAnimationFrame 里获取每一帧视频数据
+      console.log(res)
+    })
+
+    // 移除播放器音频来源
+    mediaAudioPlaye.removeAudioSource(videoDecoder).then()
+    // 停止播放器
+    mediaAudioPlaye.stop().then()
+    // 销毁播放器
+    mediaAudioPlaye.destroy().then()
+    // 设置播放器音量
+    mediaAudioPlayer.volume = 0.5
+  })
+```
+*
+* **完整demo（小游戏）**
+*
+*
+* - https://developers.weixin.qq.com/s/SF2duHmb7MjI
+*
+* 最低基础库： `2.13.0` */
+        createMediaAudioPlayer(): MediaAudioPlayer
         /** [[MediaContainer](https://developers.weixin.qq.com/miniprogram/dev/api/media/video-processing/MediaContainer.html) wx.createMediaContainer()](https://developers.weixin.qq.com/miniprogram/dev/api/media/video-processing/wx.createMediaContainer.html)
          *
          * 创建音视频处理容器，最终可将容器中的轨道合成一个视频
@@ -11505,18 +11588,18 @@ wx.chooseImage({
         createVideoDecoder(): VideoDecoder
         /** [[Worker](https://developers.weixin.qq.com/miniprogram/dev/api/worker/Worker.html) wx.createWorker(string scriptPath, object options)](https://developers.weixin.qq.com/miniprogram/dev/api/worker/wx.createWorker.html)
 *
-* 创建一个 [Worker 线程](https://developers.weixin.qq.com/miniprogram/dev/framework/workers.html)。目前限制最多只能创建一个 Worker，创建下一个 Worker 前请先调用 [Worker.terminate](https://developers.weixin.qq.com/miniprogram/dev/api/worker/Worker.terminate.html)
+* 创建一个 [Worker 线程](https://developers.weixin.qq.com/miniprogram/dev/framework/workers.html)
 *
 * **示例代码**
 *
 *
 * ```js
 // 创建普通worker
-wx.createWorker('/workers/index.js')
+wx.createWorker('workers/index.js')
 ```
 * ```js
 // 创建实验worker
-wx.createWorker('/workers/index.js', {
+wx.createWorker('workers/index.js', {
   useExperimentalWorker: true
 })
 ```
@@ -12517,7 +12600,7 @@ wx.getGroupEnterInfo({
 * **Tips**
 *
 *
-* - 如需要展示群名称，小程序可以使用[开放数据组件](https://developers.weixin.qq.com/miniprogram/dev/component/open-ability/open-data.html)
+* - 如需要展示群名称，小程序可以使用[开放数据组件](https://developers.weixin.qq.com/miniprogram/dev/component/open-data.html)
 * - 小游戏可以通过 `wx.getGroupInfo` 接口获取群名称
 *
 * 最低基础库： `2.10.4` */
@@ -12749,7 +12832,7 @@ wx.getSetting({
 * **Tips**
 *
 *
-* - 如需要展示群名称，小程序可以使用[开放数据组件](https://developers.weixin.qq.com/miniprogram/dev/component/open-ability/open-data.html)
+* - 如需要展示群名称，小程序可以使用[开放数据组件](https://developers.weixin.qq.com/miniprogram/dev/component/open-data.html)
 * - 小游戏可以通过 `wx.getGroupInfo` 接口获取群名称
 *
 * 最低基础库： `1.1.0` */
@@ -14733,7 +14816,13 @@ wx.reportPerformance(1101, 680, 'custom')
         ): void
         /** [wx.requestPayment(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/payment/wx.requestPayment.html)
 *
-* 发起微信支付。了解更多信息，请查看[微信支付接口文档](https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=7_3&index=1)
+* 发起微信支付。了解更多信息，可以参考 [微信支付开发文档](https://pay.weixin.qq.com/wiki/doc/apiv3/wxpay/pages/api.shtml)：
+* - [开发指引](https://pay.weixin.qq.com/wiki/doc/apiv3/wxpay/pay/transactions/chapter2_3.shtml)
+* - [下单接口](https://pay.weixin.qq.com/wiki/doc/apiv3/wxpay/pay/transactions/chapter3_2.shtml)
+* - [支付接口](https://pay.weixin.qq.com/wiki/doc/apiv3/wxpay/pay/transactions/chapter3_12.shtml)
+* - 旧版本 (v2)
+*   - [开发指引](https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=7_3&index=1)
+*   - [支付接口](https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=7_7&index=3)
 *
 * **示例代码**
 *
@@ -16158,7 +16247,7 @@ wx.writeBLECharacteristicValue({
     type AuthPrivateMessageFailCallback = (res: GeneralCallbackResult) => void
     /** 接口调用成功的回调函数 */
     type AuthPrivateMessageSuccessCallback = (
-        res: GeneralCallbackResult
+        result: AuthPrivateMessageSuccessCallbackResult
     ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type AuthorizeCompleteCallback = (res: GeneralCallbackResult) => void
@@ -16515,10 +16604,6 @@ wx.writeBLECharacteristicValue({
     /** 接口调用失败的回调函数 */
     type FileSystemManagerSaveFileFailCallback = (
         result: SaveFileFailCallbackResult
-    ) => void
-    /** 接口调用成功的回调函数 */
-    type FileSystemManagerSaveFileSuccessCallback = (
-        result: FileSystemManagerSaveFileSuccessCallbackResult
     ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type GetAtqaCompleteCallback = (res: GeneralCallbackResult) => void
@@ -17694,6 +17779,10 @@ wx.writeBLECharacteristicValue({
     type RmdirSuccessCallback = (res: GeneralCallbackResult) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type SaveFileCompleteCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用成功的回调函数 */
+    type SaveFileSuccessCallback = (
+        result: SaveFileSuccessCallbackResult
+    ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type SaveFileToDiskCompleteCallback = (res: GeneralCallbackResult) => void
     /** 接口调用失败的回调函数 */
@@ -18501,10 +18590,6 @@ wx.writeBLECharacteristicValue({
     type WxRemoveSavedFileFailCallback = (res: GeneralCallbackResult) => void
     /** 接口调用失败的回调函数 */
     type WxSaveFileFailCallback = (res: GeneralCallbackResult) => void
-    /** 接口调用成功的回调函数 */
-    type WxSaveFileSuccessCallback = (
-        result: WxSaveFileSuccessCallbackResult
-    ) => void
     /** 接口调用成功的回调函数 */
     type WxStartRecordSuccessCallback = (
         result: StartRecordSuccessCallbackResult

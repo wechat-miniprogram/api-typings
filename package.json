@@ -1,6 +1,6 @@
 {
   "name": "miniprogram-api-typings",
-  "version": "3.1.1",
+  "version": "3.1.2",
   "beta": "true",
   "description": "Type definitions for APIs of Wechat Mini Program in TypeScript",
   "main": "./index.d.ts",
@@ -26,7 +26,7 @@
     "@typescript-eslint/parser": "^4.1.1",
     "eslint": "^7.9.0",
     "tsd": "^0.11.0",
-    "typescript": "^3.9.7"
+    "typescript": "^4.0.3"
   },
   "tsd": {
     "directory": "test"
