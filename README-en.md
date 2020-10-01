@@ -1,4 +1,4 @@
-# Wechat Mini Program API Typings
+# Wechat-Mini-Program-API-Typings
 
 > [中文版本](./README.md)
 
@@ -7,7 +7,7 @@
 [![MIT License](https://img.shields.io/github/license/wechat-miniprogram/api-typings.svg)](https://github.com/wechat-miniprogram/api-typings)
 [![Travis CI Test Status](https://travis-ci.org/wechat-miniprogram/api-typings.svg?branch=master)](https://travis-ci.org/wechat-miniprogram/api-typings)
 
-Type definitions for APIs of Wechat Mini Program in TypeScript
+Type definitions for APIs of Wechat Mini Program in TypeScript.
 
 ## Install
 
@@ -18,7 +18,7 @@ npm install @types/wechat-miniprogram
 
 or:
 
-### By standalone npm package
+### By Standalone npm package
 ```bash
 npm install miniprogram-api-typings
 ```
