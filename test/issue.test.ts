@@ -372,3 +372,16 @@ import WX = WechatMiniprogram
     }
   })
 }
+
+// https://github.com/wechat-miniprogram/api-typings/issues/159
+{
+  Page({
+    onShareTimeline() {
+      return {
+        title: '',
+        query: '',
+        imageUrl: '',
+      }
+    },
+  })
+}
