@@ -1,3 +1,33 @@
+## 2020-10-28 v3.1.4
+- 更新 API 定义到 2.13.2
+- 为被废弃的接口增加了 `@deprecated` 标识
+
+## 2020-10-14 v3.1.3
+- 修复 `ICustomTimelineContent` 的 `query` 的类型
+
+## 2020-09-30 v3.1.2
+- 更新 API 定义到 2.13.1
+
+## 2020-09-24 v3.1.1
+- 更新 API 定义到 2.13.0
+- 改变了嵌套命名空间的写法
+- 支持 `Component` 的第五个泛型参数，用于将自定义组件作为页面根组件使用的情况
+
+## 2020-09-22 v3.1.0
+- 将代码风格检查从 tslint 迁移到 eslint
+
+## 2020-08-19 v3.0.2
+- 更新 API 定义
+- 合并 PR [#151](https://github.com/wechat-miniprogram/api-typings/pull/151), [#152](https://github.com/wechat-miniprogram/api-typings/pull/152)，补齐事件类型，补齐 `onShareTimeline`
+
+## 2020-08-19 v3.0.2
+- 更新 API 定义
+- 合并 PR [#124](https://github.com/wechat-miniprogram/api-typings/pull/124), [#145](https://github.com/wechat-miniprogram/api-typings/pull/145)，修复两个动画接口的问题
+
+## 2020-08-03 v3.0.1
+- 更新 API 定义
+- 修复某些取消监听的接口（`off`）的参数不为可选值的问题
+
 ## 2020-07-30 v3.0.0
 - 由于基础库接口基本向前兼容，不再与基础库保持版本同步
 - 更新 API 定义到 2.12.0
