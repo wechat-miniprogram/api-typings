@@ -1,6 +1,9 @@
 module.exports = {
     root: true,
     parser: '@typescript-eslint/parser',
+    parserOptions: {
+        project: './tsconfig.json'
+    },
     plugins: [
         '@typescript-eslint',
     ],
@@ -49,6 +52,7 @@ module.exports = {
         '@typescript-eslint/array-type': ['error', {
             default: 'array-simple',
             readonly: 'array-simple'
-        }]
+        }],
+        '@typescript-eslint/no-unnecessary-qualifier': ['error'],
     },
 }
