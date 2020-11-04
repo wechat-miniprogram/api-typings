@@ -3947,6 +3947,9 @@ innerAudioContext.onError((res) => {
         /** 接口调用成功的回调函数 */
         success?: PreviewMediaSuccessCallback
     }
+    interface RequireFunction {
+        (module: string): any
+    }
     interface ReLaunchOption {
         /** 需要跳转的应用内页面路径 (代码包路径)，路径后可以带参数。参数与路径之间使用?分隔，参数键与参数值用=相连，不同参数用&分隔；如 'path?key=value&key2=value2' */
         url: string
@@ -18671,7 +18674,7 @@ wx.writeBLECharacteristicValue({
 }
 declare const console: WechatMiniprogram.Console
 declare const wx: WechatMiniprogram.Wx
-declare function require(module: string): any
+declare const require: WechatMiniprogram.RequireFunction
 declare let module: { exports: any }
 declare let exports: any
 
