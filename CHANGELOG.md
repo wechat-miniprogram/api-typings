@@ -1,3 +1,6 @@
+## 2020-11-04 v3.1.6
+- 补齐 `requirePlugin` 和 `requireMiniProgram`
+
 ## 2020-10-29 v3.1.5
 - 更新 API 定义
 - 修复代码格式问题（`no-unnecessary-qualifier`）

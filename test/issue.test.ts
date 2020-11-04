@@ -385,3 +385,9 @@ import WX = WechatMiniprogram
     },
   })
 }
+
+// https://github.com/wechat-miniprogram/api-typings/issues/164
+{
+  requirePlugin('myPlugin')
+  requireMiniProgram()
+}
