@@ -78,6 +78,26 @@ declare namespace WechatMiniprogram {
         cardList: AddCardResponseInfo[]
         errMsg: string
     }
+    interface AddGroundOverlayOption {
+        /** 图片覆盖的经纬度范围 */
+        bounds: MapBounds
+        /** 图片图层 id */
+        id: string
+        /** 图片路径，支持网络图片、临时路径、代码包路径 */
+        src: string
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: AddGroundOverlayCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: AddGroundOverlayFailCallback
+        /** 图层透明度 */
+        opacity?: number
+        /** 接口调用成功的回调函数 */
+        success?: AddGroundOverlaySuccessCallback
+        /** 是否可见 */
+        visible?: boolean
+        /** 图层绘制顺序 */
+        zIndex?: number
+    }
     interface AddMarkersOption {
         /** 同传入 map 组件的 marker 属性 */
         markers: any[]
@@ -316,6 +336,14 @@ declare namespace WechatMiniprogram {
         read: boolean
         /** 该特征值是否支持 write 操作 */
         write: boolean
+    }
+    interface BLEPeripheralServerCloseOption {
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: SocketTaskCloseCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: SocketTaskCloseFailCallback
+        /** 接口调用成功的回调函数 */
+        success?: SocketTaskCloseSuccessCallback
     }
     /** 描述service的Object */
     interface BLEPeripheralService {
@@ -1679,6 +1707,14 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         /** 帧数据宽度 */
         width: number
     }
+    interface FromScreenLocationOption {
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: FromScreenLocationCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: FromScreenLocationFailCallback
+        /** 接口调用成功的回调函数 */
+        success?: FromScreenLocationSuccessCallback
+    }
     interface GetAtqaOption {
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: GetAtqaCompleteCallback
@@ -2275,6 +2311,10 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
          *
          * 最低基础库： `2.10.1` */
         subscriptionsSetting: SubscriptionsSetting
+        /** [AuthSetting](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/setting/AuthSetting.html)
+         *
+         * 在插件中调用时，当前宿主小程序的用户授权结果 */
+        miniprogramAuthSetting?: AuthSetting
         errMsg: string
     }
     interface GetShareInfoOption {
@@ -2970,6 +3010,14 @@ innerAudioContext.onError((res) => {
         /** 错误信息 */
         errMsg: string
     }
+    interface IsConnectedOption {
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: IsConnectedCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: IsConnectedFailCallback
+        /** 接口调用成功的回调函数 */
+        success?: IsConnectedSuccessCallback
+    }
     interface JoinVoIPChatOption {
         /** 小游戏内此房间/群聊的 ID。同一时刻传入相同 groupId 的用户会进入到同个实时语音房间。 */
         groupId: string
@@ -3101,6 +3149,13 @@ innerAudioContext.onError((res) => {
         manufacturerId: string
         /** 制造商信息 */
         manufacturerSpecificData?: ArrayBuffer
+    }
+    /** 图片覆盖的经纬度范围 */
+    interface MapBounds {
+        /** 东北角经纬度 */
+        northeast: MapPostion
+        /** 西南角经纬度 */
+        southwest: MapPostion
     }
     interface MapPostion {
         /** 纬度 */
@@ -3330,11 +3385,11 @@ innerAudioContext.onError((res) => {
     }
     interface NdefCloseOption {
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
-        complete?: CloseCompleteCallback
+        complete?: NdefCloseCompleteCallback
         /** 接口调用失败的回调函数 */
-        fail?: CloseFailCallback
+        fail?: NdefCloseFailCallback
         /** 接口调用成功的回调函数 */
-        success?: CloseSuccessCallback
+        success?: NdefCloseSuccessCallback
     }
     interface NodeCallbackResult {
         /** 节点对应的 Node 实例 */
@@ -3765,6 +3820,20 @@ innerAudioContext.onError((res) => {
         /** 接口调用成功的回调函数 */
         success?: OpenLocationSuccessCallback
     }
+    interface OpenMapAppOption {
+        /** 目的地名称 */
+        destination: string
+        /** 目的地纬度 */
+        latitude: number
+        /** 目的地经度 */
+        longitude: number
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: OpenMapAppCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: OpenMapAppFailCallback
+        /** 接口调用成功的回调函数 */
+        success?: OpenMapAppSuccessCallback
+    }
     interface OpenSettingOption {
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: OpenSettingCompleteCallback
@@ -4185,6 +4254,16 @@ innerAudioContext.onError((res) => {
         fail?: RemoveFormatFailCallback
         /** 接口调用成功的回调函数 */
         success?: RemoveFormatSuccessCallback
+    }
+    interface RemoveGroundOverlayOption {
+        /** 图片图层 id */
+        id: string
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: RemoveGroundOverlayCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: RemoveGroundOverlayFailCallback
+        /** 接口调用成功的回调函数 */
+        success?: RemoveGroundOverlaySuccessCallback
     }
     interface RemoveMarkersOption {
         /** marker 的 id 集合。 */
@@ -4804,6 +4883,8 @@ innerAudioContext.onError((res) => {
         mixWithOther?: boolean
         /** （仅在 iOS 生效）是否遵循静音开关，设置为 false 之后，即使是在静音模式下，也能播放声音 */
         obeyMuteSwitch?: boolean
+        /** true 代表用扬声器播放，false 代表听筒播放，默认值为 true。 */
+        speakerOn?: boolean
         /** 接口调用成功的回调函数 */
         success?: SetInnerAudioOptionSuccessCallback
     }
@@ -4974,9 +5055,23 @@ innerAudioContext.onError((res) => {
         zoom: number
         errMsg: string
     }
+    interface ShareToWeRunOption {
+        /** 运动数据列表 */
+        recordList: WxaSportRecord[]
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: ShareToWeRunCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: ShareToWeRunFailCallback
+        /** 接口调用成功的回调函数 */
+        success?: ShareToWeRunSuccessCallback
+    }
     interface ShowActionSheetOption {
         /** 按钮的文字数组，数组长度最大为 6 */
         itemList: string[]
+        /** 警示文案
+         *
+         * 最低基础库： `2.14.0` */
+        alertText?: string
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: ShowActionSheetCompleteCallback
         /** 接口调用失败的回调函数 */
@@ -5142,13 +5237,13 @@ innerAudioContext.onError((res) => {
         /** 一个数字值表示关闭连接的状态号，表示连接被关闭的原因。 */
         code?: number
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
-        complete?: CloseCompleteCallback
+        complete?: SocketTaskCloseCompleteCallback
         /** 接口调用失败的回调函数 */
-        fail?: CloseFailCallback
+        fail?: SocketTaskCloseFailCallback
         /** 一个可读的字符串，表示连接被关闭的原因。这个字符串必须是不长于 123 字节的 UTF-8 文本（不是字符）。 */
         reason?: string
         /** 接口调用成功的回调函数 */
-        success?: CloseSuccessCallback
+        success?: SocketTaskCloseSuccessCallback
     }
     interface SocketTaskOnCloseCallbackResult {
         /** 一个数字值表示关闭连接的状态号，表示连接被关闭的原因。 */
@@ -5688,6 +5783,21 @@ innerAudioContext.onError((res) => {
         /** 文本的宽度 */
         width: number
     }
+    interface ToScreenLocationOption {
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: ToScreenLocationCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: ToScreenLocationFailCallback
+        /** 接口调用成功的回调函数 */
+        success?: ToScreenLocationSuccessCallback
+    }
+    interface ToScreenLocationSuccessCallbackResult {
+        /** x 坐标值 */
+        x: number
+        /** y 坐标值 */
+        y: number
+        errMsg: string
+    }
     interface ToggleTorchOption {
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: ToggleTorchCompleteCallback
@@ -5816,6 +5926,26 @@ innerAudioContext.onError((res) => {
     interface UpdatableMessageFrontEndTemplateInfo {
         /** 参数列表 */
         parameterList: UpdatableMessageFrontEndParameter[]
+    }
+    interface UpdateGroundOverlayOption {
+        /** 图片覆盖的经纬度范围 */
+        bounds: MapBounds
+        /** 图片图层 id */
+        id: string
+        /** 图片路径，支持网络图片、临时路径、代码包路径 */
+        src: string
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: UpdateGroundOverlayCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: UpdateGroundOverlayFailCallback
+        /** 图层透明度 */
+        opacity?: number
+        /** 接口调用成功的回调函数 */
+        success?: UpdateGroundOverlaySuccessCallback
+        /** 是否可见 */
+        visible?: boolean
+        /** 图层绘制顺序 */
+        zIndex?: number
     }
     interface UpdateShareMenuOption {
         /** 动态消息的 activityId。通过 [updatableMessage.createActivityId](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/updatable-message/updatableMessage.createActivityId.html) 接口获取
@@ -6155,6 +6285,19 @@ innerAudioContext.onError((res) => {
         /** 接口调用成功的回调函数 */
         success?: WxStopRecordSuccessCallback
     }
+    /** 运动数据列表 */
+    interface WxaSportRecord {
+        /** 消耗卡路里 */
+        calorie: number
+        /** 运动距离 */
+        distance: number
+        /** 运动时长 */
+        time: number
+        /** 运动项目id */
+        typeId: string
+        /** 小程序app内跳转url */
+        url: string
+    }
     interface Animation {
         /** [Object Animation.export()](https://developers.weixin.qq.com/miniprogram/dev/api/ui/animation/Animation.export.html)
          *
@@ -6411,7 +6554,7 @@ innerAudioContext.onError((res) => {
          * 关闭当前服务端。
          *
          * 最低基础库： `2.10.3` */
-        close(option?: NdefCloseOption): void
+        close(option?: BLEPeripheralServerCloseOption): void
         /** [BLEPeripheralServer.offCharacteristicReadRequest(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-peripheral/BLEPeripheralServer.offCharacteristicReadRequest.html)
          *
          * 取消监听已连接的设备请求读当前外围设备的特征值事件
@@ -9225,6 +9368,12 @@ Page({
          *
          * 最低基础库： `2.11.2` */
         getMaxTransceiveLength(option?: GetMaxTransceiveLengthOption): void
+        /** [IsoDep.isConnected(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/device/nfc/IsoDep.isConnected.html)
+         *
+         * 检查是否已连接
+         *
+         * 最低基础库： `2.11.2` */
+        isConnected(option?: IsConnectedOption): void
         /** [IsoDep.setTimeout(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/device/nfc/IsoDep.setTimeout.html)
          *
          * 设置超时时间
@@ -9425,12 +9574,24 @@ Page({
         ): void
     }
     interface MapContext {
+        /** [MapContext.addGroundOverlay(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/map/MapContext.addGroundOverlay.html)
+         *
+         * 创建自定义图片图层，图片会随着地图缩放而缩放。
+         *
+         * 最低基础库： `2.14.0` */
+        addGroundOverlay(option: AddGroundOverlayOption): void
         /** [MapContext.addMarkers(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/map/MapContext.addMarkers.html)
          *
          * 添加 marker。
          *
          * 最低基础库： `2.13.0` */
         addMarkers(option: AddMarkersOption): void
+        /** [MapContext.fromScreenLocation(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/map/MapContext.fromScreenLocation.html)
+         *
+         * 获取屏幕上的点对应的经纬度，坐标原点为地图左上角。
+         *
+         * 最低基础库： `2.14.0` */
+        fromScreenLocation(option: FromScreenLocationOption): void
         /** [MapContext.getCenterLocation(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/map/MapContext.getCenterLocation.html)
          *
          * 获取当前地图中心的经纬度。返回的是 gcj02 坐标系，可以用于 [wx.openLocation()](https://developers.weixin.qq.com/miniprogram/dev/api/location/wx.openLocation.html) */
@@ -9527,6 +9688,18 @@ Page({
 *
 * 最低基础库： `2.13.0` */
         on(): void
+        /** [MapContext.openMapApp(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/map/MapContext.openMapApp.html)
+         *
+         * 拉起地图APP选择导航。
+         *
+         * 最低基础库： `2.14.0` */
+        openMapApp(option: OpenMapAppOption): void
+        /** [MapContext.removeGroundOverlay(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/map/MapContext.removeGroundOverlay.html)
+         *
+         * 移除自定义图片图层。
+         *
+         * 最低基础库： `2.14.0` */
+        removeGroundOverlay(option: RemoveGroundOverlayOption): void
         /** [MapContext.removeMarkers(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/map/MapContext.removeMarkers.html)
          *
          * 移除 marker。
@@ -9539,12 +9712,24 @@ Page({
          *
          * 最低基础库： `2.10.0` */
         setCenterOffset(option: SetCenterOffsetOption): void
+        /** [MapContext.toScreenLocation(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/map/MapContext.toScreenLocation.html)
+         *
+         * 获取经纬度对应的屏幕坐标，坐标原点为地图左上角。
+         *
+         * 最低基础库： `2.14.0` */
+        toScreenLocation(option: ToScreenLocationOption): void
         /** [MapContext.translateMarker(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/map/MapContext.translateMarker.html)
          *
          * 平移marker，带动画。
          *
          * 最低基础库： `1.2.0` */
         translateMarker(option: TranslateMarkerOption): void
+        /** [MapContext.updateGroundOverlay(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/map/MapContext.updateGroundOverlay.html)
+         *
+         * 更新自定义图片图层。
+         *
+         * 最低基础库： `2.14.0` */
+        updateGroundOverlay(option: UpdateGroundOverlayOption): void
     }
     interface MediaAudioPlayer {
         /** [Promise MediaAudioPlayer.addAudioSource([VideoDecoder](https://developers.weixin.qq.com/miniprogram/dev/api/media/video-decoder/VideoDecoder.html) source)](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/MediaAudioPlayer.addAudioSource.html)
@@ -9718,6 +9903,12 @@ Page({
          *
          * 最低基础库： `2.11.2` */
         getMaxTransceiveLength(option?: GetMaxTransceiveLengthOption): void
+        /** [MifareClassic.isConnected(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/device/nfc/MifareClassic.isConnected.html)
+         *
+         * 检查是否已连接
+         *
+         * 最低基础库： `2.11.2` */
+        isConnected(option?: IsConnectedOption): void
         /** [MifareClassic.setTimeout(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/device/nfc/MifareClassic.setTimeout.html)
          *
          * 设置超时时间
@@ -9750,6 +9941,12 @@ Page({
          *
          * 最低基础库： `2.11.2` */
         getMaxTransceiveLength(option?: GetMaxTransceiveLengthOption): void
+        /** [MifareUltralight.isConnected(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/device/nfc/MifareUltralight.isConnected.html)
+         *
+         * 检查是否已连接
+         *
+         * 最低基础库： `2.11.2` */
+        isConnected(option?: IsConnectedOption): void
         /** [MifareUltralight.setTimeout(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/device/nfc/MifareUltralight.setTimeout.html)
          *
          * 设置超时时间
@@ -9882,6 +10079,12 @@ Page({
          *
          * 最低基础库： `2.11.2` */
         connect(option?: ConnectOption): void
+        /** [Ndef.isConnected(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/device/nfc/Ndef.isConnected.html)
+         *
+         * 检查是否已连接
+         *
+         * 最低基础库： `2.11.2` */
+        isConnected(option?: IsConnectedOption): void
         /** [Ndef.offNdefMessage(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/device/nfc/Ndef.offNdefMessage.html)
          *
          * 取消监听 Ndef 消息
@@ -9938,6 +10141,12 @@ Page({
          *
          * 最低基础库： `2.11.2` */
         getSak(option?: GetSakOption): void
+        /** [NfcA.isConnected(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/device/nfc/NfcA.isConnected.html)
+         *
+         * 检查是否已连接
+         *
+         * 最低基础库： `2.11.2` */
+        isConnected(option?: IsConnectedOption): void
         /** [NfcA.setTimeout(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/device/nfc/NfcA.setTimeout.html)
          *
          * 设置超时时间
@@ -9970,6 +10179,12 @@ Page({
          *
          * 最低基础库： `2.11.2` */
         getMaxTransceiveLength(option?: GetMaxTransceiveLengthOption): void
+        /** [NfcB.isConnected(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/device/nfc/NfcB.isConnected.html)
+         *
+         * 检查是否已连接
+         *
+         * 最低基础库： `2.11.2` */
+        isConnected(option?: IsConnectedOption): void
         /** [NfcB.setTimeout(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/device/nfc/NfcB.setTimeout.html)
          *
          * 设置超时时间
@@ -10002,6 +10217,12 @@ Page({
          *
          * 最低基础库： `2.11.2` */
         getMaxTransceiveLength(option?: GetMaxTransceiveLengthOption): void
+        /** [NfcF.isConnected(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/device/nfc/NfcF.isConnected.html)
+         *
+         * 检查是否已连接
+         *
+         * 最低基础库： `2.11.2` */
+        isConnected(option?: IsConnectedOption): void
         /** [NfcF.setTimeout(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/device/nfc/NfcF.setTimeout.html)
          *
          * 设置超时时间
@@ -10034,6 +10255,12 @@ Page({
          *
          * 最低基础库： `2.11.2` */
         getMaxTransceiveLength(option?: GetMaxTransceiveLengthOption): void
+        /** [NfcV.isConnected(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/device/nfc/NfcV.isConnected.html)
+         *
+         * 检查是否已连接
+         *
+         * 最低基础库： `2.11.2` */
+        isConnected(option?: IsConnectedOption): void
         /** [NfcV.setTimeout(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/device/nfc/NfcV.setTimeout.html)
          *
          * 设置超时时间
@@ -15252,6 +15479,12 @@ wx.setEnableDebug({
          *
          * 设置 [InnerAudioContext](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/InnerAudioContext.html) 的播放选项。设置之后对当前小程序全局生效。
          *
+         * **注意**
+         *
+         *
+         * 为保证微信整体体验，speakerOn 为 true 时，客户端会忽略 mixWithOthers 参数的内容，强制与其它音频互斥
+         * 不支持在播放音频的过程中切换为扬声器播放，开发者如需切换可以先暂停当前播放的音频并记录下当前暂停的时间点，然后切换后重新从原来暂停的时间点开始播放音频
+         *
          * 最低基础库： `2.3.0` */
         setInnerAudioOption<TOption extends SetInnerAudioOption>(
             option: TOption
@@ -15476,6 +15709,12 @@ wx.getWifiList()
          * @deprecated 基础库版本 [2.11.0](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html) 起已废弃
          *  */
         setWindowSize(option: SetWindowSizeOption): void
+        /** [wx.shareToWeRun(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/werun/wx.shareToWeRun.html)
+         *
+         * 分享数据到微信运动。 */
+        shareToWeRun<TOption extends ShareToWeRunOption>(
+            option: TOption
+        ): PromisifySuccessResult<TOption, ShareToWeRunOption>
         /** [wx.showActionSheet(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/ui/interaction/wx.showActionSheet.html)
 *
 * 显示操作菜单
@@ -16294,6 +16533,12 @@ wx.writeBLECharacteristicValue({
     /** 接口调用成功的回调函数 */
     type AddCardSuccessCallback = (result: AddCardSuccessCallbackResult) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type AddGroundOverlayCompleteCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用失败的回调函数 */
+    type AddGroundOverlayFailCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用成功的回调函数 */
+    type AddGroundOverlaySuccessCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type AddMarkersCompleteCallback = (res: GeneralCallbackResult) => void
     /** 接口调用失败的回调函数 */
     type AddMarkersFailCallback = (res: GeneralCallbackResult) => void
@@ -16520,17 +16765,11 @@ wx.writeBLECharacteristicValue({
     /** 接口调用成功的回调函数 */
     type CloseBluetoothAdapterSuccessCallback = (res: BluetoothError) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
-    type CloseCompleteCallback = (res: GeneralCallbackResult) => void
-    /** 接口调用失败的回调函数 */
-    type CloseFailCallback = (res: GeneralCallbackResult) => void
-    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type CloseSocketCompleteCallback = (res: GeneralCallbackResult) => void
     /** 接口调用失败的回调函数 */
     type CloseSocketFailCallback = (res: GeneralCallbackResult) => void
     /** 接口调用成功的回调函数 */
     type CloseSocketSuccessCallback = (res: GeneralCallbackResult) => void
-    /** 接口调用成功的回调函数 */
-    type CloseSuccessCallback = (res: GeneralCallbackResult) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type CompressImageCompleteCallback = (res: GeneralCallbackResult) => void
     /** 接口调用失败的回调函数 */
@@ -16548,9 +16787,9 @@ wx.writeBLECharacteristicValue({
         result: CompressVideoSuccessCallbackResult
     ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
-    type ConnectCompleteCallback = (res: GeneralCallbackResult) => void
+    type ConnectCompleteCallback = (res: Nfcrwerror) => void
     /** 接口调用失败的回调函数 */
-    type ConnectFailCallback = (res: GeneralCallbackResult) => void
+    type ConnectFailCallback = (res: Nfcrwerror) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type ConnectSocketCompleteCallback = (res: GeneralCallbackResult) => void
     /** 接口调用失败的回调函数 */
@@ -16558,7 +16797,7 @@ wx.writeBLECharacteristicValue({
     /** 接口调用成功的回调函数 */
     type ConnectSocketSuccessCallback = (res: GeneralCallbackResult) => void
     /** 接口调用成功的回调函数 */
-    type ConnectSuccessCallback = (res: GeneralCallbackResult) => void
+    type ConnectSuccessCallback = (res: Nfcrwerror) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type ConnectWifiCompleteCallback = (res: WifiError) => void
     /** 接口调用失败的回调函数 */
@@ -16684,9 +16923,19 @@ wx.writeBLECharacteristicValue({
         result: SaveFileFailCallbackResult
     ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
-    type GetAtqaCompleteCallback = (res: GeneralCallbackResult) => void
+    type FromScreenLocationCompleteCallback = (
+        res: GeneralCallbackResult
+    ) => void
     /** 接口调用失败的回调函数 */
-    type GetAtqaFailCallback = (res: GeneralCallbackResult) => void
+    type FromScreenLocationFailCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用成功的回调函数 */
+    type FromScreenLocationSuccessCallback = (
+        result: GetCenterLocationSuccessCallbackResult
+    ) => void
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type GetAtqaCompleteCallback = (res: Nfcrwerror) => void
+    /** 接口调用失败的回调函数 */
+    type GetAtqaFailCallback = (res: Nfcrwerror) => void
     /** 接口调用成功的回调函数 */
     type GetAtqaSuccessCallback = (result: GetAtqaSuccessCallbackResult) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
@@ -16870,11 +17119,9 @@ wx.writeBLECharacteristicValue({
     /** 接口调用成功的回调函数 */
     type GetHCEStateSuccessCallback = (res: NFCError) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
-    type GetHistoricalBytesCompleteCallback = (
-        res: GeneralCallbackResult
-    ) => void
+    type GetHistoricalBytesCompleteCallback = (res: Nfcrwerror) => void
     /** 接口调用失败的回调函数 */
-    type GetHistoricalBytesFailCallback = (res: GeneralCallbackResult) => void
+    type GetHistoricalBytesFailCallback = (res: Nfcrwerror) => void
     /** 接口调用成功的回调函数 */
     type GetHistoricalBytesSuccessCallback = (
         result: GetHistoricalBytesSuccessCallbackResult
@@ -16896,13 +17143,9 @@ wx.writeBLECharacteristicValue({
         result: GetLocationSuccessCallbackResult
     ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
-    type GetMaxTransceiveLengthCompleteCallback = (
-        res: GeneralCallbackResult
-    ) => void
+    type GetMaxTransceiveLengthCompleteCallback = (res: Nfcrwerror) => void
     /** 接口调用失败的回调函数 */
-    type GetMaxTransceiveLengthFailCallback = (
-        res: GeneralCallbackResult
-    ) => void
+    type GetMaxTransceiveLengthFailCallback = (res: Nfcrwerror) => void
     /** 接口调用成功的回调函数 */
     type GetMaxTransceiveLengthSuccessCallback = (
         result: GetMaxTransceiveLengthSuccessCallbackResult
@@ -16932,9 +17175,9 @@ wx.writeBLECharacteristicValue({
         result: GetRotateSuccessCallbackResult
     ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
-    type GetSakCompleteCallback = (res: GeneralCallbackResult) => void
+    type GetSakCompleteCallback = (res: Nfcrwerror) => void
     /** 接口调用失败的回调函数 */
-    type GetSakFailCallback = (res: GeneralCallbackResult) => void
+    type GetSakFailCallback = (res: Nfcrwerror) => void
     /** 接口调用成功的回调函数 */
     type GetSakSuccessCallback = (result: GetSakSuccessCallbackResult) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
@@ -17169,6 +17412,12 @@ wx.writeBLECharacteristicValue({
         result: InterstitialAdOnErrorCallbackResult
     ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type IsConnectedCompleteCallback = (res: Nfcrwerror) => void
+    /** 接口调用失败的回调函数 */
+    type IsConnectedFailCallback = (res: Nfcrwerror) => void
+    /** 接口调用成功的回调函数 */
+    type IsConnectedSuccessCallback = (res: Nfcrwerror) => void
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type JoinVoIPChatCompleteCallback = (res: JoinVoIPChatError) => void
     /** 接口调用失败的回调函数 */
     type JoinVoIPChatFailCallback = (res: JoinVoIPChatError) => void
@@ -17274,6 +17523,12 @@ wx.writeBLECharacteristicValue({
     type NavigateToSuccessCallback = (
         result: NavigateToSuccessCallbackResult
     ) => void
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type NdefCloseCompleteCallback = (res: Nfcrwerror) => void
+    /** 接口调用失败的回调函数 */
+    type NdefCloseFailCallback = (res: Nfcrwerror) => void
+    /** 接口调用成功的回调函数 */
+    type NdefCloseSuccessCallback = (res: Nfcrwerror) => void
     /** 回调函数，在执行 `SelectorQuery.exec` 方法后，返回节点信息。 */
     type NodeCallback = (result: NodeCallbackResult) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
@@ -17622,6 +17877,12 @@ wx.writeBLECharacteristicValue({
     /** 接口调用成功的回调函数 */
     type OpenLocationSuccessCallback = (res: GeneralCallbackResult) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type OpenMapAppCompleteCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用失败的回调函数 */
+    type OpenMapAppFailCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用成功的回调函数 */
+    type OpenMapAppSuccessCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type OpenSettingCompleteCallback = (res: GeneralCallbackResult) => void
     /** 接口调用失败的回调函数 */
     type OpenSettingFailCallback = (res: GeneralCallbackResult) => void
@@ -17761,6 +18022,16 @@ wx.writeBLECharacteristicValue({
     type RemoveFormatFailCallback = (res: GeneralCallbackResult) => void
     /** 接口调用成功的回调函数 */
     type RemoveFormatSuccessCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type RemoveGroundOverlayCompleteCallback = (
+        res: GeneralCallbackResult
+    ) => void
+    /** 接口调用失败的回调函数 */
+    type RemoveGroundOverlayFailCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用成功的回调函数 */
+    type RemoveGroundOverlaySuccessCallback = (
+        res: GeneralCallbackResult
+    ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type RemoveMarkersCompleteCallback = (res: GeneralCallbackResult) => void
     /** 接口调用失败的回调函数 */
@@ -18090,11 +18361,11 @@ wx.writeBLECharacteristicValue({
     /** 接口调用成功的回调函数 */
     type SetTabBarStyleSuccessCallback = (res: GeneralCallbackResult) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
-    type SetTimeoutCompleteCallback = (res: GeneralCallbackResult) => void
+    type SetTimeoutCompleteCallback = (res: Nfcrwerror) => void
     /** 接口调用失败的回调函数 */
-    type SetTimeoutFailCallback = (res: GeneralCallbackResult) => void
+    type SetTimeoutFailCallback = (res: Nfcrwerror) => void
     /** 接口调用成功的回调函数 */
-    type SetTimeoutSuccessCallback = (res: GeneralCallbackResult) => void
+    type SetTimeoutSuccessCallback = (res: Nfcrwerror) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type SetTopBarTextCompleteCallback = (res: GeneralCallbackResult) => void
     /** 接口调用失败的回调函数 */
@@ -18119,6 +18390,12 @@ wx.writeBLECharacteristicValue({
     type SetZoomFailCallback = (res: GeneralCallbackResult) => void
     /** 接口调用成功的回调函数 */
     type SetZoomSuccessCallback = (result: SetZoomSuccessCallbackResult) => void
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type ShareToWeRunCompleteCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用失败的回调函数 */
+    type ShareToWeRunFailCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用成功的回调函数 */
+    type ShareToWeRunSuccessCallback = (res: GeneralCallbackResult) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type ShowActionSheetCompleteCallback = (res: GeneralCallbackResult) => void
     /** 接口调用失败的回调函数 */
@@ -18183,6 +18460,12 @@ wx.writeBLECharacteristicValue({
     type ShowToastFailCallback = (res: GeneralCallbackResult) => void
     /** 接口调用成功的回调函数 */
     type ShowToastSuccessCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type SocketTaskCloseCompleteCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用失败的回调函数 */
+    type SocketTaskCloseFailCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用成功的回调函数 */
+    type SocketTaskCloseSuccessCallback = (res: GeneralCallbackResult) => void
     /** WebSocket 连接关闭事件的回调函数 */
     type SocketTaskOnCloseCallback = (
         result: SocketTaskOnCloseCallbackResult
@@ -18240,11 +18523,11 @@ wx.writeBLECharacteristicValue({
         res: GeneralCallbackResult
     ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
-    type StartDiscoveryCompleteCallback = (res: GeneralCallbackResult) => void
+    type StartDiscoveryCompleteCallback = (res: Nfcrwerror) => void
     /** 接口调用失败的回调函数 */
-    type StartDiscoveryFailCallback = (res: GeneralCallbackResult) => void
+    type StartDiscoveryFailCallback = (res: Nfcrwerror) => void
     /** 接口调用成功的回调函数 */
-    type StartDiscoverySuccessCallback = (res: GeneralCallbackResult) => void
+    type StartDiscoverySuccessCallback = (res: Nfcrwerror) => void
     /** 接口调用失败的回调函数 */
     type StartFailCallback = (res: GeneralCallbackResult) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
@@ -18412,11 +18695,11 @@ wx.writeBLECharacteristicValue({
         res: GeneralCallbackResult
     ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
-    type StopDiscoveryCompleteCallback = (res: GeneralCallbackResult) => void
+    type StopDiscoveryCompleteCallback = (res: Nfcrwerror) => void
     /** 接口调用失败的回调函数 */
-    type StopDiscoveryFailCallback = (res: GeneralCallbackResult) => void
+    type StopDiscoveryFailCallback = (res: Nfcrwerror) => void
     /** 接口调用成功的回调函数 */
-    type StopDiscoverySuccessCallback = (res: GeneralCallbackResult) => void
+    type StopDiscoverySuccessCallback = (res: Nfcrwerror) => void
     /** 接口调用失败的回调函数 */
     type StopFailCallback = (res: GeneralCallbackResult) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
@@ -18520,15 +18803,23 @@ wx.writeBLECharacteristicValue({
         result: TakePhotoSuccessCallbackResult
     ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type ToScreenLocationCompleteCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用失败的回调函数 */
+    type ToScreenLocationFailCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用成功的回调函数 */
+    type ToScreenLocationSuccessCallback = (
+        result: ToScreenLocationSuccessCallbackResult
+    ) => void
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type ToggleTorchCompleteCallback = (res: GeneralCallbackResult) => void
     /** 接口调用失败的回调函数 */
     type ToggleTorchFailCallback = (res: GeneralCallbackResult) => void
     /** 接口调用成功的回调函数 */
     type ToggleTorchSuccessCallback = (res: GeneralCallbackResult) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
-    type TransceiveCompleteCallback = (res: GeneralCallbackResult) => void
+    type TransceiveCompleteCallback = (res: Nfcrwerror) => void
     /** 接口调用失败的回调函数 */
-    type TransceiveFailCallback = (res: GeneralCallbackResult) => void
+    type TransceiveFailCallback = (res: Nfcrwerror) => void
     /** 接口调用成功的回调函数 */
     type TransceiveSuccessCallback = (
         result: TransceiveSuccessCallbackResult
@@ -18570,6 +18861,16 @@ wx.writeBLECharacteristicValue({
     type UnzipFailCallback = (result: UnzipFailCallbackResult) => void
     /** 接口调用成功的回调函数 */
     type UnzipSuccessCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type UpdateGroundOverlayCompleteCallback = (
+        res: GeneralCallbackResult
+    ) => void
+    /** 接口调用失败的回调函数 */
+    type UpdateGroundOverlayFailCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用成功的回调函数 */
+    type UpdateGroundOverlaySuccessCallback = (
+        res: GeneralCallbackResult
+    ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type UpdateShareMenuCompleteCallback = (res: GeneralCallbackResult) => void
     /** 接口调用失败的回调函数 */
@@ -18643,11 +18944,11 @@ wx.writeBLECharacteristicValue({
     /** 接口调用成功的回调函数 */
     type WriteFileSuccessCallback = (res: GeneralCallbackResult) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
-    type WriteNdefMessageCompleteCallback = (res: GeneralCallbackResult) => void
+    type WriteNdefMessageCompleteCallback = (res: Nfcrwerror) => void
     /** 接口调用失败的回调函数 */
-    type WriteNdefMessageFailCallback = (res: GeneralCallbackResult) => void
+    type WriteNdefMessageFailCallback = (res: Nfcrwerror) => void
     /** 接口调用成功的回调函数 */
-    type WriteNdefMessageSuccessCallback = (res: GeneralCallbackResult) => void
+    type WriteNdefMessageSuccessCallback = (res: Nfcrwerror) => void
     /** 接口调用失败的回调函数 */
     type WxGetFileInfoFailCallback = (res: GeneralCallbackResult) => void
     /** 接口调用成功的回调函数 */

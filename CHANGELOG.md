@@ -1,3 +1,7 @@
+## 2020-11-13 v3.2.0
+- 更新 API 定义到 2.14.0
+- 补齐 NFC 接口的错误码
+
 ## 2020-11-04 v3.1.6
 - 补齐 `requirePlugin` 和 `requireMiniProgram`
 
