@@ -43,7 +43,7 @@ wx.startLocalServiceDiscovery({
 })
 wx.getSystemInfo({
   success(res) {
-    expectType<WechatMiniprogram.GetSystemInfoSuccessCallbackResult>(res)
+    expectType<WechatMiniprogram.SystemInfo>(res)
   },
 })
 wx.chooseLocation({
@@ -128,7 +128,7 @@ wx.startLocalServiceDiscovery({ serviceType: '' }).then(res => {
   expectType<WechatMiniprogram.GeneralCallbackResult>(res)
 })
 wx.getSystemInfo().then(res => {
-  expectType<WechatMiniprogram.GetSystemInfoSuccessCallbackResult>(res)
+  expectType<WechatMiniprogram.SystemInfo>(res)
 })
 wx.chooseLocation({}).then(res => {
   expectType<WechatMiniprogram.ChooseLocationSuccessCallbackResult>(res)
@@ -181,7 +181,7 @@ async () => {
   expectType<WechatMiniprogram.GeneralCallbackResult>(
     await wx.startLocalServiceDiscovery({ serviceType: '' }),
   )
-  expectType<WechatMiniprogram.GetSystemInfoSuccessCallbackResult>(
+  expectType<WechatMiniprogram.SystemInfo>(
     await wx.getSystemInfo(),
   )
   expectType<WechatMiniprogram.ChooseLocationSuccessCallbackResult>(

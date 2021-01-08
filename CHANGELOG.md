@@ -1,3 +1,7 @@
+## 2021-01-06 v3.2.1
+- 更新 API 定义到 2.14.1
+- 补齐 `virtualHost` ([#174](https://github.com/wechat-miniprogram/api-typings/issues/174))
+
 ## 2020-11-13 v3.2.0
 - 更新 API 定义到 2.14.0
 - 补齐 NFC 接口的错误码
