@@ -12,6 +12,7 @@
 ## 安装
 
 ### 通过 DefinitelyTyped
+
 ```bash
 npm install @types/wechat-miniprogram
 ```
@@ -19,16 +20,21 @@ npm install @types/wechat-miniprogram
 或：
 
 ### 通过独立 npm 包
+
 ```bash
 npm install miniprogram-api-typings
 ```
+
 安装后手动导入：
+
 - `import 'miniprogram-api-typings';`
 
 或者在 ts 配置中指定：
+
 - 在 `tsconfig.json` 中指定 `types: ["miniprogram-api-typings"]`
 
 或者通过 [三斜杠指令](https://www.tslang.cn/docs/handbook/triple-slash-directives.html) 引用：
+
 - `/// <reference path="node_modules/miniprogram-api-typings/index.d.ts" />`
 
 ## 更新日志
@@ -37,7 +43,7 @@ npm install miniprogram-api-typings
 
 ## 贡献
 
-API 的定义文件（`lib.wx.api.d.ts`）是随 [文档](https://developers.weixin.qq.com/miniprogram/dev/index.html) 一起自动生成的，如果发现了 API 接口的定义错误，请提一个 issue 给我们，关于 API 的 PR 将 __不会__ 被接受。
+API 的定义文件（`lib.wx.api.d.ts`）是随 [文档](https://developers.weixin.qq.com/miniprogram/dev/api/) 一起自动生成的，如果发现了 API 接口的定义错误，请提一个 issue 给我们，关于 API 的 PR 将 __不会__ 被接受。
 
 如果有针对页面（`Page`）、自定义组件（`Component`）等接口的 bug 和建议，欢迎 PR 或提一个 issue 给我们。非常感谢！
 
