@@ -1,73 +1,70 @@
-import { expectType } from 'tsd'
+import { expectType } from 'tsd';
 
 /// <reference path="./computed.test.d.ts" />
 
-const ComputedComponent = Component as ComputedComponent
+const ComputedComponent = Component as ComputedComponent;
 ComputedComponent({
-  properties: {
-    a: String,
-  },
-  data: {
-    b: {
-      c: 'test',
+    properties: {
+        a: String,
     },
-  },
-  computed: {
-    d() {
-      return 'test'
+    data: {
+        b: {
+            c: 'test',
+        },
     },
-  },
-  methods: {
-    f() {
-      expectType<string>(this.data.d)
+    computed: {
+        d() {
+            return 'test';
+        },
     },
-  },
-})
+    methods: {
+        f() {
+            expectType<string>(this.data.d);
+        },
+    },
+});
 
 type IMethods = {
-  _setData: WechatMiniprogram.Component.InstanceMethods<{}>['setData'],
-}
+    _setData: WechatMiniprogram.Component.InstanceMethods<{}>['setData'];
+};
 type ICustomProperty = {
-  _originalSetData: WechatMiniprogram.Component.InstanceMethods<{}>['setData'],
-}
+    _originalSetData: WechatMiniprogram.Component.InstanceMethods<{}>['setData'];
+};
 Behavior<{}, {}, IMethods, ICustomProperty>({
-  lifetimes: {
-    created() {
-      this._originalSetData = this.setData
-      this.setData = this._setData
+    lifetimes: {
+        created() {
+            this._originalSetData = this.setData;
+            this.setData = this._setData;
+        },
     },
-  },
-  definitionFilter(defFields: ComputedOptions) {
-    const computed = defFields.computed || {}
-    const computedKeys = Object.keys(computed)
-    const computedCache: Record<string, any> = {}
+    definitionFilter(defFields: ComputedOptions) {
+        const computed = defFields.computed || {};
+        const computedKeys = Object.keys(computed);
+        const computedCache: Record<string, any> = {};
 
-    const calcComputed = (scope: typeof defFields, insertToData?: boolean) => {
-      const needUpdate: Record<string, any> = {}
-      const data = (defFields.data = defFields.data || {})
+        const calcComputed = (scope: typeof defFields, insertToData?: boolean) => {
+            const needUpdate: Record<string, any> = {};
+            const data = (defFields.data = defFields.data || {});
 
-      for (const key of computedKeys) {
-        const value = computed[key].call(scope)
-        if (computedCache[key] !== value) {
-          needUpdate[key] = computedCache[key] = value
-        }
-        if (insertToData) data[key] = needUpdate[key]
-      }
+            for (const key of computedKeys) {
+                const value = computed[key].call(scope);
+                if (computedCache[key] !== value) {
+                    needUpdate[key] = computedCache[key] = value;
+                }
+                if (insertToData) data[key] = needUpdate[key];
+            }
 
-      return needUpdate
-    }
+            return needUpdate;
+        };
 
-    defFields.methods = defFields.methods || {}
-    defFields.methods._setData = function(
-      data: Record<string, any>,
-      callback?: () => void,
-    ) {
-      const originalSetData = this._originalSetData
-      originalSetData.call(this, data, callback)
-      const needUpdate = calcComputed(this)
-      originalSetData.call(this, needUpdate)
-    }
+        defFields.methods = defFields.methods || {};
+        defFields.methods._setData = function (data: Record<string, any>, callback?: () => void) {
+            const originalSetData = this._originalSetData;
+            originalSetData.call(this, data, callback);
+            const needUpdate = calcComputed(this);
+            originalSetData.call(this, needUpdate);
+        };
 
-    calcComputed(defFields, true)
-  },
-})
+        calcComputed(defFields, true);
+    },
+});

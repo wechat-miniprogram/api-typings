@@ -1,4 +1,4 @@
 {
-	"name": "miniprogram-api-typings",
-	"main": "index.d.ts"
+    "name": "miniprogram-api-typings",
+    "main": "index.d.ts"
 }

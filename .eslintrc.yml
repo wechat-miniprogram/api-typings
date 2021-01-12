@@ -1,0 +1,102 @@
+root: true
+
+env:
+    node: true
+    es6: true
+
+extends:
+    - 'eslint:recommended'
+    - prettier
+    - prettier/prettier
+
+ignorePatterns:
+    - node_modules/
+    - test/*.d.ts
+
+overrides:
+    - files:
+          - '*.ts'
+
+      extends:
+          - 'plugin:@typescript-eslint/eslint-recommended'
+          - 'plugin:@typescript-eslint/recommended'
+          - 'plugin:@typescript-eslint/recommended-requiring-type-checking'
+          - prettier/@typescript-eslint
+
+      plugins:
+          - '@typescript-eslint'
+
+      parser: '@typescript-eslint/parser'
+
+      parserOptions:
+          project:
+              - './tsconfig.json'
+
+      rules:
+          '@typescript-eslint/ban-ts-comment': off
+          '@typescript-eslint/ban-types':
+              - error
+              - extendDefaults: true
+                types:
+                    # we are using `{}` as noop, such as:
+                    # `type A<P> = B & (P extends Q ? C : {})`
+                    # gets `B & C` when `P extends Q` and `B` otherwise
+                    '{}': false
+
+          '@typescript-eslint/explicit-function-return-type':
+              - warn
+              - allowTypedFunctionExpressions: true
+
+          '@typescript-eslint/naming-convention':
+              - error
+              - selector: enum
+                format:
+                    - UPPER_CASE
+                leadingUnderscore: forbid
+                trailingUnderscore: forbid
+
+              - selector:
+                    - typeLike
+                format:
+                    - PascalCase
+                leadingUnderscore: forbid
+                trailingUnderscore: forbid
+
+          '@typescript-eslint/no-unsafe-member-access': warn
+
+          '@typescript-eslint/triple-slash-reference': off
+
+          # types files contain `any`
+          '@typescript-eslint/no-explicit-any': off
+
+          # types files contain 'unused vars'
+          '@typescript-eslint/no-unused-vars': off
+
+    - files:
+          - 'types/wx/lib.wx.api.d.ts'
+      rules:
+          '@typescript-eslint/no-empty-interface': off
+
+    - files:
+          - 'test/**/*.test.{j,t}s?(x)'
+
+      env:
+          jest: true
+
+      rules:
+          '@typescript-eslint/explicit-function-return-type':
+              - off
+          '@typescript-eslint/no-explicit-any':
+              - off
+          '@typescript-eslint/no-empty-function':
+              - off
+          '@typescript-eslint/no-floating-promises':
+              - off
+          '@typescript-eslint/no-unsafe-assignment':
+              - off
+          '@typescript-eslint/no-unsafe-call':
+              - off
+          '@typescript-eslint/no-unsafe-member-access':
+              - off
+          '@typescript-eslint/unbound-method':
+              - off
