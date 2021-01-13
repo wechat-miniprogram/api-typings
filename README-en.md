@@ -27,15 +27,15 @@ npm install miniprogram-api-typings
 
 Manually import it after installed:
 
-- `import 'miniprogram-api-typings';`
+-   `import 'miniprogram-api-typings';`
 
 Or specify types in typescript config:
 
-- Specify `types: ["miniprogram-api-typings"]` in `tsconfig.json`
+-   Specify `types: ["miniprogram-api-typings"]` in `tsconfig.json`
 
 Or reference by [Triple-Slash Directives](https://www.typescriptlang.org/docs/handbook/triple-slash-directives.html):
 
-- `/// <reference path="node_modules/miniprogram-api-typings/index.d.ts" />`
+-   `/// <reference path="node_modules/miniprogram-api-typings/index.d.ts" />`
 
 ## Changelog
 
@@ -43,16 +43,16 @@ See [CHANGELOG.md](https://github.com/wechat-miniprogram/api-typings/blob/master
 
 ## Contribution
 
-Definitions of Wechat APIs (`lib.wx.api.d.ts`) are auto-generated together with our [documentations](https://developers.weixin.qq.com/miniprogram/en/dev/api/), therefore PRs including that file will __not__ be merged. If you found some APIs defined wrongly, create an issue instead.
+Definitions of Wechat APIs (`lib.wx.api.d.ts`) are auto-generated together with our [documentations](https://developers.weixin.qq.com/miniprogram/en/dev/api/), therefore PRs including that file will **not** be merged. If you found some APIs defined wrongly, create an issue instead.
 
 Both PR and issue are welcomed for definitions of pages (`Page`), custom components (`Component`) and other else, since they are written manually. Help us improve this definition if you have any bug reports or suggestions! Thanks for contributing!
 
 ### Contributors
 
-- [Baran](https://github.com/baranwang)
-- [MinLiang Zeng](https://github.com/zenml/)
-- [Garfield Lee](https://github.com/Garfield550)
-- [Mr.Hope](https://github.com/Mister-Hope)
+-   [Baran](https://github.com/baranwang)
+-   [MinLiang Zeng](https://github.com/zenml/)
+-   [Garfield Lee](https://github.com/Garfield550)
+-   [Mr.Hope](https://github.com/Mister-Hope)
 
 ### Automated tests
 

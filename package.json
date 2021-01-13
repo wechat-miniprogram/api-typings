@@ -1,43 +1,54 @@
 {
-  "name": "miniprogram-api-typings",
-  "version": "3.2.1",
-  "beta": "true",
-  "description": "Type definitions for APIs of Wechat Mini Program in TypeScript",
-  "main": "./index.d.ts",
-  "types": "./index.d.ts",
-  "scripts": {
-    "test": "npm run tsd && npm run eslint",
-    "tsd": "tsd",
-    "eslint": "eslint --config .eslintrc.js types/**/*.ts"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/wechat-miniprogram/api-typings.git"
-  },
-  "author": "Wechat Miniprogram <wx-miniprogram@qq.com>",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/wechat-miniprogram/api-typings/issues"
-  },
-  "homepage": "https://github.com/wechat-miniprogram/api-typings#readme",
-  "dependencies": {},
-  "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^4.1.1",
-    "@typescript-eslint/parser": "^4.1.1",
-    "eslint": "^7.9.0",
-    "tsd": "^0.11.0",
-    "typescript": "^4.0.3"
-  },
-  "tsd": {
-    "directory": "test"
-  },
-  "files": [
-    "LICENSE",
-    "CHANGELOG.md",
-    "README.md",
-    "README-en.md",
-    "index.d.ts",
-    "typings.json",
-    "types/"
-  ]
+    "name": "miniprogram-api-typings",
+    "version": "3.2.1",
+    "beta": "true",
+    "description": "Type definitions for APIs of Wechat Mini Program in TypeScript",
+    "main": "./index.d.ts",
+    "types": "./index.d.ts",
+    "scripts": {
+        "lint": "prettier --check . && eslint --ext .js,.ts .",
+        "lint:fix": "prettier --check --write . && eslint --ext .js,.ts . --fix",
+        "test": "npm run tsd && npm run lint",
+        "tsd": "tsd"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/wechat-miniprogram/api-typings.git"
+    },
+    "author": "Wechat Miniprogram <wx-miniprogram@qq.com>",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/wechat-miniprogram/api-typings/issues"
+    },
+    "homepage": "https://github.com/wechat-miniprogram/api-typings#readme",
+    "dependencies": {},
+    "devDependencies": {
+        "@typescript-eslint/eslint-plugin": "^4.12.0",
+        "@typescript-eslint/parser": "^4.12.0",
+        "eslint": "^7.9.0",
+        "eslint-config-prettier": "7.1.0",
+        "eslint-plugin-prettier": "3.3.1",
+        "prettier": "^2.2.1",
+        "tsd": "^0.14.0",
+        "typescript": "^4.1.3"
+    },
+    "prettier": {
+        "arrowParens": "avoid",
+        "singleQuote": true,
+        "trailingComma": "all",
+        "tabWidth": 4,
+        "printWidth": 120
+    },
+    "tsd": {
+        "directory": "test"
+    },
+    "files": [
+        "LICENSE",
+        "CHANGELOG.md",
+        "README.md",
+        "README-en.md",
+        "index.d.ts",
+        "typings.json",
+        "types/"
+    ]
 }
