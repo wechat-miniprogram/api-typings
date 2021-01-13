@@ -128,7 +128,6 @@ Page({
     onLoad(q) {
         expectType<Record<string, string | undefined>>(q);
         expectType<number>(this.data.a);
-        // @ts-expect-error
         expectError(this.a);
     },
     jump() {
@@ -193,7 +192,6 @@ Page<DataType, CustomOption>({
         const logs = this.getLogs();
         expectType<string[]>(logs);
         this.setData({ logs });
-        // @ts-expect-error
         expectError(this.logs);
         expectType<string[]>(this.data.logs);
     },
@@ -205,7 +203,6 @@ Page({
         expectType<WechatMiniprogram.EventChannel>(channel);
         channel.emit('test', {});
         channel.on('xxx', () => {});
-        // @ts-expect-error
         expectError(channel.emit(1, 2));
     },
 });

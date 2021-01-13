@@ -117,13 +117,7 @@ Component({
 
 expectError(
     Component({
-        // @ts-expect-error
         custom: 1,
-        methods: {
-            f() {
-                expectError(this.custom);
-            },
-        },
     }),
 );
 
@@ -265,7 +259,6 @@ expectError(
         methods: {
             someMethod() {
                 this.setData({
-                    // @ts-expect-error
                     a: '',
                 });
             },
@@ -406,7 +399,7 @@ Component({
             expectType<WechatMiniprogram.EventChannel>(channel);
             channel.emit('test', {});
             channel.on('xxx', () => {});
-            // @ts-expect-error
+
             expectError(channel.emit(1, 2));
         },
     },
@@ -415,7 +408,6 @@ Component({
 Component<{}, {}, { fn(): void }>({
     methods: {
         fn() {
-            // @ts-expect-error
             expectError(this.notExists);
         },
     },
@@ -448,7 +440,7 @@ Component<{}, {}, { fn(): void }>({
             },
             fn() {
                 expectType<() => void | Promise<void>>(this.onShow);
-                // @ts-expect-error
+
                 expectError(this.notExists);
                 return 'test';
             },
