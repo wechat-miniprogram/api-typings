@@ -1,3 +1,6 @@
+## 2021-01-14 v3.2.2
+- 修复几个接口未 Promise 化的问题
+
 ## 2021-01-06 v3.2.1
 - 更新 API 定义到 2.14.1
 - 补齐 `virtualHost` ([#174](https://github.com/wechat-miniprogram/api-typings/issues/174))
