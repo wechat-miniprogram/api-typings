@@ -99,6 +99,11 @@ Component({
       expectType<number>(oldVal)
     },
   },
+  export() {
+    expectType<string>(this.is)
+    expectType<void>(this.onMyButtonTap())
+    return {}
+  }
 })
 
 Component({
