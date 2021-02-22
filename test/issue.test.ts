@@ -386,6 +386,31 @@ import WX = WechatMiniprogram
   })
 }
 
+// https://github.com/wechat-miniprogram/api-typings/issues/161
+{
+  Component({
+    properties: {
+      bar: {
+        type: Object,
+        value: { skuNum: 0 },
+        observer () {}
+      }
+    },
+    data: {
+      foo: 123,
+    },
+    methods: {
+      getDataOrPoperty() {
+        return this.data.foo
+      },
+      test() {
+        expectType<Record<string, any>>(this.data.bar)
+        expectType<number>(this.getDataOrPoperty())
+      },
+    }
+  })
+}
+
 // https://github.com/wechat-miniprogram/api-typings/issues/164
 {
   requirePlugin('myPlugin')

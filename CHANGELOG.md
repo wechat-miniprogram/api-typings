@@ -1,3 +1,9 @@
+## 2021-02-22 v3.2.3
+- 更新 API 定义到 2.15.0
+- 修复 `Component.triggerEvent` 的 `detail` 类型
+- 修复几个接口的定义（[#193](https://github.com/wechat-miniprogram/api-typings/issues/193), [#185](https://github.com/wechat-miniprogram/api-typings/issues/185), [#180](https://github.com/wechat-miniprogram/api-typings/issues/180)）
+- 修改 `MethodOption` 以解决 [#161](https://github.com/wechat-miniprogram/api-typings/issues/161)（鸣谢：[@Lienviws](https://github.com/Lienviws)）
+
 ## 2021-01-14 v3.2.2
 - 修复几个接口未 Promise 化的问题
 

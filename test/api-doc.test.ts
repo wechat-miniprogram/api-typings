@@ -935,7 +935,7 @@ import { expectType } from 'tsd'
     success(res) {
       expectType<boolean | undefined>(res.authSetting['scope.address'])
       expectType<boolean>(res.subscriptionsSetting.mainSwitch)
-      expectType<Record<string, any>>(res.subscriptionsSetting.itemSettings)
+      expectType<Record<string, any> | undefined>(res.subscriptionsSetting.itemSettings)
     },
   })
 }

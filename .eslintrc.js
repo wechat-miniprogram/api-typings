@@ -21,11 +21,16 @@ module.exports = {
             extendDefaults: true,
             types: {
                 /**
-                 * we are using `{}` as noop, such as:
-                 * `type A<P> = B & (P extends Q ? C : {})`
-                 * gets `B & C` when `P extends Q` and `B` otherwise
+                 * we are using `{}` as noop
+                 * e.g. `type A<P> = B & (P extends Q ? C : {})`
+                 * will get `B & C` when `P extends Q` and `B` otherwise
                  */
-                '{}': false
+                '{}': false,
+                /**
+                 * we actually need a type accepting any function-like value
+                 * e.g. `type Methods = Record<string, Function>`
+                 */
+                'Function': false,
             }
         }],
         '@typescript-eslint/member-delimiter-style': ['error', {
