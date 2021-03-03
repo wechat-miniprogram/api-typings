@@ -1,4 +1,4 @@
-import { expectType } from 'tsd'
+import { expectType, expectNotType } from 'tsd'
 
 wx.request({
   url: 'https://www.baidu.com',
@@ -64,3 +64,36 @@ console.error('console', 'error')
 console.groupEnd()
 
 expectType<string>(wx.env.USER_DATA_PATH)
+
+wx.getStorage<string>({
+  key: 'key',
+  success(res) {
+    expectType<string>(res.data)
+  }
+})
+wx.getStorage<string>({ key: 'key' }).then((res) => {
+  expectType<string>(res.data)
+})
+wx.getStorage({
+  key: 'key',
+  success(res) {
+    expectType<any>(res.data)
+    expectNotType<string>(res.data)
+  }
+})
+
+wx.request<ArrayBuffer>({
+  url: 'https://developer.weixin.qq.com',
+  success(res) {
+    expectType<ArrayBuffer>(res.data)
+  }
+})
+
+{
+  const thisShouldBeAny = wx.getStorageSync('test')
+  expectType<any>(thisShouldBeAny)
+  expectNotType<number>(thisShouldBeAny)
+  const thisShouldBeNumber = wx.getStorageSync<number>('test')
+  expectNotType<any>(thisShouldBeNumber)
+  expectType<number>(thisShouldBeNumber)
+}

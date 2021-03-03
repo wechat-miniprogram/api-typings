@@ -1,3 +1,8 @@
+## 2021-03-02 v3.3.0
+- 更新部分新接口定义
+- 支持泛型（[#177](https://github.com/wechat-miniprogram/api-typings/issues/177)）
+- 支持索引签名，以支持 `wx.requestSubscribeMessage`（[#175](https://github.com/wechat-miniprogram/api-typings/issues/175)）
+
 ## 2021-02-22 v3.2.3
 - 更新 API 定义到 2.15.0
 - 修复 `Component.triggerEvent` 的 `detail` 类型

@@ -508,6 +508,17 @@ import { expectType } from 'tsd'
   })
 }
 
+// Test case from `wx.authorizeForMiniProgram`
+{
+  wx.authorizeForMiniProgram({
+    scope: 'scope.record',
+    success() {
+      // 用户已经同意小程序使用录音功能，后续调用 wx.startRecord 接口不会弹窗询问
+      wx.startRecord()
+    },
+  })
+}
+
 // Test case from `wx.canIUse`
 {
   // 对象的属性或方法
@@ -940,6 +951,21 @@ import { expectType } from 'tsd'
   })
 }
 
+// Test case from `SubscriptionsSetting`
+{
+  wx.getSetting({
+    withSubscriptions: true,
+    success(res) {
+      expectType<undefined | boolean>(res.authSetting['scope.userInfo'])
+      expectType<undefined | boolean>(res.authSetting['scope.userLocation'])
+      expectType<boolean>(res.subscriptionsSetting.mainSwitch)
+      if (res.subscriptionsSetting.itemSettings !== undefined) {
+        expectType<any>(res.subscriptionsSetting.itemSettings.SYS_MSG_TYPE_INTERACTIVE)
+      }
+    },
+  })
+}
+
 // Test case from `wx.getStorageInfoSync`
 {
   wx.getStorageInfo({
@@ -1012,6 +1038,21 @@ import { expectType } from 'tsd'
   })
 }
 
+// Test case from `wx.getSystemInfoAsync`
+{
+  wx.getSystemInfoAsync({
+    success (res) {
+      expectType<string>(res.model)
+      expectType<number>(res.pixelRatio)
+      expectType<number>(res.windowWidth)
+      expectType<number>(res.windowHeight)
+      expectType<string>(res.language)
+      expectType<string>(res.version)
+      expectType<string>(res.platform)
+    }
+  })
+}
+
 // Test case from `wx.getUserInfo`
 {
   // 必须是在用户已经授权的情况下调用
@@ -1052,6 +1093,13 @@ import { expectType } from 'tsd'
 // Test case from `wx.hideShareMenu`
 {
   wx.hideShareMenu()
+}
+
+// Test case from `wx.hideShareMenu`
+{
+  wx.hideShareMenu({
+    menus: ['shareAppMessage', 'shareTimeline'],
+  })
 }
 
 // Test case from `wx.loadFontFace`
@@ -1743,6 +1791,14 @@ import { expectType } from 'tsd'
   })
 }
 
+// Test case from `wx.showShareMenu`
+{
+  wx.showShareMenu({
+    withShareTicket: true,
+    menus: ['shareAppMessage', 'shareTimeline'],
+  })
+}
+
 // Test case from `wx.showToast`
 {
   wx.showToast({
@@ -1925,6 +1981,23 @@ import { expectType } from 'tsd'
   })
 }
 
+// Test case from `wx.updateShareMenu`
+{
+  // 转发私密消息
+  wx.updateShareMenu({
+    isPrivateMessage: true,
+    activityId: 'xxx',
+    templateInfo: {
+      parameterList: [{
+        name: '',
+        value: '',
+      }]
+    },
+    success() {},
+    fail() {},
+  })
+}
+
 // Test case from `wx.uploadFile`
 {
   wx.chooseImage({
@@ -1974,6 +2047,20 @@ import { expectType } from 'tsd'
 
   worker.postMessage({
     msg: 'hello from main',
+  })
+}
+
+// Test case from `wx.createWorker`
+{
+  // 创建普通worker
+  wx.createWorker('workers/index.js')
+}
+
+// Test case from `wx.createWorker`
+{
+  // 创建实验worker
+  wx.createWorker('workers/index.js', {
+    useExperimentalWorker: true,
   })
 }
 
@@ -3001,6 +3088,25 @@ import { expectType } from 'tsd'
   })
 }
 
+// Test case from `MapContext.on`
+{
+  Page({
+    mapCtx: {} as WechatMiniprogram.MapContext,
+    onReady() {
+      // 使用 wx.createMapContext 获取 map 上下文
+      this.mapCtx = wx.createMapContext('myMap')
+    },
+    method() {
+      this.mapCtx.on('markerClusterCreate', (res) => {
+        expectType<any>(res)
+      })
+      this.mapCtx.on('markerClusterClick', (res) => {
+        expectType<any>(res)
+      })
+    }
+  })
+}
+
 // Test case from `wx.setEnableDebug`
 {
   // 打开调试
@@ -3063,4 +3169,79 @@ import { expectType } from 'tsd'
 // Test case from `wx.reportPerformance`
 {
   wx.reportPerformance(1101, 680)
+  wx.reportPerformance(1101, 680, 'custom')
+}
+
+// Test case from `wx.getRandomValues`
+{
+  wx.getRandomValues({
+    length: 6, // 生成 6 个字节长度的随机数
+    success: res => {
+      expectType<ArrayBuffer>(res.randomValues) // 转换为 base64 字符串后打印
+    }
+  })
+}
+
+// Test case from `wx.getGroupEnterInfo`
+{
+  wx.getGroupEnterInfo({
+    success(res) {
+      expectType<string>(res.errMsg)
+      expectType<string>(res.encryptedData)
+      expectType<string>(res.iv)
+    }
+  })
+}
+
+// Test case from `wx.getPerformance`
+{
+  const performance = wx.getPerformance()
+  const observer = performance.createObserver(entryList => {
+    console.log(entryList.getEntries())
+  })
+  observer.observe({ entryTypes: ['render', 'script'] })
+}
+
+// Test case from `wx.authPrivateMessage`
+{
+  wx.authPrivateMessage({
+    shareTicket: 'xxxxxx',
+    success(res) {
+      expectType<boolean>(res.valid)
+      expectType<string>(res.iv)
+      expectType<string>(res.encryptedData)
+    },
+    fail(res) {
+      expectType<string>(res.errMsg)
+    },
+  })
+}
+
+// Test case from `wx.createMediaAudioPlayer`
+{
+  // 创建视频解码器，具体参数见 createVideoDecoder 文档
+  const videoDecoder = wx.createVideoDecoder()
+  // 创建媒体音频播放器
+  const mediaAudioPlayer = wx.createMediaAudioPlayer()
+  // 启动视频解码器
+  videoDecoder.start({
+    source: ''
+  })
+  // 启动播放器
+  mediaAudioPlayer.start().then(() => {
+    // 添加播放器音频来源
+    mediaAudioPlayer.addAudioSource(videoDecoder).then(res => {
+      videoDecoder.getFrameData() // 建议在 requestAnimationFrame 里获取每一帧视频数据
+      console.log(res)
+    })
+
+    // 移除播放器音频来源
+    mediaAudioPlayer.removeAudioSource(videoDecoder).then()
+    // 停止播放器
+    mediaAudioPlayer.stop().then()
+    // 销毁播放器
+    mediaAudioPlayer.destroy().then()
+    // 设置播放器音量
+    mediaAudioPlayer.volume = 0.5
+  })
 }

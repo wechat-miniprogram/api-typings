@@ -416,3 +416,15 @@ import WX = WechatMiniprogram
   requirePlugin('myPlugin')
   requireMiniProgram()
 }
+
+// https://github.com/wechat-miniprogram/api-typings/issues/175
+{
+  wx.requestSubscribeMessage({
+    tmplIds: ['1', '2'],
+    success: (res) => {
+      expectType<string>(res.errMsg)
+      expectType<string>(res.whatever)
+      expectType<string>(res.randomTemplateId)
+    },
+  });
+}

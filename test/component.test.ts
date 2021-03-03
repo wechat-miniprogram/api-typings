@@ -125,7 +125,7 @@ expectError(
     custom: 1,
     methods: {
       f() {
-        expectError(this.custom)
+        this.custom
       },
     },
   }),
@@ -369,7 +369,7 @@ Component({
           {
             borderRadius: '50%',
             borderColor: 'blue',
-            transform: `scale(.3) translateY(-20px)`,
+            transform: 'scale(.3) translateY(-20px)',
             offset: 1,
           },
         ],
