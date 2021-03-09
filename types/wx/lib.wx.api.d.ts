@@ -10559,48 +10559,8 @@ Page({
          * | 13017 | system internal error | 相关读写操作失败 |
          * | 13016 | connect fail | 连接失败 | */ errCode: number
     }
-    interface NodesRef {
-        /** [[SelectorQuery](https://developers.weixin.qq.com/miniprogram/dev/api/wxml/SelectorQuery.html) NodesRef.boundingClientRect(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/wxml/NodesRef.boundingClientRect.html)
-*
-* 添加节点的布局位置的查询请求。相对于显示区域，以像素为单位。其功能类似于 DOM 的 `getBoundingClientRect`。返回 `NodesRef` 对应的 `SelectorQuery`。
-*
-* **示例代码**
-*
-*
-* ```js
-Page({
-  getRect () {
-    wx.createSelectorQuery().select('#the-id').boundingClientRect(function(rect){
-      rect.id      // 节点的ID
-      rect.dataset // 节点的dataset
-      rect.left    // 节点的左边界坐标
-      rect.right   // 节点的右边界坐标
-      rect.top     // 节点的上边界坐标
-      rect.bottom  // 节点的下边界坐标
-      rect.width   // 节点的宽度
-      rect.height  // 节点的高度
-    }).exec()
-  },
-  getAllRects () {
-    wx.createSelectorQuery().selectAll('.a-class').boundingClientRect(function(rects){
-      rects.forEach(function(rect){
-        rect.id      // 节点的ID
-        rect.dataset // 节点的dataset
-        rect.left    // 节点的左边界坐标
-        rect.right   // 节点的右边界坐标
-        rect.top     // 节点的上边界坐标
-        rect.bottom  // 节点的下边界坐标
-        rect.width   // 节点的宽度
-        rect.height  // 节点的高度
-      })
-    }).exec()
-  }
-})
-``` */
-        boundingClientRect(
-            /** 回调函数，在执行 `SelectorQuery.exec` 方法后，节点信息会在 `callback` 中返回。 */
-            callback?: BoundingClientRectCallback
-        ): SelectorQuery
+
+    interface NodeRefProps {
         /** [[SelectorQuery](https://developers.weixin.qq.com/miniprogram/dev/api/wxml/SelectorQuery.html) NodesRef.context(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/wxml/NodesRef.context.html)
 *
 * 添加节点的 Context 对象查询请求。目前支持 [VideoContext](https://developers.weixin.qq.com/miniprogram/dev/api/media/video/VideoContext.html)、[CanvasContext](https://developers.weixin.qq.com/miniprogram/dev/api/canvas/CanvasContext.html)、[LivePlayerContext](https://developers.weixin.qq.com/miniprogram/dev/api/media/live/LivePlayerContext.html)、[EditorContext](https://developers.weixin.qq.com/miniprogram/dev/api/media/editor/EditorContext.html)和 [MapContext](https://developers.weixin.qq.com/miniprogram/dev/api/media/map/MapContext.html) 的获取。
@@ -10688,6 +10648,49 @@ Page({
             /** 回调函数，在执行 `SelectorQuery.exec` 方法后，返回节点信息。 */
             callback?: NodeCallback
         ): SelectorQuery
+    }
+    interface NodesRef extends NodeRefProps {
+        /** [[SelectorQuery](https://developers.weixin.qq.com/miniprogram/dev/api/wxml/SelectorQuery.html) NodesRef.boundingClientRect(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/wxml/NodesRef.boundingClientRect.html)
+*
+* 添加节点的布局位置的查询请求。相对于显示区域，以像素为单位。其功能类似于 DOM 的 `getBoundingClientRect`。返回 `NodesRef` 对应的 `SelectorQuery`。
+*
+* **示例代码**
+*
+*
+* ```js
+Page({
+  getRect () {
+    wx.createSelectorQuery().select('#the-id').boundingClientRect(function(rect){
+      rect.id      // 节点的ID
+      rect.dataset // 节点的dataset
+      rect.left    // 节点的左边界坐标
+      rect.right   // 节点的右边界坐标
+      rect.top     // 节点的上边界坐标
+      rect.bottom  // 节点的下边界坐标
+      rect.width   // 节点的宽度
+      rect.height  // 节点的高度
+    }).exec()
+  },
+  getAllRects () {
+    wx.createSelectorQuery().selectAll('.a-class').boundingClientRect(function(rects){
+      rects.forEach(function(rect){
+        rect.id      // 节点的ID
+        rect.dataset // 节点的dataset
+        rect.left    // 节点的左边界坐标
+        rect.right   // 节点的右边界坐标
+        rect.top     // 节点的上边界坐标
+        rect.bottom  // 节点的下边界坐标
+        rect.width   // 节点的宽度
+        rect.height  // 节点的高度
+      })
+    }).exec()
+  }
+})
+``` */
+        boundingClientRect(
+            /** 回调函数，在执行 `SelectorQuery.exec` 方法后，节点信息会在 `callback` 中返回。 */
+            callback?: BoundingClientRectCallback
+        ): SelectorQuery
         /** [[SelectorQuery](https://developers.weixin.qq.com/miniprogram/dev/api/wxml/SelectorQuery.html) NodesRef.scrollOffset(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/wxml/NodesRef.scrollOffset.html)
 *
 * 添加节点的滚动位置查询请求。以像素为单位。节点必须是 `scroll-view` 或者 `viewport`，返回 `NodesRef` 对应的 `SelectorQuery`。
@@ -10710,6 +10713,19 @@ Page({
         scrollOffset(
             /** 回调函数，在执行 `SelectorQuery.exec` 方法后，节点信息会在 `callback` 中返回。 */
             callback?: ScrollOffsetCallback
+        ): SelectorQuery
+    }
+    /**
+     * 多个 NodesRef 节点
+     */
+    interface NodesRefs extends NodeRefProps {
+        boundingClientRect(
+            /** 回调函数，在执行 `SelectorQuery.exec` 方法后，节点信息会在 `callback` 中返回。 */
+            callback?: BoundingClientRectsCallback
+        ): SelectorQuery
+        scrollOffset(
+            /** 回调函数，在执行 `SelectorQuery.exec` 方法后，节点信息会在 `callback` 中返回。 */
+            callback?: ScrollOffsetsCallback
         ): SelectorQuery
     }
     interface OffscreenCanvas {
@@ -11095,7 +11111,7 @@ Page({
         selectAll(
             /** 选择器 */
             selector: string
-        ): NodesRef
+        ): NodesRefs
         /** [[NodesRef](https://developers.weixin.qq.com/miniprogram/dev/api/wxml/NodesRef.html) SelectorQuery.selectViewport()](https://developers.weixin.qq.com/miniprogram/dev/api/wxml/SelectorQuery.selectViewport.html)
          *
          * 选择显示区域。可用于获取显示区域的尺寸、滚动位置等信息。 */
@@ -17161,6 +17177,9 @@ wx.writeBLECharacteristicValue({
     type BoundingClientRectCallback = (
         result: BoundingClientRectCallbackResult
     ) => void
+    type BoundingClientRectsCallback = (
+        result: BoundingClientRectCallbackResult[]
+    ) => void
     /** 接口调用成功的回调函数 */
     type CameraContextStartRecordSuccessCallback = (
         res: GeneralCallbackResult
@@ -18810,6 +18829,7 @@ wx.writeBLECharacteristicValue({
     ) => void
     /** 回调函数，在执行 `SelectorQuery.exec` 方法后，节点信息会在 `callback` 中返回。 */
     type ScrollOffsetCallback = (result: ScrollOffsetCallbackResult) => void
+    type ScrollOffsetsCallback = (result: ScrollOffsetCallbackResult[]) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type SeekBackgroundAudioCompleteCallback = (
         res: GeneralCallbackResult
