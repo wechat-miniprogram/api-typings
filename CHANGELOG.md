@@ -1,3 +1,6 @@
+## 2021-04-09 v3.3.1
+- 更新 API 定义到 2.16.0
+
 ## 2021-03-02 v3.3.0
 - 更新部分新接口定义
 - 支持泛型（[#177](https://github.com/wechat-miniprogram/api-typings/issues/177)）
