@@ -1134,7 +1134,7 @@ import { expectType } from 'tsd'
       if (res.code) {
         // 发起网络请求
         wx.request({
-          url: 'https://test.com/onLogin',
+          url: 'https://example.com/onLogin',
           data: {
             code: res.code,
           },
@@ -1514,17 +1514,20 @@ import { expectType } from 'tsd'
 }
 
 // Test case from `wx.requestSubscribeMessage`
-// {
-//   wx.requestSubscribeMessage({
-//     tmplIds: [''],
-//     success(res) {}
-//   })
-// }
+{
+  wx.requestSubscribeMessage({
+    tmplIds: [''],
+    success(res) {
+      expectType<string>(res.errMsg)
+      expectType<string>(res.anyTemplateId)
+    }
+  })
+}
 
 // Test case from `wx.request`
 {
   wx.request({
-    url: 'test.php', // 仅为示例，并非真实的接口地址
+    url: 'example.php', //仅为示例，并非真实的接口地址
     data: {
       x: '',
       y: '',
@@ -3523,4 +3526,588 @@ import { expectType } from 'tsd'
     data: 'some text',
   })
   expectType<number>(res.bytesWritten)
+}
+
+// Test case from `FileSystemManager.access`
+{
+  const fs = wx.getFileSystemManager()
+  // 判断文件/目录是否存在
+  fs.access({
+    path: `${wx.env.USER_DATA_PATH}/hello.txt`,
+    success(res) {
+      // 文件存在
+      console.log(res)
+    },
+    fail(res) {
+      // 文件不存在或其他错误
+      console.error(res)
+    }
+  })
+
+  // 同步接口
+  try {
+    fs.accessSync(`${wx.env.USER_DATA_PATH}/hello.txt`)
+  } catch(e) {
+    console.error(e)
+  }
+}
+
+// Test case from `FileSystemManager.accessSync`
+{
+  const fs = wx.getFileSystemManager()
+  // 判断文件/目录是否存在
+  fs.access({
+    path: `${wx.env.USER_DATA_PATH}/hello.txt`,
+    success(res) {
+      // 文件存在
+      console.log(res)
+    },
+    fail(res) {
+      // 文件不存在或其他错误
+      console.error(res)
+    }
+  })
+
+  // 同步接口
+  try {
+    fs.accessSync(`${wx.env.USER_DATA_PATH}/hello.txt`)
+  } catch(e) {
+    console.error(e)
+  }
+}
+
+// Test case from `FileSystemManager.appendFile`
+{
+  const fs = wx.getFileSystemManager()
+
+  fs.appendFile({
+    filePath: `${wx.env.USER_DATA_PATH}/hello.txt`,
+    data: 'some text',
+    encoding: 'utf8',
+    success(res) {
+      console.log(res)
+    },
+    fail(res) {
+      console.error(res)
+    }
+  })
+
+  // 同步接口
+  try {
+    fs.appendFileSync(`${wx.env.USER_DATA_PATH}/hello.txt`, 'some text', 'utf8')
+  } catch(e) {
+    console.error(e)
+  }
+}
+
+// Test case from `FileSystemManager.appendFileSync`
+{
+  const fs = wx.getFileSystemManager()
+
+  fs.appendFile({
+    filePath: `${wx.env.USER_DATA_PATH}/hello.txt`,
+    data: 'some text',
+    encoding: 'utf8',
+    success(res) {
+      console.log(res)
+    },
+    fail(res) {
+      console.error(res)
+    }
+  })
+
+  // 同步接口
+  try {
+    fs.appendFileSync(`${wx.env.USER_DATA_PATH}/hello.txt`, 'some text', 'utf8')
+  } catch(e) {
+    console.error(e)
+  }
+}
+
+// Test case from `FileSystemManager.copyFile`
+{
+  const fs = wx.getFileSystemManager()
+  fs.copyFile({
+    srcPath: `${wx.env.USER_DATA_PATH}/hello.txt`,
+    destPath: `${wx.env.USER_DATA_PATH}/hello_copy.txt`,
+    success(res) {
+      console.log(res)
+    },
+    fail(res) {
+      console.error(res)
+    }
+  })
+
+  // 同步接口
+  try {
+    fs.copyFileSync(
+      `${wx.env.USER_DATA_PATH}/hello.txt`,
+      `${wx.env.USER_DATA_PATH}/hello_copy.txt`
+    )
+  } catch(e) {
+    console.error(e)
+  }
+}
+
+// Test case from `FileSystemManager.copyFileSync`
+{
+  const fs = wx.getFileSystemManager()
+  fs.copyFile({
+    srcPath: `${wx.env.USER_DATA_PATH}/hello.txt`,
+    destPath: `${wx.env.USER_DATA_PATH}/hello_copy.txt`,
+    success(res) {
+      console.log(res)
+    },
+    fail(res) {
+      console.error(res)
+    }
+  })
+
+  // 同步接口
+  try {
+    fs.copyFileSync(
+      `${wx.env.USER_DATA_PATH}/hello.txt`,
+      `${wx.env.USER_DATA_PATH}/hello_copy.txt`
+    )
+  } catch(e) {
+    console.error(e)
+  }
+}
+
+// Test case from `FileSystemManager.mkdir`
+{
+  const fs = wx.getFileSystemManager()
+  fs.mkdir({
+    dirPath: `${wx.env.USER_DATA_PATH}/example`,
+    recursive: false,
+    success(res) {
+      console.log(res)
+    },
+    fail(res) {
+      console.error(res)
+    }
+  })
+
+  // 同步接口
+  try {
+    fs.mkdirSync(`${wx.env.USER_DATA_PATH}/example`, false)
+  } catch(e) {
+    console.error(e)
+  }
+}
+
+// Test case from `FileSystemManager.mkdirSync`
+{
+  const fs = wx.getFileSystemManager()
+  fs.mkdir({
+    dirPath: `${wx.env.USER_DATA_PATH}/example`,
+    recursive: false,
+    success(res) {
+      console.log(res)
+    },
+    fail(res) {
+      console.error(res)
+    }
+  })
+
+  // 同步接口
+  try {
+    fs.mkdirSync(`${wx.env.USER_DATA_PATH}/example`, false)
+  } catch(e) {
+    console.error(e)
+  }
+}
+
+// Test case from `FileSystemManager.readFile`
+{
+  const fs = wx.getFileSystemManager()
+  fs.readFile({
+    filePath: `${wx.env.USER_DATA_PATH}/hello.txt`,
+    encoding: 'utf8',
+    position: 0,
+    success(res) {
+      console.log(res.data)
+    },
+    fail(res) {
+      console.error(res)
+    }
+  })
+
+  // 同步接口
+  try {
+    const res = fs.readFileSync(`${wx.env.USER_DATA_PATH}/hello.txt`, 'utf8', 0)
+    expectType<string | ArrayBuffer>(res)
+  } catch(e) {
+    console.error(e)
+  }
+}
+
+// Test case from `FileSystemManager.readFileSync`
+{
+  const fs = wx.getFileSystemManager()
+  fs.readFile({
+    filePath: `${wx.env.USER_DATA_PATH}/hello.txt`,
+    encoding: 'utf8',
+    position: 0,
+    success(res) {
+      console.log(res.data)
+    },
+    fail(res) {
+      console.error(res)
+    }
+  })
+
+  // 同步接口
+  try {
+    const res = fs.readFileSync(`${wx.env.USER_DATA_PATH}/hello.txt`, 'utf8', 0)
+    expectType<string | ArrayBuffer>(res)
+  } catch(e) {
+    console.error(e)
+  }
+}
+
+// Test case from `FileSystemManager.readZipEntry`
+{
+  const fs = wx.getFileSystemManager()
+  // 读取zip内某个或多个文件
+  fs.readZipEntry({
+    filePath: 'wxfile://from/to.zip',
+    entries: [{
+      path: 'some_folder/my_file.txt', // zip内文件路径
+      encoding: 'utf-8', // 指定读取文件的字符编码，如果不传 encoding，则以 ArrayBuffer 格式读取文件的二进制内容
+      position: 0, // 从文件指定位置开始读，如果不指定，则从文件头开始读。读取的范围应该是左闭右开区间 [position, position+length)。有效范围：[0, fileLength - 1]。单位：byte
+      length: 10000, // 指定文件的长度，如果不指定，则读到文件末尾。有效范围：[1, fileLength]。单位：byte
+    }, {
+      path: 'other_folder/orther_file.txt', // zip内文件路径
+    }],
+    success(res) {
+      console.log(res.entries)
+      // res.entries === {
+      //     'some_folder/my_file.txt': {
+      //         errMsg: 'readZipEntry:ok',
+      //         data: 'xxxxxx'
+      //     },
+      //     'other_folder/orther_file.txt': {
+      //         data: (ArrayBuffer)
+      //     }
+      // }
+    },
+    fail(res) {
+      console.log(res.errMsg)
+    },
+  })
+
+  // 读取zip内所有文件。允许指定统一的encoding。position、length则不再允许指定，分别默认为0和文件长度
+  fs.readZipEntry({
+    filePath: 'wxfile://from/to.zip',
+    entries: 'all',
+    encoding: 'utf-8', // 统一指定读取文件的字符编码，如果不传 encoding，则以 ArrayBuffer 格式读取文件的二进制内容
+    success(res) {
+      console.log(res.entries)
+      // res.entries === {
+      //     'some_folder/my_file.txt': {
+      //         errMsg: 'readZipEntry:ok',
+      //         data: 'xxxxxx'
+      //     },
+      //     'other_folder/orther_file.txt': {
+      //         errMsg: 'readZipEntry:ok',
+      //         data: 'xxxxxx'
+      //     }
+      //  }
+    },
+    fail(res) {
+      console.log(res.errMsg)
+    },
+  })
+}
+
+// Test case from `FileSystemManager.readdir`
+{
+  const fs = wx.getFileSystemManager()
+  fs.readdir({
+    dirPath: `${wx.env.USER_DATA_PATH}/example`,
+    success(res) {
+      console.log(res.files)
+    },
+    fail(res) {
+      console.error(res)
+    }
+  })
+
+  // 同步接口
+  try {
+    const res = fs.readdirSync(`${wx.env.USER_DATA_PATH}/example`)
+    expectType<string[]>(res)
+  } catch(e) {
+    console.error(e)
+  }
+}
+
+// Test case from `FileSystemManager.readdirSync`
+{
+  const fs = wx.getFileSystemManager()
+  fs.readdir({
+    dirPath: `${wx.env.USER_DATA_PATH}/example`,
+    success(res) {
+      console.log(res.files)
+    },
+    fail(res) {
+      console.error(res)
+    }
+  })
+
+  // 同步接口
+  try {
+    const res = fs.readdirSync(`${wx.env.USER_DATA_PATH}/example`)
+    expectType<string[]>(res)
+  } catch(e) {
+    console.error(e)
+  }
+}
+
+// Test case from `FileSystemManager.rename`
+{
+  const fs = wx.getFileSystemManager()
+  fs.rename({
+    oldPath: `${wx.env.USER_DATA_PATH}/hello.txt`,
+    newPath: `${wx.env.USER_DATA_PATH}/hello_new.txt`,
+    success(res) {
+      console.log(res)
+    },
+    fail(res) {
+      console.error(res)
+    }
+  })
+
+  // 同步接口
+  try {
+    const res = fs.renameSync(
+      `${wx.env.USER_DATA_PATH}/hello.txt`,
+      `${wx.env.USER_DATA_PATH}/hello_new.txt`
+    )
+    console.log(res)
+  } catch(e) {
+    console.error(e)
+  }
+}
+
+// Test case from `FileSystemManager.renameSync`
+{
+  const fs = wx.getFileSystemManager()
+  fs.rename({
+    oldPath: `${wx.env.USER_DATA_PATH}/hello.txt`,
+    newPath: `${wx.env.USER_DATA_PATH}/hello_new.txt`,
+    success(res) {
+      console.log(res)
+    },
+    fail(res) {
+      console.error(res)
+    }
+  })
+
+  // 同步接口
+  try {
+    const res = fs.renameSync(
+      `${wx.env.USER_DATA_PATH}/hello.txt`,
+      `${wx.env.USER_DATA_PATH}/hello_new.txt`
+    )
+    console.log(res)
+  } catch(e) {
+    console.error(e)
+  }
+}
+
+// Test case from `FileSystemManager.rmdir`
+{
+  const fs = wx.getFileSystemManager()
+  fs.rmdir({
+    dirPath: `${wx.env.USER_DATA_PATH}/example`,
+    recursive: false,
+    success(res) {
+      console.log(res)
+    },
+    fail(res) {
+      console.error(res)
+    }
+  })
+
+  // 同步接口
+  try {
+    const res = fs.rmdirSync(`${wx.env.USER_DATA_PATH}/example`, false)
+    console.log(res)
+  } catch(e) {
+    console.error(e)
+  }
+}
+
+// Test case from `FileSystemManager.rmdirSync`
+{
+  const fs = wx.getFileSystemManager()
+  fs.rmdir({
+    dirPath: `${wx.env.USER_DATA_PATH}/example`,
+    recursive: false,
+    success(res) {
+      console.log(res)
+    },
+    fail(res) {
+      console.error(res)
+    }
+  })
+
+  // 同步接口
+  try {
+    const res = fs.rmdirSync(`${wx.env.USER_DATA_PATH}/example`, false)
+    console.log(res)
+  } catch(e) {
+    console.error(e)
+  }
+}
+
+// Test case from `wx.saveFileToDisk`
+{
+  wx.saveFileToDisk({
+    filePath: `${wx.env.USER_DATA_PATH}/hello.txt`,
+    success(res) {
+      console.log(res)
+    },
+    fail(res) {
+      console.error(res)
+    }
+  })
+}
+
+// Test case from `FileSystemManager.unlink`
+{
+  const fs = wx.getFileSystemManager()
+  fs.unlink({
+    filePath: `${wx.env.USER_DATA_PATH}/hello.txt`,
+    success(res) {
+      console.log(res)
+    },
+    fail(res) {
+      console.error(res)
+    }
+  })
+
+  // 同步接口
+  try {
+    const res = fs.unlinkSync(`${wx.env.USER_DATA_PATH}/hello.txt`)
+    console.log(res)
+  } catch(e) {
+    console.error(e)
+  }
+}
+
+// Test case from `FileSystemManager.unlinkSync`
+{
+  const fs = wx.getFileSystemManager()
+  fs.unlink({
+    filePath: `${wx.env.USER_DATA_PATH}/hello.txt`,
+    success(res) {
+      console.log(res)
+    },
+    fail(res) {
+      console.error(res)
+    }
+  })
+
+  // 同步接口
+  try {
+    const res = fs.unlinkSync(`${wx.env.USER_DATA_PATH}/hello.txt`)
+    console.log(res)
+  } catch(e) {
+    console.error(e)
+  }
+}
+
+// Test case from `FileSystemManager.unzip`
+{
+  const fs = wx.getFileSystemManager()
+  fs.unzip({
+    zipFilePath: `${wx.env.USER_DATA_PATH}/example.zip`,
+    targetPath: '${wx.env.USER_DATA_PATH}/example',
+    success(res) {
+      console.log(res)
+    },
+    fail(res) {
+      console.error(res)
+    }
+  })
+}
+
+// Test case from `FileSystemManager.writeFile`
+{
+  const fs = wx.getFileSystemManager()
+  fs.writeFile({
+    filePath: `${wx.env.USER_DATA_PATH}/hello.txt`,
+    data: 'some text or arrayBuffer',
+    encoding: 'utf8',
+    success(res) {
+      console.log(res)
+    },
+    fail(res) {
+      console.error(res)
+    }
+  })
+
+  // 同步接口
+  try {
+    const res = fs.writeFileSync(
+      `${wx.env.USER_DATA_PATH}/hello.txt`,
+      'some text or arrayBuffer',
+      'utf8'
+    )
+    console.log(res)
+  } catch(e) {
+    console.error(e)
+  }
+}
+
+// Test case from `FileSystemManager.writeFileSync`
+{
+  const fs = wx.getFileSystemManager()
+  fs.writeFile({
+    filePath: `${wx.env.USER_DATA_PATH}/hello.txt`,
+    data: 'some text or arrayBuffer',
+    encoding: 'utf8',
+    success(res) {
+      console.log(res)
+    },
+    fail(res) {
+      console.error(res)
+    }
+  })
+
+  // 同步接口
+  try {
+    const res = fs.writeFileSync(
+      `${wx.env.USER_DATA_PATH}/hello.txt`,
+      'some text or arrayBuffer',
+      'utf8'
+    )
+    console.log(res)
+  } catch(e) {
+    console.error(e)
+  }
+}
+
+// Test case from `UserCryptoManager.getLatestUserKey`
+{
+  const userCryptoManager = wx.getUserCryptoManager()
+  userCryptoManager.getLatestUserKey({
+    success: res => {
+      const {encryptKey, iv, version, expireTime} = res
+      console.log(encryptKey, iv, version, expireTime)
+    }
+  })
+}
+
+// Test case from `UserCryptoManager.getRandomValues`
+{
+  wx.getRandomValues({
+    length: 6, // 生成 6 个字节长度的随机数
+    success: res => {
+      console.log(wx.arrayBufferToBase64(res.randomValues)) // 转换为 base64 字符串后打印
+    }
+  })
 }

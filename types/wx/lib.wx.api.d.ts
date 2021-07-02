@@ -2214,14 +2214,12 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         errMsg: string
     }
     interface GetChannelsLiveInfoOption {
+        /** 视频号 id */
+        finderUserName: string
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: GetChannelsLiveInfoCompleteCallback
         /** 接口调用失败的回调函数 */
         fail?: GetChannelsLiveInfoFailCallback
-        /** 直播 feedId，两个 id 至少要填一个 */
-        feedId?: string
-        /** 视频号 id */
-        finderUserName?: string
         /** 接口调用成功的回调函数 */
         success?: GetChannelsLiveInfoSuccessCallback
     }
@@ -2412,6 +2410,17 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         fail?: GetLatestUserKeyFailCallback
         /** 接口调用成功的回调函数 */
         success?: GetLatestUserKeySuccessCallback
+    }
+    interface GetLatestUserKeySuccessCallbackResult {
+        /** 用户加密密钥 */
+        encryptKey: string
+        /** 密钥过期时间 */
+        expireTime: number
+        /** 密钥初始向量 */
+        iv: string
+        /** 密钥版本 */
+        version: number
+        errMsg: string
     }
     interface GetLocationOption {
         /** 传入 true 会返回高度信息，由于获取高度需要较高精确度，会减慢接口返回速度
@@ -4059,6 +4068,8 @@ innerAudioContext.onError((res) => {
     interface OpenChannelsLiveOption {
         /** 直播 feedId，通过 getChannelsLiveInfo 接口获取 */
         feedId: string
+        /** 视频号 id */
+        finderUserName: string
         /** 直播 nonceId，通过 getChannelsLiveInfo 接口获取 */
         nonceId: string
     }
@@ -4533,7 +4544,7 @@ innerAudioContext.onError((res) => {
     }
     interface ReadZipEntryOption {
         /** 要读取的压缩包内的文件列表（当传入"all" 时表示读取压缩包内所有文件） */
-        entries: EntryItem[]
+        entries: EntryItem[] | 'all'
         /** 要读取的压缩包的路径 (本地路径) */
         filePath: string
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
@@ -9675,7 +9686,7 @@ fs.readdir({
 // 同步接口
 try {
   const res = fs.readdirSync(`${wx.env.USER_DATA_PATH}/example`)
-  console.log(res.files)
+  console.log(res)
 } catch(e) {
   console.error(e)
 }
@@ -10133,7 +10144,7 @@ fs.readFile({
 // 同步接口
 try {
   const res = fs.readFileSync(`${wx.env.USER_DATA_PATH}/hello.txt`, 'utf8', 0)
-  console.log(res.data)
+  console.log(res)
 } catch(e) {
   console.error(e)
 }
@@ -10224,7 +10235,7 @@ fs.readdir({
 // 同步接口
 try {
   const res = fs.readdirSync(`${wx.env.USER_DATA_PATH}/example`)
-  console.log(res.files)
+  console.log(res)
 } catch(e) {
   console.error(e)
 }
@@ -10730,7 +10741,7 @@ fs.readFile({
 // 同步接口
 try {
   const res = fs.readFileSync(`${wx.env.USER_DATA_PATH}/hello.txt`, 'utf8', 0)
-  console.log(res.data)
+  console.log(res)
 } catch(e) {
   console.error(e)
 }
@@ -13238,7 +13249,8 @@ Component({
 *
 *
 * ```js
-wx.getLatestUserKey({
+const userCryptoManager = wx.getUserCryptoManager()
+userCryptoManager.getLatestUserKey({
   success: res => {
     const {encryptKey, iv, version, expireTime} = res
     console.log(encryptKey, iv, version, expireTime)
@@ -20135,7 +20147,9 @@ wx.writeBLECharacteristicValue({
     /** 接口调用失败的回调函数 */
     type GetLatestUserKeyFailCallback = (res: GeneralCallbackResult) => void
     /** 接口调用成功的回调函数 */
-    type GetLatestUserKeySuccessCallback = (res: GeneralCallbackResult) => void
+    type GetLatestUserKeySuccessCallback = (
+        result: GetLatestUserKeySuccessCallbackResult
+    ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type GetLocationCompleteCallback = (res: GeneralCallbackResult) => void
     /** 接口调用失败的回调函数 */
