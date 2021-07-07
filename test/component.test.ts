@@ -459,3 +459,19 @@ Component<{}, {}, { fn(): void }>({
     },
   })
 }
+
+{
+  Component({
+    properties: {
+      b: {
+        type: Boolean,
+        value: true,
+      }
+    },
+    methods: {
+      test() {
+        expectType<boolean>(this.data.b)
+      }
+    }
+  })
+}
