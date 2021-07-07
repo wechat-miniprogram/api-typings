@@ -428,3 +428,16 @@ import WX = WechatMiniprogram
     },
   });
 }
+
+// https://github.com/wechat-miniprogram/api-typings/issues/204
+{
+  Page({
+    test() {
+      const observer = wx.createIntersectionObserver(this)
+      observer.observe('', e => {
+        expectType<string>(e.id)
+        expectType<Record<string, any>>(e.dataset)
+      })
+    }
+  })
+}
