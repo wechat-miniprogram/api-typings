@@ -3173,7 +3173,7 @@ innerAudioContext.onError((res) => {
     interface IntersectionObserverObserveCallbackResult {
         /** 目标边界 */
         boundingClientRect: BoundingClientRectResult
-        /** 节点自定义​数据属性 */
+        /** 节点自定义数据属性 */
         dataset: Record<string, any>
         /** 节点 ID */
         id: string
