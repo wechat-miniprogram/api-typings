@@ -355,6 +355,19 @@ declare namespace WechatMiniprogram {
         /** 接口调用成功的回调函数 */
         success?: AppendFileSuccessCallback
     }
+    /** AudioBuffer接口表示存在内存里的一段短小的音频资源，利用[WebAudioContext.decodeAudioData](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/WebAudioContext.decodeAudioData.html)方法从一个音频文件构建，或者利用 [AudioContext.createBuffer](#)从原始数据构建。把音频放入AudioBuffer后，可以传入到一个 AudioBufferSourceNode进行播放。
+     *
+     * 最低基础库： `2.19.0` */
+    interface AudioBuffer {
+        /** 返回存储在缓存区的PCM数据的时长（单位为秒） */
+        duration: number
+        /** 返回存储在缓存区的PCM数据的采样帧率 */
+        length: number
+        /** 储存在缓存区的PCM数据的通道数 */
+        numberOfChannels: number
+        /** 存储在缓存区的PCM数据的采样率（单位为sample/s) */
+        sampleRate: number
+    }
     interface AuthPrivateMessageOption {
         /** shareTicket。可以从 wx.onShow 中获取。详情 [shareTicket](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/share.html) */
         shareTicket: string
@@ -1490,6 +1503,11 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         /** 接口调用成功的回调函数 */
         success?: ConnectWifiSuccessCallback
     }
+    /** 一个字典对象，它指定是否应该禁用规范化(默认启用规范化) */
+    interface Constraints {
+        /** 如果指定为true则禁用标准化，默认为false */
+        disableNormalization?: boolean
+    }
     interface ContextCallbackResult {
         /** 节点对应的 Context 对象 */
         context: IAnyObject
@@ -1542,6 +1560,12 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
          * 外围设备的服务端。 */
         server: BLEPeripheralServer
         errMsg: string
+    }
+    interface CreateInnerAudioContextOption {
+        /** 是否使用 WebAudio 作为底层音频驱动，默认关闭。对于短音频、播放频繁的音频建议开启此选项，开启后将获得更优的性能表现，对于长音频建议关闭此选项。
+         *
+         * 最低基础库： `2.19.0` */
+        useWebAudioImplement?: boolean
     }
     /** 选项 */
     interface CreateIntersectionObserverOption {
@@ -1696,6 +1720,8 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         peerIP: string
         /** 当前请求的端口 */
         port: number
+        /** 使用协议类型，有效值：http1.1, h2, quic, unknown */
+        protocol: string
         /** 收到字节数 */
         receivedBytedCount: number
         /** 最后一个 HTTP 重定向完成时的时间。有跳转且是同域名内部的重定向才算，否则值为 0 */
@@ -1810,6 +1836,11 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         fail?: ExitVoIPChatFailCallback
         /** 接口调用成功的回调函数 */
         success?: ExitVoIPChatSuccessCallback
+    }
+    /** 客服信息 */
+    interface ExtInfoOption {
+        /** 客服链接 */
+        url: string
     }
     interface ExtractDataSourceOption {
         /** 视频源地址，只支持本地文件 */
@@ -2117,7 +2148,7 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         errMsg: string
     }
     interface GetBackgroundFetchDataOption {
-        /** 取值为 periodic */
+        /** 缓存数据类别，取值为 periodic 或 pre */
         fetchType: string
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: GetBackgroundFetchDataCompleteCallback
@@ -2224,13 +2255,13 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         success?: GetChannelsLiveInfoSuccessCallback
     }
     interface GetChannelsLiveInfoSuccessCallbackResult {
-        /** 直播描述 */
+        /** 直播主题 */
         description: string
         /** 直播 feedId */
         feedId: string
         /** 直播封面 */
         headUrl: string
-        /** 直播名称 */
+        /** 视频号昵称 */
         nickname: string
         /** 直播 nonceId */
         nonceId: string
@@ -3622,6 +3653,10 @@ innerAudioContext.onError((res) => {
         fail?: NavigateToMiniProgramFailCallback
         /** 打开的页面路径，如果为空则打开首页。path 中 ? 后面的部分会成为 query，在小程序的 `App.onLaunch`、`App.onShow` 和 `Page.onLoad` 的回调函数或小游戏的 [wx.onShow](#) 回调函数、[wx.getLaunchOptionsSync](https://developers.weixin.qq.com/miniprogram/dev/api/base/app/life-cycle/wx.getLaunchOptionsSync.html) 中可以获取到 query 数据。对于小游戏，可以只传入 query 部分，来实现传参效果，如：传入 "?foo=bar"。 */
         path?: string
+        /** 小程序链接，当传递该参数后，可以不传 appId 和 path。链接可以通过【小程序菜单】->【复制链接】获取。
+         *
+         * 最低基础库： `2.18.1` */
+        shortLink?: string
         /** 接口调用成功的回调函数 */
         success?: NavigateToMiniProgramSuccessCallback
     }
@@ -3753,7 +3788,7 @@ innerAudioContext.onError((res) => {
         serverId: string
     }
     interface OnBackgroundFetchDataCallbackResult {
-        /** 缓存数据类别 (periodic) */
+        /** 缓存数据类别，取值为 periodic 或 pre */
         fetchType: string
         /** 缓存数据 */
         fetchedData: string
@@ -4076,6 +4111,26 @@ innerAudioContext.onError((res) => {
         finderUserName: string
         /** 直播 nonceId，通过 getChannelsLiveInfo 接口获取 */
         nonceId: string
+    }
+    interface OpenCustomerServiceChatOption {
+        /** 企业ID */
+        corpId: string
+        /** 客服信息 */
+        extInfo: ExtInfoOption
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: OpenCustomerServiceChatCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: OpenCustomerServiceChatFailCallback
+        /** 气泡消息图片 */
+        sendMessageImg?: string
+        /** 气泡消息小程序路径 */
+        sendMessagePath?: string
+        /** 气泡消息标题 */
+        sendMessageTitle?: string
+        /** 是否发送小程序气泡消息 */
+        showMessageCard?: boolean
+        /** 接口调用成功的回调函数 */
+        success?: OpenCustomerServiceChatSuccessCallback
     }
     interface OpenDocumentOption {
         /** 文件路径 (本地路径) ，可通过 downloadFile 获得 */
@@ -5007,6 +5062,8 @@ innerAudioContext.onError((res) => {
         peerIP: string
         /** 当前请求的端口 */
         port: number
+        /** 使用协议类型，有效值：http1.1, h2, quic, unknown */
+        protocol: string
         /** 收到字节数 */
         receivedBytedCount: number
         /** 最后一个 HTTP 重定向完成时的时间。有跳转且是同域名内部的重定向才算，否则值为 0 */
@@ -6968,6 +7025,83 @@ wx.getSetting({
         /** 解码模式。0：按 pts 解码；1：以最快速度解码 */
         mode?: number
     }
+    /** WebAudioContext 实例，通过[wx.createWebAudioContext](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/wx.createWebAudioContext.html) 接口获取该实例。
+*
+* **示例代码**
+*
+*
+* ```js
+// 监听状态
+const audioCtx = wx.createWebAudioContext()
+audioCtx.onstatechange = () => {
+  console.log(ctx.state)
+}
+setTimeout(audioCtx.suspend, 1000)
+setTimeout(audioCtx.resume, 2000)
+```
+*
+* 最低基础库： `2.19.0` */
+    interface WebAudioContext {
+        /** 获取当前上下文的时间戳。 */
+        currentTime: number
+        /** [WebAudioContextNode](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/WebAudioContextNode.html)
+         *
+         * 当前上下文的最终目标节点，一般是音频渲染设备。 */
+        destination: WebAudioContextNode
+        /** 空间音频监听器。 */
+        listener: AudioListener
+        /** 可写属性，开发者可以对该属性设置一个监听函数，当WebAudio状态改变的时候，会触发开发者设置的监听函数。 */
+        onstatechange: (...args: any[]) => any
+        /** 采样率，通常在8000-96000之间，通常44100hz的采样率最为常见。 */
+        sampleRate: number
+        /** 当前WebAudio上下文的状态。可能的值如下：suspended（暂停）、running（正在运行）、closed（已关闭）。需要注意的是，不要在 audioContext close后再访问state属性 */
+        state: string
+    }
+    /** 一类音频处理模块，不同的Node具备不同的功能，如GainNode(音量调整)等。一个WebAudioContextNode可以通过上下文来创建。
+     * 目前已经支持以下Node：
+     * IIRFilterNode
+     * WaveShaperNode
+     * ConstantSourceNode
+     * ChannelMergerNode
+     * OscillatorNode
+     * GainNode
+     * BiquadFilterNode
+     * PeriodicWaveNode
+     * BufferSourceNode
+     * ChannelSplitterNode
+     * ChannelMergerNode
+     * DelayNode
+     * DynamicsCompressorNode
+     * ScriptProcessorNode
+     * PannerNode
+     *
+     * 最低基础库： `2.19.0` */
+    interface WebAudioContextNode {
+        /** 表示监听器的前向系统在同一笛卡尔坐标系中的水平位置，作为位置（位置x，位置和位置和位置）值。 */
+        forwardX: number
+        /** 表示听众的前向方向在同一笛卡尔坐标系中作为位置（位置x，位置和位置和位置）值的垂直位置。 */
+        forwardY: number
+        /** 表示与position (positionX、positionY和positionZ)值在同一笛卡尔坐标系下的听者前进方向的纵向(前后)位置。 */
+        forwardZ: number
+        /** 右手笛卡尔坐标系中X轴的位置。 */
+        positionX: number
+        /** 右手笛卡尔坐标系中Y轴的位置。 */
+        positionY: number
+        /** 右手笛卡尔坐标系中Z轴的位置。 */
+        positionZ: number
+        /** 设置监听器的方向 */
+        setOrientation: (...args: any[]) => any
+        /** 设置监听器的位置
+         *
+         * /** */
+        setPosition: (...args: any[]) => any
+        /** 表示在与position (positionX、positionY和positionZ)值相同的笛卡尔坐标系中侦听器向前方向的水平位置。 */
+        upX: number
+        /** 表示在与position (positionX、positionY和positionZ)值相同的笛卡尔坐标系中侦听器向上方向的水平位置。 */
+        upY: number
+        /** 表示在与position (positionX、positionY和positionZ)值相同的笛卡尔坐标系中侦听器向后方向的水平位置。 */
+        upZ: number
+    }
     /** 提供预设的 Wi-Fi 信息列表 */
     interface WifiData {
         /** Wi-Fi 的 BSSID */
@@ -7504,6 +7638,35 @@ wx.getSetting({
             /** 长度值，如果传入 number 则默认使用 px，可传入其他自定义单位的长度值 */
             value: number | string
         ): Animation
+    }
+    interface AudioBuffer {
+        /** [AudioBuffer.copyFromChannel()](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/AudioBuffer.copyFromChannel.html)
+         *
+         * 从AudioBuffer的指定频道复制到数组终端。 */
+        copyFromChannel(): void
+        /** [AudioBuffer.copyToChannel(Float32Array source, number channelNumber, number startInChannel)](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/AudioBuffer.copyToChannel.html)
+         *
+         * 从指定数组复制样本到audioBuffer的特定通道
+         *
+         * **示例代码**
+         *
+         *
+         * 示例代码参考AudioBuffer.copyFromChannel */
+        copyToChannel(
+            /** 需要复制的源数组 */
+            source: Float32Array,
+            /** 需要复制到的目的通道号 */
+            channelNumber: number,
+            /** 复制偏移数据量 */
+            startInChannel: number
+        ): void
+        /** [Float32Array AudioBuffer.getChannelData(number channel)](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/AudioBuffer.getChannelData.html)
+         *
+         * 返回一个 Float32Array，包含了带有频道的PCM数据，由频道参数定义（有0代表第一个频道） */
+        getChannelData(
+            /** 要获取特定通道数据的索引 */
+            channel: number
+        ): Float32Array
     }
     interface AudioContext {
         /** [AudioContext.pause()](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/AudioContext.pause.html)
@@ -13426,6 +13589,145 @@ wx.getRandomValues({
             callback: (...args: any[]) => any
         ): void
     }
+    interface WebAudioContext {
+        /** [BiquadFilterNode WebAudioContext.createBiquadFilter()](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/WebAudioContext.createBiquadFilter.html)
+         *
+         * 创建一个BiquadFilterNode */
+        createBiquadFilter(): BiquadFilterNode
+        /** [BufferSourceNode WebAudioContext.createBufferSource()](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/WebAudioContext.createBufferSource.html)
+         *
+         * 创建一个BufferSourceNode实例，通过AudioBuffer对象来播放音频数据。 */
+        createBufferSource(): BufferSourceNode
+        /** [ChannelMergerNode WebAudioContext.createChannelMerger(number numberOfInputs)](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/WebAudioContext.createChannelMerger.html)
+         *
+         * 创建一个ChannelMergerNode */
+        createChannelMerger(
+            /** 输出流中需要保持的输入流的个数 */
+            numberOfInputs: number
+        ): ChannelMergerNode
+        /** [ChannelSplitterNode WebAudioContext.createChannelSplitter(number numberOfOutputs)](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/WebAudioContext.createChannelSplitter.html)
+         *
+         * 创建一个ChannelSplitterNode */
+        createChannelSplitter(
+            /** 要分别输出的输入音频流中的通道数 */
+            numberOfOutputs: number
+        ): ChannelSplitterNode
+        /** [ConstantSourceNode WebAudioContext.createConstantSource()](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/WebAudioContext.createConstantSource.html)
+         *
+         * 创建一个ConstantSourceNode */
+        createConstantSource(): ConstantSourceNode
+        /** [DelayNode WebAudioContext.createDelay(number maxDelayTime)](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/WebAudioContext.createDelay.html)
+         *
+         * 创建一个DelayNode */
+        createDelay(
+            /** 最大延迟时间 */
+            maxDelayTime: number
+        ): DelayNode
+        /** [DynamicsCompressorNode WebAudioContext.createDynamicsCompressor()](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/WebAudioContext.createDynamicsCompressor.html)
+         *
+         * 创建一个DynamicsCompressorNode */
+        createDynamicsCompressor(): DynamicsCompressorNode
+        /** [GainNode WebAudioContext.createGain()](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/WebAudioContext.createGain.html)
+         *
+         * 创建一个GainNode */
+        createGain(): GainNode
+        /** [IIRFilterNode WebAudioContext.createIIRFilter(Array.&lt;number&gt; feedforward, Array.&lt;number&gt; feedback)](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/WebAudioContext.createIIRFilter.html)
+         *
+         * 创建一个IIRFilterNode */
+        createIIRFilter(
+            /** 一个浮点值数组，指定IIR滤波器传递函数的前馈(分子)系数。 */
+            feedforward: number[],
+            /** 一个浮点值数组，指定IIR滤波器传递函数的反馈(分母)系数。 */
+            feedback: number[]
+        ): IIRFilterNode
+        /** [OscillatorNode WebAudioContext.createOscillator()](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/WebAudioContext.createOscillator.html)
+         *
+         * 创建一个OscillatorNode */
+        createOscillator(): OscillatorNode
+        /** [PannerNode WebAudioContext.createPanner()](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/WebAudioContext.createPanner.html)
+         *
+         * 创建一个PannerNode */
+        createPanner(): PannerNode
+        /** [PeriodicWaveNode WebAudioContext.createPeriodicWave(Float32Array real, Float32Array imag, object constraints)](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/WebAudioContext.createPeriodicWave.html)
+*
+* 创建一个PeriodicWaveNode
+*
+* **注意**
+*
+*
+* `real`和`imag`数组必须拥有一样的长度，否则抛出错误
+* ```js
+const real = new Float32Array(2)
+const imag = new Float32Array(2)
+real[0] = 0
+imag[0] = 0
+real[1] = 1
+imag[1] = 0
+
+const waveNode = audioContext.createPeriodicWave(real, imag, {disableNormalization: true})
+``` */
+        createPeriodicWave(
+            /** 一组余弦项(传统上是A项) */
+            real: Float32Array,
+            /** 一组余弦项(传统上是A项) */
+            imag: Float32Array,
+            /** 一个字典对象，它指定是否应该禁用规范化(默认启用规范化) */
+            constraints: Constraints
+        ): PeriodicWaveNode
+        /** [Promise WebAudioContext.close()](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/WebAudioContext.close.html)
+*
+* 关闭WebAudioContext
+*
+* **注意事项**
+*
+*
+* 同步关闭对应的WebAudio上下文。close后会立即释放当前上下文的资源，<b>不要在close后再次访问state属性。</b>
+* ```js
+const audioCtx = wx.createWebAudioContext()
+audioCtx.close().then(() => {
+  console.log(audioCtx.state) // bad case：不应该在close后再访问state
+})
+``` */
+        close(): Promise<any>
+        /** [Promise WebAudioContext.resume()](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/WebAudioContext.resume.html)
+         *
+         * 同步恢复已经被暂停的WebAudioContext上下文 */
+        resume(): Promise<any>
+        /** [Promise WebAudioContext.suspend()](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/WebAudioContext.suspend.html)
+         *
+         * 同步暂停WebAudioContext上下文 */
+        suspend(): Promise<any>
+        /** [ScriptProcessorNode WebAudioContext.createScriptProcessor(number bufferSize, number numberOfInputChannels, number numberOfOutputChannels)](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/WebAudioContext.createScriptProcessor.html)
+         *
+         * 创建一个ScriptProcessorNode */
+        createScriptProcessor(
+            /** 缓冲区大小，以样本帧为单位 */
+            bufferSize: number,
+            /** 用于指定输入node的声道的数量 */
+            numberOfInputChannels: number,
+            /** 用于指定输出node的声道的数量 */
+            numberOfOutputChannels: number
+        ): ScriptProcessorNode
+        /** [WaveShaperNode WebAudioContext.createWaveShaper()](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/WebAudioContext.createWaveShaper.html)
+         *
+         * 创建一个WaveShaperNode */
+        createWaveShaper(): WaveShaperNode
+        /** [[AudioBuffer](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/AudioBuffer.html) WebAudioContext.createBuffer(number numOfChannels, number length, number sampleRate)](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/WebAudioContext.createBuffer.html)
+         *
+         * 创建一个AudioBuffer，代表着一段驻留在内存中的短音频 */
+        createBuffer(
+            /** 定义了 buffer 中包含的声频通道数量的整数 */
+            numOfChannels: number,
+            /** 代表 buffer 中的样本帧数的整数 */
+            length: number,
+            /** 线性音频样本的采样率，即每一秒包含的关键帧的个数 */
+            sampleRate: number
+        ): AudioBuffer
+        /** [[AudioBuffer](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/AudioBuffer.html) WebAudioContext.decodeAudioData()](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/WebAudioContext.decodeAudioData.html)
+         *
+         * 异步解码一段资源为AudioBuffer。 */
+        decodeAudioData(): AudioBuffer
+    }
     interface WifiError {
         /** 错误信息
          *
@@ -13781,12 +14083,14 @@ wx.downloadFile({
          *
          * 最低基础库： `1.9.9` */
         getFileSystemManager(): FileSystemManager
-        /** [[InnerAudioContext](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/InnerAudioContext.html) wx.createInnerAudioContext()](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/wx.createInnerAudioContext.html)
+        /** [[InnerAudioContext](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/InnerAudioContext.html) wx.createInnerAudioContext(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/wx.createInnerAudioContext.html)
          *
          * 创建内部 [audio](https://developers.weixin.qq.com/miniprogram/dev/component/audio.html) 上下文 [InnerAudioContext](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/InnerAudioContext.html) 对象。
          *
          * 最低基础库： `1.6.0` */
-        createInnerAudioContext(): InnerAudioContext
+        createInnerAudioContext(
+            option?: CreateInnerAudioContextOption
+        ): InnerAudioContext
         /** [[IntersectionObserver](https://developers.weixin.qq.com/miniprogram/dev/api/wxml/IntersectionObserver.html) wx.createIntersectionObserver(Object component, Object options)](https://developers.weixin.qq.com/miniprogram/dev/api/wxml/wx.createIntersectionObserver.html)
          *
          * 创建并返回一个 IntersectionObserver 对象实例。在自定义组件或包含自定义组件的页面中，应使用 `this.createIntersectionObserver([options])` 来代替。
@@ -14050,6 +14354,8 @@ const observer = performance.createObserver((entryList) => {
 observer.observe({ entryTypes: ['render', 'script'] })
 ```
 *
+* 备注：目前，当开启代码 [按需注入](https://developers.weixin.qq.com/miniprogram/dev/framework/ability/lazyload.html) 时，`evaluateScript` 将仅包含公有部分代码，页面和组件的代码注入的时间会体现在 `firstRender` 上（因为页面和组件的代码注入过程成为了首次渲染过程的一部分）；因此开启按需注入后，脚本耗时降低，渲染时间提高属于正常现象，优化效果可以关注整体启动耗时（`appLaunch`）来评估
+*
 * 最低基础库： `2.11.0` */
         getPerformance(): Performance
         /** [[RealtimeLogManager](https://developers.weixin.qq.com/miniprogram/dev/api/base/debug/RealtimeLogManager.html) wx.getRealtimeLogManager()](https://developers.weixin.qq.com/miniprogram/dev/api/base/debug/wx.getRealtimeLogManager.html)
@@ -14248,6 +14554,12 @@ wx.chooseImage({
          *
          * 最低基础库： `2.11.0` */
         createVideoDecoder(): VideoDecoder
+        /** [[WebAudioContext](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/WebAudioContext.html) wx.createWebAudioContext()](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/wx.createWebAudioContext.html)
+         *
+         * 创建WebAudio上下文。本接口为 Beta 版本，当前版本可能出现不稳定状况。
+         *
+         * 最低基础库： `2.19.0` */
+        createWebAudioContext(): WebAudioContext
         /** [[Worker](https://developers.weixin.qq.com/miniprogram/dev/api/worker/Worker.html) wx.createWorker(string scriptPath, object options)](https://developers.weixin.qq.com/miniprogram/dev/api/worker/wx.createWorker.html)
 *
 * 创建一个 Worker 线程
@@ -17246,7 +17558,6 @@ wx.onNetworkStatusChange(function (res) {
          * **注意**
          *
          *
-         * - 安卓平台暂时不支持该事件
          * - 所有的 unhandledRejection 都可以被这一监听捕获，但只有 Error 类型的才会在小程序后台触发报警。
          *
          * 最低基础库： `2.10.0` */
@@ -17404,6 +17715,24 @@ wx.openCard({
          *
          * 最低基础库： `2.15.0` */
         openChannelsLive(option: OpenChannelsLiveOption): void
+        /** [wx.openCustomerServiceChat(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/service-chat/wx.openCustomerServiceChat.html)
+*
+* 打开微信客服。了解更多信息，可以参考[微信客服介绍](https://work.weixin.qq.com/kf/)。
+*
+* **示例代码**
+*
+*
+*
+* ```js
+wx.openCustomerServiceChat({
+  extInfo: {url: ''},
+  corpId: '',
+  success(res) {}
+})
+```
+*
+* 最低基础库： `2.19.0` */
+        openCustomerServiceChat(option: OpenCustomerServiceChatOption): void
         /** [wx.openDocument(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/file/wx.openDocument.html)
          *
          * 新开页面打开文档。微信客户端 `7.0.12` 版本前默认显示右上角菜单按钮，之后的版本默认不显示，需主动传入 `showMenu`。 */
@@ -20939,6 +21268,18 @@ wx.writeBLECharacteristicValue({
     type OpenCardSuccessCallback = (res: GeneralCallbackResult) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type OpenCompleteCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type OpenCustomerServiceChatCompleteCallback = (
+        res: GeneralCallbackResult
+    ) => void
+    /** 接口调用失败的回调函数 */
+    type OpenCustomerServiceChatFailCallback = (
+        res: GeneralCallbackResult
+    ) => void
+    /** 接口调用成功的回调函数 */
+    type OpenCustomerServiceChatSuccessCallback = (
+        res: GeneralCallbackResult
+    ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type OpenDocumentCompleteCallback = (res: GeneralCallbackResult) => void
     /** 接口调用失败的回调函数 */

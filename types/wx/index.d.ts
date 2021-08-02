@@ -103,6 +103,23 @@ declare namespace WechatMiniprogram {
             ...args: any[]
         ): void
     }
+
+    //  TODO: Extract real definition from `lib.dom.d.ts` to replace this
+    type IIRFilterNode = any
+    type WaveShaperNode = any
+    type ConstantSourceNode = any
+    type OscillatorNode = any
+    type GainNode = any
+    type BiquadFilterNode = any
+    type PeriodicWaveNode = any
+    type BufferSourceNode = any
+    type ChannelSplitterNode = any
+    type ChannelMergerNode = any
+    type DelayNode = any
+    type DynamicsCompressorNode = any
+    type ScriptProcessorNode = any
+    type PannerNode = any
+    type AudioListener = any
 }
 
 declare let console: WechatMiniprogram.Console
