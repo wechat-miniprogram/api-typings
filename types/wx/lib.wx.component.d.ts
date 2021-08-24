@@ -270,7 +270,22 @@ declare namespace WechatMiniprogram.Component {
             options?: ClearAnimationOptions,
             callback?: () => void
         ): void
+        /**
+         * 当从另一页面跳转到该页面时，获得与来源页面实例通信当事件通道，详见 [wx.navigateTo]((wx.navigateTo))
+         *
+         * 最低基础库版本：[`2.7.3`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html)
+         */
         getOpenerEventChannel(): EventChannel
+        /**
+         * 获取更新性能统计信息，详见 [获取更新性能统计信息]((custom-component/update-perf-stat))
+         *
+         *
+         * 最低基础库版本：[`2.12.0`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html)
+         */
+        setUpdatePerformanceListener<WithDataPath extends boolean = false>(
+            options: SetUpdatePerformanceListenerOption<WithDataPath>,
+            callback?: UpdatePerformanceListener<WithDataPath>
+        ): void
     }
 
     interface ComponentOptions {
@@ -622,6 +637,30 @@ declare namespace WechatMiniprogram.Component {
         endScrollOffset: number
         /** 起始和结束的滚动范围映射的时间长度，该时间可用于与关键帧动画里的时间 (duration) 相匹配，单位 ms */
         timeRange: number
+    }
+
+    interface SetUpdatePerformanceListenerOption<WithDataPath> {
+        /** 是否返回变更的 data 字段信息 */
+        withDataPaths?: WithDataPath
+    }
+    interface UpdatePerformanceListener<WithDataPath> {
+        (res: UpdatePerformance<WithDataPath>): void
+    }
+    interface UpdatePerformance<WithDataPath> {
+        /** 此次更新过程的 ID */
+        updateProcessId: number
+        /** 对于子更新，返回它所属的更新过程 ID */
+        parentUpdateProcessId?: number
+        /** 是否是被合并更新，如果是，则 updateProcessId 表示被合并到的更新过程 ID */
+        isMergedUpdate: boolean
+        /** 此次更新的 data 字段信息，只有 withDataPaths 设为 true 时才会返回 */
+        dataPaths: WithDataPath extends true ? string[] : undefined
+        /** 此次更新进入等待队列时的时间戳 */
+        pendingStartTimestamp: number
+        /** 更新运算开始时的时间戳 */
+        updateStartTimestamp: number
+        /** 更新运算结束时的时间戳 */
+        updateEndTimestamp: number
     }
 }
 /** Component构造器可用于定义组件，调用Component构造器时可以指定组件的属性、数据、方法等。

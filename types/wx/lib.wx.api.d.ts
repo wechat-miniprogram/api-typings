@@ -281,13 +281,13 @@ declare namespace WechatMiniprogram {
     }
     /** 广播自定义参数 */
     interface AdvertiseReqObj {
-        /** 当前Service是否可连接 */
+        /** 当前 service 是否可连接 */
         connectable?: boolean
-        /** 广播中deviceName字段，默认为空 */
+        /** 广播中 deviceName 字段，默认为空 */
         deviceName?: string
-        /** 广播的制造商信息, 仅安卓支持 */
+        /** 广播的制造商信息。仅安卓支持，iOS 因系统限制无法定制。 */
         manufacturerData?: ManufacturerData[]
-        /** 要广播的serviceUuid列表 */
+        /** 要广播的服务 UUID 列表，需要先通过 [addService](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-peripheral/BLEPeripheralServer.addService.html) 添加。使用 16/32 位 UUID 时请参考注意事项。 */
         serviceUuids?: string[]
     }
     /** animationData */
@@ -434,22 +434,22 @@ declare namespace WechatMiniprogram {
         /** 接口调用成功的回调函数 */
         success?: AuthorizeSuccessCallback
     }
-    /** 设备特征值列表 */
+    /** 设备特征列表 */
     interface BLECharacteristic {
-        /** 该特征值支持的操作类型 */
+        /** 该特征支持的操作类型 */
         properties: BLECharacteristicProperties
-        /** 蓝牙设备特征值的 uuid */
+        /** 蓝牙设备特征的 UUID */
         uuid: string
     }
-    /** 该特征值支持的操作类型 */
+    /** 该特征支持的操作类型 */
     interface BLECharacteristicProperties {
-        /** 该特征值是否支持 indicate 操作 */
+        /** 该特征是否支持 indicate 操作 */
         indicate: boolean
-        /** 该特征值是否支持 notify 操作 */
+        /** 该特征是否支持 notify 操作 */
         notify: boolean
-        /** 该特征值是否支持 read 操作 */
+        /** 该特征是否支持 read 操作 */
         read: boolean
-        /** 该特征值是否支持 write 操作 */
+        /** 该特征是否支持 write 操作 */
         write: boolean
     }
     interface BLEPeripheralServerCloseOption {
@@ -464,14 +464,14 @@ declare namespace WechatMiniprogram {
     interface BLEPeripheralService {
         /** characteristics列表 */
         characteristics: Characteristic[]
-        /** service 的 uuid */
+        /** 蓝牙服务的 UUID */
         uuid: string
     }
     /** 设备服务列表 */
     interface BLEService {
         /** 该服务是否为主服务 */
         isPrimary: boolean
-        /** 蓝牙设备服务的 uuid */
+        /** 蓝牙设备服务的 UUID */
         uuid: string
     }
     /** BackgroundAudioManager 实例，可通过 [wx.getBackgroundAudioManager](https://developers.weixin.qq.com/miniprogram/dev/api/media/background-audio/wx.getBackgroundAudioManager.html) 获取。
@@ -520,14 +520,35 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         /** 页面链接，原生音频播放器中的分享功能，分享出去的卡片简介，也将使用该值。 */
         webUrl: string
     }
+    /** Beacon 设备 */
+    interface BeaconInfo {
+        /** Beacon 设备的距离，单位 m。iOS 上，proximity 为 0 时，accuracy 为 -1。 */
+        accuracy: number
+        /** Beacon 设备的主 ID */
+        major: number
+        /** Beacon 设备的次 ID */
+        minor: number
+        /** 表示设备距离的枚举值（仅iOS）
+         *
+         * 可选值：
+         * - 0: 信号太弱不足以计算距离，或非 iOS 设备;
+         * - 1: 十分近;
+         * - 2: 比较近;
+         * - 3: 远; */
+        proximity: 0 | 1 | 2 | 3
+        /** 表示设备的信号强度，单位 dBm */
+        rssi: number
+        /** Beacon 设备广播的 UUID */
+        uuid: string
+    }
     interface BlueToothDevice {
-        /** 当前蓝牙设备的信号强度 */
+        /** 当前蓝牙设备的信号强度，单位 dBm */
         RSSI: number
         /** 当前蓝牙设备的广播数据段中的 ManufacturerData 数据段。 */
         advertisData: ArrayBuffer
         /** 当前蓝牙设备的广播数据段中的 ServiceUUIDs 数据段 */
         advertisServiceUUIDs: string[]
-        /** 用于区分设备的 id */
+        /** 蓝牙设备 id */
         deviceId: string
         /** 当前蓝牙设备的广播数据段中的 LocalName 数据段 */
         localName: string
@@ -797,27 +818,27 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
     }
     /** characteristics列表 */
     interface Characteristic {
-        /** Characteristic 的 uuid */
+        /** characteristic 的 UUID */
         uuid: string
         /** 描述符数据 */
         descriptors?: CharacteristicDescriptor[]
-        /** 特征值权限 */
+        /** 特征权限 */
         permission?: CharacteristicPermission
-        /** 特征值支持的操作 */
+        /** 特征支持的操作 */
         properties?: CharacteristicProperties
-        /** 特征值对应的二进制值 */
+        /** 特征对应的二进制值 */
         value?: ArrayBuffer
     }
     /** 描述符数据 */
     interface CharacteristicDescriptor {
-        /** Descriptor 的 uuid */
+        /** Descriptor 的 UUID */
         uuid: string
         /** 描述符的权限 */
         permission?: DescriptorPermission
         /** 描述符数据 */
         value?: ArrayBuffer
     }
-    /** 特征值权限 */
+    /** 特征权限 */
     interface CharacteristicPermission {
         /** 加密读请求 */
         readEncryptionRequired?: boolean
@@ -828,7 +849,7 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         /** 可写 */
         writeable?: boolean
     }
-    /** 特征值支持的操作 */
+    /** 特征支持的操作 */
     interface CharacteristicProperties {
         /** 回包 */
         indicate?: boolean
@@ -838,6 +859,8 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         read?: boolean
         /** 写 */
         write?: boolean
+        /** 无回复写 */
+        writeNoResponse?: boolean
     }
     interface CheckIsOpenAccessibilityOption {
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
@@ -1034,6 +1057,19 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
          * - 1: 个人; */
         type: 0 | 1
     }
+    interface ChooseLicensePlateOption {
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: ChooseLicensePlateCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: ChooseLicensePlateFailCallback
+        /** 接口调用成功的回调函数 */
+        success?: ChooseLicensePlateSuccessCallback
+    }
+    interface ChooseLicensePlateSuccessCallbackResult {
+        /** 用户选择的车牌号 */
+        plateNumber: string
+        errMsg: string
+    }
     interface ChooseLocationOption {
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: ChooseLocationCompleteCallback
@@ -1206,7 +1242,7 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         success?: ClearStorageSuccessCallback
     }
     interface CloseBLEConnectionOption {
-        /** 用于区分设备的 id */
+        /** 蓝牙设备 id */
         deviceId: string
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: CloseBLEConnectionCompleteCallback
@@ -1532,7 +1568,7 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         success?: CopyFileSuccessCallback
     }
     interface CreateBLEConnectionOption {
-        /** 用于区分设备的 id */
+        /** 蓝牙设备 id */
         deviceId: string
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: CreateBLEConnectionCompleteCallback
@@ -1540,7 +1576,7 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         fail?: CreateBLEConnectionFailCallback
         /** 接口调用成功的回调函数 */
         success?: CreateBLEConnectionSuccessCallback
-        /** 超时时间，单位ms，不填表示不会超时 */
+        /** 超时时间，单位 ms，不填表示不会超时 */
         timeout?: number
     }
     interface CreateBLEPeripheralServerOption {
@@ -1843,6 +1879,67 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         /** 视频源地址，只支持本地文件 */
         source: string
     }
+    /** 人脸角度信息，取值范围 [-1, 1]，数值越接近 0 表示越正对摄像头 */
+    interface FaceAngel {
+        /** 仰俯角（点头） */
+        pitch: number
+        /** 翻滚角（左右倾） */
+        roll: number
+        /** 偏航角（摇头） */
+        yaw: number
+    }
+    /** 人脸置信度，取值范围 [0, 1]，数值越大置信度越高（遮挡越少） */
+    interface FaceConf {
+        /** 整体可信度 */
+        global: number
+        /** 左眼可信度 */
+        leftEye: number
+        /** 嘴巴可信度 */
+        mouth: number
+        /** 鼻子可信度 */
+        nose: number
+        /** 右眼可信度 */
+        rightEye: number
+    }
+    interface FaceDetectOption {
+        /** 图像像素点数据，每四项表示一个像素点的 RGBA */
+        frameBuffer: ArrayBuffer
+        /** 图像高度 */
+        height: number
+        /** 图像宽度 */
+        width: number
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: FaceDetectCompleteCallback
+        /** 是否返回当前图像的人脸角度信息 */
+        enableAngle?: boolean
+        /** 是否返回当前图像的人脸的置信度（可表示器官遮挡情况） */
+        enableConf?: boolean
+        /** 是否返回多张人脸的信息 */
+        enableMultiFace?: boolean
+        /** 是否返回当前图像的人脸（106 个点） */
+        enablePoint?: boolean
+        /** 接口调用失败的回调函数 */
+        fail?: FaceDetectFailCallback
+        /** 接口调用成功的回调函数 */
+        success?: FaceDetectSuccessCallback
+    }
+    interface FaceDetectSuccessCallbackResult {
+        /** 人脸角度信息，取值范围 [-1, 1]，数值越接近 0 表示越正对摄像头 */
+        angleArray: FaceAngel
+        /** 人脸置信度，取值范围 [0, 1]，数值越大置信度越高（遮挡越少） */
+        confArray: FaceConf
+        /** 脸部正方框数值，对象包含 height, weight, originX, originY 四个属性 */
+        detectRect: IAnyObject
+        /** 多人模式（enableMultiFace）下的人脸信息，每个对象包含上述其它属性 */
+        faceInfo: IAnyObject[]
+        /** 人脸 106 个点位置数组，数组每个对象包含 x 和 y */
+        pointArray: IAnyObject[]
+        /** 脸部中心点横坐标，检测不到人脸则为 -1 */
+        x: number
+        /** 脸部中心点纵坐标，检测不到人脸则为 -1 */
+        y: number
+        errMsg: string
+    }
     interface Fields {
         /** 需要基础库： `2.1.0`
          *
@@ -2072,9 +2169,9 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         errMsg: string
     }
     interface GetBLEDeviceCharacteristicsOption {
-        /** 蓝牙设备 id */
+        /** 蓝牙设备 id。需要已经通过 [wx.createBLEConnection](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-ble/wx.createBLEConnection.html) 建立连接 */
         deviceId: string
-        /** 蓝牙服务 uuid，需要使用 `getBLEDeviceServices` 获取 */
+        /** 蓝牙服务 UUID。需要先调用 [wx.getBLEDeviceServices](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-ble/wx.getBLEDeviceServices.html) 获取 */
         serviceId: string
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: GetBLEDeviceCharacteristicsCompleteCallback
@@ -2084,7 +2181,7 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         success?: GetBLEDeviceCharacteristicsSuccessCallback
     }
     interface GetBLEDeviceCharacteristicsSuccessCallbackResult {
-        /** 设备特征值列表 */
+        /** 设备特征列表 */
         characteristics: BLECharacteristic[]
         errMsg: string
     }
@@ -2099,12 +2196,12 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         success?: GetBLEDeviceRSSISuccessCallback
     }
     interface GetBLEDeviceRSSISuccessCallbackResult {
-        /** 信号强度 */
+        /** 信号强度，单位 dBm */
         RSSI: number
         errMsg: string
     }
     interface GetBLEDeviceServicesOption {
-        /** 蓝牙设备 id */
+        /** 蓝牙设备 id。需要已经通过 [wx.createBLEConnection](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-ble/wx.createBLEConnection.html) 建立连接 */
         deviceId: string
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: GetBLEDeviceServicesCompleteCallback
@@ -2192,8 +2289,8 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         success?: GetBeaconsSuccessCallback
     }
     interface GetBeaconsSuccessCallbackResult {
-        /** iBeacon 设备列表 */
-        beacons: IBeaconInfo[]
+        /** Beacon 设备列表 */
+        beacons: BeaconInfo[]
         errMsg: string
     }
     interface GetBluetoothAdapterStateOption {
@@ -2220,7 +2317,7 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         success?: GetBluetoothDevicesSuccessCallback
     }
     interface GetBluetoothDevicesSuccessCallbackResult {
-        /** uuid 对应的的已连接设备列表 */
+        /** UUID 对应的已连接设备列表 */
         devices: BlueToothDevice[]
         errMsg: string
     }
@@ -2262,7 +2359,32 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         nickname: string
         /** 直播 nonceId */
         nonceId: string
-        /** 直播状态，1未开播，2直播中，3直播结束，4直播准备中 */
+        /** 直播状态，2直播中，3直播结束 */
+        status: number
+        errMsg: string
+    }
+    interface GetChannelsLiveNoticeInfoOption {
+        /** 视频号 id */
+        finderUserName: string
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: GetChannelsLiveNoticeInfoCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: GetChannelsLiveNoticeInfoFailCallback
+        /** 接口调用成功的回调函数 */
+        success?: GetChannelsLiveNoticeInfoSuccessCallback
+    }
+    interface GetChannelsLiveNoticeInfoSuccessCallbackResult {
+        /** 直播封面 */
+        headUrl: string
+        /** 视频号昵称 */
+        nickname: string
+        /** 预告 id */
+        noticeId: string
+        /** 是否可预约 */
+        reservable: boolean
+        /** 开始时间 */
+        startTime: string
+        /** 预告状态：0可用 1取消 2已用 */
         status: number
         errMsg: string
     }
@@ -2279,7 +2401,7 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         data: string
     }
     interface GetConnectedBluetoothDevicesOption {
-        /** 蓝牙设备主 service 的 uuid 列表 */
+        /** 蓝牙设备主服务的 UUID 列表（支持 16/32/128 位 UUID） */
         services: string[]
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: GetConnectedBluetoothDevicesCompleteCallback
@@ -2454,7 +2576,7 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         /** 需要基础库： `1.6.0`
          *
          * 传入 true 会返回高度信息，由于获取高度需要较高精确度，会减慢接口返回速度 */
-        altitude?: string
+        altitude?: boolean
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: GetLocationCompleteCallback
         /** 接口调用失败的回调函数 */
@@ -3010,21 +3132,6 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         /** 宿主 app 对应的 appId */
         appId: string
     }
-    /**  */
-    interface IBeaconInfo {
-        /** iBeacon 设备的距离 */
-        accuracy: number
-        /** iBeacon 设备的主 id */
-        major: string
-        /** iBeacon 设备的次 id */
-        minor: string
-        /** 表示设备距离的枚举值 */
-        proximity: number
-        /** 表示设备的信号强度 */
-        rssi: number
-        /** iBeacon 设备广播的 uuid */
-        uuid: string
-    }
     /** 需要基础库： `2.7.0`
      *
      * 图片对象 */
@@ -3071,6 +3178,14 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         padding?: number[]
         /** 接口调用成功的回调函数 */
         success?: IncludePointsSuccessCallback
+    }
+    interface InitFaceDetectOption {
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: InitFaceDetectCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: InitFaceDetectFailCallback
+        /** 接口调用成功的回调函数 */
+        success?: InitFaceDetectSuccessCallback
     }
     interface InitMarkerClusterOption {
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
@@ -3295,6 +3410,14 @@ innerAudioContext.onError((res) => {
         referrerInfo: ReferrerInfo
         /** 启动小程序的[场景值](https://developers.weixin.qq.com/miniprogram/dev/framework/app-service/scene.html) */
         scene: number
+        /** 从微信群聊/单聊打开小程序时，chatType 表示具体微信群聊/单聊类型
+         *
+         * 可选值：
+         * - 1: 微信联系人单聊;
+         * - 2: 企业微信联系人单聊;
+         * - 3: 普通微信群聊;
+         * - 4: 企业微信互通群聊; */
+        chatType?: 1 | 2 | 3 | 4
         /** shareTicket，详见[获取更多转发信息](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/share.html) */
         shareTicket?: string
     }
@@ -3415,7 +3538,7 @@ innerAudioContext.onError((res) => {
         fail?: MakeBluetoothPairFailCallback
         /** 接口调用成功的回调函数 */
         success?: MakeBluetoothPairSuccessCallback
-        /** 超时时间，单位ms */
+        /** 超时时间，单位 ms */
         timeout?: number
     }
     interface MakePhoneCallOption {
@@ -3428,7 +3551,7 @@ innerAudioContext.onError((res) => {
         /** 接口调用成功的回调函数 */
         success?: MakePhoneCallSuccessCallback
     }
-    /** 广播的制造商信息, 仅安卓支持 */
+    /** 广播的制造商信息。仅安卓支持，iOS 因系统限制无法定制。 */
     interface ManufacturerData {
         /** 制造商ID，0x 开头的十六进制 */
         manufacturerId: string
@@ -3692,11 +3815,11 @@ innerAudioContext.onError((res) => {
         node: IAnyObject
     }
     interface NotifyBLECharacteristicValueChangeOption {
-        /** 蓝牙特征值的 uuid */
+        /** 蓝牙特征的 UUID */
         characteristicId: string
         /** 蓝牙设备 id */
         deviceId: string
-        /** 蓝牙特征值对应服务的 uuid */
+        /** 蓝牙特征对应服务的 UUID */
         serviceId: string
         /** 是否启用 notify */
         state: boolean
@@ -3706,6 +3829,10 @@ innerAudioContext.onError((res) => {
         fail?: NotifyBLECharacteristicValueChangeFailCallback
         /** 接口调用成功的回调函数 */
         success?: NotifyBLECharacteristicValueChangeSuccessCallback
+        /** 需要基础库： `2.4.0`
+         *
+         * 设置特征订阅类型，有效值有 `notification` 和 `indication` */
+        type?: string
     }
     /** media query 描述符 */
     interface ObserveDescriptor {
@@ -3756,19 +3883,19 @@ innerAudioContext.onError((res) => {
         shareTicket?: string
     }
     interface OnBLECharacteristicValueChangeCallbackResult {
-        /** 蓝牙特征值的 uuid */
+        /** 蓝牙特征的 UUID */
         characteristicId: string
         /** 蓝牙设备 id */
         deviceId: string
-        /** 蓝牙特征值对应服务的 uuid */
+        /** 蓝牙特征对应服务的 UUID */
         serviceId: string
-        /** 特征值最新的值 */
+        /** 特征最新的值 */
         value: ArrayBuffer
     }
     interface OnBLEConnectionStateChangeCallbackResult {
         /** 是否处于已连接状态 */
         connected: boolean
-        /** 蓝牙设备ID */
+        /** 蓝牙设备 id */
         deviceId: string
     }
     interface OnBLEPeripheralConnectionStateChangedCallbackResult {
@@ -3776,7 +3903,7 @@ innerAudioContext.onError((res) => {
         connected: boolean
         /** 连接状态变化的设备 id */
         deviceId: string
-        /** server 的 uuid */
+        /** server 的 UUID */
         serverId: string
     }
     interface OnBackgroundFetchDataCallbackResult {
@@ -3794,8 +3921,8 @@ innerAudioContext.onError((res) => {
         discovering: boolean
     }
     interface OnBeaconUpdateCallbackResult {
-        /** 当前搜寻到的所有 iBeacon 设备列表 */
-        beacons: IBeaconInfo[]
+        /** 当前搜寻到的所有 Beacon 设备列表 */
+        beacons: BeaconInfo[]
     }
     interface OnBluetoothAdapterStateChangeCallbackResult {
         /** 蓝牙适配器是否可用 */
@@ -3816,27 +3943,27 @@ innerAudioContext.onError((res) => {
         width: number
     }
     interface OnCharacteristicReadRequestCallbackResult {
-        /** 唯一标识码，调用 writeCharacteristicValue 时使用 */
+        /** 唯一标识码，调用 [writeCharacteristicValue](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-peripheral/BLEPeripheralServer.writeCharacteristicValue.html) 时使用 */
         callbackId: number
-        /** characteristic对应的uuid */
+        /** 蓝牙特征的 UUID */
         characteristicId: string
-        /** service对应的uuid */
+        /** 蓝牙特征对应服务的 UUID */
         serviceId: string
     }
     interface OnCharacteristicSubscribedCallbackResult {
-        /** characteristic对应的uuid */
+        /** 蓝牙特征的 UUID */
         characteristicId: string
-        /** service对应的uuid */
+        /** 蓝牙特征对应服务的 UUID */
         serviceId: string
     }
     interface OnCharacteristicWriteRequestCallbackResult {
-        /** 唯一标识码，调用 writeCharacteristicValue 时使用 */
+        /** 唯一标识码，调用 [writeCharacteristicValue](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-peripheral/BLEPeripheralServer.writeCharacteristicValue.html) 时使用 */
         callbackId: number
-        /** characteristic对应的uuid */
+        /** 蓝牙特征的 UUID */
         characteristicId: string
-        /** service对应的uuid */
+        /** 蓝牙特征对应服务的 UUID */
         serviceId: string
-        /** 请求写入的特征值数据 */
+        /** 请求写入特征的二进制数据值 */
         value: ArrayBuffer
     }
     interface OnCheckForUpdateCallbackResult {
@@ -4074,7 +4201,7 @@ innerAudioContext.onError((res) => {
          *
          * 可选值：
          * - 'central': 主机模式;
-         * - 'peripheral': 从机模式; */
+         * - 'peripheral': 从机（外围设备）模式; */
         mode?: 'central' | 'peripheral'
         /** 接口调用成功的回调函数 */
         success?: OpenBluetoothAdapterSuccessCallback
@@ -4096,13 +4223,31 @@ innerAudioContext.onError((res) => {
         /** 由 [wx.addCard](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/card/wx.addCard.html) 的返回对象中的加密 code 通过解密后得到，解密请参照：[code 解码接口](https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1499332673_Unm7V) */
         code: string
     }
-    interface OpenChannelsLiveOption {
-        /** 直播 feedId，通过 getChannelsLiveInfo 接口获取 */
+    interface OpenChannelsActivityOption {
+        /** 视频 feedId */
         feedId: string
         /** 视频号 id */
         finderUserName: string
-        /** 直播 nonceId，通过 getChannelsLiveInfo 接口获取 */
-        nonceId: string
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: OpenChannelsActivityCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: OpenChannelsActivityFailCallback
+        /** 接口调用成功的回调函数 */
+        success?: OpenChannelsActivitySuccessCallback
+    }
+    interface OpenChannelsLiveOption {
+        /** 视频号 id */
+        finderUserName: string
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: OpenChannelsLiveCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: OpenChannelsLiveFailCallback
+        /** 直播 feedId，通过 getChannelsLiveInfo 接口获取（基础库 v2.19.2 之前的版本需要填写） */
+        feedId?: string
+        /** 直播 nonceId，通过 getChannelsLiveInfo 接口获取（基础库 v2.19.2 之前的版本需要填写） */
+        nonceId?: string
+        /** 接口调用成功的回调函数 */
+        success?: OpenChannelsLiveSuccessCallback
     }
     interface OpenCustomerServiceChatOption {
         /** 企业ID */
@@ -4466,11 +4611,11 @@ innerAudioContext.onError((res) => {
         success?: ReLaunchSuccessCallback
     }
     interface ReadBLECharacteristicValueOption {
-        /** 蓝牙特征值的 uuid */
+        /** 蓝牙特征的 UUID */
         characteristicId: string
         /** 蓝牙设备 id */
         deviceId: string
-        /** 蓝牙特征值对应服务的 uuid */
+        /** 蓝牙特征对应服务的 UUID */
         serviceId: string
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: ReadBLECharacteristicValueCompleteCallback
@@ -4833,7 +4978,7 @@ innerAudioContext.onError((res) => {
         errMsg: string
     }
     interface RemoveServiceOption {
-        /** service 的 uuid */
+        /** service 的 UUID */
         serviceId: string
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: RemoveServiceCompleteCallback
@@ -4921,6 +5066,10 @@ innerAudioContext.onError((res) => {
          *
          * 开启 http2 */
         enableHttp2?: boolean
+        /** 需要基础库： `2.19.1`
+         *
+         * 是否开启 HttpDNS 服务。如开启，需要同时填入 httpDNSServiceId 。 HttpDNS 用法详见 [移动解析HttpDNS](https://developers.weixin.qq.com/miniprogram/dev/framework/ability/HTTPDNS.html) */
+        enableHttpDNS?: boolean
         /** 需要基础库： `2.10.4`
          *
          * 开启 quic */
@@ -4931,6 +5080,10 @@ innerAudioContext.onError((res) => {
          *
          * `content-type` 默认为 `application/json` */
         header?: IAnyObject
+        /** 需要基础库： `2.19.1`
+         *
+         * HttpDNS 服务商 Id 。 HttpDNS 用法详见 [移动解析HttpDNS](https://developers.weixin.qq.com/miniprogram/dev/framework/ability/HTTPDNS.html) */
+        httpDNSServiceId?: boolean
         /** HTTP 请求方法
          *
          * 可选值：
@@ -5124,6 +5277,10 @@ innerAudioContext.onError((res) => {
         /** 开发者服务器返回的 HTTP 状态码 */
         statusCode: number
         errMsg: string
+    }
+    interface ReserveChannelsLiveOption {
+        /** 预告 id，通过 getChannelsLiveNoticeInfo 接口获取 */
+        noticeId: string
     }
     interface ResumeBGMOption {
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
@@ -5448,10 +5605,14 @@ wx.createSelectorQuery()
         /** 接口调用成功的回调函数 */
         success?: SetBGMVolumeSuccessCallback
     }
+    interface SetBLEMTUFailCallbackResult {
+        /** 最终协商的 MTU 值。如果协商失败则无此参数。安卓客户端 8.0.9 开始支持。 */
+        mtu: number
+    }
     interface SetBLEMTUOption {
-        /** 用于区分设备的 id */
+        /** 蓝牙设备 id */
         deviceId: string
-        /** 最大传输单元(22,512) 区间内，单位 bytes */
+        /** 最大传输单元。设置范围为 (22,512) 区间内，单位 bytes */
         mtu: number
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: SetBLEMTUCompleteCallback
@@ -5459,6 +5620,11 @@ wx.createSelectorQuery()
         fail?: SetBLEMTUFailCallback
         /** 接口调用成功的回调函数 */
         success?: SetBLEMTUSuccessCallback
+    }
+    interface SetBLEMTUSuccessCallbackResult {
+        /** 最终协商的 MTU 值，与传入参数一致。安卓客户端 8.0.9 开始支持。 */
+        mtu: number
+        errMsg: string
     }
     interface SetBackgroundColorOption {
         /** 窗口的背景色，必须为十六进制颜色值 */
@@ -5811,8 +5977,16 @@ wx.createSelectorQuery()
         confirmText?: string
         /** 提示的内容 */
         content?: string
+        /** 需要基础库： `2.17.1`
+         *
+         * 是否显示输入框 */
+        editable?: boolean
         /** 接口调用失败的回调函数 */
         fail?: ShowModalFailCallback
+        /** 需要基础库： `2.17.1`
+         *
+         * 显示输入框时的提示文本 */
+        placeholderText?: string
         /** 是否显示取消按钮 */
         showCancel?: boolean
         /** 接口调用成功的回调函数 */
@@ -6013,13 +6187,13 @@ wx.createSelectorQuery()
         success?: StartAdvertisingSuccessCallback
     }
     interface StartBeaconDiscoveryOption {
-        /** iBeacon 设备广播的 uuid 列表 */
+        /** Beacon 设备广播的 UUID 列表 */
         uuids: string[]
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: StartBeaconDiscoveryCompleteCallback
         /** 接口调用失败的回调函数 */
         fail?: StartBeaconDiscoveryFailCallback
-        /** 是否校验蓝牙开关，仅在 iOS 下有效 */
+        /** 是否校验蓝牙开关，仅在 iOS 下有效。iOS 11 起，控制面板里关掉蓝牙，还是能继续使用 Beacon 服务。 */
         ignoreBluetoothAvailable?: boolean
         /** 接口调用成功的回调函数 */
         success?: StartBeaconDiscoverySuccessCallback
@@ -6031,16 +6205,16 @@ wx.createSelectorQuery()
         complete?: StartBluetoothDevicesDiscoveryCompleteCallback
         /** 接口调用失败的回调函数 */
         fail?: StartBluetoothDevicesDiscoveryFailCallback
-        /** 上报设备的间隔。0 表示找到新设备立即上报，其他数值根据传入的间隔上报。 */
+        /** 上报设备的间隔，单位 ms。0 表示找到新设备立即上报，其他数值根据传入的间隔上报。 */
         interval?: number
-        /** 扫描模式，越高扫描越快，也越耗电, 仅安卓 7.0.12 及以上支持。
+        /** 扫描模式，越高扫描越快，也越耗电。仅安卓微信客户端 7.0.12 及以上支持。
          *
          * 可选值：
          * - 'low': 低;
          * - 'medium': 中;
          * - 'high': 高; */
         powerLevel?: 'low' | 'medium' | 'high'
-        /** 要搜索的蓝牙设备主 service 的 uuid 列表。某些蓝牙设备会广播自己的主 service 的 uuid。如果设置此参数，则只搜索广播包有对应 uuid 的主服务的蓝牙设备。建议主要通过该参数过滤掉周边不需要处理的其他蓝牙设备。 */
+        /** 要搜索的蓝牙设备主服务的 UUID 列表（支持 16/32/128 位 UUID）。某些蓝牙设备会广播自己的主 service 的 UUID。如果设置此参数，则只搜索广播包有对应 UUID 的主服务的蓝牙设备。建议通过该参数过滤掉周边不需要处理的其他蓝牙设备。 */
         services?: string[]
         /** 接口调用成功的回调函数 */
         success?: StartBluetoothDevicesDiscoverySuccessCallback
@@ -6338,6 +6512,14 @@ wx.createSelectorQuery()
         fail?: StopDiscoveryFailCallback
         /** 接口调用成功的回调函数 */
         success?: StopDiscoverySuccessCallback
+    }
+    interface StopFaceDetectOption {
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: StopFaceDetectCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: StopFaceDetectFailCallback
+        /** 接口调用成功的回调函数 */
+        success?: StopFaceDetectSuccessCallback
     }
     interface StopGyroscopeOption {
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
@@ -7118,13 +7300,13 @@ setTimeout(audioCtx.resume, 2000)
         message: IAnyObject
     }
     interface WriteBLECharacteristicValueOption {
-        /** 蓝牙特征值的 uuid */
+        /** 蓝牙特征的 UUID */
         characteristicId: string
         /** 蓝牙设备 id */
         deviceId: string
-        /** 蓝牙特征值对应服务的 uuid */
+        /** 蓝牙特征对应服务的 UUID */
         serviceId: string
-        /** 蓝牙设备特征值对应的二进制值 */
+        /** 蓝牙设备特征对应的二进制值 */
         value: ArrayBuffer
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: WriteBLECharacteristicValueCompleteCallback
@@ -7134,13 +7316,13 @@ setTimeout(audioCtx.resume, 2000)
         success?: WriteBLECharacteristicValueSuccessCallback
     }
     interface WriteCharacteristicValueObject {
-        /** characteristic对应的uuid */
+        /** 蓝牙特征的 UUID */
         characteristicId: string
-        /** 是否需要通知主机value已更新 */
+        /** 是否需要通知主机 value 已更新 */
         needNotify: boolean
-        /** service 的 uuid */
+        /** 蓝牙特征对应服务的 UUID */
         serviceId: string
-        /** 特征值对应的二进制值 */
+        /** characteristic 对应的二进制值 */
         value: ArrayBuffer
         /** 可选，处理回包时使用 */
         callbackId?: number
@@ -7395,9 +7577,7 @@ setTimeout(audioCtx.resume, 2000)
         /** 运动时长 */
         time: number
         /** 运动项目id */
-        typeId: string
-        /** 小程序app内跳转url */
-        url: string
+        typeId: number
     }
     /** 文件路径 */
     interface ZipFileItem {
@@ -7786,9 +7966,9 @@ setTimeout(audioCtx.resume, 2000)
          *
          * 在插件中使用：不支持
          *
-         * 取消监听特征值订阅事件 */
+         * 取消监听特征订阅事件 */
         offCharacteristicSubscribed(
-            /** 特征值订阅事件的回调函数 */
+            /** 特征订阅事件的回调函数 */
             callback?: OffCharacteristicSubscribedCallback
         ): void
         /** [BLEPeripheralServer.offCharacteristicUnsubscribed(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-peripheral/BLEPeripheralServer.offCharacteristicUnsubscribed.html)
@@ -7797,9 +7977,9 @@ setTimeout(audioCtx.resume, 2000)
          *
          * 在插件中使用：不支持
          *
-         * 取消监听取消特征值订阅事件 */
+         * 取消监听取消特征订阅事件 */
         offCharacteristicUnsubscribed(
-            /** 取消特征值订阅事件的回调函数 */
+            /** 取消特征订阅事件的回调函数 */
             callback?: OffCharacteristicUnsubscribedCallback
         ): void
         /** [BLEPeripheralServer.offCharacteristicWriteRequest(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-peripheral/BLEPeripheralServer.offCharacteristicWriteRequest.html)
@@ -7819,7 +7999,7 @@ setTimeout(audioCtx.resume, 2000)
          *
          * 在插件中使用：不支持
          *
-         * 监听已连接的设备请求读当前外围设备的特征值事件。收到该消息后需要立刻调用 `writeCharacteristicValue` 写回数据，否则主机不会收到响应。 */
+         * 监听已连接的设备请求读当前外围设备的特征值事件。收到该消息后需要立刻调用 [writeCharacteristicValue](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-peripheral/BLEPeripheralServer.writeCharacteristicValue.html) 写回数据，否则主机不会收到响应。 */
         onCharacteristicReadRequest(
             /** 已连接的设备请求读当前外围设备的特征值事件的回调函数 */
             callback: OnCharacteristicReadRequestCallback
@@ -7830,9 +8010,9 @@ setTimeout(audioCtx.resume, 2000)
          *
          * 在插件中使用：不支持
          *
-         * 监听特征值订阅事件，仅 iOS 支持。 */
+         * 监听特征订阅事件，仅 iOS 支持。 */
         onCharacteristicSubscribed(
-            /** 特征值订阅事件的回调函数 */
+            /** 特征订阅事件的回调函数 */
             callback: OnCharacteristicSubscribedCallback
         ): void
         /** [BLEPeripheralServer.onCharacteristicUnsubscribed(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-peripheral/BLEPeripheralServer.onCharacteristicUnsubscribed.html)
@@ -7841,9 +8021,9 @@ setTimeout(audioCtx.resume, 2000)
          *
          * 在插件中使用：不支持
          *
-         * 监听取消特征值订阅事件，仅 iOS 支持。 */
+         * 监听取消特征订阅事件，仅 iOS 支持。 */
         onCharacteristicUnsubscribed(
-            /** 取消特征值订阅事件的回调函数 */
+            /** 取消特征订阅事件的回调函数 */
             callback: OnCharacteristicUnsubscribedCallback
         ): void
         /** [BLEPeripheralServer.onCharacteristicWriteRequest(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-peripheral/BLEPeripheralServer.onCharacteristicWriteRequest.html)
@@ -7852,7 +8032,7 @@ setTimeout(audioCtx.resume, 2000)
          *
          * 在插件中使用：不支持
          *
-         * 监听已连接的设备请求写当前外围设备的特征值事件。收到该消息后需要立刻调用 `writeCharacteristicValue` 写回数据，否则主机不会收到响应。 */
+         * 监听已连接的设备请求写当前外围设备的特征值事件。收到该消息后需要立刻调用 [writeCharacteristicValue](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-peripheral/BLEPeripheralServer.writeCharacteristicValue.html) 写回数据，否则主机不会收到响应。 */
         onCharacteristicWriteRequest(
             /** 已连接的设备请求写当前外围设备的特征值事件的回调函数 */
             callback: OnCharacteristicWriteRequestCallback
@@ -7871,7 +8051,13 @@ setTimeout(audioCtx.resume, 2000)
          *
          * 在插件中使用：不支持
          *
-         * 开始广播本地创建的外围设备。 */
+         * 开始广播本地创建的外围设备。
+         *
+         * **注意**
+         *
+         * - Android 8.0.9 开始，支持直接使用 16/32/128 位 UUID；
+         * - Android 8.0.9 以下版本只支持 128 位 UUID，使用 16/32 位的 UUID 时需要进行补位（系统会自动识别是否属于预分配区间），可以参考[蓝牙指南](#)；
+         * - iOS 必须直接使用 16 位的 UUID，不能补位到 128 位，否则系统组包时仍会按照 128 位传输。iOS 暂不支持 32 位 UUID。 */
         startAdvertising(Object: StartAdvertisingObject): void
         /** [BLEPeripheralServer.stopAdvertising(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-peripheral/BLEPeripheralServer.stopAdvertising.html)
          *
@@ -7887,7 +8073,7 @@ setTimeout(audioCtx.resume, 2000)
          *
          * 在插件中使用：不支持
          *
-         * 往指定特征值写入数据，并通知已连接的主机，从机的特征值已发生变化，该接口会处理是走回包还是走订阅。 */
+         * 往指定特征写入二进制数据值，并通知已连接的主机，从机的特征值已发生变化，该接口会处理是走回包还是走订阅。 */
         writeCharacteristicValue(Object: WriteCharacteristicValueObject): void
     }
     interface BackgroundAudioError {
@@ -8047,6 +8233,32 @@ setTimeout(audioCtx.resume, 2000)
          * 停止音乐 */
         stop(): void
     }
+    interface BeaconError {
+        /** 错误信息
+         *
+         * | 错误码 | 错误信息 | 说明 |
+         * | - | - | - |
+         * | 0 | ok | 正常 |
+         * | 11000 | unsupport | 系统或设备不支持 |
+         * | 11001 | bluetooth service unavailable | 蓝牙服务不可用 |
+         * | 11002 | location service unavailable | 位置服务不可用 |
+         * | 11003 | already start | 已经开始搜索 |
+         * | 11004 | not startBeaconDiscovery | 还未开始搜索 |
+         * | 11005 | system error | 系统错误 |
+         * | 11006 | invalid data | 参数不正确 | */ errMsg: string
+        /** 错误码
+         *
+         * | 错误码 | 错误信息 | 说明 |
+         * | - | - | - |
+         * | 0 | ok | 正常 |
+         * | 11000 | unsupport | 系统或设备不支持 |
+         * | 11001 | bluetooth service unavailable | 蓝牙服务不可用 |
+         * | 11002 | location service unavailable | 位置服务不可用 |
+         * | 11003 | already start | 已经开始搜索 |
+         * | 11004 | not startBeaconDiscovery | 还未开始搜索 |
+         * | 11005 | system error | 系统错误 |
+         * | 11006 | invalid data | 参数不正确 | */ errCode: number
+    }
     interface BluetoothError {
         /** 错误信息
          *
@@ -8059,9 +8271,9 @@ setTimeout(audioCtx.resume, 2000)
          * | 10002 | no device | 没有找到指定设备 |
          * | 10003 | connection fail | 连接失败 |
          * | 10004 | no service | 没有找到指定服务 |
-         * | 10005 | no characteristic | 没有找到指定特征值 |
+         * | 10005 | no characteristic | 没有找到指定特征 |
          * | 10006 | no connection | 当前连接已断开 |
-         * | 10007 | property not support | 当前特征值不支持此操作 |
+         * | 10007 | property not support | 当前特征不支持此操作 |
          * | 10008 | system error | 其余所有系统上报的异常 |
          * | 10009 | system not support | Android 系统特有，系统版本低于 4.3 不支持 BLE |
          * | 10012 | operate time out | 连接超时 |
@@ -8077,9 +8289,9 @@ setTimeout(audioCtx.resume, 2000)
          * | 10002 | no device | 没有找到指定设备 |
          * | 10003 | connection fail | 连接失败 |
          * | 10004 | no service | 没有找到指定服务 |
-         * | 10005 | no characteristic | 没有找到指定特征值 |
+         * | 10005 | no characteristic | 没有找到指定特征 |
          * | 10006 | no connection | 当前连接已断开 |
-         * | 10007 | property not support | 当前特征值不支持此操作 |
+         * | 10007 | property not support | 当前特征不支持此操作 |
          * | 10008 | system error | 其余所有系统上报的异常 |
          * | 10009 | system not support | Android 系统特有，系统版本低于 4.3 不支持 BLE |
          * | 10012 | operate time out | 连接超时 |
@@ -10061,7 +10273,7 @@ this.editorCtx.insertImage({
     interface FileSystemManager {
         /** [Array.&lt;string&gt; FileSystemManager.readdirSync(string dirPath)](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.readdirSync.html)
 *
-* 在插件中使用：不支持
+* 在插件中使用：需要基础库 `2.19.2`
 *
 * [FileSystemManager.readdir](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.readdir.html) 的同步版本
 *
@@ -10093,7 +10305,7 @@ try {
         ): string[]
         /** [FileSystemManager.access(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.access.html)
 *
-* 在插件中使用：不支持
+* 在插件中使用：需要基础库 `2.19.2`
 *
 * 判断文件/目录是否存在
 *
@@ -10124,7 +10336,7 @@ try {
         access(option: AccessOption): void
         /** [FileSystemManager.accessSync(string path)](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.accessSync.html)
 *
-* 在插件中使用：不支持
+* 在插件中使用：需要基础库 `2.19.2`
 *
 * [FileSystemManager.access](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.access.html) 的同步版本
 *
@@ -10160,7 +10372,7 @@ try {
 *
 * 需要基础库： `2.1.0`
 *
-* 在插件中使用：不支持
+* 在插件中使用：需要基础库 `2.19.2`
 *
 * 在文件结尾追加内容
 *
@@ -10193,7 +10405,7 @@ try {
 *
 * 需要基础库： `2.1.0`
 *
-* 在插件中使用：不支持
+* 在插件中使用：需要基础库 `2.19.2`
 *
 * [FileSystemManager.appendFile](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.appendFile.html) 的同步版本
 *
@@ -10257,7 +10469,7 @@ try {
 *
 * 需要基础库： `2.16.1`
 *
-* 在插件中使用：不支持
+* 在插件中使用：需要基础库 `2.19.2`
 *
 * 关闭文件
 *
@@ -10280,7 +10492,7 @@ fs.open({
         close(option: FileSystemManagerCloseOption): void
         /** [FileSystemManager.copyFile(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.copyFile.html)
 *
-* 在插件中使用：不支持
+* 在插件中使用：需要基础库 `2.19.2`
 *
 * 复制文件
 *
@@ -10312,7 +10524,7 @@ try {
         copyFile(option: CopyFileOption): void
         /** [FileSystemManager.copyFileSync(string srcPath, string destPath)](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.copyFileSync.html)
 *
-* 在插件中使用：不支持
+* 在插件中使用：需要基础库 `2.19.2`
 *
 * [FileSystemManager.copyFile](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.copyFile.html) 的同步版本
 *
@@ -10351,7 +10563,7 @@ try {
 *
 * 需要基础库： `2.16.1`
 *
-* 在插件中使用：不支持
+* 在插件中使用：需要基础库 `2.19.2`
 *
 * 获取文件的状态信息
 *
@@ -10379,7 +10591,7 @@ fs.open({
 *
 * 需要基础库： `2.16.1`
 *
-* 在插件中使用：不支持
+* 在插件中使用：需要基础库 `2.19.2`
 *
 * 对文件内容进行截断操作
 *
@@ -10406,7 +10618,7 @@ fs.open({
         ftruncate(option: FtruncateOption): void
         /** [FileSystemManager.getFileInfo(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.getFileInfo.html)
          *
-         * 在插件中使用：不支持
+         * 在插件中使用：需要基础库 `2.19.2`
          *
          * 获取该小程序下的 本地临时文件 或 本地缓存文件 信息 */
         getFileInfo(option: FileSystemManagerGetFileInfoOption): void
@@ -10418,7 +10630,7 @@ fs.open({
         getSavedFileList(option?: FileSystemManagerGetSavedFileListOption): void
         /** [FileSystemManager.mkdir(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.mkdir.html)
 *
-* 在插件中使用：不支持
+* 在插件中使用：需要基础库 `2.19.2`
 *
 * 创建目录
 *
@@ -10447,7 +10659,7 @@ try {
         mkdir(option: MkdirOption): void
         /** [FileSystemManager.mkdirSync(string dirPath, boolean recursive)](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.mkdirSync.html)
 *
-* 在插件中使用：不支持
+* 在插件中使用：需要基础库 `2.19.2`
 *
 * [FileSystemManager.mkdir](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.mkdir.html) 的同步版本
 *
@@ -10485,7 +10697,7 @@ try {
 *
 * 需要基础库： `2.16.1`
 *
-* 在插件中使用：不支持
+* 在插件中使用：需要基础库 `2.19.2`
 *
 * 打开文件，返回文件描述符
 *
@@ -10506,7 +10718,7 @@ fs.open({
 *
 * 需要基础库： `2.16.1`
 *
-* 在插件中使用：不支持
+* 在插件中使用：需要基础库 `2.19.2`
 *
 * 读文件
 *
@@ -10535,7 +10747,7 @@ fs.open({
         read(option: ReadOption): void
         /** [FileSystemManager.readFile(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.readFile.html)
 *
-* 在插件中使用：不支持
+* 在插件中使用：需要基础库 `2.19.2`
 *
 * 读取本地文件内容
 *
@@ -10568,7 +10780,7 @@ try {
 *
 * 需要基础库： `2.17.3`
 *
-* 在插件中使用：不支持
+* 在插件中使用：需要基础库 `2.19.2`
 *
 * 读取压缩包内的文件
 *
@@ -10630,7 +10842,7 @@ fs.readZipEntry({
         readZipEntry(option: ReadZipEntryOption): void
         /** [FileSystemManager.readdir(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.readdir.html)
 *
-* 在插件中使用：不支持
+* 在插件中使用：需要基础库 `2.19.2`
 *
 * 读取目录内文件列表
 *
@@ -10665,7 +10877,7 @@ try {
         removeSavedFile(option: FileSystemManagerRemoveSavedFileOption): void
         /** [FileSystemManager.rename(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.rename.html)
 *
-* 在插件中使用：不支持
+* 在插件中使用：需要基础库 `2.19.2`
 *
 * 重命名文件。可以把文件从 oldPath 移动到 newPath
 *
@@ -10698,7 +10910,7 @@ try {
         rename(option: RenameOption): void
         /** [FileSystemManager.renameSync(string oldPath, string newPath)](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.renameSync.html)
 *
-* 在插件中使用：不支持
+* 在插件中使用：需要基础库 `2.19.2`
 *
 * [FileSystemManager.rename](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.rename.html) 的同步版本
 *
@@ -10736,7 +10948,7 @@ try {
         ): void
         /** [FileSystemManager.rmdir(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.rmdir.html)
 *
-* 在插件中使用：不支持
+* 在插件中使用：需要基础库 `2.19.2`
 *
 * 删除目录
 *
@@ -10766,7 +10978,7 @@ try {
         rmdir(option: RmdirOption): void
         /** [FileSystemManager.rmdirSync(string dirPath, boolean recursive)](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.rmdirSync.html)
 *
-* 在插件中使用：不支持
+* 在插件中使用：需要基础库 `2.19.2`
 *
 * [FileSystemManager.rmdir](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.rmdir.html) 的同步版本
 *
@@ -10809,7 +11021,7 @@ try {
         saveFile(option: FileSystemManagerSaveFileOption): void
         /** [FileSystemManager.stat(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.stat.html)
          *
-         * 在插件中使用：不支持
+         * 在插件中使用：需要基础库 `2.19.2`
          *
          * 获取文件 Stats 对象 */
         stat(option: StatOption): void
@@ -10817,7 +11029,7 @@ try {
 *
 * 需要基础库： `2.16.1`
 *
-* 在插件中使用：不支持
+* 在插件中使用：需要基础库 `2.19.2`
 *
 * 对文件内容进行截断操作
 *
@@ -10836,7 +11048,7 @@ fs.truncate({
         truncate(option: TruncateOption): void
         /** [FileSystemManager.unlink(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.unlink.html)
 *
-* 在插件中使用：不支持
+* 在插件中使用：需要基础库 `2.19.2`
 *
 * 删除文件
 *
@@ -10865,7 +11077,7 @@ try {
         unlink(option: UnlinkOption): void
         /** [FileSystemManager.unlinkSync(string filePath)](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.unlinkSync.html)
 *
-* 在插件中使用：不支持
+* 在插件中使用：需要基础库 `2.19.2`
 *
 * [FileSystemManager.unlink](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.unlink.html) 的同步版本
 *
@@ -10897,7 +11109,7 @@ try {
         ): void
         /** [FileSystemManager.unzip(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.unzip.html)
 *
-* 在插件中使用：不支持
+* 在插件中使用：需要基础库 `2.19.2`
 *
 * 解压文件
 *
@@ -10921,7 +11133,7 @@ fs.unzip({
 *
 * 需要基础库： `2.16.1`
 *
-* 在插件中使用：不支持
+* 在插件中使用：需要基础库 `2.19.2`
 *
 * 写入文件
 *
@@ -10948,7 +11160,7 @@ fs.open({
         write(option: WriteOption): void
         /** [FileSystemManager.writeFile(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.writeFile.html)
 *
-* 在插件中使用：不支持
+* 在插件中使用：需要基础库 `2.19.2`
 *
 * 写文件
 *
@@ -10983,7 +11195,7 @@ try {
         writeFile(option: WriteFileOption): void
         /** [FileSystemManager.writeFileSync(string filePath, string|ArrayBuffer data, string encoding)](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.writeFileSync.html)
 *
-* 在插件中使用：不支持
+* 在插件中使用：需要基础库 `2.19.2`
 *
 * [FileSystemManager.writeFile](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.writeFile.html) 的同步版本
 *
@@ -11051,7 +11263,7 @@ try {
 *
 * 需要基础库： `2.16.1`
 *
-* 在插件中使用：不支持
+* 在插件中使用：需要基础库 `2.19.2`
 *
 * 读文件
 *
@@ -11076,7 +11288,7 @@ console.log(res)
 *
 * 需要基础库： `2.16.1`
 *
-* 在插件中使用：不支持
+* 在插件中使用：需要基础库 `2.19.2`
 *
 * 同步获取文件的状态信息
 *
@@ -11094,7 +11306,7 @@ console.log(stats)
         fstatSync(option: FstatSyncOption): Stats
         /** [[Stats](https://developers.weixin.qq.com/miniprogram/dev/api/file/Stats.html)|Array.&lt;[Stats](https://developers.weixin.qq.com/miniprogram/dev/api/file/Stats.html)&gt; FileSystemManager.statSync(string path, boolean recursive)](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.statSync.html)
          *
-         * 在插件中使用：不支持
+         * 在插件中使用：需要基础库 `2.19.2`
          *
          * [FileSystemManager.stat](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.stat.html) 的同步版本 */
         statSync(
@@ -11109,7 +11321,7 @@ console.log(stats)
 *
 * 需要基础库： `2.16.1`
 *
-* 在插件中使用：不支持
+* 在插件中使用：需要基础库 `2.19.2`
 *
 * 同步写入文件
 *
@@ -11132,7 +11344,7 @@ console.log(res.bytesWritten)
 *
 * 需要基础库： `2.16.1`
 *
-* 在插件中使用：不支持
+* 在插件中使用：需要基础库 `2.19.2`
 *
 * 同步打开文件，返回文件描述符
 *
@@ -11160,7 +11372,7 @@ console.log(fd)
         ): string
         /** [string|ArrayBuffer FileSystemManager.readFileSync(string filePath, string encoding, number position, number length)](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.readFileSync.html)
 *
-* 在插件中使用：不支持
+* 在插件中使用：需要基础库 `2.19.2`
 *
 * [FileSystemManager.readFile](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.readFile.html) 的同步版本
 *
@@ -11230,7 +11442,7 @@ try {
 *
 * 需要基础库： `2.16.1`
 *
-* 在插件中使用：不支持
+* 在插件中使用：需要基础库 `2.19.2`
 *
 * 同步关闭文件
 *
@@ -11251,7 +11463,7 @@ fs.closeSync({fd: fd})
 *
 * 需要基础库： `2.16.1`
 *
-* 在插件中使用：不支持
+* 在插件中使用：需要基础库 `2.19.2`
 *
 * 对文件内容进行截断操作
 *
@@ -11273,7 +11485,7 @@ fs.ftruncateSync({
 *
 * 需要基础库： `2.16.1`
 *
-* 在插件中使用：不支持
+* 在插件中使用：需要基础库 `2.19.2`
 *
 * 对文件内容进行截断操作 (truncate 的同步版本)
 *
@@ -11322,32 +11534,6 @@ fs.truncateSync({
     }
     interface GeneralCallbackResult {
         errMsg: string
-    }
-    interface IBeaconError {
-        /** 错误信息
-         *
-         * | 错误码 | 错误信息 | 说明 |
-         * | - | - | - |
-         * | 0 | ok | 正常 |
-         * | 11000 | unsupport | 系统或设备不支持 |
-         * | 11001 | bluetooth service unavailable | 蓝牙服务不可用 |
-         * | 11002 | location service unavailable | 位置服务不可用 |
-         * | 11003 | already start | 已经开始搜索 |
-         * | 11004 | not startBeaconDiscovery | 还未开始搜索 |
-         * | 11005 | system error | 系统错误 |
-         * | 11006 | invalid data | 参数不正确 | */ errMsg: string
-        /** 错误码
-         *
-         * | 错误码 | 错误信息 | 说明 |
-         * | - | - | - |
-         * | 0 | ok | 正常 |
-         * | 11000 | unsupport | 系统或设备不支持 |
-         * | 11001 | bluetooth service unavailable | 蓝牙服务不可用 |
-         * | 11002 | location service unavailable | 位置服务不可用 |
-         * | 11003 | already start | 已经开始搜索 |
-         * | 11004 | not startBeaconDiscovery | 还未开始搜索 |
-         * | 11005 | system error | 系统错误 |
-         * | 11006 | invalid data | 参数不正确 | */ errCode: number
     }
     interface InnerAudioContext {
         /** [InnerAudioContext.destroy()](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/InnerAudioContext.destroy.html)
@@ -13852,13 +14038,13 @@ Component({
     interface Stats {
         /** [boolean Stats.isDirectory()](https://developers.weixin.qq.com/miniprogram/dev/api/file/Stats.isDirectory.html)
          *
-         * 在插件中使用：不支持
+         * 在插件中使用：需要基础库 `2.19.2`
          *
          * 判断当前文件是否一个目录 */
         isDirectory(): boolean
         /** [boolean Stats.isFile()](https://developers.weixin.qq.com/miniprogram/dev/api/file/Stats.isFile.html)
          *
-         * 在插件中使用：不支持
+         * 在插件中使用：需要基础库 `2.19.2`
          *
          * 判断当前文件是否一个普通文件 */
         isFile(): boolean
@@ -14985,7 +15171,7 @@ wx.downloadFile({
          *
          * 需要基础库： `1.9.9`
          *
-         * 在插件中使用：不支持
+         * 在插件中使用：需要基础库 `2.19.2`
          *
          * 获取全局唯一的文件管理器 */
         getFileSystemManager(): FileSystemManager
@@ -15412,9 +15598,10 @@ wx.connectSocket({
          *
          * **连接限制**
          *
-         * - 允许与局域网的非本机 IP 通信
-         * — 允许与配置过的服务器域名通信，详见[相关说明](https://developers.weixin.qq.com/miniprogram/dev/framework/ability/network.html)
-         * - 禁止与以下端口号连接：`1024 以下` `1099` `1433` `1521` `1719` `1720` `1723` `2049` `2375` `3128` `3306` `3389` `3659` `4045` `5060` `5061` `5432` `5984` `6379` `6000` `6566` `6665` `6666` `6667` `6668` `6669` `6697` `7001` `7002` `8000-8100` `8443` `8888` `9200` `9300` `10051` `10080` `11211` `27017` `27018` `27019` */
+         * - 允许与局域网内的非本机 IP 通信
+         * - 允许与配置过的服务器域名通信，详见[相关说明](https://developers.weixin.qq.com/miniprogram/dev/framework/ability/network.html)
+         * - 禁止与以下端口号连接：`1024 以下` `1099` `1433` `1521` `1719` `1720` `1723` `2049` `2375` `3128` `3306` `3389` `3659` `4045` `5060` `5061` `5432` `5984` `6379` `6000` `6566` `7001` `7002` `8000-8100` `8443` `8888` `9200` `9300` `10051` `10080` `11211` `27017` `27018` `27019`
+         * - 每 5 分钟内最多创建 20 个 TCPSocket */
         createTCPSocket(): TCPSocket
         /** [[UDPSocket](https://developers.weixin.qq.com/miniprogram/dev/api/network/udp/UDPSocket.html) wx.createUDPSocket()](https://developers.weixin.qq.com/miniprogram/dev/api/network/udp/wx.createUDPSocket.html)
          *
@@ -16030,6 +16217,18 @@ wx.chooseInvoiceTitle({
         >(
             option?: T
         ): PromisifySuccessResult<T, ChooseInvoiceTitleOption>
+        /** [wx.chooseLicensePlate(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/license-plate/wx.chooseLicensePlate.html)
+         *
+         * 需要基础库： `2.19.0`
+         *
+         * 在插件中使用：不支持
+         *
+         * 选择车牌号 */
+        chooseLicensePlate<
+            T extends ChooseLicensePlateOption = ChooseLicensePlateOption
+        >(
+            option?: T
+        ): PromisifySuccessResult<T, ChooseLicensePlateOption>
         /** [wx.chooseLocation(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/location/wx.chooseLocation.html)
          *
          * 在插件中使用：需要基础库 `1.9.6`
@@ -16166,7 +16365,7 @@ try {
 *
 * 在插件中使用：需要基础库 `1.9.6`
 *
-* 断开与低功耗蓝牙设备的连接。
+* 断开与蓝牙低功耗设备的连接。
 *
 * **示例代码**
 *
@@ -16295,13 +16494,13 @@ wx.connectWifi({
 *
 * 在插件中使用：需要基础库 `1.9.6`
 *
-* 连接低功耗蓝牙设备。
+* 连接蓝牙低功耗设备。
 *
-* 若小程序在之前已有搜索过某个蓝牙设备，并成功建立连接，可直接传入之前搜索获取的 deviceId 直接尝试连接该设备，无需进行搜索操作。
+* 若小程序在之前已有搜索过某个蓝牙设备，并成功建立连接，可直接传入之前搜索获取的 deviceId 直接尝试连接该设备，无需再次进行搜索操作。
 *
 * **注意**
 *
-* - 请保证尽量成对的调用 `createBLEConnection` 和 `closeBLEConnection` 接口。安卓如果多次调用 `createBLEConnection` 创建连接，有可能导致系统持有同一设备多个连接的实例，导致调用 `closeBLEConnection` 的时候并不能真正的断开与设备的连接。
+* - 请保证尽量成对的调用 [wx.createBLEConnection](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-ble/wx.createBLEConnection.html) 和 [wx.closeBLEConnection](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-ble/wx.closeBLEConnection.html) 接口。安卓如果重复调用 [wx.createBLEConnection](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-ble/wx.createBLEConnection.html) 创建连接，有可能导致系统持有同一设备多个连接的实例，导致调用 `closeBLEConnection` 的时候并不能真正的断开与设备的连接。
 * - 蓝牙连接随时可能断开，建议监听 [wx.onBLEConnectionStateChange](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-ble/wx.onBLEConnectionStateChange.html) 回调事件，当蓝牙设备断开时按需执行重连操作
 * - 若对未连接的设备或已断开连接的设备调用数据读写操作的接口，会返回 10006 错误，建议进行重连操作。
 *
@@ -16310,7 +16509,6 @@ wx.connectWifi({
 * [在微信开发者工具中查看示例](https://developers.weixin.qq.com/s/pQU51zmz7a3K)
 * ```js
 wx.createBLEConnection({
-  // 这里的 deviceId 需要已经通过 createBLEConnection 与对应设备建立链接
   deviceId,
   success (res) {
     console.log(res)
@@ -16328,7 +16526,7 @@ wx.createBLEConnection({
          *
          * 在插件中使用：不支持
          *
-         * 建立本地作为外围设备的服务端，可创建多个。 */
+         * 建立本地作为蓝牙低功耗外围设备的服务端，可创建多个。 */
         createBLEPeripheralServer<
             T extends CreateBLEPeripheralServerOption = CreateBLEPeripheralServerOption
         >(
@@ -16393,6 +16591,14 @@ wx.createBLEConnection({
         exitVoIPChat<T extends ExitVoIPChatOption = ExitVoIPChatOption>(
             option?: T
         ): PromisifySuccessResult<T, ExitVoIPChatOption>
+        /** [wx.faceDetect(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/face/wx.faceDetect.html)
+         *
+         * 需要基础库： `2.18.0`
+         *
+         * 在插件中使用：不支持
+         *
+         * 人脸识别，使用前需要通过 wx.initFaceDetect 进行一次初始化，推荐使用相机接口返回的帧数据 */
+        faceDetect(option: FaceDetectOption): void
         /** [wx.getAvailableAudioSources(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/wx.getAvailableAudioSources.html)
          *
          * 需要基础库： `2.1.0`
@@ -16411,16 +16617,16 @@ wx.createBLEConnection({
 *
 * 在插件中使用：需要基础库 `1.9.6`
 *
-* 获取蓝牙设备某个服务中所有特征值(characteristic)。
+* 获取蓝牙低功耗设备某个服务中所有特征 (characteristic)。
 *
 * **示例代码**
 *
 * [在微信开发者工具中查看示例](https://developers.weixin.qq.com/s/pQU51zmz7a3K)
 * ```js
 wx.getBLEDeviceCharacteristics({
-  // 这里的 deviceId 需要已经通过 createBLEConnection 与对应设备建立链接
+  // 这里的 deviceId 需要已经通过 wx.createBLEConnection 与对应设备建立链接
   deviceId,
-  // 这里的 serviceId 需要在 getBLEDeviceServices 接口中获取
+  // 这里的 serviceId 需要在 wx.getBLEDeviceServices 接口中获取
   serviceId,
   success (res) {
     console.log('device getBLEDeviceCharacteristics:', res.characteristics)
@@ -16438,7 +16644,7 @@ wx.getBLEDeviceCharacteristics({
          *
          * 在插件中使用：需要基础库 `2.11.0`
          *
-         * 获取蓝牙设备的信号强度。 */
+         * 获取蓝牙低功耗设备的信号强度 (Received Signal Strength Indication, RSSI)。 */
         getBLEDeviceRSSI<
             T extends GetBLEDeviceRSSIOption = GetBLEDeviceRSSIOption
         >(
@@ -16450,14 +16656,14 @@ wx.getBLEDeviceCharacteristics({
 *
 * 在插件中使用：需要基础库 `1.9.6`
 *
-* 获取蓝牙设备所有服务(service)。
+* 获取蓝牙低功耗设备所有服务 (service)。
 *
 * **示例代码**
 *
 * [在微信开发者工具中查看示例](https://developers.weixin.qq.com/s/pQU51zmz7a3K)
 * ```js
 wx.getBLEDeviceServices({
-  // 这里的 deviceId 需要已经通过 createBLEConnection 与对应设备建立链接
+  // 这里的 deviceId 需要已经通过 wx.createBLEConnection 与对应设备建立连接
   deviceId,
   success (res) {
     console.log('device services:', res.services)
@@ -16532,7 +16738,7 @@ wx.getBackgroundAudioPlayerState({
          *
          * 在插件中使用：需要基础库 `1.9.6`
          *
-         * 获取所有已搜索到的 iBeacon 设备 */
+         * 获取所有已搜索到的 Beacon 设备 */
         getBeacons<T extends GetBeaconsOption = GetBeaconsOption>(
             option?: T
         ): PromisifySuccessResult<T, GetBeaconsOption>
@@ -16565,7 +16771,7 @@ wx.getBluetoothAdapterState({
 *
 * 在插件中使用：需要基础库 `1.9.6`
 *
-* 获取在蓝牙模块生效期间所有已发现的蓝牙设备。包括已经和本机处于连接状态的设备。
+* 获取在蓝牙模块生效期间所有搜索到的蓝牙设备。包括已经和本机处于连接状态的设备。
 *
 * **示例代码**
 *
@@ -16595,7 +16801,7 @@ wx.getBluetoothDevices({
 * **注意事项**
 *
 * - 该接口获取到的设备列表为**蓝牙模块生效期间所有搜索到的蓝牙设备**，若在蓝牙模块使用流程结束后未及时调用 [wx.closeBluetoothAdapter](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/wx.closeBluetoothAdapter.html) 释放资源，会存在调用该接口会返回之前的蓝牙使用流程中搜索到的蓝牙设备，可能设备已经不在用户身边，无法连接。
-* - 蓝牙设备在被搜索到时，系统返回的 name 字段一般为广播包中的 LocalName 字段中的设备名称，而如果与蓝牙设备建立连接，系统返回的 name 字段会改为从蓝牙设备上获取到的 `GattName`。若需要动态改变设备名称并展示，建议使用 `localName` 字段。 */
+* - 蓝牙设备在被搜索到时，系统返回的 `name` 字段一般为广播包中的 `LocalName` 字段中的设备名称，而如果与蓝牙设备建立连接，系统返回的 `name` 字段会改为从蓝牙设备上获取到的 `GattName`。若需要动态改变设备名称并展示，建议使用 `localName` 字段。 */
         getBluetoothDevices<
             T extends GetBluetoothDevicesOption = GetBluetoothDevicesOption
         >(
@@ -16609,6 +16815,14 @@ wx.getBluetoothDevices({
          *
          * 获取视频号直播信息 */
         getChannelsLiveInfo(option: GetChannelsLiveInfoOption): void
+        /** [wx.getChannelsLiveNoticeInfo(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/channels/wx.getChannelsLiveNoticeInfo.html)
+         *
+         * 需要基础库： `2.19.0`
+         *
+         * 在插件中使用：不支持
+         *
+         * 获取视频号直播预告信息 */
+        getChannelsLiveNoticeInfo(option: GetChannelsLiveNoticeInfoOption): void
         /** [wx.getClipboardData(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/device/clipboard/wx.getClipboardData.html)
 *
 * 需要基础库： `1.1.0`
@@ -16637,13 +16851,14 @@ wx.getClipboardData({
 *
 * 在插件中使用：需要基础库 `1.9.6`
 *
-* 根据 uuid 获取处于已连接状态的设备。
+* 根据主服务 UUID 获取已连接的蓝牙设备。
 *
 * **示例代码**
 *
 * [在微信开发者工具中查看示例](https://developers.weixin.qq.com/s/pQU51zmz7a3K)
 * ```js
 wx.getConnectedBluetoothDevices({
+  services: ['FEE7'],
   success (res) {
     console.log(res)
   }
@@ -16696,7 +16911,7 @@ if (wx.getExtConfig) {
 *
 * 需要基础库： `1.4.0`
 *
-* 在插件中使用：不支持
+* 在插件中使用：需要基础库 `2.19.2`
 *
 * 获取文件信息
 *
@@ -17511,6 +17726,14 @@ wx.hideShareMenu({
         hideToast<T extends HideToastOption = HideToastOption>(
             option?: T
         ): PromisifySuccessResult<T, HideToastOption>
+        /** [wx.initFaceDetect(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/face/wx.initFaceDetect.html)
+         *
+         * 需要基础库： `2.18.0`
+         *
+         * 在插件中使用：不支持
+         *
+         * 初始化人脸识别 */
+        initFaceDetect(option?: InitFaceDetectOption): void
         /** [wx.joinVoIPChat(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/voip/wx.joinVoIPChat.html)
          *
          * 需要基础库： `2.7.0`
@@ -17579,13 +17802,15 @@ wx.login({
         login<T extends LoginOption = LoginOption>(
             option?: T
         ): PromisifySuccessResult<T, LoginOption>
-        /** [wx.makeBluetoothPair(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-ble/wx.makeBluetoothPair.html)
+        /** [wx.makeBluetoothPair(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/wx.makeBluetoothPair.html)
          *
          * 需要基础库： `2.12.0`
          *
          * 在插件中使用：需要基础库 `2.12.0`
          *
-         * 蓝牙配对接口，仅安卓支持。通常情况下（需要指定 `pin` 码或者密码时）系统会接管配对流程，直接使用 直接 `createBLEConnection` 即可；该接口只应当在开发者不想让用户手动输入`pin` 码且真机验证确认可以正常生效情况下用。 */
+         * 蓝牙配对接口，仅安卓支持。
+         *
+         * 通常情况下（需要指定 `pin` 码或者密码时）系统会接管配对流程，直接调用 [wx.createBLEConnection](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-ble/wx.createBLEConnection.html) 即可。该接口只应当在开发者不想让用户手动输入 `pin` 码且真机验证确认可以正常生效情况下用。 */
         makeBluetoothPair<
             T extends MakeBluetoothPairOption = MakeBluetoothPairOption
         >(
@@ -17775,14 +18000,14 @@ Component({
 *
 * 在插件中使用：需要基础库 `1.9.6`
 *
-* 启用低功耗蓝牙设备特征值变化时的 notify 功能，订阅特征值。注意：必须设备的特征值支持 notify 或者 indicate 才可以成功调用。
+* 启用蓝牙低功耗设备特征值变化时的 notify 功能，订阅特征。注意：必须设备的特征支持 notify 或者 indicate 才可以成功调用。
 *
-* 另外，必须先启用 `notifyBLECharacteristicValueChange` 才能监听到设备 `characteristicValueChange` 事件
+* 另外，必须先启用 [wx.notifyBLECharacteristicValueChange](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-ble/wx.notifyBLECharacteristicValueChange.html) 才能监听到设备 `characteristicValueChange` 事件
 *
 * **注意**
 *
-* - 订阅操作成功后需要设备主动更新特征值的 value，才会触发 [wx.onBLECharacteristicValueChange](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-ble/wx.onBLECharacteristicValueChange.html) 回调。
-* - 安卓平台上，在调用 `notifyBLECharacteristicValueChange` 成功后立即调用 `writeBLECharacteristicValue` 接口，在部分机型上会发生 10008 系统错误
+* - 订阅操作成功后需要设备主动更新特征的 value，才会触发 [wx.onBLECharacteristicValueChange](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-ble/wx.onBLECharacteristicValueChange.html) 回调。
+* - 安卓平台上，在本接口调用成功后立即调用 [wx.writeBLECharacteristicValue](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-ble/wx.writeBLECharacteristicValue.html) 接口，在部分机型上会发生 10008 系统错误
 *
 * **示例代码**
 *
@@ -17867,9 +18092,9 @@ wx.notifyBLECharacteristicValueChange({
          *
          * 在插件中使用：需要基础库 `2.9.1`
          *
-         * 取消监听低功耗蓝牙设备的特征值变化事件。 */
+         * 取消监听蓝牙低功耗设备的特征值变化事件。 */
         offBLECharacteristicValueChange(
-            /** 低功耗蓝牙设备的特征值变化事件的回调函数 */
+            /** 蓝牙低功耗设备的特征值变化事件的回调函数 */
             callback: (...args: any[]) => any
         ): void
         /** [wx.offBLEConnectionStateChange(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-ble/wx.offBLEConnectionStateChange.html)
@@ -17878,9 +18103,9 @@ wx.notifyBLECharacteristicValueChange({
          *
          * 在插件中使用：需要基础库 `2.9.1`
          *
-         * 取消监听低功耗蓝牙连接状态的改变事件 */
+         * 取消监听蓝牙低功耗连接状态的改变事件 */
         offBLEConnectionStateChange(
-            /** 低功耗蓝牙连接状态的改变事件的回调函数 */
+            /** 蓝牙低功耗连接状态的改变事件的回调函数 */
             callback: (...args: any[]) => any
         ): void
         /** [wx.offBLEPeripheralConnectionStateChanged(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-peripheral/wx.offBLEPeripheralConnectionStateChanged.html)
@@ -17900,9 +18125,9 @@ wx.notifyBLECharacteristicValueChange({
          *
          * 在插件中使用：不支持
          *
-         * 取消监听 iBeacon 服务状态变化事件 */
+         * 取消监听 Beacon 服务状态变化事件 */
         offBeaconServiceChange(
-            /** iBeacon 服务状态变化事件的回调函数 */
+            /** Beacon 服务状态变化事件的回调函数 */
             callback?: OffBeaconServiceChangeCallback
         ): void
         /** [wx.offBeaconUpdate(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/device/ibeacon/wx.offBeaconUpdate.html)
@@ -17911,9 +18136,9 @@ wx.notifyBLECharacteristicValueChange({
          *
          * 在插件中使用：不支持
          *
-         * 取消监听 iBeacon 设备更新事件 */
+         * 取消监听 Beacon 设备更新事件 */
         offBeaconUpdate(
-            /** iBeacon 设备更新事件的回调函数 */
+            /** Beacon 设备更新事件的回调函数 */
             callback?: OffBeaconUpdateCallback
         ): void
         /** [wx.offBluetoothAdapterStateChange(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/wx.offBluetoothAdapterStateChange.html)
@@ -18295,7 +18520,7 @@ wx.onAccelerometerChange(callback)
 *
 * 在插件中使用：不支持
 *
-* 监听低功耗蓝牙设备的特征值变化事件。必须先启用 `notifyBLECharacteristicValueChange` 接口才能接收到设备推送的 notification。
+* 监听蓝牙低功耗设备的特征值变化事件。必须先调用 [wx.notifyBLECharacteristicValueChange](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-ble/wx.notifyBLECharacteristicValueChange.html) 接口才能接收到设备推送的 notification。
 *
 * **示例代码**
 *
@@ -18318,7 +18543,7 @@ wx.onBLECharacteristicValueChange(function(res) {
 })
 ``` */
         onBLECharacteristicValueChange(
-            /** 低功耗蓝牙设备的特征值变化事件的回调函数 */
+            /** 蓝牙低功耗设备的特征值变化事件的回调函数 */
             callback: OnBLECharacteristicValueChangeCallback
         ): void
         /** [wx.onBLEConnectionStateChange(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-ble/wx.onBLEConnectionStateChange.html)
@@ -18327,7 +18552,7 @@ wx.onBLECharacteristicValueChange(function(res) {
 *
 * 在插件中使用：不支持
 *
-* 监听低功耗蓝牙连接状态的改变事件。包括开发者主动连接或断开连接，设备丢失，连接异常断开等等
+* 监听蓝牙低功耗连接状态的改变事件。包括开发者主动连接或断开连接，设备丢失，连接异常断开等等
 *
 * **示例代码**
 *
@@ -18339,7 +18564,7 @@ wx.onBLEConnectionStateChange(function(res) {
 })
 ``` */
         onBLEConnectionStateChange(
-            /** 低功耗蓝牙连接状态的改变事件的回调函数 */
+            /** 蓝牙低功耗连接状态的改变事件的回调函数 */
             callback: OnBLEConnectionStateChangeCallback
         ): void
         /** [wx.onBLEPeripheralConnectionStateChanged(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-peripheral/wx.onBLEPeripheralConnectionStateChanged.html)
@@ -18400,9 +18625,9 @@ wx.onBLEConnectionStateChange(function(res) {
          *
          * 在插件中使用：不支持
          *
-         * 监听 iBeacon 服务状态变化事件，仅能注册一个监听 */
+         * 监听 Beacon 服务状态变化事件，仅能注册一个监听 */
         onBeaconServiceChange(
-            /** iBeacon 服务状态变化事件的回调函数 */
+            /** Beacon 服务状态变化事件的回调函数 */
             callback: OnBeaconServiceChangeCallback
         ): void
         /** [wx.onBeaconUpdate(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/device/ibeacon/wx.onBeaconUpdate.html)
@@ -18411,9 +18636,9 @@ wx.onBLEConnectionStateChange(function(res) {
          *
          * 在插件中使用：不支持
          *
-         * 监听 iBeacon 设备更新事件，仅能注册一个监听 */
+         * 监听 Beacon 设备更新事件，仅能注册一个监听 */
         onBeaconUpdate(
-            /** iBeacon 设备更新事件的回调函数 */
+            /** Beacon 设备更新事件的回调函数 */
             callback: OnBeaconUpdateCallback
         ): void
         /** [wx.onBluetoothAdapterStateChange(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/wx.onBluetoothAdapterStateChange.html)
@@ -18442,7 +18667,7 @@ wx.onBluetoothAdapterStateChange(function (res) {
 *
 * 在插件中使用：不支持
 *
-* 监听寻找到新设备的事件
+* 监听搜索到新设备的事件
 *
 * **注意**
 *
@@ -18475,7 +18700,7 @@ wx.onBluetoothDeviceFound(function(res) {
 *
 * - 安卓下部分机型需要有位置权限才能搜索到设备，需留意是否开启了位置权限 */
         onBluetoothDeviceFound(
-            /** 寻找到新设备的事件的回调函数 */
+            /** 搜索到新设备的事件的回调函数 */
             callback: OnBluetoothDeviceFoundCallback
         ): void
         /** [wx.onCompassChange(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/device/compass/wx.onCompassChange.html)
@@ -18876,7 +19101,7 @@ wx.onUserCaptureScreen(function (res) {
 *
 * 在插件中使用：需要基础库 `1.9.6`
 *
-* 初始化蓝牙模块。iOS 上开启主机/从机模式时需分别调用一次，指定对应的 `mode`。
+* 初始化蓝牙模块。iOS 上开启主机/从机（外围设备）模式时需分别调用一次，并指定对应的 `mode`。
 *
 * **object.fail 回调函数返回的 state 参数（仅 iOS）**
 *
@@ -18933,6 +19158,14 @@ wx.openCard({
         openCard<T extends OpenCardOption = OpenCardOption>(
             option: T
         ): PromisifySuccessResult<T, OpenCardOption>
+        /** [wx.openChannelsActivity(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/channels/wx.openChannelsActivity.html)
+         *
+         * 需要基础库： `2.19.2`
+         *
+         * 在插件中使用：不支持
+         *
+         * 打开视频号视频 */
+        openChannelsActivity(option: OpenChannelsActivityOption): void
         /** [wx.openChannelsLive(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/channels/wx.openChannelsLive.html)
          *
          * 需要基础库： `2.15.0`
@@ -19207,12 +19440,12 @@ wx.reLaunch({
 *
 * 在插件中使用：需要基础库 `1.9.6`
 *
-* 读取低功耗蓝牙设备的特征值的二进制数据值。注意：必须设备的特征值支持 read 才可以成功调用。
+* 读取蓝牙低功耗设备特征值的二进制数据。注意：必须设备的特征支持 read 才可以成功调用。
 *
 * **注意**
 *
 * - 并行调用多次会存在读失败的可能性。
-* - 接口读取到的信息需要在 `onBLECharacteristicValueChange` 方法注册的回调中获取。
+* - 接口读取到的信息需要在 [wx.onBLECharacteristicValueChange](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-ble/wx.onBLECharacteristicValueChange.html) 方法注册的回调中获取。
 *
 * **示例代码**
 *
@@ -19538,6 +19771,7 @@ wx.cloud.callFunction({
 *  - [2.8.2](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html) 版本开始，用户发生点击行为或者发起支付回调后，才可以调起订阅消息界面。
 *  - [2.10.0](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html) 版本开始，开发版和体验版小程序将禁止使用模板消息 formId。
 *  - 一次授权调用里，每个tmplId对应的模板标题不能存在相同的，若出现相同的，只保留一个。
+*  - [2.10.0](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html) 版本开始，支持订阅语音消息提醒，[详情](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/subscribe-message.html)
 *
 * **错误码**
 *
@@ -19567,6 +19801,14 @@ wx.requestSubscribeMessage({
         >(
             option: T
         ): PromisifySuccessResult<T, RequestSubscribeMessageOption>
+        /** [wx.reserveChannelsLive(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/channels/wx.reserveChannelsLive.html)
+         *
+         * 需要基础库： `2.19.0`
+         *
+         * 在插件中使用：不支持
+         *
+         * 预约视频号直播 */
+        reserveChannelsLive(option: ReserveChannelsLiveOption): void
         /** [wx.revokeBufferURL(string url)](https://developers.weixin.qq.com/miniprogram/dev/api/storage/wx.revokeBufferURL.html)
          *
          * 需要基础库： `2.14.0`
@@ -19801,7 +20043,7 @@ function sendSocketMessage(msg) {
          *
          * 在插件中使用：需要基础库 `2.11.0`
          *
-         * 设置蓝牙最大传输单元。需在 wx.createBLEConnection调用成功后调用，mtu 设置范围 (22,512)。安卓5.1以上有效。 */
+         * 协商设置蓝牙低功耗的最大传输单元 (Maximum Transmission Unit, MTU)。需在 [wx.createBLEConnection](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-ble/wx.createBLEConnection.html) 调用成功后调用。仅安卓系统 5.1 以上版本有效，iOS 因系统限制不支持。 */
         setBLEMTU<T extends SetBLEMTUOption = SetBLEMTUOption>(
             option: T
         ): PromisifySuccessResult<T, SetBLEMTUOption>
@@ -20297,7 +20539,8 @@ wx.showModal({
 * **注意**
 *
 * - Android 6.7.2 以下版本，点击取消或蒙层时，回调 fail, errMsg 为 "fail cancel"；
-* - Android 6.7.2 及以上版本 和 iOS 点击蒙层不会关闭模态弹窗，所以尽量避免使用「取消」分支中实现业务逻辑 */
+* - Android 6.7.2 及以上版本 和 iOS 点击蒙层不会关闭模态弹窗，所以尽量避免使用「取消」分支中实现业务逻辑
+* - 自基础库 2.17.1 版本起，支持传入 editable 参数，显示带输入框的弹窗 */
         showModal<T extends ShowModalOption = ShowModalOption>(
             option: T
         ): PromisifySuccessResult<T, ShowModalOption>
@@ -20437,7 +20680,7 @@ wx.startAccelerometer({
 *
 * 在插件中使用：需要基础库 `1.9.6`
 *
-* 开始搜索附近的 iBeacon 设备
+* 开始搜索附近的 Beacon 设备
 *
 * **示例代码**
 *
@@ -20457,7 +20700,9 @@ wx.startBeaconDiscovery({
 *
 * 在插件中使用：需要基础库 `1.9.6`
 *
-* 开始搜寻附近的蓝牙外围设备。**此操作比较耗费系统资源，请在搜索并连接到设备后调用 [wx.stopBluetoothDevicesDiscovery](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/wx.stopBluetoothDevicesDiscovery.html) 方法停止搜索。**
+* 开始搜寻附近的蓝牙外围设备。
+*
+* **此操作比较耗费系统资源，请在搜索到需要的设备后及时调用 [wx.stopBluetoothDevicesDiscovery](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/wx.stopBluetoothDevicesDiscovery.html) 停止搜索。**
 *
 * **示例代码**
 *
@@ -20745,7 +20990,7 @@ wx.stopBackgroundAudio()
          *
          * 在插件中使用：需要基础库 `1.9.6`
          *
-         * 停止搜索附近的 iBeacon 设备 */
+         * 停止搜索附近的 Beacon 设备 */
         stopBeaconDiscovery<
             T extends StopBeaconDiscoveryOption = StopBeaconDiscoveryOption
         >(
@@ -20802,6 +21047,14 @@ wx.stopCompass()
         >(
             option?: T
         ): PromisifySuccessResult<T, StopDeviceMotionListeningOption>
+        /** [wx.stopFaceDetect(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/face/wx.stopFaceDetect.html)
+         *
+         * 需要基础库： `2.18.0`
+         *
+         * 在插件中使用：不支持
+         *
+         * 停止人脸识别 */
+        stopFaceDetect(option?: StopFaceDetectOption): void
         /** [wx.stopGyroscope(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/device/gyroscope/wx.stopGyroscope.html)
          *
          * 需要基础库： `2.3.0`
@@ -21074,14 +21327,14 @@ wx.updateShareMenu({
 *
 * 在插件中使用：需要基础库 `1.9.6`
 *
-* 向低功耗蓝牙设备特征值中写入二进制数据。注意：必须设备的特征值支持 write 才可以成功调用。
+* 向蓝牙低功耗设备特征值中写入二进制数据。注意：必须设备的特征支持 write 才可以成功调用。
 *
 * **注意**
 *
 * - 并行调用多次会存在写失败的可能性。
-* - 小程序不会对写入数据包大小做限制，但系统与蓝牙设备会限制蓝牙4.0单次传输的数据大小，超过最大字节数后会发生写入错误，建议每次写入不超过20字节。
+* - 小程序不会对写入数据包大小做限制，但系统与蓝牙设备会限制蓝牙 4.0 单次传输的数据大小，超过最大字节数后会发生写入错误，建议每次写入不超过 20 字节。
 * - 若单次写入数据过长，iOS 上存在系统不会有任何回调的情况（包括错误回调）。
-* - 安卓平台上，在调用 `notifyBLECharacteristicValueChange` 成功后立即调用 `writeBLECharacteristicValue` 接口，在部分机型上会发生 10008 系统错误
+* - 安卓平台上，在调用 [wx.notifyBLECharacteristicValueChange](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-ble/wx.notifyBLECharacteristicValueChange.html) 成功后立即调用本接口，在部分机型上会发生 10008 系统错误
 *
 * **示例代码**
 *
@@ -21368,6 +21621,16 @@ wx.writeBLECharacteristicValue({
         result: ChooseInvoiceTitleSuccessCallbackResult
     ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type ChooseLicensePlateCompleteCallback = (
+        res: GeneralCallbackResult
+    ) => void
+    /** 接口调用失败的回调函数 */
+    type ChooseLicensePlateFailCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用成功的回调函数 */
+    type ChooseLicensePlateSuccessCallback = (
+        result: ChooseLicensePlateSuccessCallbackResult
+    ) => void
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type ChooseLocationCompleteCallback = (res: GeneralCallbackResult) => void
     /** 接口调用失败的回调函数 */
     type ChooseLocationFailCallback = (res: GeneralCallbackResult) => void
@@ -21572,6 +21835,14 @@ wx.writeBLECharacteristicValue({
     type ExitVoIPChatFailCallback = (res: GeneralCallbackResult) => void
     /** 接口调用成功的回调函数 */
     type ExitVoIPChatSuccessCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type FaceDetectCompleteCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用失败的回调函数 */
+    type FaceDetectFailCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用成功的回调函数 */
+    type FaceDetectSuccessCallback = (
+        result: FaceDetectSuccessCallbackResult
+    ) => void
     /** 回调函数 */
     type FieldsCallback = (
         /** 节点的相关信息 */
@@ -21720,9 +21991,9 @@ wx.writeBLECharacteristicValue({
         result: GetBatteryInfoSuccessCallbackResult
     ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
-    type GetBeaconsCompleteCallback = (res: IBeaconError) => void
+    type GetBeaconsCompleteCallback = (res: BeaconError) => void
     /** 接口调用失败的回调函数 */
-    type GetBeaconsFailCallback = (res: IBeaconError) => void
+    type GetBeaconsFailCallback = (res: BeaconError) => void
     /** 接口调用成功的回调函数 */
     type GetBeaconsSuccessCallback = (
         result: GetBeaconsSuccessCallbackResult
@@ -21764,6 +22035,18 @@ wx.writeBLECharacteristicValue({
     /** 接口调用成功的回调函数 */
     type GetChannelsLiveInfoSuccessCallback = (
         result: GetChannelsLiveInfoSuccessCallbackResult
+    ) => void
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type GetChannelsLiveNoticeInfoCompleteCallback = (
+        res: GeneralCallbackResult
+    ) => void
+    /** 接口调用失败的回调函数 */
+    type GetChannelsLiveNoticeInfoFailCallback = (
+        res: GeneralCallbackResult
+    ) => void
+    /** 接口调用成功的回调函数 */
+    type GetChannelsLiveNoticeInfoSuccessCallback = (
+        result: GetChannelsLiveNoticeInfoSuccessCallbackResult
     ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type GetClipboardDataCompleteCallback = (res: GeneralCallbackResult) => void
@@ -22104,6 +22387,12 @@ wx.writeBLECharacteristicValue({
     /** 接口调用成功的回调函数 */
     type IncludePointsSuccessCallback = (res: GeneralCallbackResult) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type InitFaceDetectCompleteCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用失败的回调函数 */
+    type InitFaceDetectFailCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用成功的回调函数 */
+    type InitFaceDetectSuccessCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type InitMarkerClusterCompleteCallback = (
         res: GeneralCallbackResult
     ) => void
@@ -22304,9 +22593,9 @@ wx.writeBLECharacteristicValue({
     type OffBLEPeripheralConnectionStateChangedCallback = (
         result: OnBLEPeripheralConnectionStateChangedCallbackResult
     ) => void
-    /** iBeacon 服务状态变化事件的回调函数 */
+    /** Beacon 服务状态变化事件的回调函数 */
     type OffBeaconServiceChangeCallback = (res: GeneralCallbackResult) => void
-    /** iBeacon 设备更新事件的回调函数 */
+    /** Beacon 设备更新事件的回调函数 */
     type OffBeaconUpdateCallback = (res: GeneralCallbackResult) => void
     /** 音频进入可以播放状态的事件的回调函数 */
     type OffCanplayCallback = (res: GeneralCallbackResult) => void
@@ -22314,11 +22603,11 @@ wx.writeBLECharacteristicValue({
     type OffCharacteristicReadRequestCallback = (
         result: OnCharacteristicReadRequestCallbackResult
     ) => void
-    /** 特征值订阅事件的回调函数 */
+    /** 特征订阅事件的回调函数 */
     type OffCharacteristicSubscribedCallback = (
         result: OnCharacteristicSubscribedCallbackResult
     ) => void
-    /** 取消特征值订阅事件的回调函数 */
+    /** 取消特征订阅事件的回调函数 */
     type OffCharacteristicUnsubscribedCallback = (
         result: OnCharacteristicSubscribedCallbackResult
     ) => void
@@ -22414,11 +22703,11 @@ wx.writeBLECharacteristicValue({
     type OnAudioInterruptionBeginCallback = (res: GeneralCallbackResult) => void
     /** 音频中断结束事件的回调函数 */
     type OnAudioInterruptionEndCallback = (res: GeneralCallbackResult) => void
-    /** 低功耗蓝牙设备的特征值变化事件的回调函数 */
+    /** 蓝牙低功耗设备的特征值变化事件的回调函数 */
     type OnBLECharacteristicValueChangeCallback = (
         result: OnBLECharacteristicValueChangeCallbackResult
     ) => void
-    /** 低功耗蓝牙连接状态的改变事件的回调函数 */
+    /** 蓝牙低功耗连接状态的改变事件的回调函数 */
     type OnBLEConnectionStateChangeCallback = (
         result: OnBLEConnectionStateChangeCallbackResult
     ) => void
@@ -22436,17 +22725,17 @@ wx.writeBLECharacteristicValue({
     type OnBackgroundFetchDataCallback = (
         result: OnBackgroundFetchDataCallbackResult
     ) => void
-    /** iBeacon 服务状态变化事件的回调函数 */
+    /** Beacon 服务状态变化事件的回调函数 */
     type OnBeaconServiceChangeCallback = (
         result: OnBeaconServiceChangeCallbackResult
     ) => void
-    /** iBeacon 设备更新事件的回调函数 */
+    /** Beacon 设备更新事件的回调函数 */
     type OnBeaconUpdateCallback = (result: OnBeaconUpdateCallbackResult) => void
     /** 蓝牙适配器状态变化事件的回调函数 */
     type OnBluetoothAdapterStateChangeCallback = (
         result: OnBluetoothAdapterStateChangeCallbackResult
     ) => void
-    /** 寻找到新设备的事件的回调函数 */
+    /** 搜索到新设备的事件的回调函数 */
     type OnBluetoothDeviceFoundCallback = (
         result: OnBluetoothDeviceFoundCallbackResult
     ) => void
@@ -22457,11 +22746,11 @@ wx.writeBLECharacteristicValue({
     type OnCharacteristicReadRequestCallback = (
         result: OnCharacteristicReadRequestCallbackResult
     ) => void
-    /** 特征值订阅事件的回调函数 */
+    /** 特征订阅事件的回调函数 */
     type OnCharacteristicSubscribedCallback = (
         result: OnCharacteristicSubscribedCallbackResult
     ) => void
-    /** 取消特征值订阅事件的回调函数 */
+    /** 取消特征订阅事件的回调函数 */
     type OnCharacteristicUnsubscribedCallback = (
         result: OnCharacteristicSubscribedCallbackResult
     ) => void
@@ -22627,6 +22916,22 @@ wx.writeBLECharacteristicValue({
     type OpenCardFailCallback = (res: GeneralCallbackResult) => void
     /** 接口调用成功的回调函数 */
     type OpenCardSuccessCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type OpenChannelsActivityCompleteCallback = (
+        res: GeneralCallbackResult
+    ) => void
+    /** 接口调用失败的回调函数 */
+    type OpenChannelsActivityFailCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用成功的回调函数 */
+    type OpenChannelsActivitySuccessCallback = (
+        res: GeneralCallbackResult
+    ) => void
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type OpenChannelsLiveCompleteCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用失败的回调函数 */
+    type OpenChannelsLiveFailCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用成功的回调函数 */
+    type OpenChannelsLiveSuccessCallback = (res: GeneralCallbackResult) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type OpenCompleteCallback = (res: GeneralCallbackResult) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
@@ -23063,9 +23368,11 @@ wx.writeBLECharacteristicValue({
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type SetBLEMTUCompleteCallback = (res: GeneralCallbackResult) => void
     /** 接口调用失败的回调函数 */
-    type SetBLEMTUFailCallback = (res: GeneralCallbackResult) => void
+    type SetBLEMTUFailCallback = (result: SetBLEMTUFailCallbackResult) => void
     /** 接口调用成功的回调函数 */
-    type SetBLEMTUSuccessCallback = (res: GeneralCallbackResult) => void
+    type SetBLEMTUSuccessCallback = (
+        result: SetBLEMTUSuccessCallbackResult
+    ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type SetBackgroundColorCompleteCallback = (
         res: GeneralCallbackResult
@@ -23365,11 +23672,11 @@ wx.writeBLECharacteristicValue({
     /** 接口调用成功的回调函数 */
     type StartAdvertisingSuccessCallback = (res: GeneralCallbackResult) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
-    type StartBeaconDiscoveryCompleteCallback = (res: IBeaconError) => void
+    type StartBeaconDiscoveryCompleteCallback = (res: BeaconError) => void
     /** 接口调用失败的回调函数 */
-    type StartBeaconDiscoveryFailCallback = (res: IBeaconError) => void
+    type StartBeaconDiscoveryFailCallback = (res: BeaconError) => void
     /** 接口调用成功的回调函数 */
-    type StartBeaconDiscoverySuccessCallback = (res: IBeaconError) => void
+    type StartBeaconDiscoverySuccessCallback = (res: BeaconError) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type StartBluetoothDevicesDiscoveryCompleteCallback = (
         res: BluetoothError
@@ -23537,11 +23844,11 @@ wx.writeBLECharacteristicValue({
         res: GeneralCallbackResult
     ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
-    type StopBeaconDiscoveryCompleteCallback = (res: IBeaconError) => void
+    type StopBeaconDiscoveryCompleteCallback = (res: BeaconError) => void
     /** 接口调用失败的回调函数 */
-    type StopBeaconDiscoveryFailCallback = (res: IBeaconError) => void
+    type StopBeaconDiscoveryFailCallback = (res: BeaconError) => void
     /** 接口调用成功的回调函数 */
-    type StopBeaconDiscoverySuccessCallback = (res: IBeaconError) => void
+    type StopBeaconDiscoverySuccessCallback = (res: BeaconError) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type StopBluetoothDevicesDiscoveryCompleteCallback = (
         res: BluetoothError
@@ -23580,6 +23887,12 @@ wx.writeBLECharacteristicValue({
     type StopDiscoveryFailCallback = (res: Nfcrwerror) => void
     /** 接口调用成功的回调函数 */
     type StopDiscoverySuccessCallback = (res: Nfcrwerror) => void
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type StopFaceDetectCompleteCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用失败的回调函数 */
+    type StopFaceDetectFailCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用成功的回调函数 */
+    type StopFaceDetectSuccessCallback = (res: GeneralCallbackResult) => void
     /** 接口调用失败的回调函数 */
     type StopFailCallback = (res: GeneralCallbackResult) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
