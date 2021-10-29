@@ -443,21 +443,21 @@ Component<{}, {}, { fn(): void }>({
     typeof properties,
     /* methods= */{ fn(): string },
     /* customProperties= */{},
-    /* isPage= */true
-  >({
-    data,
-    properties,
-    methods: {
-      onLoad(q) {
-        expectType<string[]>(Object.keys(q))
-      },
-      fn() {
-        expectType<() => (void | Promise<void>)>(this.onShow)
-        expectError(this.notExists)
-        return 'test'
-      },
-    },
-  })
+      /* isPage= */true
+      >({
+        data,
+        properties,
+        methods: {
+          onLoad(q) {
+            expectType<string[]>(Object.keys(q))
+          },
+          fn() {
+            expectType<() => (void | Promise<void>)>(this.onShow)
+            expectError(this.notExists)
+            return 'test'
+          },
+        },
+      })
 }
 
 {
@@ -472,6 +472,22 @@ Component<{}, {}, { fn(): void }>({
       test() {
         expectType<boolean>(this.data.b)
       }
+    }
+  })
+}
+
+{
+  Component({
+    attached() {
+      this.setUpdatePerformanceListener({withDataPaths: true}, (res) => {
+        expectType<string[]>(res.dataPaths)
+        expectType<number>(res.updateProcessId)
+      })
+      this.setUpdatePerformanceListener({}, res => {
+        expectType<undefined>(res.dataPaths)
+        expectType<number>(res.updateProcessId)
+      })
+      this.setUpdatePerformanceListener({})
     }
   })
 }

@@ -122,6 +122,8 @@ declare namespace WechatMiniprogram {
     type ScriptProcessorNode = any
     type PannerNode = any
     type AudioListener = any
+    type WebGLTexture = any
+    type WebGLRenderingContext = any
 }
 
 declare let console: WechatMiniprogram.Console
