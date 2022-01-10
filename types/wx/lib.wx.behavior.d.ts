@@ -53,7 +53,7 @@ declare namespace WechatMiniprogram.Behavior {
             TBehaviors extends BehaviorsOptions = [],
         >(
             options: Options<TData, TProperty, TMethod, TCustomInstanceProperty, TBehaviors>
-        ): Instance<TData, TProperty, TMethod, TCustomInstanceProperty>
+        ): Instance<TData, TProperty, TMethod, TCustomInstanceProperty> & (TBehaviors[number] extends never ? {} : TBehaviors[number])
     }
 
     type DataOption = Component.DataOption
