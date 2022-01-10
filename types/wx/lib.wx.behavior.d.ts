@@ -22,6 +22,7 @@ SOFTWARE.
 
 declare namespace WechatMiniprogram.Behavior {
     type BehaviorIdentifier = string
+    type BehaviorsOptions = any[]
     type Instance<
         TData extends DataOption,
         TProperty extends PropertyOption,
@@ -34,22 +35,25 @@ declare namespace WechatMiniprogram.Behavior {
         TData extends DataOption,
         TProperty extends PropertyOption,
         TMethod extends MethodOption,
-        TCustomInstanceProperty extends IAnyObject = Record<string, never>
+        TCustomInstanceProperty extends IAnyObject = Record<string, never>,
+        TBehaviors extends BehaviorsOptions = [],
     > = Partial<Data<TData>> &
         Partial<Property<TProperty>> &
         Partial<Method<TMethod>> &
         Partial<OtherOption> &
         Partial<Lifetimes> &
-        ThisType<Instance<TData, TProperty, TMethod, TCustomInstanceProperty>>
+        Partial<TBehavior<TBehaviors>> &
+        ThisType<Instance<TData, TProperty, TMethod, TCustomInstanceProperty> & (TBehaviors[number] extends never ? {} : TBehaviors[number])>
     interface Constructor {
         <
             TData extends DataOption,
             TProperty extends PropertyOption,
             TMethod extends MethodOption,
-            TCustomInstanceProperty extends IAnyObject = Record<string, never>
+            TCustomInstanceProperty extends IAnyObject = Record<string, never>,
+            TBehaviors extends BehaviorsOptions = [],
         >(
-            options: Options<TData, TProperty, TMethod, TCustomInstanceProperty>
-        ): BehaviorIdentifier
+            options: Options<TData, TProperty, TMethod, TCustomInstanceProperty, TBehaviors>
+        ): Instance<TData, TProperty, TMethod, TCustomInstanceProperty>
     }
 
     type DataOption = Component.DataOption
@@ -58,7 +62,9 @@ declare namespace WechatMiniprogram.Behavior {
     type Data<D extends DataOption> = Component.Data<D>
     type Property<P extends PropertyOption> = Component.Property<P>
     type Method<M extends MethodOption> = Component.Method<M>
-
+    interface TBehavior<T extends BehaviorsOptions> {
+        behaviors: T
+    }
     type DefinitionFilter = Component.DefinitionFilter
     type Lifetimes = Component.Lifetimes
 

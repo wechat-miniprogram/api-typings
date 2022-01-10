@@ -44,17 +44,20 @@ declare namespace WechatMiniprogram.Component {
         IAnyObject
     >
     type TrivialOption = Options<IAnyObject, IAnyObject, IAnyObject, IAnyObject>
+    type BehaviorsOptions = any[]
     type Options<
         TData extends DataOption,
         TProperty extends PropertyOption,
         TMethod extends MethodOption,
         TCustomInstanceProperty extends IAnyObject = {},
-        TIsPage extends boolean = false
+        TIsPage extends boolean = false,
+        TBehaviors extends BehaviorsOptions = [],
     > = Partial<Data<TData>> &
         Partial<Property<TProperty>> &
         Partial<Method<TMethod, TIsPage>> &
         Partial<OtherOption> &
         Partial<Lifetimes> &
+        Partial<ComponentBehavior<TBehaviors>> &
         ThisType<
             Instance<
                 TData,
@@ -62,7 +65,7 @@ declare namespace WechatMiniprogram.Component {
                 TMethod,
                 TCustomInstanceProperty,
                 TIsPage
-            >
+            > & (TBehaviors[number] extends never ? {} : TBehaviors[number])
         >
     interface Constructor {
         <
@@ -70,20 +73,23 @@ declare namespace WechatMiniprogram.Component {
             TProperty extends PropertyOption,
             TMethod extends MethodOption,
             TCustomInstanceProperty extends IAnyObject = {},
-            TIsPage extends boolean = false
+            TIsPage extends boolean = false,
+            TBehaviors extends BehaviorsOptions = [],
         >(
             options: Options<
                 TData,
                 TProperty,
                 TMethod,
                 TCustomInstanceProperty,
-                TIsPage
+                TIsPage,
+                TBehaviors
             >
         ): string
     }
     type DataOption = Record<string, any>
     type PropertyOption = Record<string, AllProperty>
     type MethodOption = Record<string, Function>
+    type BehaviorOption = TrivialOption
 
     interface Data<D extends DataOption> {
         /** 组件的内部数据，和 `properties` 一同用于组件的模板渲染 */
@@ -96,6 +102,9 @@ declare namespace WechatMiniprogram.Component {
     interface Method<M extends MethodOption, TIsPage extends boolean = false> {
         /** 组件的方法，包括事件响应函数和任意的自定义方法，关于事件响应函数的使用，参见 [组件间通信与事件](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/events.html) */
         methods: M & (TIsPage extends true ? Partial<Page.ILifetime> : {})
+    }
+    interface ComponentBehavior<T extends BehaviorsOptions> {
+        behaviors: T
     }
     type PropertyType =
         | StringConstructor
@@ -466,7 +475,7 @@ declare namespace WechatMiniprogram.Component {
 
     interface OtherOption {
         /** 类似于mixins和traits的组件间代码复用机制，参见 [behaviors](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/behaviors.html) */
-        behaviors: Behavior.BehaviorIdentifier[]
+        // behaviors: Behavior.BehaviorIdentifier[]
         /**
          * 组件数据字段监听器，用于监听 properties 和 data 的变化，参见 [数据监听器](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/observer.html)
          *

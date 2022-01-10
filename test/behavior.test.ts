@@ -1,6 +1,6 @@
 import { expectType } from 'tsd'
 
-expectType<string>(Behavior({}))
+expectType<WechatMiniprogram.Behavior.Instance<{}, {}, {}, {}>>(Behavior({}))
 
 Behavior({
   behaviors: [],
