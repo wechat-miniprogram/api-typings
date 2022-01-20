@@ -1,5 +1,5 @@
 /*! *****************************************************************************
-Copyright (c) 2021 Tencent, Inc. All rights reserved.
+Copyright (c) 2022 Tencent, Inc. All rights reserved.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -47,64 +47,6 @@ declare namespace WechatMiniprogram {
         : P extends { complete: any }
         ? void
         : Promise<Parameters<Exclude<T['success'], undefined>>[0]>
-    interface Console {
-        /** [console.debug()](https://developers.weixin.qq.com/miniprogram/dev/api/base/debug/console.debug.html)
-         *
-         * 向调试面板中打印 debug 日志 */
-        debug(
-            /** 日志内容，可以有任意多个。 */
-            ...args: any[]
-        ): void
-        /** [console.error()](https://developers.weixin.qq.com/miniprogram/dev/api/base/debug/console.error.html)
-         *
-         * 向调试面板中打印 error 日志 */
-        error(
-            /** 日志内容，可以有任意多个。 */
-            ...args: any[]
-        ): void
-        /** [console.group(string label)](https://developers.weixin.qq.com/miniprogram/dev/api/base/debug/console.group.html)
-         *
-         * 在调试面板中创建一个新的分组。随后输出的内容都会被添加一个缩进，表示该内容属于当前分组。调用 [console.groupEnd](https://developers.weixin.qq.com/miniprogram/dev/api/base/debug/console.groupEnd.html)之后分组结束。
-         *
-         * **注意**
-         *
-         *
-         * 仅在工具中有效，在 vConsole 中为空函数实现。 */
-        group(
-            /** 分组标记，可选。 */
-            label?: string
-        ): void
-        /** [console.groupEnd()](https://developers.weixin.qq.com/miniprogram/dev/api/base/debug/console.groupEnd.html)
-         *
-         * 结束由 [console.group](https://developers.weixin.qq.com/miniprogram/dev/api/base/debug/console.group.html) 创建的分组
-         *
-         * **注意**
-         *
-         *
-         * 仅在工具中有效，在 vConsole 中为空函数实现。 */
-        groupEnd(): void
-        /** [console.info()](https://developers.weixin.qq.com/miniprogram/dev/api/base/debug/console.info.html)
-         *
-         * 向调试面板中打印 info 日志 */
-        info(
-            /** 日志内容，可以有任意多个。 */
-            ...args: any[]
-        ): void
-        /** [console.log()](https://developers.weixin.qq.com/miniprogram/dev/api/base/debug/console.log.html)
-         *
-         * 向调试面板中打印 log 日志 */
-        log(
-            /** 日志内容，可以有任意多个。 */
-            ...args: any[]
-        ): void
-        /** [console.warn()](https://developers.weixin.qq.com/miniprogram/dev/api/base/debug/console.warn.html)
-         *
-         * 向调试面板中打印 warn 日志 */
-        warn(
-            /** 日志内容，可以有任意多个。 */
-            ...args: any[]
-        ): void
-    }
 
     //  TODO: Extract real definition from `lib.dom.d.ts` to replace this
     type IIRFilterNode = any
