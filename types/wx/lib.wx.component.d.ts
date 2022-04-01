@@ -152,6 +152,7 @@ declare namespace WechatMiniprogram.Component {
         ? ValueType<T>
         : FullPropertyToData<Exclude<T, ShortProperty>>
     type FullPropertyToData<T extends AllFullProperty> = ValueType<T['type']>
+    // type FullPropertyToData<T extends AllFullProperty> = unknown extends T['value'] ? ValueType<T['type']> : T['value']
     type PropertyOptionToData<P extends PropertyOption> = {
         [name in keyof P]: PropertyToData<P[name]>
     }
