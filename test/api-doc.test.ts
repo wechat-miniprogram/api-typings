@@ -1,5 +1,5 @@
 import { expectType } from 'tsd'
-
+type TPlatform = 'ios' | 'android' | 'windows' | 'mac'
 // Test case from `Animation`
 {
   Page({
@@ -1034,7 +1034,7 @@ import { expectType } from 'tsd'
       expectType<number>(res.windowHeight)
       expectType<string>(res.language)
       expectType<string>(res.version)
-      expectType<string>(res.platform)
+      expectType<TPlatform>(res.platform)
     },
   })
 }
@@ -1049,7 +1049,7 @@ import { expectType } from 'tsd'
       expectType<number>(res.windowHeight)
       expectType<string>(res.language)
       expectType<string>(res.version)
-      expectType<string>(res.platform)
+      expectType<TPlatform>(res.platform)
     },
   })
 }
@@ -1064,7 +1064,7 @@ import { expectType } from 'tsd'
       expectType<number>(res.windowHeight)
       expectType<string>(res.language)
       expectType<string>(res.version)
-      expectType<string>(res.platform)
+      expectType<TPlatform>(res.platform)
     }
   })
 }
@@ -2167,7 +2167,7 @@ import { expectType } from 'tsd'
     expectType<number>(res.windowHeight)
     expectType<string>(res.language)
     expectType<string>(res.version)
-    expectType<string>(res.platform)
+    expectType<TPlatform>(res.platform)
   } catch (e) {
     // Do something when catch error
   }
@@ -2183,7 +2183,7 @@ import { expectType } from 'tsd'
     expectType<number>(res.windowHeight)
     expectType<string>(res.language)
     expectType<string>(res.version)
-    expectType<string>(res.platform)
+    expectType<TPlatform>(res.platform)
   } catch (e) {
     // Do something when catch error
   }
@@ -3226,6 +3226,8 @@ import { expectType } from 'tsd'
   const observer = performance.createObserver(entryList => {
     console.log(entryList.getEntries())
   })
+  // FIXME
+  // @ts-ignore
   observer.observe({ entryTypes: ['render', 'script', 'navigation'] })
 }
 

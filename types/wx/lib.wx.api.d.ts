@@ -3336,7 +3336,7 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         /** 需要基础库： `2.22.1`
          *
          * 目前 toast 和 loading 相关接口可以相互混用，此参数可用于取消混用特性 */
-        noConflict?: number
+        noConflict?: boolean
         /** 接口调用成功的回调函数 */
         success?: HideLoadingSuccessCallback
     }
@@ -7891,6 +7891,10 @@ wx.getSetting({
     interface VKConfig {
         /** 跟踪配置 */
         track: Track
+        /** 需要基础库： `2.23.0`
+         *
+         * 绑定的 WebGLRenderingContext 对象 */
+        gl?: WebGLRenderingContext
         /** 需要基础库： `2.22.0`
          *
          * vision kit 版本，目前只有 iOS 基础库 2.22.0 以上支持 v2
@@ -7898,11 +7902,7 @@ wx.getSetting({
          * 可选值：
          * - 'v1': 旧版本;
          * - 'v2': v2 版本，目前只有 iOS 基础库 2.22.0 以上支持; */
-        version: 'v1' | 'v2'
-        /** 需要基础库： `2.23.0`
-         *
-         * 绑定的 WebGLRenderingContext 对象 */
-        gl?: WebGLRenderingContext
+        version?: 'v1' | 'v2'
     }
     /** 需要基础库： `2.20.0`
      *
@@ -8160,18 +8160,18 @@ worker.terminate()
         serviceId: string
         /** 蓝牙设备特征对应的二进制值 */
         value: ArrayBuffer
-        /** 蓝牙特征值的写模式设置，有两种模式，iOS 优先 write，安卓优先 writeNoResponse 。
-         *
-         * 可选值：
-         * - 'write': 强制回复写，不支持时报错;
-         * - 'writeNoResponse': 强制无回复写，不支持时报错; */
-        writeType: 'write' | 'writeNoResponse'
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: WriteBLECharacteristicValueCompleteCallback
         /** 接口调用失败的回调函数 */
         fail?: WriteBLECharacteristicValueFailCallback
         /** 接口调用成功的回调函数 */
         success?: WriteBLECharacteristicValueSuccessCallback
+        /** 蓝牙特征值的写模式设置，有两种模式，iOS 优先 write，安卓优先 writeNoResponse 。
+         *
+         * 可选值：
+         * - 'write': 强制回复写，不支持时报错;
+         * - 'writeNoResponse': 强制无回复写，不支持时报错; */
+        writeType?: 'write' | 'writeNoResponse'
     }
     interface WriteCharacteristicValueObject {
         /** 蓝牙特征的 UUID */
@@ -9174,7 +9174,7 @@ worker.terminate()
          * 批量添加规则，规则写法可参考 [CacheManager.addRule](https://developers.weixin.qq.com/miniprogram/dev/api/storage/cachemanager/CacheManager.addRule.html)。 */
         addRules(
             /** 规则列表 */
-            rules: Array<string | RegExp | Object>
+            rules: Array<string | RegExp | IAnyObject>
         ): string[]
         /** [CacheManager.clearCaches()](https://developers.weixin.qq.com/miniprogram/dev/api/storage/cachemanager/CacheManager.clearCaches.html)
          *
@@ -17440,11 +17440,11 @@ wx.chooseImage({
 *
 * **示例代码**
 *
-* v2 版本：[在微信开发者工具中查看示例](https://developers.weixin.qq.com/s/RyunNnmp7Mwx)
+* v2 版本：[在微信开发者工具中查看示例](https://developers.weixin.qq.com/s/E2okP7mB7Vyr)
 *
 *
 *
-* v1 版本：[在微信开发者工具中查看示例](https://developers.weixin.qq.com/s/NYZcIJmZ7cvJ)
+* v1 版本：[在微信开发者工具中查看示例](https://developers.weixin.qq.com/s/cCzLqZmm7FxD)
 * ```js
 // 以下 demo 以 v2 为例
 // 创建 session 对象
@@ -17556,10 +17556,10 @@ try {
   // Do something when catch error
 }
 ``` */
-        getStorageSync(
+        getStorageSync<T = any>(
             /** 本地缓存中指定的 key */
             key: string
-        ): any
+        ): T
         /** [boolean wx.canIUse(string schema)](https://developers.weixin.qq.com/miniprogram/dev/api/base/wx.canIUse.html)
 *
 * 需要基础库： `1.1.1`
@@ -17958,9 +17958,6 @@ wx.checkSession({
 * 在插件中使用：需要基础库 `2.16.1`
 *
 * 获取用户收货地址。调起用户编辑收货地址原生界面，并在编辑完成后返回用户选择的地址。
-* ## 申请开通
-* 暂只针对国内主体且具备使用收货地址场景的小程序开放，在小程序管理后台，「开发」-「开发管理」-「接口设置」中自助开通该接口权限。
-* 接口权限申请入口将于2022年3月11日开始内测，于3月31日全量上线。并从4月18日开始，在代码审核环节将检测该接口是否已完成开通，如未开通，将在代码提审环节进行拦截。
 *
 * **示例代码**
 *
@@ -18066,9 +18063,6 @@ wx.chooseInvoiceTitle({
          * 在插件中使用：需要基础库 `1.9.6`
          *
          * 打开地图选择位置。
-         *  ## 申请开通
-         *  暂只针对国内主体且具备与地理位置强相关的使用场景的小程序开放，在小程序管理后台，「开发」-「开发管理」-「接口设置」中自助开通该接口权限。
-         *  接口权限申请入口将于2022年3月11日开始内测，于3月31日全量上线。并从4月18日开始，在代码审核环节将检测该接口是否已完成开通，如未开通，将在代码提审环节进行拦截。
          *
          * **示例**
          *
@@ -18132,9 +18126,6 @@ wx.chooseMessageFile({
          * 在插件中使用：不支持
          *
          * 打开POI列表选择位置，支持模糊定位（精确到市）和精确定位混选。
-         *  ## 申请开通
-         *  暂只针对国内主体且具备与地理位置强相关的使用场景的小程序开放，在小程序管理后台，「开发」-「开发管理」-「接口设置」中自助开通该接口权限。
-         *  接口权限申请入口将于2022年3月11日开始内测，于3月31日全量上线。并从4月18日开始，在代码审核环节将检测该接口是否已完成开通，如未开通，将在代码提审环节进行拦截。
          *
          * **示例**
          *
@@ -18939,26 +18930,7 @@ wx.getLocalIPAddress({
 *
 * 在插件中使用：需要基础库 `1.9.6`
 *
-* 获取当前的地理位置、速度。当用户离开小程序后，此接口无法调用。开启高精度定位，接口耗时会增加，可指定 highAccuracyExpireTime 作为超时时间。地图相关使用的坐标格式应为 gcj02。
-*  高频率调用会导致耗电，如有需要可使用持续定位接口 `wx.onLocationChange`。
-*  基础库 `2.17.0` 版本起 `wx.getLocation` 增加调用频率限制，[相关公告](https://developers.weixin.qq.com/community/develop/doc/000aee91a98d206bc6dbe722b51801)。
-*
-*  ## 申请开通
-*   暂只针对国内主体如下类目的小程序开放，需要先通过类目审核，再在小程序管理后台，「开发」-「开发管理」-「接口设置」中自助开通该接口权限。
-*   接口权限申请入口将于2022年3月11日开始内测，于3月31日全量上线。并从4月18日开始，在代码审核环节将检测该接口是否已完成开通，如未开通，将在代码提审环节进行拦截。
-*
-*   | 一级类目/主体类型	| 二级类目	| 应用场景 |
-*   | -------------- | -------| -------- |
-*   | 电商平台 |	/	| 售卖商品发货、收货服务 |
-*   | 商家自营 |	/	| 售卖商品发货、收货服务 |
-*   | 医疗服务 | 公立医疗机构、三级私立医疗机构、其他私立医疗机构、就医服务、其他医学健康服务、药品（非处方药）销售、非处方药销售平台、医疗器械生产企业、医疗器械自营、医疗器械经营销售平台、互联网医院血液、干细胞服务、临床试验		| 1、实际物品/药品接收服务 2、附近医院查询服务 |
-*   | 交通服务 |	/	| 代驾服务、租车网点查询、附近车辆查询等相关服务 |
-*   | 生活服务 |	/	| 上门服务作业等线下场景  |
-*   | 物流服务 |	收件/派件、查件、邮政、装卸搬运、快递柜、货物运输	 |	快递/货物收发服务 |
-*   | 餐饮服务 | 	点餐平台、外卖平台	| 线下送餐服务 |
-*   | 工具	| 天气、信息查询 |	与地理位置相关的服务，比如潮汐查询、海拔查询、天气查询等 |
-*   | 政务民生 |	/	 | 提供政务单位相关业务 |
-*   | 政府主体帐号 |	/	| 提供政务单位相关业务 |
+* 获取当前的地理位置、速度。当用户离开小程序后，此接口无法调用。开启高精度定位，接口耗时会增加，可指定 highAccuracyExpireTime 作为超时时间。地图相关使用的坐标格式应为 gcj02。高频率调用会导致耗电，如有需要可使用持续定位接口 `wx.onLocationChange`。基础库 `2.17.0` 版本起 `wx.getLocation` 增加调用频率限制，[相关公告](https://developers.weixin.qq.com/community/develop/doc/000aee91a98d206bc6dbe722b51801)。
 *
 * **示例代码**
 *
@@ -19596,7 +19568,7 @@ wx.hideKeyboard({
          *
          * 隐藏 loading 提示框 */
         hideLoading<T extends HideLoadingOption = HideLoadingOption>(
-            option: T
+            option?: T
         ): PromisifySuccessResult<T, HideLoadingOption>
         /** [wx.hideNavigationBarLoading(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/ui/navigation-bar/wx.hideNavigationBarLoading.html)
          *
@@ -20908,23 +20880,6 @@ wx.onKeyboardHeightChange(res => {
 *
 * 监听实时地理位置变化事件，需结合 [wx.startLocationUpdateBackground](https://developers.weixin.qq.com/miniprogram/dev/api/location/wx.startLocationUpdateBackground.html)、[wx.startLocationUpdate](https://developers.weixin.qq.com/miniprogram/dev/api/location/wx.startLocationUpdate.html)使用。
 *
-*  ## 申请开通
-*   暂只针对国内主体如下类目的小程序开放，需要先通过类目审核，再在小程序管理后台，「开发」-「开发管理」-「接口设置」中自助开通该接口权限。
-*   接口权限申请入口将于2022年3月11日开始内测，于3月31日全量上线。并从4月18日开始，在代码审核环节将检测该接口是否已完成开通，如未开通，将在代码提审环节进行拦截。
-*
-*   | 一级类目/主体类型	| 二级类目	| 应用场景 |
-*   | -------------- | -------| -------- |
-*   | 电商平台 |	/	| 售卖商品发货、收货服务 |
-*   | 商家自营 |	/	| 售卖商品发货、收货服务 |
-*   | 医疗服务 | 公立医疗机构、三级私立医疗机构、其他私立医疗机构、就医服务、其他医学健康服务、药品（非处方药）销售、非处方药销售平台、医疗器械生产企业、医疗器械自营、医疗器械经营销售平台、互联网医院血液、干细胞服务、临床试验		| 1、实际物品/药品接收服务 2、附近医院查询服务 |
-*   | 交通服务 |	/	| 代驾服务、租车网点查询、附近车辆查询等相关服务 |
-*   | 生活服务 |	/	| 上门服务作业等线下场景  |
-*   | 物流服务 |	收件/派件、查件、邮政、装卸搬运、快递柜、货物运输	 |	快递/货物收发服务 |
-*   | 餐饮服务 | 	点餐平台、外卖平台	| 线下送餐服务 |
-*   | 工具	| 天气、信息查询 |	与地理位置相关的服务，比如潮汐查询、海拔查询、天气查询等 |
-*   | 政务民生 |	/	 | 提供政务单位相关业务 |
-*   | 政府主体帐号 |	/	| 提供政务单位相关业务 |
-*
 * **示例代码**
 *
 * ```js
@@ -21554,35 +21509,33 @@ wx.startRecord({
          * __该接口仅在小程序插件中可调用__，调用接口获得插件用户标志凭证（code）。插件可以此凭证换取用于识别用户的标识 openpid。用户不同、宿主小程序不同或插件不同的情况下，该标识均不相同，即当且仅当同一个用户在同一个宿主小程序中使用同一个插件时，openpid 才会相同。 */
         pluginLogin(args?: PluginLoginOption): void
         /** [wx.preloadAssets()](https://developers.weixin.qq.com/miniprogram/dev/api/base/performance/wx.preloadAssets.html)
-*
-* 需要基础库： `2.22.1`
-*
-* 在插件中使用：不支持
-*
-* 为视图层预加载媒体资源文件, 目前支持：font，image
-*
-* **示例代码**
-*
-* ```js
-wx.preloadAssets({
-  data: [
-    {
-      type: 'image',
-      src: imgUrl,
-    },
-  ],
-  success(resp) {
-    console.log('preloadAssets success', resp)
-  },
-  fail(err) {
-    console.log('preloadAssets fail', err)
-  },
-})
-```
-*
-* ****
-*
-* - 开发过程中，可在开发者工具network面板查看预加载情况。 */
+         *
+         * 需要基础库： `2.22.1`
+         *
+         * 在插件中使用：不支持
+         *
+         * 为视图层预加载媒体资源文件, 目前支持：font，image
+         *
+         * **示例代码**
+         *
+         * wx.preloadAssets({
+         *   data: [
+         *     {
+         *       type: 'image',
+         *       src: imgUrl,
+         *     },
+         *   ],
+         *   success(resp) {
+         *     console.log('preloadAssets success', resp)
+         *   },
+         *   fail(err) {
+         *     console.log('preloadAssets fail', err)
+         *   },
+         * })
+         *
+         * ****
+         *
+         * - 开发过程中，可在开发者工具network面板查看预加载情况。 */
         preloadAssets(): void
         /** [wx.preloadWebview(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/base/performance/wx.preloadWebview.html)
          *
@@ -21908,7 +21861,7 @@ wx.reportPerformance(1101, 680, 'custom')
          * 在插件中使用：不支持
          *
          * 创建自定义版交易组件订单，并发起支付。
-         * 仅接入了[自定义版交易组件](https://developers.weixin.qq.com/miniprogram/dev/framework/ministore/minishopopencomponent2/Introduction2)的小程序需要使用，普通小程序可直接使用 [`wx.requestPayment`](https://developers.weixin.qq.com/miniprogram/dev/api/payment/wx.requestPayment.html)。
+         * 仅接入了[自定义版交易组件](https://developers.weixin.qq.com/miniprogram/dev/framework/ministore/minishopopencomponent2/Introduction2)的小程序需要使用，普通小程序可直接使用 [`wx.requestPayment`](./wx.requestPayment)。
          *
          * **前置检查**
          *
