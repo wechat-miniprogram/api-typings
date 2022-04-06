@@ -19636,7 +19636,7 @@ wx.hideShareMenu({
          *
          * 隐藏消息提示框 */
         hideToast<T extends HideToastOption = HideToastOption>(
-            option: T
+            option?: T
         ): PromisifySuccessResult<T, HideToastOption>
         /** [wx.initFaceDetect(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/ai/face/wx.initFaceDetect.html)
          *
