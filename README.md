@@ -33,6 +33,10 @@ npm install miniprogram-api-typings
 
 - 在 `tsconfig.json` 中指定 `types: ["miniprogram-api-typings"]`
 
+或者在 js 配置中指定：
+
+- 在 `jsconfig.json` 中指定 `typeRoots: ["miniprogram-api-typings"]`
+
 或者通过 [三斜杠指令](https://www.tslang.cn/docs/handbook/triple-slash-directives.html) 引用：
 
 - `/// <reference path="node_modules/miniprogram-api-typings/index.d.ts" />`

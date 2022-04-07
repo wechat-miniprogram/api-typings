@@ -33,6 +33,10 @@ Or specify types in typescript config:
 
 - Specify `types: ["miniprogram-api-typings"]` in `tsconfig.json`
 
+Or specify types in js config:
+
+- Specify `typeRoots: ["miniprogram-api-typings"]` in `jsconfig.json`
+
 Or reference by [Triple-Slash Directives](https://www.typescriptlang.org/docs/handbook/triple-slash-directives.html):
 
 - `/// <reference path="node_modules/miniprogram-api-typings/index.d.ts" />`
