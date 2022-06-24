@@ -4142,6 +4142,49 @@ type TPlatform = 'ios' | 'android' | 'windows' | 'mac'
   })
 }
 
+// Test case from `wx.createVKSession`
+{
+  const gl: WechatMiniprogram.WebGLRenderingContext = {}
+  const canvasWidth = 300
+  const canvasHeight = 300
+  // 以下 demo 以 v2 为例
+  // 创建 session 对象
+  const session = wx.createVKSession({
+    track: {
+      plane: {mode: 3},
+    },
+    version: 'v2',
+    gl,
+  })
+  // 逐帧分析
+  const onFrame = (timestamp: number) => {
+  // 开发者可以自己控制帧率
+    const frame = session.getVKFrame(canvasWidth, canvasHeight)
+    if (frame) {
+      // 分析完毕，可以拿到帧对象
+      doRender(frame)
+    }
+
+    expectType<number>(timestamp)
+
+    session.requestAnimationFrame(onFrame)
+  }
+  session.start(err => {
+    if (!err) session.requestAnimationFrame(onFrame)
+  })
+
+  // 渲染函数
+  const doRender = (frame: WechatMiniprogram.VKFrame) => {
+    expectType<WechatMiniprogram.VKFrame>(frame)
+  }
+}
+
+// Test case from `wx.isVKSupport`
+{
+  const isSupportV2 = wx.isVKSupport('v2')
+  expectType<boolean>(isSupportV2)
+}
+
 // Test case from `FileSystemManager.readCompressedFile`
 {
   const fs = wx.getFileSystemManager()
@@ -4501,5 +4544,141 @@ type TPlatform = 'ios' | 'android' | 'windows' | 'mac'
 
   audioCtx.createPeriodicWave(real, imag, {
     disableNormalization: true,
+  })
+}
+
+// Test case from `wx.preloadAssets`
+{
+  let imgUrl = ''
+  wx.preloadAssets({
+    data: [
+      {
+        type: 'image',
+        src: imgUrl,
+      },
+    ],
+    success(resp) {
+      console.log('preloadAssets success', resp)
+    },
+    fail(err) {
+      console.log('preloadAssets fail', err)
+    },
+  })
+}
+
+// Test case from `wx.editImage`
+{
+  wx.editImage({
+    src: '', // 图片路径
+  })
+}
+
+// Test case from `wx.createCacheManager`
+{
+  const cacheManager = wx.createCacheManager({})
+  cacheManager.addRule(/https:\/\/(?:.*)/ig) // 表示所有 https 请求都匹配
+
+  cacheManager.on('request', evt => {
+    // 在弱网时接收到 wx.request 请求
+    return new Promise((resolve, reject) => {
+      const matchRes = cacheManager.match(evt)
+      if (matchRes && matchRes.data) {
+        // 有缓存，返回
+        resolve(matchRes.data)
+      } else {
+        // 没缓存，抛错
+        reject({ errMsg: 'no cache' })
+      }
+    })
+  })
+}
+
+// Test case from `CacheManager.addRule`
+{
+  const cacheManager = wx.createCacheManager({})
+  const ruleId = cacheManager.addRule({
+    id: 'haha-rule',
+    method: 'GET',
+    url: '/haha',
+    maxAge: 123455,
+    dataSchema: [
+    // data 字段的匹配，默认为空，表示不匹配
+    // 类型可以是：string、number、boolean、null、object、any（表示任意类型均可），以及这些类型的数组表示方式
+      {name: 'aaa', schema: {type: 'string'}}, // 类型为 string
+      {name: 'bbb', schema: [{type: 'number'}, {type: 'string'}]}, // 类型为 number, string
+      {name: 'ccc', schema: {type: 'string', value: 'abc'}}, // 值为 abc
+      {name: 'ddd', schema: {type: 'string', value: /(abc|cba)/ig}}, // 值符合该正则匹配，如果该值不是字符串类型，则会被尝试转成字符串后再进行比较
+      {name: 'ddd', schema: {type: 'string', value: (val: string) => val === '123'}}, // 传入函数来校验值
+      {name: 'eee', schema: {type: 'object', value: [{ // 类型为对象，则通过嵌套的方式来逐层校验
+        name: 'aaa', schema: {type: 'string'},
+      // ...
+      // 嵌套 dataSchema，同上面的方式一样来匹配嵌套的对象
+      }]}},
+      {name: 'fff', schema: {type: 'string[]'}}, // 类型为 string 数组
+      {name: 'ggg', schema: {type: 'any'}}, // 类型为任意类型
+      {name: 'hhh', schema: {type: 'any[]'}}, // 类型为任意类型的数组
+    ],
+  })
+  expectType<string>(ruleId)
+}
+
+// Test case from `CacheManager.on`
+{
+  const cacheManager = wx.createCacheManager({})
+  cacheManager.on('request', async function () {
+    // evt.url - 请求 url
+    // evt.data - 请求参数
+    // evt.method - 请求方法
+    // evt.request - 原始 request 方法，返回一个 promise
+
+    // if (evt.url === '/xxx') {
+    //   // 如果有些请求仍然希望走到网络，则可以如下处理
+    //   const res = await evt.request()
+    //   // res 即为网络请求返回
+    // }
+
+    return new Promise((resolve, reject) => {
+      // do sth
+      let data = {}
+      if (data) {
+        // 这里 resolve 的 data 就会作为 wx.request 的 success 回调结果返回
+        resolve(data)
+      } else {
+        // 这里 reject 的错误信息就会作为 wx.request 的 fail 回调结果返回
+        reject('no data')
+      }
+    })
+  })
+}
+
+// Test case from `CacheManager.match`
+{
+  const cacheManager = wx.createCacheManager({})
+  cacheManager.on('request', (evt) => {
+    const cache = cacheManager.match(evt)
+    // 若有重复监听，则取第一个 handler 返回的 promise
+    return new Promise((resolve, reject) => {
+      if (cache.data) {
+        resolve(cache.data)
+      } else {
+        reject('no cache')
+      }
+    })
+  })
+}
+
+// Test case from `wx.requestPluginPayment`
+{
+  wx.requestPluginPayment({
+    version: 'release',
+    fee: 1,
+    paymentArgs: {},
+    currencyType: 'CNY',
+    success (res) {
+      expectType<string>(res.errMsg)
+    },
+    fail (res) {
+      expectType<string>(res.errMsg)
+    }
   })
 }
