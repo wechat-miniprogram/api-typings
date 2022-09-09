@@ -1,5 +1,4 @@
 import { expectType } from 'tsd'
-type TPlatform = 'ios' | 'android' | 'windows' | 'mac'
 // Test case from `Animation`
 {
   Page({
@@ -456,7 +455,7 @@ type TPlatform = 'ios' | 'android' | 'windows' | 'mac'
   const worker = wx.createWorker('workers/request/index.js') // 文件名指定 worker 的入口文件路径，绝对路径
 
   worker.onMessage(function (res) {
-    expectType<WechatMiniprogram.WorkerOnMessageCallbackResult>(res)
+    expectType<WechatMiniprogram.WorkerOnMessageListenerResult>(res)
   })
   // 监听worker被系统回收事件
   worker.onProcessKilled(function () {
@@ -1023,6 +1022,8 @@ type TPlatform = 'ios' | 'android' | 'windows' | 'mac'
     },
   })
 }
+
+type TPlatform = 'ios' | 'android' | 'windows' | 'mac' | 'devtools'
 
 // Test case from `wx.getSystemInfoSync`
 {

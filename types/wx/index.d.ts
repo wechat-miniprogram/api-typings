@@ -63,6 +63,7 @@ declare namespace WechatMiniprogram {
     type DynamicsCompressorNode = any
     type ScriptProcessorNode = any
     type PannerNode = any
+    type AnalyserNode = any
     type AudioListener = any
     type WebGLTexture = any
     type WebGLRenderingContext = any
