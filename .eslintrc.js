@@ -45,7 +45,7 @@ module.exports = {
         }],
         '@typescript-eslint/naming-convention': ['error', {
             selector: 'enum',
-            format: ['UPPER_CASE'],
+            format: ['PascalCase', 'UPPER_CASE'],
             leadingUnderscore: 'forbid',
             trailingUnderscore: 'forbid',
         }, {

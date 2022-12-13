@@ -20,6 +20,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ***************************************************************************** */
 
+/// <reference path="./lib.wx.xr-frame.d.ts" />
+
 declare namespace WechatMiniprogram {
     interface AccessFailCallbackResult {
         /** 错误信息
@@ -25940,6 +25942,8 @@ wx.writeBLECharacteristicValue({
         cloud: WxCloud
         /** 文件系统中的用户目录路径 */
         env: { USER_DATA_PATH: string }
+        /** 获得 xr-frame 接口系统 */
+        getXrFrameSystem(): import('WechatXrFrame').IXrFrameSystem
         /** 需要基础库： `2.25.2`
          *
          * worklet 对象，可以通过 [wx.worklet](https://developers.weixin.qq.com/miniprogram/dev/api/ui/worklet/wx.worklet.html) 获取。 */
