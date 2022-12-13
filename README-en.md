@@ -53,6 +53,8 @@ Both PR and issue are welcomed for definitions of pages (`Page`), custom compone
 - [MinLiang Zeng](https://github.com/zenml/)
 - [Garfield Lee](https://github.com/Garfield550)
 - [Mr.Hope](https://github.com/Mister-Hope)
+- [chs97](https://github.com/chs97)
+- [Jelf](https://github.com/okxiaoliang4)
 
 ### Automated tests
 

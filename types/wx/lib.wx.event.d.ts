@@ -419,9 +419,10 @@ declare namespace WechatMiniprogram {
      * 最低基础库: 1.2.0
      */
     type ButtonGetPhoneNumber = CustomEvent<
-        GeneralCallbackResult & Partial<GetWeRunDataSuccessCallbackResult> & {
-            code: string
-        }
+        GeneralCallbackResult &
+            Partial<GetWeRunDataSuccessCallbackResult> & {
+                code: string
+            }
     >
 
     /**
