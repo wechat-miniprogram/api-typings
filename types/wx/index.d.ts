@@ -67,21 +67,49 @@ declare namespace WechatMiniprogram {
     type AudioListener = any
     type WebGLTexture = any
     type WebGLRenderingContext = any
+
+    // TODO: fill worklet type
+    type WorkletFunction = (...args: any) => any
+    type AnimationObject = any
+    type SharedValue = any
+    type DerivedValue = any
 }
 
 declare let console: WechatMiniprogram.Console
 
 declare let wx: WechatMiniprogram.Wx
 /** 引入模块。返回模块通过 `module.exports` 或 `exports` 暴露的接口。 */
-declare function require(
-    /** 需要引入模块文件相对于当前文件的相对路径，或 npm 模块名，或 npm 模块路径。不支持绝对路径 */
-    module: string
-): any
+interface Require {
+    (
+        /** 需要引入模块文件相对于当前文件的相对路径，或 npm 模块名，或 npm 模块路径。不支持绝对路径 */
+        module: string,
+        /** 用于异步获取其他分包中的模块的引用结果，详见 [分包异步化]((subpackages/async)) */
+        callback?: (moduleExport: any) => void,
+        /** 异步获取分包失败时的回调，详见 [分包异步化]((subpackages/async)) */
+        errorCallback?: (err: any) => void
+    ): any
+    /** 以 Promise 形式异步引入模块。返回模块通过 `module.exports` 或 `exports` 暴露的接口。 */
+    async(
+        /** 需要引入模块文件相对于当前文件的相对路径，或 npm 模块名，或 npm 模块路径。不支持绝对路径 */
+        module: string
+    ): Promise<any>
+}
+declare const require: Require
 /** 引入插件。返回插件通过 `main` 暴露的接口。 */
-declare function requirePlugin(
-    /** 需要引入的插件的 alias */
-    module: string
-): any
+interface RequirePlugin {
+    (
+        /** 需要引入的插件的 alias */
+        module: string,
+        /** 用于异步获取其他分包中的插件的引用结果，详见 [分包异步化]((subpackages/async)) */
+        callback?: (pluginExport: any) => void
+    ): any
+    /** 以 Promise 形式异步引入插件。返回插件通过 `main` 暴露的接口。 */
+    async(
+        /** 需要引入的插件的 alias */
+        module: string
+    ): Promise<any>
+}
+declare const requirePlugin: RequirePlugin
 /** 插件引入当前使用者小程序。返回使用者小程序通过 [插件配置中 `export` 暴露的接口](https://developers.weixin.qq.com/miniprogram/dev/framework/plugin/using.html#%E5%AF%BC%E5%87%BA%E5%88%B0%E6%8F%92%E4%BB%B6)。
  *
  * 该接口只在插件中存在

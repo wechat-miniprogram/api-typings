@@ -277,16 +277,16 @@ import WX = WechatMiniprogram
 // https://github.com/wechat-miniprogram/api-typings/issues/133
 {
   type IData = {
-    name: string,
+    name: string
   }
   type IProperty = {
-    id: typeof Number,
+    id: typeof Number
   }
   type IMethod = {
-    setJob(job: string): void,
+    setJob(job: string): void
   }
   type ICustomInstanceProperty = {
-    job: string,
+    job: string
   }
   Component<IData, IProperty, IMethod, ICustomInstanceProperty>({
     properties: {
@@ -364,14 +364,7 @@ import WX = WechatMiniprogram
 }
 
 // https://github.com/wechat-miniprogram/api-typings/issues/157
-{
-  wx.saveFile({
-    tempFilePath: '',
-    success(res) {
-      expectType<string>(res.savedFilePath)
-    }
-  })
-}
+// Test case for #157 is removed since `wx.saveFile` is no longer supported
 
 // https://github.com/wechat-miniprogram/api-typings/issues/159
 {
@@ -426,7 +419,7 @@ import WX = WechatMiniprogram
       expectType<string>(res.whatever)
       expectType<string>(res.randomTemplateId)
     },
-  });
+  })
 }
 
 // https://github.com/wechat-miniprogram/api-typings/issues/204

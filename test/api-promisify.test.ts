@@ -63,12 +63,6 @@ wx.saveVideoToPhotosAlbum({
     expectType<WechatMiniprogram.GeneralCallbackResult>(res)
   },
 })
-wx.removeSavedFile({
-  filePath: '',
-  success(res) {
-    expectType<WechatMiniprogram.GeneralCallbackResult>(res)
-  },
-})
 
 wx.createBLEConnection({
   deviceId: '',
@@ -139,9 +133,6 @@ wx.previewImage({ urls: [] }).then(res => {
 wx.saveVideoToPhotosAlbum({ filePath: '' }).then(res => {
   expectType<WechatMiniprogram.GeneralCallbackResult>(res)
 })
-wx.removeSavedFile({ filePath: '' }).then(res => {
-  expectType<WechatMiniprogram.GeneralCallbackResult>(res)
-})
 wx.createBLEConnection({ deviceId: '' }).then(res => {
   expectType<WechatMiniprogram.BluetoothError>(res)
 })
@@ -192,9 +183,6 @@ async () => {
   )
   expectType<WechatMiniprogram.GeneralCallbackResult>(
     await wx.saveVideoToPhotosAlbum({ filePath: '' }),
-  )
-  expectType<WechatMiniprogram.GeneralCallbackResult>(
-    await wx.removeSavedFile({ filePath: '' }),
   )
   expectType<WechatMiniprogram.BluetoothError>(
     await wx.createBLEConnection({ deviceId: '' }),

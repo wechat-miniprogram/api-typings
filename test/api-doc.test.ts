@@ -846,17 +846,6 @@ import { expectType } from 'tsd'
   })
 }
 
-// Test case from `wx.getFileInfo`
-{
-  wx.getFileInfo({
-    filePath: '',
-    success(res) {
-      expectType<number>(res.size)
-      expectType<string>(res.digest)
-    },
-  })
-}
-
 // Test case from `wx.getHCEState`
 {
   wx.getHCEState({
@@ -925,24 +914,6 @@ import { expectType } from 'tsd'
     logger.error('key2', { str: 'value2' })
     logger.warn('key3', 'value3')
   }
-}
-
-// Test case from `wx.getSavedFileInfo`
-{
-  wx.getSavedFileList({
-    success(res) {
-      res.fileList
-    },
-  })
-}
-
-// Test case from `wx.getSavedFileList`
-{
-  wx.getSavedFileList({
-    success(res) {
-      res.fileList
-    },
-  })
 }
 
 // Test case from `wx.getSelectedTextRange`
@@ -1452,22 +1423,6 @@ type TPlatform = 'ios' | 'android' | 'windows' | 'mac' | 'devtools'
   })
 }
 
-// Test case from `wx.removeSavedFile`
-{
-  wx.getSavedFileList({
-    success(res) {
-      if (res.fileList.length > 0) {
-        wx.removeSavedFile({
-          filePath: res.fileList[0].filePath,
-          complete(res) {
-            console.log(res)
-          },
-        })
-      }
-    },
-  })
-}
-
 // Test case from `wx.removeStorageSync`
 {
   wx.removeStorage({
@@ -1538,21 +1493,6 @@ type TPlatform = 'ios' | 'android' | 'windows' | 'mac' | 'devtools'
     },
     success(res) {
       console.log(res.data)
-    },
-  })
-}
-
-// Test case from `wx.saveFile`
-{
-  wx.chooseImage({
-    success(res) {
-      const tempFilePaths = res.tempFilePaths
-      wx.saveFile({
-        tempFilePath: tempFilePaths[0],
-        success(res) {
-          res.savedFilePath
-        },
-      })
     },
   })
 }
