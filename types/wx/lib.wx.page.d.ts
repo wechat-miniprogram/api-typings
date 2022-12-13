@@ -199,7 +199,7 @@ declare namespace WechatMiniprogram.Page {
          *
          * 最低基础库： `1.2.4`
          */
-        from: 'button' | 'menu' | string
+        from: 'button' | 'menu'
         /** 如果 `from` 值是 `button`，则 `target` 是触发这次转发事件的 `button`，否则为 `undefined`
          *
          * 最低基础库： `1.2.4` */
