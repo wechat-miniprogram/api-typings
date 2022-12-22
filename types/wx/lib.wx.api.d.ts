@@ -3654,7 +3654,7 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         /** 接口调用失败的回调函数 */
         fail?: InitMarkerClusterFailCallback
         /** 聚合算法的可聚合距离，即距离小于该值的点会聚合至一起，以像素为单位 */
-        gridSize?: boolean
+        gridSize?: number
         /** 接口调用成功的回调函数 */
         success?: InitMarkerClusterSuccessCallback
         /** 点击已经聚合的标记点时是否实现聚合分离 */

@@ -3053,6 +3053,13 @@ type TPlatform = 'ios' | 'android' | 'windows' | 'mac' | 'devtools'
         ],
       })
     },
+    initMarkerCluster() {
+      this.mapCtx.initMarkerCluster({
+        enableDefaultStyle: true,
+        zoomOnClick: true,
+        gridSize: 60
+      })
+    }
   })
 }
 
