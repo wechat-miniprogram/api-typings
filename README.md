@@ -11,18 +11,18 @@
 
 ## 安装
 
-### 通过 DefinitelyTyped
-
-```bash
-npm install @types/wechat-miniprogram
-```
-
-或：
-
 ### 通过独立 npm 包
 
 ```bash
 npm install miniprogram-api-typings
+```
+
+或：
+
+### 通过 DefinitelyTyped
+
+```bash
+npm install @types/wechat-miniprogram
 ```
 
 安装后手动导入：
