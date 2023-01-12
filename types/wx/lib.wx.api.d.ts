@@ -1,5 +1,5 @@
 /*! *****************************************************************************
-Copyright (c) 2022 Tencent, Inc. All rights reserved.
+Copyright (c) 2023 Tencent, Inc. All rights reserved.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -452,6 +452,102 @@ declare namespace WechatMiniprogram {
         /** 接口调用成功的回调函数 */
         success?: AppendFileSuccessCallback
     }
+    interface ApplyBlusherStickMakeupOption {
+        /** 上色程度 0-1 */
+        alpha: number
+        blendMode: string
+        /** 左腮红资源路径 */
+        path: string
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: ApplyBlusherStickMakeupCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: ApplyBlusherStickMakeupFailCallback
+        /** 接口调用成功的回调函数 */
+        success?: ApplyBlusherStickMakeupSuccessCallback
+    }
+    interface ApplyEyeBrowMakeupOption {
+        /** 上色程度 0-1 */
+        alpha: number
+        blendMode: string
+        path: string
+        shrinkRate: number
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: ApplyEyeBrowMakeupCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: ApplyEyeBrowMakeupFailCallback
+        /** 接口调用成功的回调函数 */
+        success?: ApplyEyeBrowMakeupSuccessCallback
+    }
+    interface ApplyEyeShadowMakeupOption {
+        /** 上色程度 0-1 */
+        alpha: number
+        blendMode: string
+        /** 眼影资源路径 */
+        path: string
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: ApplyEyeShadowMakeupCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: ApplyEyeShadowMakeupFailCallback
+        /** 细致效果图片资源路径 */
+        shimmerPosition?: string
+        /** 细致效果图片资源 md5 */
+        shimmerPositionMD5?: string
+        /** 接口调用成功的回调函数 */
+        success?: ApplyEyeShadowMakeupSuccessCallback
+    }
+    interface ApplyFaceContourMakeupOption {
+        alpha: number
+        /** 高光资源路径 */
+        path: string
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: ApplyFaceContourMakeupCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: ApplyFaceContourMakeupFailCallback
+        /** 接口调用成功的回调函数 */
+        success?: ApplyFaceContourMakeupSuccessCallback
+    }
+    interface ApplyFilterOption {
+        /** 滤镜效果透明度，范围是 0-1 */
+        alpha: number
+        /** 滤镜资源路径 */
+        path: string
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: ApplyFilterCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: ApplyFilterFailCallback
+        /** 滤镜资源 md5 */
+        md5?: string
+        /** 接口调用成功的回调函数 */
+        success?: ApplyFilterSuccessCallback
+    }
+    interface ApplyLipStickMakeupOption {
+        /** 上色程度 0-1 */
+        alpha: number
+        blendMode: string
+        faceModel: string
+        path: string
+        shimmerPath: string
+        shimmerType: string
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: ApplyLipStickMakeupCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: ApplyLipStickMakeupFailCallback
+        /** 接口调用成功的回调函数 */
+        success?: ApplyLipStickMakeupSuccessCallback
+    }
+    interface ApplyStickerOption {
+        /** 贴纸类型 */
+        stickers: Sticker[]
+        /** 贴纸类型 */
+        type: string
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: ApplyStickerCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: ApplyStickerFailCallback
+        /** 接口调用成功的回调函数 */
+        success?: ApplyStickerSuccessCallback
+        templateTransSet?: IAnyObject
+    }
     interface Asset {
         src: string
         /** 可选值：
@@ -728,6 +824,19 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         fail?: BlurFailCallback
         /** 接口调用成功的回调函数 */
         success?: BlurSuccessCallback
+    }
+    /** 需要基础库： `2.28.0`
+     *
+     * 人体检测配置。用法详情[指南文档](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/visionkit/body.html)。 */
+    interface BodyTrack {
+        /** 需要基础库： `2.28.0`
+         *
+         * 人体检测模式
+         *
+         * 可选值：
+         * - 1: 通过摄像头实时检测;
+         * - 2: 静态图片检测; */
+        mode: 1 | 2
     }
     interface BoundingClientRectCallbackResult {
         /** 节点的下边界坐标 */
@@ -1065,6 +1174,19 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         write?: boolean
         /** 无回复写 */
         writeNoResponse?: boolean
+    }
+    interface CheckIsAddedToMyMiniProgramOption {
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: CheckIsAddedToMyMiniProgramCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: CheckIsAddedToMyMiniProgramFailCallback
+        /** 接口调用成功的回调函数 */
+        success?: CheckIsAddedToMyMiniProgramSuccessCallback
+    }
+    interface CheckIsAddedToMyMiniProgramSuccessCallbackResult {
+        /** 是否被添加至 「我的小程序」 */
+        added: boolean
+        errMsg: string
     }
     interface CheckIsOpenAccessibilityOption {
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
@@ -1434,6 +1556,22 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         width: number
         errMsg: string
     }
+    interface ClearFiltersOption {
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: ClearFiltersCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: ClearFiltersFailCallback
+        /** 接口调用成功的回调函数 */
+        success?: ClearFiltersSuccessCallback
+    }
+    interface ClearMakeupsOption {
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: ClearMakeupsCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: ClearMakeupsFailCallback
+        /** 接口调用成功的回调函数 */
+        success?: ClearMakeupsSuccessCallback
+    }
     interface ClearOption {
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: ClearCompleteCallback
@@ -1441,6 +1579,14 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         fail?: ClearFailCallback
         /** 接口调用成功的回调函数 */
         success?: ClearSuccessCallback
+    }
+    interface ClearStickersOption {
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: ClearStickersCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: ClearStickersFailCallback
+        /** 接口调用成功的回调函数 */
+        success?: ClearStickersSuccessCallback
     }
     interface ClearStorageOption {
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
@@ -1729,6 +1875,10 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         complete?: ConnectSocketCompleteCallback
         /** 接口调用失败的回调函数 */
         fail?: ConnectSocketFailCallback
+        /** 需要基础库： `2.29.0`
+         *
+         * wifi下使用移动网络发送请求 */
+        forceCellularNetwork?: boolean
         /** HTTP Header，Header 中不能设置 Referer */
         header?: IAnyObject
         /** 需要基础库： `2.8.0`
@@ -1977,6 +2127,22 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         /** 经度 */
         longitude: number
     }
+    interface DetectBodyOption {
+        /** 人脸图像像素点数据，每四项表示一个像素点的 RGBA */
+        frameBuffer: ArrayBuffer
+        /** 图像高度 */
+        height: number
+        /** 图像宽度 */
+        width: number
+        /** 评分阈值。正常情况传入 0.8 即可。 */
+        scoreThreshold?: number
+        /** 图像源类型。正常情况传入 1 即可。当输入的图片是来自一个连续视频的每一帧图像时，sourceType 传入 0 会得到更优的效果
+         *
+         * 可选值：
+         * - 1: 表示输入的图片是随机的图片;
+         * - 0: 表示输入的图片是来自一个连续视频的每一帧图像; */
+        sourceType?: 1 | 0
+    }
     interface DetectFaceOption {
         /** 人脸图像像素点数据，每四项表示一个像素点的 RGBA */
         frameBuffer: ArrayBuffer
@@ -2000,7 +2166,28 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
          * - 0: 表示输入的图片是来自一个连续视频的每一帧图像; */
         sourceType?: 1 | 0
     }
+    interface DetectHandOption {
+        /** 人脸图像像素点数据，每四项表示一个像素点的 RGBA */
+        frameBuffer: ArrayBuffer
+        /** 图像高度 */
+        height: number
+        /** 图像宽度 */
+        width: number
+        /** 算法检测模式
+         *
+         * 可选值：
+         * - 0: 检测模式，输出框和点;
+         * - 1: 手势模式，输出框和手势分类;
+         * - 2: 结合0和1模式，输出框、点、手势分类; */
+        algoMode?: 0 | 1 | 2
+        /** 评分阈值。正常情况传入 0.8 即可。 */
+        scoreThreshold?: number
+    }
     interface DeviceInfo {
+        /** 需要基础库： `2.29.0`
+         *
+         * 设备 CPU 型号（仅 Android 支持） */
+        CPUType: string
         /** 应用（微信APP）二进制接口类型（仅 Android 支持） */
         abi: string
         /** 设备性能等级（仅 Android 支持）。取值为：-2 或 0（该设备无法运行小游戏），-1（性能未知），>=1（设备性能值，该值越高，设备性能越好，目前最高不到50） */
@@ -2685,8 +2872,16 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         finderUserName: string
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: GetChannelsLiveInfoCompleteCallback
+        /** 需要基础库： `2.29.0`
+         *
+         * 结束时间，筛选指定时段的直播 */
+        endTime?: number
         /** 接口调用失败的回调函数 */
         fail?: GetChannelsLiveInfoFailCallback
+        /** 需要基础库： `2.29.0`
+         *
+         * 起始时间，筛选指定时段的直播 */
+        startTime?: number
         /** 接口调用成功的回调函数 */
         success?: GetChannelsLiveInfoSuccessCallback
     }
@@ -2701,6 +2896,14 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         nickname: string
         /** 直播 nonceId */
         nonceId: string
+        /** 需要基础库： `2.29.0`
+         *
+         * 除最近的一条直播外，其他的直播列表（注意：每次最多返回按时间戳增序排列的15个直播信息，其中时间最近的那个直播会在接口其他的返回参数中展示，其余的直播会在该字段中展示）。 */
+        otherInfos: any[]
+        /** 需要基础库： `2.29.0`
+         *
+         * 视频号回放状态：0未生成，1已生成，3生成中，6已过期 */
+        replayStatus: string
         /** 直播状态，2直播中，3直播结束 */
         status: number
         errMsg: string
@@ -3502,6 +3705,19 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         /** 接口调用成功的回调函数 */
         success?: GetWifiListSuccessCallback
     }
+    /** 需要基础库： `2.28.0`
+     *
+     * 手势检测配置。用法详情[指南文档](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/visionkit/hand.html)。 */
+    interface HandTrack {
+        /** 需要基础库： `2.28.0`
+         *
+         * 手势检测模式
+         *
+         * 可选值：
+         * - 1: 通过摄像头实时检测;
+         * - 2: 静态图片检测; */
+        mode: 1 | 2
+    }
     interface HideHomeButtonOption {
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: HideHomeButtonCompleteCallback
@@ -3654,7 +3870,7 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         /** 接口调用失败的回调函数 */
         fail?: InitMarkerClusterFailCallback
         /** 聚合算法的可聚合距离，即距离小于该值的点会聚合至一起，以像素为单位 */
-        gridSize?: boolean
+        gridSize?: number
         /** 接口调用成功的回调函数 */
         success?: InitMarkerClusterSuccessCallback
         /** 点击已经聚合的标记点时是否实现聚合分离 */
@@ -3886,6 +4102,10 @@ innerAudioContext.onError((res) => {
         complete?: JoinVoIPChatCompleteCallback
         /** 接口调用失败的回调函数 */
         fail?: JoinVoIPChatFailCallback
+        /** 需要基础库： `2.29.0`
+         *
+         * wifi下使用移动网络发送请求 */
+        forceCellularNetwork?: boolean
         /** 静音设置 */
         muteConfig?: MuteConfig
         /** 房间类型
@@ -4082,7 +4302,7 @@ innerAudioContext.onError((res) => {
         timeout?: number
     }
     interface LoginSuccessCallbackResult {
-        /** 用户登录凭证（有效期五分钟）。开发者需要在开发者服务器后台调用 [auth.code2Session](#)，使用 code 换取 openid、unionid、session_key 等信息 */
+        /** 用户登录凭证（有效期五分钟）。开发者需要在开发者服务器后台调用 [code2Session](https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/user-login/code2Session.html)，使用 code 换取 openid、unionid、session_key 等信息 */
         code: string
         errMsg: string
     }
@@ -4590,6 +4810,12 @@ innerAudioContext.onError((res) => {
     interface OnCopyUrlListenerResult {
         /** 用短链打开小程序时当前页面携带的查询字符串。小程序中使用时，应在进入页面时调用 `wx.onCopyUrl` 自定义 `query`，退出页面时调用 `wx.offCopyUrl`，防止影响其它页面。 */
         query: string
+    }
+    interface OnCustomRendererEventCallbackResult {
+        /** 推流高度 */
+        height: number
+        /** 推流宽度 */
+        width: number
     }
     interface OnDeviceMotionChangeListenerResult {
         /** 当 手机坐标 X/Y 和 地球 X/Y 重合时，绕着 Z 轴转动的夹角为 alpha，范围值为 [0, 2*PI)。逆时针转动为正。 */
@@ -6020,7 +6246,7 @@ innerAudioContext.onError((res) => {
      *
      * - 通过 Canvas.getContext('2d') 接口可以获取 CanvasRenderingContext2D 对象，实现了 [HTML Canvas 2D Context](https://www.w3.org/TR/2dcontext/) 定义的属性、方法。
      * - 通过 Canvas.getContext('webgl') 或 OffscreenCanvas.getContext('webgl') 接口可以获取 WebGLRenderingContext 对象，实现了 [WebGL 1.0](https://www.khronos.org/registry/webgl/specs/latest/1.0/) 定义的所有属性、方法、常量。
-     * - CanvasRenderingContext2D 的 drawImage 方法 2.10.0 起支持传入通过 [SelectorQuery](https://developers.weixin.qq.com/miniprogram/dev/api/wxml/SelectorQuery.html) 获取的 video 对象
+     * - CanvasRenderingContext2D 的 drawImage 方法 2.10.0 起支持传入通过 [SelectorQuery](https://developers.weixin.qq.com/miniprogram/dev/api/wxml/SelectorQuery.html) 获取的 video 对象，2.29.0 起支持传入开启了自定义渲染的 [LivePusherContext](https://developers.weixin.qq.com/miniprogram/dev/api/media/live/LivePusherContext.html) 对象。
      *
      * **示例代码**
      *
@@ -6564,13 +6790,13 @@ innerAudioContext.onError((res) => {
     interface ScrollToOption {
         /** 是否启用滚动动画 */
         animated?: boolean
-        /** 滚动动画时长 */
+        /** 滚动动画时长 (仅在 iOS 下生效) */
         duration?: number
         /** 左边界距离 */
         left?: number
         /** 顶部距离 */
         top?: number
-        /** 初始速度 */
+        /** 初始速度 (仅在 iOS 下生效) */
         velocity?: number
     }
     /** 需要基础库： `2.14.4`
@@ -6593,7 +6819,7 @@ wx.createSelectorQuery()
         bounces: boolean
         /** 取消滚动惯性 (仅在 iOS 下生效) */
         decelerationDisabled: boolean
-        /** 设置滚动减速速率 */
+        /** 设置滚动减速速率 (仅在 iOS 下生效) */
         fastDeceleration: boolean
         /** 分页滑动开关 */
         pagingEnabled: boolean
@@ -7581,6 +7807,75 @@ wx.createSelectorQuery()
             | 'step-end'
         transformOrigin?: string
     }
+    /** 贴纸类型 */
+    interface Sticker {
+        /** 贴纸帧数 */
+        len: number
+        /** 贴纸资源路径。资源必须为一个资源文件夹路径或一个压缩包路径，文件夹或压缩包内的贴纸资源必须按照 `{title}_{index}.{ext}` 格式命名。其中 `{title}` 为贴纸名称；`{index}` 为帧序号，从0开始；`{ext}` 为拓展名。 */
+        path: string
+        /** 贴纸名称 */
+        title: string
+        /** 贴纸触发动作
+         *
+         * 可选值：
+         * - -1: 循环播放;
+         * - 10: 张嘴;
+         * - 11: 噘嘴/kiss;
+         * - 12: 眨/闭左眼;
+         * - 13: 眨/闭右眼;
+         * - 14: 眨/闭眼;
+         * - 15: 挑眉毛;
+         * - 16: 左右摇头;
+         * - 17: 上下点头;
+         * - 100: 比心;
+         * - 101: 张开手掌;
+         * - 102: 剪刀手/比耶/胜利;
+         * - 103: 握拳;
+         * - 104: 数字1;
+         * - 105: 我爱你;
+         * - 106: 点赞;
+         * - 107: OK;
+         * - 108: Rock&Roll;
+         * - 109: 数字6;
+         * - 110: 数字8;
+         * - 111: 暂不支持（留空）;
+         * - 112: 双手抱拳/恭喜发财; */
+        active?:
+            | -1
+            | 10
+            | 11
+            | 12
+            | 13
+            | 14
+            | 15
+            | 16
+            | 17
+            | 100
+            | 101
+            | 102
+            | 103
+            | 104
+            | 105
+            | 106
+            | 107
+            | 108
+            | 109
+            | 110
+            | 111
+            | 112
+        /** 贴纸ID */
+        id?: string
+        /** 贴纸资源 md5 */
+        md5?: string
+        /** 贴纸位置，格式为 [x1,y1,x2,y2] 。当 `type` 为 `'2D'` 或 `'front'` 时必填。仅 2D 贴纸和前景贴纸有效 */
+        pos?: string[]
+        /** 背景贴纸展示位置。仅背景贴纸有效
+         *
+         * 可选值：
+         * - 0: 背景贴纸;
+         * - 1: 只在人像区域显示的贴纸; */
+        segtype?: 0 | 1
+    }
     interface StopAccelerometerOption {
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: StopAccelerometerCompleteCallback
@@ -8068,14 +8363,26 @@ wx.getSetting({
          *
          * OSD 跟踪配置 */
         OSD?: boolean
+        /** 需要基础库： `2.28.0`
+         *
+         * 人体检测配置。用法详情[指南文档](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/visionkit/body.html)。 */
+        body?: BodyTrack
         /** 需要基础库： `2.25.0`
          *
          * 人脸检测配置。用法详情[指南文档](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/visionkit/face.html)。安卓微信8.0.25开始支持，iOS微信8.0.24开始支持。 */
         face?: FaceTrack
+        /** 需要基础库： `2.28.0`
+         *
+         * 手势检测配置。用法详情[指南文档](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/visionkit/hand.html)。 */
+        hand?: HandTrack
         /** 需要基础库： `2.24.5`
          *
          * marker 跟踪配置 */
         marker?: boolean
+        /** 需要基础库： `2.28.0`
+         *
+         * 提供基础AR功能，输出相机旋转的3个自由度的位姿，利用手机陀螺仪传感器，实现快速稳定的AR定位能力，适用于简单AR场景。 */
+        threeDof?: boolean
     }
     interface TransceiveOption {
         /** 需要传递的二进制数据 */
@@ -8368,6 +8675,36 @@ wx.getSetting({
         /** 用户所在省份。不再返回，参考 [相关公告](https://developers.weixin.qq.com/community/develop/doc/00028edbe3c58081e7cc834705b801) */
         province: string
     }
+    /** 需要基础库： `2.28.0`
+     *
+     * 人体 anchor
+     *
+     * **示例代码**
+     *
+     * [静态图像body检测能力使用参考](https://github.com/wechat-miniprogram/miniprogram-demo/tree/master/miniprogram/packageAPI/pages/ar/photo-body-detect)
+     *
+     * [实时摄像头body检测能力使用参考](https://github.com/wechat-miniprogram/miniprogram-demo/tree/master/miniprogram/packageAPI/pages/ar/body-detect) */
+    interface VKBodyAnchor {
+        /** 关键点的置信度 */
+        confidence: number[]
+        /** 识别序号 */
+        detectId: number
+        /** 唯一标识 */
+        id: number
+        /** 相对视窗的位置信息，取值范围为 [0, 1]，0 为左/上边缘，1 为右/下边缘 */
+        origin: VKOrigin
+        /** 关键点 */
+        points: VKOrigin[]
+        /** 总体置信值 */
+        score: number
+        /** 相对视窗的尺寸，取值范围为 [0, 1]，0 为左/上边缘，1 为右/下边缘 */
+        size: VKSize
+        /** 类型
+         *
+         * 可选值：
+         * - 5: 人体; */
+        type: 5
+    }
     /** 需要基础库： `2.20.0`
      *
      * 相机对象 */
@@ -8392,7 +8729,7 @@ wx.getSetting({
          *
          * 可选值：
          * - 'v1': v1适用于用户在平面场景下，例如桌面，地面，泛平面场景，放置虚拟物体，不提供真实世界距离。用户放置物体时，手机相机倾斜向下对着目标平面点击即可，具有广泛的机型支持;
-         * - 'v2': v2提供真实物理距离的 ar 定位功能，提供平面识别功能，用户在平面范围点击放置虚拟物体的功能，具有[有限的机型支持](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/visionkit/plane.html#%E9%99%84%E5%BD%95)。iOS 设备在基础库 2.22.0 开始支持v2。安卓设备在基础库 2.25.1 开始支持v2，另外，安卓v2不支持竖直平面。; */
+         * - 'v2': v2提供真实物理距离的 ar 定位功能，提供平面识别功能，用户在平面范围点击放置虚拟物体的功能，具有[有限的机型支持](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/visionkit/plane.html#%E9%99%84%E5%BD%95)。iOS 设备在基础库 2.22.0 开始支持v2。安卓设备在基础库 2.25.1 开始支持v2，另外，安卓v2不支持竖直平面。**使用v2算法需要初始化，移动手机进行左右平移初始化效果最佳。**; */
         version?: 'v1' | 'v2'
     }
     /** 需要基础库： `2.25.0`
@@ -8433,8 +8770,82 @@ wx.getSetting({
          *
          * 相机对象 */
         camera: VKCamera
-        /** 生成时间 */
+        /** 生成时间，单位:纳秒(ns) */
         timestamp: number
+    }
+    /** 需要基础库： `2.28.0`
+     *
+     * 手势 anchor
+     *
+     * **示例代码**
+     *
+     * [静态图像hand检测能力使用参考](https://github.com/wechat-miniprogram/miniprogram-demo/tree/master/miniprogram/packageAPI/pages/ar/photo-hand-detect)
+     *
+     * [实时摄像头hand检测能力使用参考](https://github.com/wechat-miniprogram/miniprogram-demo/tree/master/miniprogram/packageAPI/pages/ar/hand-detect) */
+    interface VKHandAnchor {
+        /** 关键点的置信度 */
+        confidence: number[]
+        /** 识别序号 */
+        detectId: number
+        /** 手势分类, 返回整数-1到18, -1表示无效手势
+         *
+         * 可选值：
+         * - 0: 单手比心;
+         * - 1: 布（数字5）;
+         * - 2: 剪刀（数字2）;
+         * - 3: 握拳;
+         * - 4: 数字1;
+         * - 5: 热爱;
+         * - 6: 点赞;
+         * - 7: 数字3;
+         * - 8: 摇滚;
+         * - 9: 数字6;
+         * - 10: 数字8;
+         * - 11: 双手抱拳（恭喜发财）;
+         * - 12: 数字4;
+         * - 13: 比ok;
+         * - 14: 不喜欢（踩）;
+         * - 15: 双手比心;
+         * - 16: 祈祷（双手合十）;
+         * - 17: 双手抱拳;
+         * - 18: 无手势动作;
+         * - -1: 无效手势; */
+        gesture:
+            | 0
+            | 1
+            | 2
+            | 3
+            | 4
+            | 5
+            | 6
+            | 7
+            | 8
+            | 9
+            | 10
+            | 11
+            | 12
+            | 13
+            | 14
+            | 15
+            | 16
+            | 17
+            | 18
+            | -1
+        /** 唯一标识 */
+        id: number
+        /** 相对视窗的位置信息，取值范围为 [0, 1]，0 为左/上边缘，1 为右/下边缘 */
+        origin: VKOrigin
+        /** 关键点 */
+        points: VKOrigin[]
+        /** 总体置信值 */
+        score: number
+        /** 相对视窗的尺寸，取值范围为 [0, 1]，0 为左/上边缘，1 为右/下边缘 */
+        size: VKSize
+        /** 类型
+         *
+         * 可选值：
+         * - 7: 手势; */
+        type: 7
     }
     interface VKMarker {
         /** marker id */
@@ -8508,7 +8919,6 @@ wx.getSetting({
          * - 2: OSD; */
         type: 2
     }
-    /** 相对视窗的位置信息，取值范围为 [0, 1]，0 为左/上边缘，1 为右/下边缘 */
     interface VKOrigin {
         /** 横坐标 */
         x: number
@@ -8558,8 +8968,9 @@ wx.getSetting({
          * 可选值：
          * - 0: 不可用;
          * - 1: 运行中;
-         * - 2: 暂停中; */
-        state: 0 | 1 | 2
+         * - 2: 暂停中;
+         * - 3: 初始化中; */
+        state: 0 | 1 | 2 | 3
     }
     interface VKSize {
         /** 高度 */
@@ -14320,6 +14731,97 @@ InterstitialAd.offLoad(listener) // 需传入与监听时同一个的函数对�
         stop(option?: StopOption): void
     }
     interface LivePusherContext {
+        /** [LivePusherContext.applyBlusherStickMakeup(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/live/LivePusherContext.applyBlusherStickMakeup.html)
+         *
+         * 需要基础库： `2.14.0`
+         *
+         * 在插件中使用：不支持
+         *
+         * 添加腮红美妆特效 */
+        applyBlusherStickMakeup(option: ApplyBlusherStickMakeupOption): void
+        /** [LivePusherContext.applyEyeBrowMakeup(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/live/LivePusherContext.applyEyeBrowMakeup.html)
+         *
+         * 需要基础库： `2.14.0`
+         *
+         * 在插件中使用：不支持
+         *
+         * 添加眉毛美妆特效 */
+        applyEyeBrowMakeup(option: ApplyEyeBrowMakeupOption): void
+        /** [LivePusherContext.applyEyeShadowMakeup(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/live/LivePusherContext.applyEyeShadowMakeup.html)
+         *
+         * 需要基础库： `2.14.0`
+         *
+         * 在插件中使用：不支持
+         *
+         * 添加眼影美妆特效 */
+        applyEyeShadowMakeup(option: ApplyEyeShadowMakeupOption): void
+        /** [LivePusherContext.applyFaceContourMakeup(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/live/LivePusherContext.applyFaceContourMakeup.html)
+         *
+         * 需要基础库： `2.14.0`
+         *
+         * 在插件中使用：不支持
+         *
+         * 添加修容美妆特效 */
+        applyFaceContourMakeup(option: ApplyFaceContourMakeupOption): void
+        /** [LivePusherContext.applyFilter(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/live/LivePusherContext.applyFilter.html)
+         *
+         * 需要基础库： `2.14.0`
+         *
+         * 在插件中使用：不支持
+         *
+         * 添加滤镜效果 */
+        applyFilter(option: ApplyFilterOption): void
+        /** [LivePusherContext.applyLipStickMakeup(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/live/LivePusherContext.applyLipStickMakeup.html)
+         *
+         * 需要基础库： `2.14.0`
+         *
+         * 在插件中使用：不支持
+         *
+         * 添加口红美妆特效 */
+        applyLipStickMakeup(option: ApplyLipStickMakeupOption): void
+        /** [LivePusherContext.applySticker(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/live/LivePusherContext.applySticker.html)
+         *
+         * 需要基础库： `2.14.0`
+         *
+         * 在插件中使用：不支持
+         *
+         * 添加贴纸特效 */
+        applySticker(option: ApplyStickerOption): void
+        /** [LivePusherContext.clearFilters(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/live/LivePusherContext.clearFilters.html)
+         *
+         * 需要基础库： `2.14.0`
+         *
+         * 在插件中使用：不支持
+         *
+         * 清除所有滤镜效果 */
+        clearFilters(option?: ClearFiltersOption): void
+        /** [LivePusherContext.clearMakeups(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/live/LivePusherContext.clearMakeups.html)
+         *
+         * 需要基础库： `2.14.0`
+         *
+         * 在插件中使用：不支持
+         *
+         * 清除所有美妆特效 */
+        clearMakeups(option?: ClearMakeupsOption): void
+        /** [LivePusherContext.clearStickers(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/live/LivePusherContext.clearStickers.html)
+         *
+         * 需要基础库： `2.14.0`
+         *
+         * 在插件中使用：不支持
+         *
+         * 清除所有贴纸特效 */
+        clearStickers(option?: ClearStickersOption): void
+        /** [LivePusherContext.createOffscreenCanvas(object options)](https://developers.weixin.qq.com/miniprogram/dev/api/media/live/LivePusherContext.createOffscreenCanvas.html)
+         *
+         * 需要基础库： `2.29.0`
+         *
+         * 在插件中使用：支持
+         *
+         * 创建一个能够承接 LivePusher 采集纹理的离屏 Canvas，客户端 8.0.31 版本开始支持。 */
+        createOffscreenCanvas(
+            /** 同[wx.createOffscreenCanvas](https://developers.weixin.qq.com/miniprogram/dev/api/canvas/wx.createOffscreenCanvas.html) */
+            options: IAnyObject
+        ): void
         /** [LivePusherContext.exitPictureInPicture(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/live/LivePusherContext.exitPictureInPicture.html)
          *
          * 需要基础库： `2.25.0`
@@ -14328,6 +14830,23 @@ InterstitialAd.offLoad(listener) // 需传入与监听时同一个的函数对�
          *
          * 退出小窗，该方法可在任意页面调用 */
         exitPictureInPicture(option?: ExitPictureInPictureOption): void
+        /** [LivePusherContext.onCustomRendererEvent(string event, function|function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/media/live/LivePusherContext.onCustomRendererEvent.html)
+         *
+         * 需要基础库： `2.29.0`
+         *
+         * 在插件中使用：支持
+         *
+         * 开启自定义渲染时，开发者通过此方法订阅相关事件，客户端 8.0.31 版本开始支持。 */
+        onCustomRendererEvent(
+            /** 事件类型，后订阅的监听器会取消之前的监听器
+             *
+             * 参数 event 可选值：
+             * - 'frame': 采集到视频帧后触发;
+             * - 'update': 推流尺寸变更时触发; */
+            event: 'frame' | 'update',
+            /** 自定义渲染事件处理回调函数 */
+            callback: CustomRendererFrameEventCallback
+        ): void
         /** [LivePusherContext.pause(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/live/LivePusherContext.pause.html)
          *
          * 在插件中使用：支持
@@ -17089,6 +17608,14 @@ wx.getRandomValues({
          *
          * 销毁会话。 */
         destroy(): void
+        /** [VKSession.detectBody(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKSession.detectBody.html)
+         *
+         * 需要基础库： `2.28.0`
+         *
+         * 在插件中使用：需要基础库 `2.28.0`
+         *
+         * 静态图像人体关键点检测。当 wx.createVKSession 参数传入 {track: {body: {mode: 2} } } 时可用。用法详情[指南文档](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/visionkit/body.html)。 */
+        detectBody(option: DetectBodyOption): void
         /** [VKSession.detectFace(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKSession.detectFace.html)
          *
          * 需要基础库： `2.25.0`
@@ -17102,6 +17629,14 @@ wx.getRandomValues({
          * ### 特别说明
          * 若小程序人脸识别功能涉及采集、存储用户生物特征（如人脸照片或视频、身份证和手持身份证、身份证照和免冠照等），此类型服务需使用[微信原生人脸识别接口](https://developers.weixin.qq.com/community/develop/doc/000442d352c1202bd498ecb105c00d?highline=%E4%BA%BA%E8%84%B8%E6%A0%B8%E8%BA%AB)。 */
         detectFace(option: DetectFaceOption): void
+        /** [VKSession.detectHand(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKSession.detectHand.html)
+         *
+         * 需要基础库： `2.28.0`
+         *
+         * 在插件中使用：需要基础库 `2.28.0`
+         *
+         * 静态图像手势关键点检测。当 wx.createVKSession 参数传入 {track: {hand: {mode: 2} } } 时可用。用法详情[指南文档](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/visionkit/hand.html)。 */
+        detectHand(option: DetectHandOption): void
         /** [VKSession.off(string eventName, function fn)](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKSession.off.html)
          *
          * 需要基础库： `2.20.0`
@@ -17128,8 +17663,8 @@ wx.getRandomValues({
              * 参数 eventName 可选值：
              * - 'resize': 相机尺寸变化事件，回调参数为相机尺寸;
              * - 'addAnchors': 增加 anchor 事件，回调参数为 [VKPlaneAnchor](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKPlaneAnchor.html)/[VKMarkerAnchor](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKMarkerAnchor.html)/[VKOSDAnchor](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKOSDAnchor.html) 列表（只有v2版本支持）;
-             * - 'updateAnchors': 更新 anchor 事件，回调参数为 [VKPlaneAnchor](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKPlaneAnchor.html)/[VKMarkerAnchor](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKMarkerAnchor.html)/[VKOSDAnchor](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKOSDAnchor.html) 列表（只有v2版本支持） 或 [VKFaceAnchor](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKFaceAnchor.html)/[VKOCRAnchor](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKOCRAnchor.html) 列表（v1、v2都支持）;
-             * - 'removeAnchors': 删除 anchor 事件，回调参数为 [VKPlaneAnchor](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKPlaneAnchor.html)/[VKMarkerAnchor](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKMarkerAnchor.html)/[VKOSDAnchor](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKOSDAnchor.html) 列表（只有v2版本支持） 或 [VKFaceAnchor](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKFaceAnchor.html)/[VKOCRAnchor](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKOCRAnchor.html) 列表（v1、v2都支持）; */
+             * - 'updateAnchors': 更新 anchor 事件，回调参数为 [VKPlaneAnchor](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKPlaneAnchor.html)/[VKMarkerAnchor](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKMarkerAnchor.html)/[VKOSDAnchor](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKOSDAnchor.html) 列表（只有v2版本支持） 或 [VKFaceAnchor](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKFaceAnchor.html)/[VKOCRAnchor](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKOCRAnchor.html)/[VKHandAnchor](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKHandAnchor.html)/[VKBodyAnchor](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKBodyAnchor.html)列表（v1、v2都支持）;
+             * - 'removeAnchors': 删除 anchor 事件，回调参数为 [VKPlaneAnchor](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKPlaneAnchor.html)/[VKMarkerAnchor](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKMarkerAnchor.html)/[VKOSDAnchor](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKOSDAnchor.html) 列表（只有v2版本支持） 或 [VKFaceAnchor](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKFaceAnchor.html)/[VKOCRAnchor](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKOCRAnchor.html)/[VKHandAnchor](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKHandAnchor.html)/[VKBodyAnchor](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKBodyAnchor.html) 列表（v1、v2都支持）; */
             eventName:
                 | 'resize'
                 | 'addAnchors'
@@ -17204,7 +17739,7 @@ wx.getRandomValues({
          *
          * 在插件中使用：需要基础库 `2.20.0`
          *
-         * 获取帧对象，每调用一次都会触发一次帧分析过程。 */
+         * 获取帧对象，每调用一次都会触发一次帧分析过程。目前 VKSession 相机的最大帧数是 30 fps，因此调用 getVKFrame 的频率也可以限制在 30 fps，以减少渲染开销。 */
         getVKFrame(
             /** 宽度 */
             width: number,
@@ -19560,6 +20095,16 @@ wx.canvasGetImageData({
             /** 在自定义组件下，当前组件实例的this，以操作组件内 [canvas](https://developers.weixin.qq.com/miniprogram/dev/component/canvas.html) 组件 */
             component?: Component.TrivialInstance | Page.TrivialInstance
         ): PromisifySuccessResult<T, CanvasToTempFilePathOption>
+        /** [wx.checkIsAddedToMyMiniProgram(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/my-miniprogram/wx.checkIsAddedToMyMiniProgram.html)
+         *
+         * 需要基础库： `2.29.1`
+         *
+         * 在插件中使用：不支持
+         *
+         * 检查小程序是否被添加至 「我的小程序」 */
+        checkIsAddedToMyMiniProgram(
+            option: CheckIsAddedToMyMiniProgramOption
+        ): void
         /** [wx.checkIsOpenAccessibility(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/device/accessibility/wx.checkIsOpenAccessibility.html)
          *
          * 需要基础库： `2.13.0`
@@ -25943,7 +26488,7 @@ wx.writeBLECharacteristicValue({
         /** 文件系统中的用户目录路径 */
         env: { USER_DATA_PATH: string }
         /** 获得 xr-frame 接口系统 */
-        getXrFrameSystem(): import('WechatXrFrame').IXrFrameSystem
+        getXrFrameSystem(): import('XrFrame').IXrFrameSystem
         /** 需要基础库： `2.25.2`
          *
          * worklet 对象，可以通过 [wx.worklet](https://developers.weixin.qq.com/miniprogram/dev/api/ui/worklet/wx.worklet.html) 获取。 */
@@ -26049,6 +26594,72 @@ wx.writeBLECharacteristicValue({
     /** 接口调用成功的回调函数 */
     type AppendFileSuccessCallback = (res: GeneralCallbackResult) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type ApplyBlusherStickMakeupCompleteCallback = (
+        res: GeneralCallbackResult
+    ) => void
+    /** 接口调用失败的回调函数 */
+    type ApplyBlusherStickMakeupFailCallback = (
+        res: GeneralCallbackResult
+    ) => void
+    /** 接口调用成功的回调函数 */
+    type ApplyBlusherStickMakeupSuccessCallback = (
+        res: GeneralCallbackResult
+    ) => void
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type ApplyEyeBrowMakeupCompleteCallback = (
+        res: GeneralCallbackResult
+    ) => void
+    /** 接口调用失败的回调函数 */
+    type ApplyEyeBrowMakeupFailCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用成功的回调函数 */
+    type ApplyEyeBrowMakeupSuccessCallback = (
+        res: GeneralCallbackResult
+    ) => void
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type ApplyEyeShadowMakeupCompleteCallback = (
+        res: GeneralCallbackResult
+    ) => void
+    /** 接口调用失败的回调函数 */
+    type ApplyEyeShadowMakeupFailCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用成功的回调函数 */
+    type ApplyEyeShadowMakeupSuccessCallback = (
+        res: GeneralCallbackResult
+    ) => void
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type ApplyFaceContourMakeupCompleteCallback = (
+        res: GeneralCallbackResult
+    ) => void
+    /** 接口调用失败的回调函数 */
+    type ApplyFaceContourMakeupFailCallback = (
+        res: GeneralCallbackResult
+    ) => void
+    /** 接口调用成功的回调函数 */
+    type ApplyFaceContourMakeupSuccessCallback = (
+        res: GeneralCallbackResult
+    ) => void
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type ApplyFilterCompleteCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用失败的回调函数 */
+    type ApplyFilterFailCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用成功的回调函数 */
+    type ApplyFilterSuccessCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type ApplyLipStickMakeupCompleteCallback = (
+        res: GeneralCallbackResult
+    ) => void
+    /** 接口调用失败的回调函数 */
+    type ApplyLipStickMakeupFailCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用成功的回调函数 */
+    type ApplyLipStickMakeupSuccessCallback = (
+        res: GeneralCallbackResult
+    ) => void
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type ApplyStickerCompleteCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用失败的回调函数 */
+    type ApplyStickerFailCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用成功的回调函数 */
+    type ApplyStickerSuccessCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type AuthPrivateMessageCompleteCallback = (
         res: GeneralCallbackResult
     ) => void
@@ -26139,6 +26750,18 @@ wx.writeBLECharacteristicValue({
     /** 接口调用成功的回调函数 */
     type CanvasToTempFilePathSuccessCallback = (
         result: CanvasToTempFilePathSuccessCallbackResult
+    ) => void
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type CheckIsAddedToMyMiniProgramCompleteCallback = (
+        res: GeneralCallbackResult
+    ) => void
+    /** 接口调用失败的回调函数 */
+    type CheckIsAddedToMyMiniProgramFailCallback = (
+        res: GeneralCallbackResult
+    ) => void
+    /** 接口调用成功的回调函数 */
+    type CheckIsAddedToMyMiniProgramSuccessCallback = (
+        result: CheckIsAddedToMyMiniProgramSuccessCallbackResult
     ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type CheckIsOpenAccessibilityCompleteCallback = (
@@ -26281,6 +26904,24 @@ wx.writeBLECharacteristicValue({
     /** 接口调用失败的回调函数 */
     type ClearFailCallback = (res: GeneralCallbackResult) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type ClearFiltersCompleteCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用失败的回调函数 */
+    type ClearFiltersFailCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用成功的回调函数 */
+    type ClearFiltersSuccessCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type ClearMakeupsCompleteCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用失败的回调函数 */
+    type ClearMakeupsFailCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用成功的回调函数 */
+    type ClearMakeupsSuccessCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type ClearStickersCompleteCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用失败的回调函数 */
+    type ClearStickersFailCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用成功的回调函数 */
+    type ClearStickersSuccessCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type ClearStorageCompleteCallback = (res: GeneralCallbackResult) => void
     /** 接口调用失败的回调函数 */
     type ClearStorageFailCallback = (res: GeneralCallbackResult) => void
@@ -26373,6 +27014,10 @@ wx.writeBLECharacteristicValue({
     /** 接口调用成功的回调函数 */
     type CropImageSuccessCallback = (
         result: EditImageSuccessCallbackResult
+    ) => void
+    /** 自定义渲染事件处理回调函数 */
+    type CustomRendererFrameEventCallback = (
+        result: OnCustomRendererEventCallbackResult
     ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type DisableAlertBeforeUnloadCompleteCallback = (

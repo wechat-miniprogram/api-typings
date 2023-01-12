@@ -1,6 +1,6 @@
 import { expectType } from 'tsd'
 
-import * as XrFrame from 'WechatXrFrame'
+import type * as XrFrame from 'XrFrame'
 
 const xrFrameSystem = wx.getXrFrameSystem()
 

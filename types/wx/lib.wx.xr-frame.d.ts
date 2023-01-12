@@ -1,5 +1,5 @@
 /*! *****************************************************************************
-Copyright (c) 2022 Tencent, Inc. All rights reserved.
+Copyright (c) 2023 Tencent, Inc. All rights reserved.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -21,19 +21,13 @@ SOFTWARE.
 ***************************************************************************** */
 
 /// <reference path="./lib.wx.phys3D.d.ts" />
-
-// Workaround for HTML Elements
 declare type HTMLCanvasElement = any
 declare type ImageData = any
 declare type HTMLImageElement = any
-declare type Buffer = any
 
-declare module 'WechatXrFrame' {
-    import * as xrFrameSystem from 'WechatXrFrame/xrFrameSystem'
-    import {
-        IComponentSchema,
-        IEntityComponents
-    } from 'WechatXrFrame/xrFrameSystem'
+declare module 'XrFrame' {
+    import * as xrFrameSystem from 'XrFrame/xrFrameSystem'
+    import { IComponentSchema, IEntityComponents } from 'XrFrame/xrFrameSystem'
 
     export {
         IComponentSchema,
@@ -112,6 +106,7 @@ declare module 'WechatXrFrame' {
         IShareSystemData,
         IShareCaptureOptions,
         IGizmoSystemData,
+        ILoaderOptionsSchema,
         ITextureLoaderOptions,
         IImageLoaderOptions,
         ICubeTextureLoaderOptions,
@@ -158,9 +153,10 @@ declare module 'WechatXrFrame' {
         EUseDefaultRetainedAction,
         EUseDefaultRemovedAction,
         EEventType,
+        EARTrackerState,
         EShapeType,
         ECapsuleShapeDirection
-    } from 'WechatXrFrame/xrFrameSystem'
+    } from 'XrFrame/xrFrameSystem'
 
     export type Component<IData> = xrFrameSystem.Component<IData>
     export type Element = xrFrameSystem.Element
@@ -235,6 +231,10 @@ declare module 'WechatXrFrame' {
     export type ARSystem = xrFrameSystem.ARSystem
     export type ShareSystem = xrFrameSystem.ShareSystem
     export type GizmoSystem = xrFrameSystem.GizmoSystem
+    export type AssetLoader<T, ILoadOptions> = xrFrameSystem.AssetLoader<
+        T,
+        ILoadOptions
+    >
     export type TextureLoader = xrFrameSystem.TextureLoader
     export type ImageLoader = xrFrameSystem.ImageLoader
     export type CubeTextureLoader = xrFrameSystem.CubeTextureLoader
@@ -257,6 +257,7 @@ declare module 'WechatXrFrame' {
         registerUniformDesc: typeof xrFrameSystem.registerUniformDesc
         registerVertexDataDesc: typeof xrFrameSystem.registerVertexDataDesc
         registerVertexLayout: typeof xrFrameSystem.registerVertexLayout
+        registerAssetLoader: typeof xrFrameSystem.registerAssetLoader
         Component: typeof xrFrameSystem.Component
         Element: typeof xrFrameSystem.Element
         EventManager: typeof xrFrameSystem.EventManager
@@ -330,6 +331,7 @@ declare module 'WechatXrFrame' {
         ARSystem: typeof xrFrameSystem.ARSystem
         ShareSystem: typeof xrFrameSystem.ShareSystem
         GizmoSystem: typeof xrFrameSystem.GizmoSystem
+        AssetLoader: typeof xrFrameSystem.AssetLoader
         TextureLoader: typeof xrFrameSystem.TextureLoader
         ImageLoader: typeof xrFrameSystem.ImageLoader
         CubeTextureLoader: typeof xrFrameSystem.CubeTextureLoader
@@ -368,6 +370,7 @@ declare module 'WechatXrFrame' {
         EUseDefaultRetainedAction: typeof xrFrameSystem.EUseDefaultRetainedAction
         EUseDefaultRemovedAction: typeof xrFrameSystem.EUseDefaultRemovedAction
         EEventType: typeof xrFrameSystem.EEventType
+        EARTrackerState: typeof xrFrameSystem.EARTrackerState
         EShapeType: typeof xrFrameSystem.EShapeType
         ECapsuleShapeDirection: typeof xrFrameSystem.ECapsuleShapeDirection
         useParamsEaseFuncs: typeof xrFrameSystem.useParamsEaseFuncs
@@ -428,85 +431,79 @@ declare module 'WechatXrFrame' {
     }
 }
 
-declare module 'WechatXrFrame/xrFrameSystem' {
+declare module 'XrFrame/xrFrameSystem' {
     /**
      * xrFrameSystem.ts
      *
      *       * @Date    : 4/28/2022, 5:02:28 PM
      */
-    import { Kanata } from 'WechatXrFrame/ext'
+    import { Kanata } from 'XrFrame/ext'
     export {
         default as Component,
         registerComponent,
         IComponentSchema
-    } from 'WechatXrFrame/core/Component'
+    } from 'XrFrame/core/Component'
     export {
         default as Element,
         registerElement,
         IEntityComponents,
         BasicDefaultComponents,
         BasicDataMapping
-    } from 'WechatXrFrame/core/Element'
+    } from 'XrFrame/core/Element'
     export {
         registerDataValue,
         IDataValueHandler,
         ITextureWrapper,
         isTextureWrapper
-    } from 'WechatXrFrame/core/DataValue'
+    } from 'XrFrame/core/DataValue'
     export {
         default as EventManager,
         TEventCallback
-    } from 'WechatXrFrame/core/EventManager'
-    export * from 'WechatXrFrame/components'
-    export * from 'WechatXrFrame/elements'
-    export * from 'WechatXrFrame/systems'
-    export * from 'WechatXrFrame/loader'
+    } from 'XrFrame/core/EventManager'
+    export * from 'XrFrame/components'
+    export * from 'XrFrame/elements'
+    export * from 'XrFrame/systems'
+    export * from 'XrFrame/loader'
     export {
         default as Effect,
         IEffectAsset,
         IRenderStates
-    } from 'WechatXrFrame/assets/Effect'
-    export {
-        default as Geometry,
-        ISubMesh
-    } from 'WechatXrFrame/assets/Geometry'
-    export { default as Material } from 'WechatXrFrame/assets/Material'
+    } from 'XrFrame/assets/Effect'
+    export { default as Geometry, ISubMesh } from 'XrFrame/assets/Geometry'
+    export { default as Material } from 'XrFrame/assets/Material'
     export {
         default as VideoTexture,
         IVideoTextureOptions
-    } from 'WechatXrFrame/assets/VideoTexture'
+    } from 'XrFrame/assets/VideoTexture'
     export {
         default as RenderTexture,
         IRenderTarget,
         IRenderTextureOptions
-    } from 'WechatXrFrame/assets/RenderTexture'
+    } from 'XrFrame/assets/RenderTexture'
     export {
         default as GLTFModel,
         IGLTFModelOptions
-    } from 'WechatXrFrame/assets/GLTFModel'
-    export {
-        default as EnvData,
-        IEnvDataOptions
-    } from 'WechatXrFrame/assets/EnvData'
+    } from 'XrFrame/assets/GLTFModel'
+    export { default as EnvData, IEnvDataOptions } from 'XrFrame/assets/EnvData'
     export {
         default as Animation,
         TDirection
-    } from 'WechatXrFrame/animation/Animation'
+    } from 'XrFrame/animation/Animation'
     export {
         default as KeyframeAnimation,
         IKeyframeAnimationData,
         IKeyframeAnimationInfo,
         IKeyframeAnimationOptions
-    } from 'WechatXrFrame/animation/KeyframeAnimation'
+    } from 'XrFrame/animation/KeyframeAnimation'
     export {
         default as Atlas,
         IAtlasOptions,
         IAtlasCreationOptions
-    } from 'WechatXrFrame/assets/Atlas'
+    } from 'XrFrame/assets/Atlas'
     export {
         default as PostProcess,
         IPostProcessOptions
-    } from 'WechatXrFrame/assets/PostProcess'
+    } from 'XrFrame/assets/PostProcess'
     export {
         registerEffect,
         registerGeometry,
@@ -515,22 +512,22 @@ declare module 'WechatXrFrame/xrFrameSystem' {
         registerUniformDesc,
         registerVertexDataDesc,
         registerVertexLayout
-    } from 'WechatXrFrame/assets/factories'
+    } from 'XrFrame/assets/factories'
     export {
         useParamsEaseFuncs,
         noneParamsEaseFuncs
-    } from 'WechatXrFrame/assets/easeFunctions'
-    export { default as Vector2 } from 'WechatXrFrame/math/vector2'
-    export { default as Vector3 } from 'WechatXrFrame/math/vector3'
-    export { default as Vector4 } from 'WechatXrFrame/math/vector4'
-    export { default as Quaternion } from 'WechatXrFrame/math/quaternion'
-    export { default as Matrix3 } from 'WechatXrFrame/math/matrix3'
-    export { default as Matrix4 } from 'WechatXrFrame/math/matrix4'
-    export { default as Color } from 'WechatXrFrame/math/color'
-    export { default as OBB } from 'WechatXrFrame/math/OBB'
-    export { default as BoundBall } from 'WechatXrFrame/math/boundBall'
-    export { default as BoundBox } from 'WechatXrFrame/math/boundBox'
-    export { default as Spherical } from 'WechatXrFrame/math/Spherical'
+    } from 'XrFrame/assets/easeFunctions'
+    export { default as Vector2 } from 'XrFrame/math/vector2'
+    export { default as Vector3 } from 'XrFrame/math/vector3'
+    export { default as Vector4 } from 'XrFrame/math/vector4'
+    export { default as Quaternion } from 'XrFrame/math/quaternion'
+    export { default as Matrix3 } from 'XrFrame/math/matrix3'
+    export { default as Matrix4 } from 'XrFrame/math/matrix4'
+    export { default as Color } from 'XrFrame/math/color'
+    export { default as OBB } from 'XrFrame/math/OBB'
+    export { default as BoundBall } from 'XrFrame/math/boundBall'
+    export { default as BoundBox } from 'XrFrame/math/boundBox'
+    export { default as Spherical } from 'XrFrame/math/Spherical'
     export {
         ITextureOptions,
         IEngineSettings,
@@ -581,22 +578,22 @@ declare module 'WechatXrFrame/xrFrameSystem' {
         IEventBridge,
         INativeMap,
         ILongIntNativeMap
-    } from 'WechatXrFrame/kanata/lib/kanata'
+    } from 'XrFrame/kanata/lib/kanata'
     export type Texture = Kanata.Texture
     export type UniformDescriptor = Kanata.UniformDescriptor
     export type UniformBlock = Kanata.UniformBlock
     export type VertexLayout = Kanata.VertexLayout
 }
 
-declare module 'WechatXrFrame/ext' {
+declare module 'XrFrame/ext' {
     /**
      * ext.ts
      *
      *       * @Date    : 2022/3/17下午1:43:48
      */
-    import * as Kanata from 'WechatXrFrame/kanata/lib/kanata'
+    import * as Kanata from 'XrFrame/kanata/lib/kanata'
     const exparser: any
-    type Scene = import('WechatXrFrame/core/Scene').default
+    type Scene = import('XrFrame/core/Scene').default
     const _wx: any
     const Phys3D: any
     function addKanata(scene: Scene, kanata: Kanata.IKanataInstance): void
@@ -615,8 +612,8 @@ declare module 'WechatXrFrame/ext' {
     }
 }
 
-declare module 'WechatXrFrame/core/Component' {
-    type Element = import('WechatXrFrame/core/Element').default
+declare module 'XrFrame/core/Component' {
+    type Element = import('XrFrame/core/Element').default
     /**
      * `Component`属性的注解接口。
      *
@@ -664,11 +661,11 @@ declare module 'WechatXrFrame/core/Component' {
         /**
          * 挂载的元素。
          */
-        get el(): import('WechatXrFrame/core/Element').default
+        get el(): import('XrFrame/core/Element').default
         /**
          * 当前场景。
          */
-        get scene(): import('WechatXrFrame/core/Scene').default
+        get scene(): import('XrFrame/core/Scene').default
         /**
          * 当前版本，每次有数据更新都会增加，可以用作和其他组件合作的依据。
          */
@@ -725,7 +722,7 @@ declare module 'WechatXrFrame/core/Component' {
          */
         onTick(deltaTime: number, data: IData): void
         /**
-         * 所挂载的`element`从父节点`parent`被移除时，或者自己从`element`上呗移除时，触发的回调。
+         * 所挂载的`element`从父节点`parent`被移除时，或者自己从`element`上被移除时，触发的回调。
          * 一般用于消除功能的运作。
          */
         onRemove(parent: Element, data: IData): void
@@ -749,16 +746,16 @@ declare module 'WechatXrFrame/core/Component' {
     export {}
 }
 
-declare module 'WechatXrFrame/core/Element' {
+declare module 'XrFrame/core/Element' {
     /**
      * Element.ts
      *
      *         * @Date    : 2022/4/1上午10:34:06
      */
-    import Component from 'WechatXrFrame/core/Component'
+    import Component from 'XrFrame/core/Component'
     import EventManager, {
         TFrameworkEventTrigger
-    } from 'WechatXrFrame/core/EventManager'
+    } from 'XrFrame/core/EventManager'
     /**
      * `Element`的默认组件集接口。
      *
@@ -824,7 +821,7 @@ declare module 'WechatXrFrame/core/Element' {
         /**
          * 场景实例。
          */
-        get scene(): import('WechatXrFrame/core/Scene').default
+        get scene(): import('XrFrame/core/Scene').default
         /**
          * 父元素。
          */
@@ -995,14 +992,14 @@ declare module 'WechatXrFrame/core/Element' {
     export function registerElement(type: string, clz: typeof Element): void
 }
 
-declare module 'WechatXrFrame/core/DataValue' {
+declare module 'XrFrame/core/DataValue' {
     /**
      * DataValue.ts
      *
      *         * @Date    : 2022/3/17下午2:22:19
      */
-    import { Kanata } from 'WechatXrFrame/ext'
-    import Scene from 'WechatXrFrame/core/Scene'
+    import { Kanata } from 'XrFrame/ext'
+    import Scene from 'XrFrame/core/Scene'
     /**
      * 详见{@link registerDataValue}。
      */
@@ -1039,14 +1036,14 @@ declare module 'WechatXrFrame/core/DataValue' {
     ): TDataValue
 }
 
-declare module 'WechatXrFrame/core/EventManager' {
+declare module 'XrFrame/core/EventManager' {
     /**
      * EventManager.ts
      *
      *         * @Date    : 2022/3/17下午3:54:03
      */
-    import Observable from 'WechatXrFrame/core/Observable'
-    type Element = import('WechatXrFrame/core/Element').default
+    import Observable from 'XrFrame/core/Observable'
+    type Element = import('XrFrame/core/Element').default
     /**
      * 事件管理器的回调。
      */
@@ -1145,301 +1142,303 @@ declare module 'WechatXrFrame/core/EventManager' {
     export {}
 }
 
-declare module 'WechatXrFrame/components' {
+declare module 'XrFrame/components' {
     export {
         default as Transform,
         ITransformData,
         TransformSchema
-    } from 'WechatXrFrame/components/Transform'
+    } from 'XrFrame/components/Transform'
     export {
         default as AssetLoad,
         AssetLoadSchema
-    } from 'WechatXrFrame/components/AssetLoad'
+    } from 'XrFrame/components/AssetLoad'
     export {
         default as Assets,
         IAssetsData,
         AssetsSchema
-    } from 'WechatXrFrame/components/Assets'
+    } from 'XrFrame/components/Assets'
     export {
         default as Camera,
         ICameraData,
         CameraSchema,
         TCameraBackground
-    } from 'WechatXrFrame/components/Camera'
+    } from 'XrFrame/components/Camera'
     export {
         default as GLTF,
         IGLTFData,
         GLTFSchema
-    } from 'WechatXrFrame/components/GLTF'
+    } from 'XrFrame/components/GLTF'
     export {
         default as Light,
         ILightData,
         LightSchema
-    } from 'WechatXrFrame/components/Light'
+    } from 'XrFrame/components/Light'
     export {
         default as AssetMaterial,
         IAssetMaterialData,
         AssetMaterialSchema
-    } from 'WechatXrFrame/components/AssetMaterial'
+    } from 'XrFrame/components/AssetMaterial'
     export {
         default as Mesh,
         IMeshData,
         MeshSchema
-    } from 'WechatXrFrame/components/Mesh'
+    } from 'XrFrame/components/Mesh'
     export {
         default as Text,
         ITextData,
         TextSchema
-    } from 'WechatXrFrame/components/Text'
-    export { default as Particle } from 'WechatXrFrame/components/particle/Particle'
+    } from 'XrFrame/components/Text'
+    export { default as Particle } from 'XrFrame/components/particle/Particle'
     export {
         IParticleData,
         ParticleSchema
-    } from 'WechatXrFrame/components/particle/BasicParticle'
+    } from 'XrFrame/components/particle/BasicParticle'
     export {
         default as AssetRenderTexture,
         IAssetRenderTextureData,
         AssetRenderTextureSchema
-    } from 'WechatXrFrame/components/AssetRenderTexture'
-    export {
-        default as Env,
-        IEnvData,
-        EnvSchema
-    } from 'WechatXrFrame/components/Env'
+    } from 'XrFrame/components/AssetRenderTexture'
+    export { default as Env, IEnvData, EnvSchema } from 'XrFrame/components/Env'
     export {
         default as Animator,
         IAnimatorData,
         AnimatorSchema,
         IAnimationPlayOptions,
         IAnimatorAutoPlay
-    } from 'WechatXrFrame/components/Animator'
+    } from 'XrFrame/components/Animator'
     export {
         default as CameraOrbitControl,
         ICameraOrbitControlData,
         CameraOrbitControlSchema
-    } from 'WechatXrFrame/components/CameraOrbitControl'
+    } from 'XrFrame/components/CameraOrbitControl'
     export {
         default as ARTracker,
         IARTrackerData,
         ARTrackSchema,
         TTrackMode,
+        EARTrackerState,
         IARTrackerRawData
-    } from 'WechatXrFrame/components/ARTracker'
+    } from 'XrFrame/components/ARTracker'
     export {
         default as Shape,
         IShapeData,
         EShapeType
-    } from 'WechatXrFrame/components/physics/Shape'
+    } from 'XrFrame/components/physics/Shape'
     export {
         default as SphereShape,
         ISphereShapeData,
         SphereShapeSchema
-    } from 'WechatXrFrame/components/physics/SphereShape'
+    } from 'XrFrame/components/physics/SphereShape'
     export {
         default as MeshShape,
         IMeshShapeData,
         MeshShapeSchema
-    } from 'WechatXrFrame/components/physics/MeshShape'
+    } from 'XrFrame/components/physics/MeshShape'
     export {
         default as CapsuleShape,
         ICapsuleShapeData,
         CapsuleShapeSchema,
         ECapsuleShapeDirection
-    } from 'WechatXrFrame/components/physics/CapsuleShape'
+    } from 'XrFrame/components/physics/CapsuleShape'
     export {
         default as CubeShape,
         ICubeShapeData,
         CubeShapeSchema
-    } from 'WechatXrFrame/components/physics/CubeShape'
+    } from 'XrFrame/components/physics/CubeShape'
     export {
         default as ShapeGizmos,
         IShapeGizmosData
-    } from 'WechatXrFrame/components/gizmo/ShapeGizmos'
+    } from 'XrFrame/components/gizmo/ShapeGizmos'
     export {
         default as AssetPostProcess,
         IAssetPostProcessData
-    } from 'WechatXrFrame/components/AssetPostProcess'
+    } from 'XrFrame/components/AssetPostProcess'
 }
 
-declare module 'WechatXrFrame/elements' {
+declare module 'XrFrame/elements' {
     export {
         default as Scene,
         SceneDataMapping,
         SceneDefaultComponents
-    } from 'WechatXrFrame/core/Scene'
+    } from 'XrFrame/core/Scene'
     export {
         default as XRNode,
         NodeDataMapping,
         NodeDefaultComponents
-    } from 'WechatXrFrame/elements/xr-node'
+    } from 'XrFrame/elements/xr-node'
     export {
         default as XRShadow,
         ShadowDataMapping,
         ShadowDefaultComponents
-    } from 'WechatXrFrame/elements/xr-shadow'
+    } from 'XrFrame/elements/xr-shadow'
     export {
         default as XRCamera,
         CameraDataMapping,
         CameraDefaultComponents
-    } from 'WechatXrFrame/elements/xr-camera'
+    } from 'XrFrame/elements/xr-camera'
     export {
         default as XRMesh,
         MeshDataMapping,
         MeshDefaultComponents
-    } from 'WechatXrFrame/elements/xr-mesh'
+    } from 'XrFrame/elements/xr-mesh'
     export {
         default as XRLight,
         LightDataMapping,
         LightDefaultComponents
-    } from 'WechatXrFrame/elements/xr-light'
+    } from 'XrFrame/elements/xr-light'
     export {
         default as XRGLTF,
         GLTFDataMapping,
         GLTFDefaultComponents
-    } from 'WechatXrFrame/elements/xr-gltf'
+    } from 'XrFrame/elements/xr-gltf'
     export {
         default as XRMaterial,
         AssetMaterialDataMapping,
         AssetMaterialDefaultComponents
-    } from 'WechatXrFrame/elements/xr-asset-material'
+    } from 'XrFrame/elements/xr-asset-material'
     export {
         default as XRAssetRenderTexture,
         AssetRenderTextureDataMapping,
         AssetRenderTextureDefaultComponents
-    } from 'WechatXrFrame/elements/xr-asset-render-texture'
+    } from 'XrFrame/elements/xr-asset-render-texture'
     export {
         default as XRAssetLoad,
         AssetLoadDataMapping
-    } from 'WechatXrFrame/elements/xr-asset-load'
+    } from 'XrFrame/elements/xr-asset-load'
     export {
         default as XRAssets,
         AssetsDefaultComponents
-    } from 'WechatXrFrame/elements/xr-assets'
+    } from 'XrFrame/elements/xr-assets'
     export {
         default as XREnv,
         EnvDataMapping,
         EnvDefaultComponents
-    } from 'WechatXrFrame/elements/xr-env'
+    } from 'XrFrame/elements/xr-env'
     export {
         default as XRARTracker,
         ARTrackerDataMapping,
         ARTrackerDefaultComponents
-    } from 'WechatXrFrame/elements/xr-ar-tracker'
+    } from 'XrFrame/elements/xr-ar-tracker'
     export {
         default as XRText,
         TextDataMapping,
         TextDefaultComponents
-    } from 'WechatXrFrame/elements/xr-text'
+    } from 'XrFrame/elements/xr-text'
     export {
         default as XRParticle,
         ParticleDataMapping,
         ParticleDefaultComponents
-    } from 'WechatXrFrame/elements/xr-particle'
+    } from 'XrFrame/elements/xr-particle'
     export {
         default as XRAssetPostProcess,
         AssetPostProcessDataMapping,
         AssetPostProcessDefaultComponents
-    } from 'WechatXrFrame/elements/xr-asset-post-process'
+    } from 'XrFrame/elements/xr-asset-post-process'
 }
 
-declare module 'WechatXrFrame/systems' {
+declare module 'XrFrame/systems' {
     export {
         default as AssetsSystem,
         IAssetsSystemData
-    } from 'WechatXrFrame/systems/AssetsSystem'
+    } from 'XrFrame/systems/AssetsSystem'
     export {
         default as NodeSystem,
         INodeSystemData
-    } from 'WechatXrFrame/systems/NodeSystem'
+    } from 'XrFrame/systems/NodeSystem'
     export {
         default as TickSystem,
         ITickSystemData
-    } from 'WechatXrFrame/systems/TickSystem'
+    } from 'XrFrame/systems/TickSystem'
     export {
         default as AnimationSystem,
         IAnimationSystemData
-    } from 'WechatXrFrame/systems/AnimationSystem'
+    } from 'XrFrame/systems/AnimationSystem'
     export {
         default as VideoSystem,
         IVideoSystemData
-    } from 'WechatXrFrame/systems/VideoSystem'
+    } from 'XrFrame/systems/VideoSystem'
     export {
         default as RenderSystem,
         IRenderSystemData,
         RenderSystemSchema
-    } from 'WechatXrFrame/systems/RenderSystem'
+    } from 'XrFrame/systems/RenderSystem'
     export {
         default as PhysicsSystem,
         IPhysicsSystemData,
         IShapeDragEvent,
         IShapeTouchEvent
-    } from 'WechatXrFrame/systems/PhysicsSystem'
+    } from 'XrFrame/systems/PhysicsSystem'
     export {
         default as ARSystem,
         IARSystemData,
         ARSystemSchema,
         IARRawData
-    } from 'WechatXrFrame/systems/ARSystem'
+    } from 'XrFrame/systems/ARSystem'
     export {
         default as ShareSystem,
         IShareSystemData,
         IShareCaptureOptions
-    } from 'WechatXrFrame/systems/ShareSystem'
+    } from 'XrFrame/systems/ShareSystem'
     export {
         default as GizmoSystem,
         IGizmoSystemData
-    } from 'WechatXrFrame/systems/GizmoSystem'
+    } from 'XrFrame/systems/GizmoSystem'
 }
 
-declare module 'WechatXrFrame/loader' {
+declare module 'XrFrame/loader' {
+    export {
+        default as AssetLoader,
+        ILoaderOptionsSchema,
+        registerAssetLoader
+    } from 'XrFrame/loader/AssetLoader'
     export {
         default as TextureLoader,
         ITextureLoaderOptions
-    } from 'WechatXrFrame/loader/TextureLoader'
+    } from 'XrFrame/loader/TextureLoader'
     export {
         default as ImageLoader,
         IImageLoaderOptions
-    } from 'WechatXrFrame/loader/ImageLoader'
+    } from 'XrFrame/loader/ImageLoader'
     export {
         default as CubeTextureLoader,
         ICubeTextureLoaderOptions
-    } from 'WechatXrFrame/loader/CubeTextureLoader'
+    } from 'XrFrame/loader/CubeTextureLoader'
     export {
         default as VideoTextureLoader,
         IVideoTextureLoaderOptions
-    } from 'WechatXrFrame/loader/VideoTextureLoader'
+    } from 'XrFrame/loader/VideoTextureLoader'
     export {
         default as EnvDataLoader,
         IEnvDataLoaderOptions
-    } from 'WechatXrFrame/loader/EnvDataLoader'
+    } from 'XrFrame/loader/EnvDataLoader'
     export {
         default as GlTFLoader,
         IGLTFLoaderOptions
-    } from 'WechatXrFrame/loader/GlTFLoader'
+    } from 'XrFrame/loader/GlTFLoader'
     export {
         default as KeyframeLoader,
         IKeyframeLoaderOptions
-    } from 'WechatXrFrame/loader/KeyframeLoader'
+    } from 'XrFrame/loader/KeyframeLoader'
     export {
         default as RawLoader,
         IRawLoaderOptions
-    } from 'WechatXrFrame/loader/RawLoader'
+    } from 'XrFrame/loader/RawLoader'
     export {
         default as AtlasLoader,
         IAtlasLoaderOptions
-    } from 'WechatXrFrame/loader/AtlasLoader'
+    } from 'XrFrame/loader/AtlasLoader'
 }
 
-declare module 'WechatXrFrame/assets/Effect' {
+declare module 'XrFrame/assets/Effect' {
     /**
      * Effect.ts
      *
      *         * @Date    : 2022/3/16下午4:44:48
      */
-    import { ITextureWrapper } from 'WechatXrFrame/core/DataValue'
-    import { Kanata } from 'WechatXrFrame/ext'
-    import { IAssetWithState } from 'WechatXrFrame/loader/types'
-    type Scene = import('WechatXrFrame/core/Scene').default
+    import { ITextureWrapper } from 'XrFrame/core/DataValue'
+    import { Kanata } from 'XrFrame/ext'
+    import { IAssetWithState } from 'XrFrame/loader/types'
+    type Scene = import('XrFrame/core/Scene').default
     /**
      * 支持定制的渲染状态。
      *
@@ -1451,9 +1450,17 @@ declare module 'WechatXrFrame/assets/Effect' {
          */
         renderQueue?: number
         blendOn?: boolean
+        /**
+         * 不要使用，使用`blendSrcRGB`。
+         */
         blendSrc?: Kanata.EBlendFactor
+        blendSrcRGB?: Kanata.EBlendFactor
         blendSrcAlpha?: Kanata.EBlendFactor
+        /**
+         * 不要使用，使用`blendDstRGB`。
+         */
         blendDst?: Kanata.EBlendFactor
+        blendDstRGB?: Kanata.EBlendFactor
         blendDstAlpha?: Kanata.EBlendFactor
         blendFunc?: Kanata.EBlendEquation
         cullOn?: boolean
@@ -1571,12 +1578,12 @@ declare module 'WechatXrFrame/assets/Effect' {
         /**
          * 获取场景实例。
          */
-        get scene(): import('WechatXrFrame/core/Scene').default
+        get scene(): import('XrFrame/core/Scene').default
         /**
          * Backend对应的对象。
          * @internal
          */
-        get kanataEffect(): import('WechatXrFrame/kanata/lib/index').Effect
+        get kanataEffect(): import('XrFrame/kanata/lib/index').Effect
         /**
          * 有几个Pass。
          */
@@ -1587,8 +1594,7 @@ declare module 'WechatXrFrame/assets/Effect' {
          */
         get loadingTextures(): {
             [key: string]: IAssetWithState<
-                | import('WechatXrFrame/kanata/lib/index').Texture
-                | ITextureWrapper
+                import('XrFrame/kanata/lib/index').Texture | ITextureWrapper
             >
         }
         /**
@@ -1628,12 +1634,12 @@ declare module 'WechatXrFrame/assets/Effect' {
     export {}
 }
 
-declare module 'WechatXrFrame/assets/Geometry' {
-    import { Kanata } from 'WechatXrFrame/ext'
-    import BoundBall from 'WechatXrFrame/math/boundBall'
-    import BoundBox from 'WechatXrFrame/math/boundBox'
-    import Vector3 from 'WechatXrFrame/math/vector3'
-    type Scene = import('WechatXrFrame/core/Scene').default
+declare module 'XrFrame/assets/Geometry' {
+    import { Kanata } from 'XrFrame/ext'
+    import BoundBall from 'XrFrame/math/boundBall'
+    import BoundBox from 'XrFrame/math/boundBox'
+    import Vector3 from 'XrFrame/math/vector3'
+    type Scene = import('XrFrame/core/Scene').default
     /**
      * `Geometry`中的Submesh定义。
      */
@@ -1670,23 +1676,23 @@ declare module 'WechatXrFrame/assets/Geometry' {
         /**
          * 获取IndexBuffer。
          */
-        get indexBuffer(): import('WechatXrFrame/kanata/lib/index').IndexBuffer
+        get indexBuffer(): import('XrFrame/kanata/lib/index').IndexBuffer
         /**
          * 获取VertexBuffer。
          */
-        get vertexBuffer(): import('WechatXrFrame/kanata/lib/index').VertexBuffer
+        get vertexBuffer(): import('XrFrame/kanata/lib/index').VertexBuffer
         /**
          * 获取IndexData。
          * 这种类型的索引数据用于合批，只对于开启了`dynamicBatch`的Renderer有效。
          * 注意如果已经获取过`indexBuffer`，将无效。
          */
-        get indexData(): import('WechatXrFrame/kanata/lib/index').IndexData
+        get indexData(): import('XrFrame/kanata/lib/index').IndexData
         /**
          * 获取VertexData。
          * 这种类型的顶点数据用于合批，只对于开启了`dynamicBatch`的Renderer有效。
          * 注意如果已经获取过`vertexBuffer`，将无效。
          */
-        get vertexData(): import('WechatXrFrame/kanata/lib/index').VertexData
+        get vertexData(): import('XrFrame/kanata/lib/index').VertexData
         /**
          * 该mesh是否有效，有些情况可能会造成这种现象，例如vertexLayout和buffer数量不匹配
          * 渲染时应该对该值做检查以防护
@@ -1707,8 +1713,7 @@ declare module 'WechatXrFrame/assets/Geometry' {
          */
         get subMeshes(): ISubMesh[]
         /**
-         * 构造一个Mesh。
-         * 请不要直接使用，而是使用`Mesh.createFromDynamicArrayBuffer`。
+         * 构造一个`Geometry`。
          */
         constructor(
             _scene: Scene,
@@ -1805,20 +1810,20 @@ declare module 'WechatXrFrame/assets/Geometry' {
     export {}
 }
 
-declare module 'WechatXrFrame/assets/Material' {
+declare module 'XrFrame/assets/Material' {
     /**
      * Material.ts
      *
      *         * @Date    : 2022/3/24上午11:21:54
      */
-    import { Kanata } from 'WechatXrFrame/ext'
-    import Effect from 'WechatXrFrame/assets/Effect'
-    import Vector2 from 'WechatXrFrame/math/vector2'
-    import Vector3 from 'WechatXrFrame/math/vector3'
-    import Vector4 from 'WechatXrFrame/math/vector4'
-    import Matrix3 from 'WechatXrFrame/math/matrix3'
-    import Matrix4 from 'WechatXrFrame/math/matrix4'
-    type Scene = import('WechatXrFrame/core/Scene').default
+    import { Kanata } from 'XrFrame/ext'
+    import Effect, { IRenderStates } from 'XrFrame/assets/Effect'
+    import Vector2 from 'XrFrame/math/vector2'
+    import Vector3 from 'XrFrame/math/vector3'
+    import Vector4 from 'XrFrame/math/vector4'
+    import Matrix3 from 'XrFrame/math/matrix3'
+    import Matrix4 from 'XrFrame/math/matrix4'
+    type Scene = import('XrFrame/core/Scene').default
     /**
      * 材质资源，一般被代理到{@link XRMaterial}元素。
      */
@@ -1826,11 +1831,11 @@ declare module 'WechatXrFrame/assets/Material' {
         /**
          * @internal
          */
-        get kanataMaterial(): import('WechatXrFrame/kanata/lib/index').Material
+        get kanataMaterial(): import('XrFrame/kanata/lib/index').Material
         /**
          * @internal
          */
-        get uniforms(): import('WechatXrFrame/kanata/lib/index').UniformBlock
+        get uniforms(): import('XrFrame/kanata/lib/index').UniformBlock
         set alphaMode(value: 'OPAQUE' | 'BLEND' | 'MASK')
         set alphaCutOff(value: number)
         /**
@@ -1890,9 +1895,7 @@ declare module 'WechatXrFrame/assets/Material' {
          * @returns 是否设置成功。
          */
         setTextureAsset(key: string, assetId: string): boolean
-        resetTexture(
-            key: string
-        ): import('WechatXrFrame/kanata/lib/index').Texture
+        resetTexture(key: string): import('XrFrame/kanata/lib/index').Texture
         /**
          * 直接通过Backend纹理ID设置纹理，注意需要自己持有纹理引用。
          * @internal
@@ -1908,17 +1911,20 @@ declare module 'WechatXrFrame/assets/Material' {
          * 设置渲染状态。
          * 只有标记了`useMaterialRenderStates`的Pass会受到影响
          */
-        setRenderState(key: string, value: number | boolean): boolean
+        setRenderState<TKey extends keyof IRenderStates>(
+            key: TKey,
+            value: IRenderStates[TKey]
+        ): boolean
         /**
          * 批量设置渲染状态。
          * 只有标记了`useMaterialRenderStates`的Pass会受到影响。
          */
-        setRenderStates(states: { [key: string]: number | boolean }): boolean
+        setRenderStates(states: IRenderStates): boolean
         /**
          * 清除渲染状态。
          * 清除材质的渲染状态，转而从effect中使用默认值。
          */
-        clearRenderState(key: string): boolean
+        clearRenderState<TKey extends keyof IRenderStates>(key: TKey): boolean
         /**
          * 批量清除渲染状态。
          * 清除材质的渲染状态，转而从effect中使用默认值。
@@ -1954,9 +1960,9 @@ declare module 'WechatXrFrame/assets/Material' {
     export {}
 }
 
-declare module 'WechatXrFrame/assets/VideoTexture' {
-    import { Kanata } from 'WechatXrFrame/ext'
-    type Scene = import('WechatXrFrame/core/Scene').default
+declare module 'XrFrame/assets/VideoTexture' {
+    import { Kanata } from 'XrFrame/ext'
+    type Scene = import('XrFrame/core/Scene').default
     /**
      * 视频纹理{@link VideoTexture}的创建参数。
      */
@@ -1993,7 +1999,7 @@ declare module 'WechatXrFrame/assets/VideoTexture' {
      */
     export default class VideoTexture {
         onEnd?: () => void
-        get texture(): import('WechatXrFrame/kanata/lib/index').Texture
+        get texture(): import('XrFrame/kanata/lib/index').Texture
         get width(): number
         get height(): number
         /**
@@ -2034,9 +2040,9 @@ declare module 'WechatXrFrame/assets/VideoTexture' {
     export {}
 }
 
-declare module 'WechatXrFrame/assets/RenderTexture' {
-    import { Kanata } from 'WechatXrFrame/ext'
-    type Scene = import('WechatXrFrame/core/Scene').default
+declare module 'XrFrame/assets/RenderTexture' {
+    import { Kanata } from 'XrFrame/ext'
+    type Scene = import('XrFrame/core/Scene').default
     export interface IRenderTarget {
         width: number
         height: number
@@ -2060,22 +2066,22 @@ declare module 'WechatXrFrame/assets/RenderTexture' {
          * 获取深度模板纹理。
          * @internal
          */
-        get depthStencil(): import('WechatXrFrame/kanata/lib/index').Texture
+        get depthStencil(): import('XrFrame/kanata/lib/index').Texture
         /**
          * 获取第一个色彩纹理。
          * @internal
          */
-        get texture(): import('WechatXrFrame/kanata/lib/index').Texture
+        get texture(): import('XrFrame/kanata/lib/index').Texture
         /**
          * 获取深度纹理。
          * @internal
          */
-        get depthTexture(): import('WechatXrFrame/kanata/lib/index').Texture
+        get depthTexture(): import('XrFrame/kanata/lib/index').Texture
         /**
          * 获取Backend实例。
          * @internal
          */
-        get renderPass(): import('WechatXrFrame/kanata/lib/index').RenderPass
+        get renderPass(): import('XrFrame/kanata/lib/index').RenderPass
         /**
          * 贴图高。
          */
@@ -2090,19 +2096,19 @@ declare module 'WechatXrFrame/assets/RenderTexture' {
     export {}
 }
 
-declare module 'WechatXrFrame/assets/GLTFModel' {
+declare module 'XrFrame/assets/GLTFModel' {
     /**
      * GlTF.ts
      *
      *         * @Date    : 2022/4/1下午3:34:15
      */
-    import NativeAnimation from 'WechatXrFrame/animation/NativeAnimation'
-    import Mesh from 'WechatXrFrame/components/Mesh'
-    import Element from 'WechatXrFrame/core/Element'
-    import { Kanata } from 'WechatXrFrame/ext'
-    import { GLTFRootLoaded } from 'WechatXrFrame/loader/glTF/GLTFRootNode'
-    import { GLTFTreeNode } from 'WechatXrFrame/loader/glTF/scenes/GLTFNodesNode'
-    type Scene = import('WechatXrFrame/core/Scene').default
+    import NativeAnimation from 'XrFrame/animation/NativeAnimation'
+    import Mesh from 'XrFrame/components/Mesh'
+    import Element from 'XrFrame/core/Element'
+    import { Kanata } from 'XrFrame/ext'
+    import { GLTFRootLoaded } from 'XrFrame/loader/glTF/GLTFRootNode'
+    import { GLTFTreeNode } from 'XrFrame/loader/glTF/scenes/GLTFNodesNode'
+    type Scene = import('XrFrame/core/Scene').default
     /**
      * 收集glTF实例化过程中创建的对象，避免其GC。
      * @deprecated
@@ -2162,13 +2168,13 @@ declare module 'WechatXrFrame/assets/GLTFModel' {
     export {}
 }
 
-declare module 'WechatXrFrame/assets/EnvData' {
+declare module 'XrFrame/assets/EnvData' {
     /**
      * EnvData.ts
      *
      *         * @Date    : 5/11/2022, 4:07:41 PM
      */
-    import { Kanata } from 'WechatXrFrame/ext'
+    import { Kanata } from 'XrFrame/ext'
     /**
      * `EnvData`的参数接口。
      */
@@ -2226,27 +2232,27 @@ declare module 'WechatXrFrame/assets/EnvData' {
      */
     export default class EnvData {
         get useHalfSkyMap(): boolean
-        get skyboxMap(): import('WechatXrFrame/kanata/lib/index').Texture
+        get skyboxMap(): import('XrFrame/kanata/lib/index').Texture
         get hasDiffuse(): boolean
         get diffuseSH(): Float32Array
         get hasSpecular(): boolean
         get specularRGBD(): boolean
         get specularMipmaps(): boolean
         get specularMipmapCount(): number
-        get specularMap(): import('WechatXrFrame/kanata/lib/index').Texture
+        get specularMap(): import('XrFrame/kanata/lib/index').Texture
         constructor(options: IEnvDataOptions)
         destroy(): void
     }
 }
 
-declare module 'WechatXrFrame/animation/Animation' {
+declare module 'XrFrame/animation/Animation' {
     /**
      * Animation.ts
      *
      *         * @Date    : 6/17/2022, 3:17:12 PM
      */
-    type Scene = import('WechatXrFrame/core/Scene').default
-    type Element = import('WechatXrFrame/core/Element').default
+    type Scene = import('XrFrame/core/Scene').default
+    type Element = import('XrFrame/core/Element').default
     /**
      * 动画播放的方向，如果是`both`，则会在`loop`开启时的每次循环中自动反转。
      */
@@ -2267,7 +2273,7 @@ declare module 'WechatXrFrame/animation/Animation' {
         /**
          * 场景实例。
          */
-        get scene(): import('WechatXrFrame/core/Scene').default
+        get scene(): import('XrFrame/core/Scene').default
         /**
          * @param _scene 场景实例。
          * @param data 初始化动画数据。
@@ -2328,9 +2334,9 @@ declare module 'WechatXrFrame/animation/Animation' {
     export {}
 }
 
-declare module 'WechatXrFrame/animation/KeyframeAnimation' {
-    import Animation, { TDirection } from 'WechatXrFrame/animation/Animation'
-    type Element = import('WechatXrFrame/core/Element').default
+declare module 'XrFrame/animation/KeyframeAnimation' {
+    import Animation, { TDirection } from 'XrFrame/animation/Animation'
+    type Element = import('XrFrame/core/Element').default
     /**
      * `Keyframe`动画数据的动画部分。
      */
@@ -2444,16 +2450,16 @@ declare module 'WechatXrFrame/animation/KeyframeAnimation' {
     export {}
 }
 
-declare module 'WechatXrFrame/assets/Atlas' {
+declare module 'XrFrame/assets/Atlas' {
     /**
      * Atlas.ts
      *
      *         * @Date    : 10/12/2022, 5:23:59 PM
      */
-    import { Kanata } from 'WechatXrFrame/ext'
-    import Matrix3 from 'WechatXrFrame/math/matrix3'
-    import Vector4 from 'WechatXrFrame/math/vector4'
-    type Scene = import('WechatXrFrame/core/Scene').default
+    import { Kanata } from 'XrFrame/ext'
+    import Matrix3 from 'XrFrame/math/matrix3'
+    import Vector4 from 'XrFrame/math/vector4'
+    type Scene = import('XrFrame/core/Scene').default
     /**
      * `Atlas`的初始化参数类型。
      */
@@ -2629,7 +2635,7 @@ declare module 'WechatXrFrame/assets/Atlas' {
         /**
          * 获取整体的纹理。
          */
-        get texture(): import('WechatXrFrame/kanata/lib/index').Texture
+        get texture(): import('XrFrame/kanata/lib/index').Texture
         /**
          * 构建一个图集。
          *
@@ -2686,13 +2692,13 @@ declare module 'WechatXrFrame/assets/Atlas' {
     export {}
 }
 
-declare module 'WechatXrFrame/assets/PostProcess' {
+declare module 'XrFrame/assets/PostProcess' {
     /**
      * PostProcess.ts
      *
      *         * @Date    : 10/14/2022, 4:34:55 PM
      */
-    type Scene = import('WechatXrFrame/core/Scene').default
+    type Scene = import('XrFrame/core/Scene').default
     /**
      * 后处理资源初始化参数。
      */
@@ -2737,16 +2743,16 @@ declare module 'WechatXrFrame/assets/PostProcess' {
     export {}
 }
 
-declare module 'WechatXrFrame/assets/factories' {
+declare module 'XrFrame/assets/factories' {
     /**
      * factories.ts
      *
      *         * @Date    : 2022/3/23下午4:04:18
      */
-    import Scene from 'WechatXrFrame/core/Scene'
-    import Effect from 'WechatXrFrame/assets/Effect'
-    import Geometry from 'WechatXrFrame/assets/Geometry'
-    import Material from 'WechatXrFrame/assets/Material'
+    import Scene from 'XrFrame/core/Scene'
+    import Effect from 'XrFrame/assets/Effect'
+    import Geometry from 'XrFrame/assets/Geometry'
+    import Material from 'XrFrame/assets/Material'
     /**
      * @internal
      */
@@ -2773,18 +2779,14 @@ declare module 'WechatXrFrame/assets/factories' {
      */
     export const registerTexture: (
         id: string,
-        factory: (
-            scene: Scene
-        ) => import('WechatXrFrame/kanata/lib/index').Texture
+        factory: (scene: Scene) => import('XrFrame/kanata/lib/index').Texture
     ) => void
     /**
      * 注册`TextureCube`资源。
      */
     export const registerTextureCube: (
         id: string,
-        factory: (
-            scene: Scene
-        ) => import('WechatXrFrame/kanata/lib/index').Texture
+        factory: (scene: Scene) => import('XrFrame/kanata/lib/index').Texture
     ) => void
     /**
      * 注册`VertexDataDescriptor`资源。
@@ -2793,7 +2795,7 @@ declare module 'WechatXrFrame/assets/factories' {
         id: string,
         factory: (
             scene: Scene
-        ) => import('WechatXrFrame/kanata/lib/index').VertexDataDescriptor
+        ) => import('XrFrame/kanata/lib/index').VertexDataDescriptor
     ) => void
     /**
      * 注册`UniformDescriptor`资源。
@@ -2802,7 +2804,7 @@ declare module 'WechatXrFrame/assets/factories' {
         id: string,
         factory: (
             scene: Scene
-        ) => import('WechatXrFrame/kanata/lib/index').UniformDescriptor
+        ) => import('XrFrame/kanata/lib/index').UniformDescriptor
     ) => void
     /**
      * 注册`VertexLayout`资源。
@@ -2811,7 +2813,7 @@ declare module 'WechatXrFrame/assets/factories' {
         id: string,
         factory: (
             scene: Scene
-        ) => import('WechatXrFrame/kanata/lib/index').VertexLayout
+        ) => import('XrFrame/kanata/lib/index').VertexLayout
     ) => void
     /**
      * 注册`Material`资源。
@@ -2822,7 +2824,7 @@ declare module 'WechatXrFrame/assets/factories' {
     ) => void
 }
 
-declare module 'WechatXrFrame/assets/easeFunctions' {
+declare module 'XrFrame/assets/easeFunctions' {
     /**
      * easeFunctions.ts
      *
@@ -2893,7 +2895,7 @@ declare module 'WechatXrFrame/assets/easeFunctions' {
     export {}
 }
 
-declare module 'WechatXrFrame/math/vector2' {
+declare module 'XrFrame/math/vector2' {
     export default class Vector2 {
         /**
          * x值
@@ -3076,9 +3078,9 @@ declare module 'WechatXrFrame/math/vector2' {
     }
 }
 
-declare module 'WechatXrFrame/math/vector3' {
-    import QuatReadOnly from 'WechatXrFrame/math/quaternion'
-    import M4ReadOnly from 'WechatXrFrame/math/matrix4'
+declare module 'XrFrame/math/vector3' {
+    import QuatReadOnly from 'XrFrame/math/quaternion'
+    import M4ReadOnly from 'XrFrame/math/matrix4'
     export default class Vector3 {
         /**
          * x值
@@ -3367,7 +3369,7 @@ declare module 'WechatXrFrame/math/vector3' {
          */
         static fromPhysics(v: any): Vector3
         fromPhysics(v: any): Vector3
-        static Phys3D?: typeof WechatPhys3D
+        static Phys3D?: typeof phys3D
         static clearPhysicsPool(): void
         /**
          * created by shanexyzhou
@@ -3390,7 +3392,7 @@ declare module 'WechatXrFrame/math/vector3' {
     }
 }
 
-declare module 'WechatXrFrame/math/vector4' {
+declare module 'XrFrame/math/vector4' {
     export default class Vector4 {
         /**
          * x值
@@ -3569,11 +3571,11 @@ declare module 'WechatXrFrame/math/vector4' {
     }
 }
 
-declare module 'WechatXrFrame/math/quaternion' {
-    import Vector3 from 'WechatXrFrame/math/vector3'
-    import V3ReadOnly from 'WechatXrFrame/math/vector3'
-    import QuatReadOnly from 'WechatXrFrame/math/quaternion'
-    import M4ReadOnly from 'WechatXrFrame/math/matrix4'
+declare module 'XrFrame/math/quaternion' {
+    import Vector3 from 'XrFrame/math/vector3'
+    import V3ReadOnly from 'XrFrame/math/vector3'
+    import QuatReadOnly from 'XrFrame/math/quaternion'
+    import M4ReadOnly from 'XrFrame/math/matrix4'
     /**
      * @public
      */
@@ -3828,22 +3830,22 @@ declare module 'WechatXrFrame/math/quaternion' {
          * created by shanexyzhou
          * 从物理引擎内的RawQuaternion生成Quaternion
          */
-        static fromPhysics(v: WechatPhys3D.RawQuaternion): Quaternion
-        fromPhysics(v: WechatPhys3D.RawQuaternion): Quaternion
-        static Phys3D?: typeof WechatPhys3D
+        static fromPhysics(v: phys3D.RawQuaternion): Quaternion
+        fromPhysics(v: phys3D.RawQuaternion): Quaternion
+        static Phys3D?: typeof phys3D
         static clearPhysicsPool(): void
         /**
          * created by shanexyzhou
          * 生成物理引擎内的RawQuaternion
          */
-        toPhysics(): WechatPhys3D.RawQuaternion
+        toPhysics(): phys3D.RawQuaternion
         setArray(value: ArrayLike<number>, offset?: number): Quaternion
     }
 }
 
-declare module 'WechatXrFrame/math/matrix3' {
-    import Vector2 from 'WechatXrFrame/math/vector2'
-    import V2ReadOnly from 'WechatXrFrame/math/vector2'
+declare module 'XrFrame/math/matrix3' {
+    import Vector2 from 'XrFrame/math/vector2'
+    import V2ReadOnly from 'XrFrame/math/vector2'
     export default class Matrix3 {
         get raw(): Float32Array
         _raw: Float32Array
@@ -3937,13 +3939,13 @@ declare module 'WechatXrFrame/math/matrix3' {
     }
 }
 
-declare module 'WechatXrFrame/math/matrix4' {
-    import Vector3 from 'WechatXrFrame/math/vector3'
-    import Vector4 from 'WechatXrFrame/math/vector4'
-    import V3ReadOnly from 'WechatXrFrame/math/vector3'
-    import V4ReadOnly from 'WechatXrFrame/math/vector4'
-    import QuatReadOnly from 'WechatXrFrame/math/quaternion'
-    import M3ReadOnly from 'WechatXrFrame/math/matrix3'
+declare module 'XrFrame/math/matrix4' {
+    import Vector3 from 'XrFrame/math/vector3'
+    import Vector4 from 'XrFrame/math/vector4'
+    import V3ReadOnly from 'XrFrame/math/vector3'
+    import V4ReadOnly from 'XrFrame/math/vector4'
+    import QuatReadOnly from 'XrFrame/math/quaternion'
+    import M3ReadOnly from 'XrFrame/math/matrix3'
     /**
      * @public
      */
@@ -4352,8 +4354,8 @@ declare module 'WechatXrFrame/math/matrix4' {
     }
 }
 
-declare module 'WechatXrFrame/math/color' {
-    import Vector3 from 'WechatXrFrame/math/vector3'
+declare module 'XrFrame/math/color' {
+    import Vector3 from 'XrFrame/math/vector3'
     export enum BlendType {
         Alpha = 0,
         RGB = 1,
@@ -4416,8 +4418,8 @@ declare module 'WechatXrFrame/math/color' {
     }
 }
 
-declare module 'WechatXrFrame/math/OBB' {
-    import Vector3 from 'WechatXrFrame/math/vector3'
+declare module 'XrFrame/math/OBB' {
+    import Vector3 from 'XrFrame/math/vector3'
     export default class OBB {
         constructor()
         setValues(
@@ -4444,9 +4446,9 @@ declare module 'WechatXrFrame/math/OBB' {
     }
 }
 
-declare module 'WechatXrFrame/math/boundBall' {
-    import Vector3 from 'WechatXrFrame/math/vector3'
-    import V3ReadOnly from 'WechatXrFrame/math/vector3'
+declare module 'XrFrame/math/boundBall' {
+    import Vector3 from 'XrFrame/math/vector3'
+    import V3ReadOnly from 'XrFrame/math/vector3'
     export default class BoundBall {
         static readonly OFFSETS: Readonly<{
             center: number
@@ -4506,9 +4508,9 @@ declare module 'WechatXrFrame/math/boundBall' {
     }
 }
 
-declare module 'WechatXrFrame/math/boundBox' {
-    import Vector3 from 'WechatXrFrame/math/vector3'
-    import V3ReadOnly from 'WechatXrFrame/math/vector3'
+declare module 'XrFrame/math/boundBox' {
+    import Vector3 from 'XrFrame/math/vector3'
+    import V3ReadOnly from 'XrFrame/math/vector3'
     export default class BoundBox {
         static readonly OFFSETS: Readonly<{
             center: number
@@ -4563,13 +4565,13 @@ declare module 'WechatXrFrame/math/boundBox' {
     }
 }
 
-declare module 'WechatXrFrame/math/Spherical' {
+declare module 'XrFrame/math/Spherical' {
     /**
      * Spherical.ts
      *
      *         * @Date    : 2022/1/14下午4:49:50
      */
-    import Vector3 from 'WechatXrFrame/math/vector3'
+    import Vector3 from 'XrFrame/math/vector3'
     /**
      * 球面坐标系。
      */
@@ -4615,15 +4617,15 @@ declare module 'WechatXrFrame/math/Spherical' {
     }
 }
 
-declare module 'WechatXrFrame/kanata/lib/kanata' {
-    import * as IKanata from 'WechatXrFrame/kanata/lib/frontend'
-    import { IEngineSettings } from 'WechatXrFrame/kanata/lib/backend/interface'
+declare module 'XrFrame/kanata/lib/kanata' {
+    import * as IKanata from 'XrFrame/kanata/lib/frontend'
+    import { IEngineSettings } from 'XrFrame/kanata/lib/backend/interface'
 
-    export * from 'WechatXrFrame/kanata/lib/backend/interface'
+    export * from 'XrFrame/kanata/lib/backend/interface'
     export {
         ITextureOptions,
         IRenderPassDescriptor
-    } from 'WechatXrFrame/kanata/lib/index'
+    } from 'XrFrame/kanata/lib/index'
 
     export type AnimatorComponent = IKanata.AnimatorComponent
     export type CameraComponent = IKanata.CameraComponent
@@ -4730,38 +4732,34 @@ declare module 'WechatXrFrame/kanata/lib/kanata' {
     export function RELEASE_INSTANCE(MAIN_CANVAS: HTMLCanvasElement): void
 }
 
-declare module 'WechatXrFrame/core/Scene' {
+declare module 'XrFrame/core/Scene' {
     /**
      * Scene.ts
      *
      *         * @Date    : 2022/3/16下午3:32:57
      */
-    import Transform from 'WechatXrFrame/components/Transform'
-    import { Kanata } from 'WechatXrFrame/ext'
-    import AssetsSystem from 'WechatXrFrame/systems/AssetsSystem'
-    import RenderSystem from 'WechatXrFrame/systems/RenderSystem'
-    import Element, { IEntityComponents } from 'WechatXrFrame/core/Element'
-    import Material from 'WechatXrFrame/assets/Material'
+    import Transform from 'XrFrame/components/Transform'
+    import { Kanata } from 'XrFrame/ext'
+    import AssetsSystem from 'XrFrame/systems/AssetsSystem'
+    import RenderSystem from 'XrFrame/systems/RenderSystem'
+    import Element, { IEntityComponents } from 'XrFrame/core/Element'
+    import Material from 'XrFrame/assets/Material'
     import RenderTexture, {
         IRenderTextureOptions
-    } from 'WechatXrFrame/assets/RenderTexture'
-    import Effect, { IEffectAsset } from 'WechatXrFrame/assets/Effect'
-    import Geometry from 'WechatXrFrame/assets/Geometry'
-    import AnimationSystem from 'WechatXrFrame/systems/AnimationSystem'
-    import PhysicsSystem from 'WechatXrFrame/systems/PhysicsSystem'
-    import ARSystem from 'WechatXrFrame/systems/ARSystem'
-    import { XRShadow } from 'WechatXrFrame/elements'
-    import {
-        GizmoSystem,
-        ShareSystem,
-        VideoSystem
-    } from 'WechatXrFrame/systems'
+    } from 'XrFrame/assets/RenderTexture'
+    import Effect, { IEffectAsset } from 'XrFrame/assets/Effect'
+    import Geometry from 'XrFrame/assets/Geometry'
+    import AnimationSystem from 'XrFrame/systems/AnimationSystem'
+    import PhysicsSystem from 'XrFrame/systems/PhysicsSystem'
+    import ARSystem from 'XrFrame/systems/ARSystem'
+    import { XRShadow } from 'XrFrame/elements'
+    import { GizmoSystem, ShareSystem, VideoSystem } from 'XrFrame/systems'
     import VideoTexture, {
         IVideoTextureOptions
-    } from 'WechatXrFrame/assets/VideoTexture'
+    } from 'XrFrame/assets/VideoTexture'
     import PostProcess, {
         IPostProcessOptions
-    } from 'WechatXrFrame/assets/PostProcess'
+    } from 'XrFrame/assets/PostProcess'
     /**
      * 场景的默认组件，均为系统。
      */
@@ -4855,11 +4853,7 @@ declare module 'WechatXrFrame/core/Scene' {
         /**
          * @internal
          */
-        get rootNode(): import('WechatXrFrame/kanata/lib/index').Entity3D
-        /**
-         * @internal
-         */
-        get canvas(): HTMLCanvasElement
+        get rootNode(): import('XrFrame/kanata/lib/index').Entity3D
         /**
          * @internal
          */
@@ -4912,11 +4906,11 @@ declare module 'WechatXrFrame/core/Scene' {
          * @internal
          */
         /**
-         * @internal
+         * 通过在`wxml`的元素上设置的`id`索引一个元素，`id`是唯一的。
          */
         getElementById(id: string): Element
         /**
-         * @internal
+         * 通过在`wxml`的元素上设置的`node-id`索引一个`Transform`组件，`node-id`是唯一的。
          */
         getNodeById(nodeId: string): Transform
         /**
@@ -4989,7 +4983,7 @@ declare module 'WechatXrFrame/core/Scene' {
     }
 }
 
-declare module 'WechatXrFrame/core/Observable' {
+declare module 'XrFrame/core/Observable' {
     export default class Observable<TParams = any, TSender = any> {
         isObservable: boolean
         /**
@@ -5028,17 +5022,17 @@ declare module 'WechatXrFrame/core/Observable' {
     }
 }
 
-declare module 'WechatXrFrame/components/Transform' {
+declare module 'XrFrame/components/Transform' {
     /**
      * Transform.ts
      *
      *         * @Date    : 2022/3/16下午3:48:05
      */
-    import Component, { IComponentSchema } from 'WechatXrFrame/core/Component'
-    import Element from 'WechatXrFrame/core/Element'
-    import Matrix4 from 'WechatXrFrame/math/matrix4'
-    import Quaternion from 'WechatXrFrame/math/quaternion'
-    import Vector3 from 'WechatXrFrame/math/vector3'
+    import Component, { IComponentSchema } from 'XrFrame/core/Component'
+    import Element from 'XrFrame/core/Element'
+    import Matrix4 from 'XrFrame/math/matrix4'
+    import Quaternion from 'XrFrame/math/quaternion'
+    import Vector3 from 'XrFrame/math/vector3'
     /**
      * {@link Transform}组件数据接口。
      */
@@ -5088,7 +5082,7 @@ declare module 'WechatXrFrame/components/Transform' {
          */
         readonly schema: IComponentSchema
         readonly priority: number
-        get node(): import('WechatXrFrame/kanata/lib/index').Entity3D
+        get node(): import('XrFrame/kanata/lib/index').Entity3D
         /**
          * 获取世界矩阵，**注意不可修改**。
          */
@@ -5143,15 +5137,15 @@ declare module 'WechatXrFrame/components/Transform' {
     }
 }
 
-declare module 'WechatXrFrame/components/AssetLoad' {
+declare module 'XrFrame/components/AssetLoad' {
     /**
      * AssetLoad.ts
      *
      *         * @Date    : 2022/3/31下午4:56:14
      */
-    import Component, { IComponentSchema } from 'WechatXrFrame/core/Component'
-    import Element from 'WechatXrFrame/core/Element'
-    import { IAssetLoadData } from 'WechatXrFrame/loader/types'
+    import Component, { IComponentSchema } from 'XrFrame/core/Component'
+    import Element from 'XrFrame/core/Element'
+    import { IAssetLoadData } from 'XrFrame/loader/types'
     /**
      * {@link AssetLoad}的`schema`，详见{@link IAssetLoadData}。
      */
@@ -5174,14 +5168,14 @@ declare module 'WechatXrFrame/components/AssetLoad' {
     }
 }
 
-declare module 'WechatXrFrame/components/Assets' {
+declare module 'XrFrame/components/Assets' {
     /**
      * Assets.ts
      *
      *         * @Date    : 2022/3/24下午3:18:14
      */
-    import Component, { IComponentSchema } from 'WechatXrFrame/core/Component'
-    import { IAssetLoadData } from 'WechatXrFrame/loader/types'
+    import Component, { IComponentSchema } from 'XrFrame/core/Component'
+    import { IAssetLoadData } from 'XrFrame/loader/types'
     export interface IAssetsData {}
     export const AssetsSchema: IComponentSchema
     /**
@@ -5197,23 +5191,21 @@ declare module 'WechatXrFrame/components/Assets' {
     }
 }
 
-declare module 'WechatXrFrame/components/Camera' {
+declare module 'XrFrame/components/Camera' {
     /**
      * Camera.ts
      *
      *         * @Date    : 2022/3/17下午5:25:34
      */
-    import Component, { IComponentSchema } from 'WechatXrFrame/core/Component'
-    import Element from 'WechatXrFrame/core/Element'
-    import { Kanata } from 'WechatXrFrame/ext'
-    import Vector3 from 'WechatXrFrame/math/vector3'
-    import Matrix4 from 'WechatXrFrame/math/matrix4'
-    import RenderTexture, {
-        IRenderTarget
-    } from 'WechatXrFrame/assets/RenderTexture'
-    import Transform from 'WechatXrFrame/components/Transform'
-    import Light from 'WechatXrFrame/components/Light'
-    import PostProcess from 'WechatXrFrame/assets/PostProcess'
+    import Component, { IComponentSchema } from 'XrFrame/core/Component'
+    import Element from 'XrFrame/core/Element'
+    import { Kanata } from 'XrFrame/ext'
+    import Vector3 from 'XrFrame/math/vector3'
+    import Matrix4 from 'XrFrame/math/matrix4'
+    import RenderTexture, { IRenderTarget } from 'XrFrame/assets/RenderTexture'
+    import Transform from 'XrFrame/components/Transform'
+    import Light from 'XrFrame/components/Light'
+    import PostProcess from 'XrFrame/assets/PostProcess'
     /**
      * 相机背景渲染模式。
      *
@@ -5342,7 +5334,7 @@ declare module 'WechatXrFrame/components/Camera' {
         /**
          * @internal
          */
-        get view(): import('WechatXrFrame/kanata/lib/index').View
+        get view(): import('XrFrame/kanata/lib/index').View
         /**
          * @internal
          */
@@ -5424,12 +5416,12 @@ declare module 'WechatXrFrame/components/Camera' {
     }
 }
 
-declare module 'WechatXrFrame/components/GLTF' {
-    import GLTFModel from 'WechatXrFrame/assets/GLTFModel'
-    import Component, { IComponentSchema } from 'WechatXrFrame/core/Component'
-    import Element from 'WechatXrFrame/core/Element'
-    import BoundBox from 'WechatXrFrame/math/boundBox'
-    import Mesh from 'WechatXrFrame/components/Mesh'
+declare module 'XrFrame/components/GLTF' {
+    import GLTFModel from 'XrFrame/assets/GLTFModel'
+    import Component, { IComponentSchema } from 'XrFrame/core/Component'
+    import Element from 'XrFrame/core/Element'
+    import BoundBox from 'XrFrame/math/boundBox'
+    import Mesh from 'XrFrame/components/Mesh'
     /**
      * @see {@link GLTF}
      */
@@ -5516,15 +5508,15 @@ declare module 'WechatXrFrame/components/GLTF' {
     export {}
 }
 
-declare module 'WechatXrFrame/components/Light' {
+declare module 'XrFrame/components/Light' {
     /**
      * Light.ts
      *
      *         * @Date    : 2022/3/16下午4:45:56
      */
-    import Component, { IComponentSchema } from 'WechatXrFrame/core/Component'
-    import Element from 'WechatXrFrame/core/Element'
-    import { Kanata } from 'WechatXrFrame/ext'
+    import Component, { IComponentSchema } from 'XrFrame/core/Component'
+    import Element from 'XrFrame/core/Element'
+    import { Kanata } from 'XrFrame/ext'
     /**
      * 光照类型枚举。
      */
@@ -5624,7 +5616,7 @@ declare module 'WechatXrFrame/components/Light' {
         /**
          * @internal
          */
-        get lightCamera(): import('WechatXrFrame/kanata/lib/index').LightCameraComponent
+        get lightCamera(): import('XrFrame/kanata/lib/index').LightCameraComponent
         /**
          * @internal
          */
@@ -5639,10 +5631,10 @@ declare module 'WechatXrFrame/components/Light' {
     }
 }
 
-declare module 'WechatXrFrame/components/AssetMaterial' {
-    import Effect from 'WechatXrFrame/assets/Effect'
-    import Component, { IComponentSchema } from 'WechatXrFrame/core/Component'
-    import Element from 'WechatXrFrame/core/Element'
+declare module 'XrFrame/components/AssetMaterial' {
+    import Effect from 'XrFrame/assets/Effect'
+    import Component, { IComponentSchema } from 'XrFrame/core/Component'
+    import Element from 'XrFrame/core/Element'
     /**
      * `AssetMaterial`数据接口。
      */
@@ -5694,18 +5686,18 @@ declare module 'WechatXrFrame/components/AssetMaterial' {
     }
 }
 
-declare module 'WechatXrFrame/components/Mesh' {
+declare module 'XrFrame/components/Mesh' {
     /**
      * Model.ts
      *
      *         * @Date    : 2022/3/16下午4:48:09
      */
-    import Geometry from 'WechatXrFrame/assets/Geometry'
-    import Component, { IComponentSchema } from 'WechatXrFrame/core/Component'
-    import Element from 'WechatXrFrame/core/Element'
-    import { Kanata } from 'WechatXrFrame/ext'
-    import Material from 'WechatXrFrame/assets/Material'
-    import Transform from 'WechatXrFrame/components/Transform'
+    import Geometry from 'XrFrame/assets/Geometry'
+    import Component, { IComponentSchema } from 'XrFrame/core/Component'
+    import Element from 'XrFrame/core/Element'
+    import { Kanata } from 'XrFrame/ext'
+    import Material from 'XrFrame/assets/Material'
+    import Transform from 'XrFrame/components/Transform'
     /**
      * `Mesh`数据接口。
      */
@@ -5805,13 +5797,13 @@ declare module 'WechatXrFrame/components/Mesh' {
     }
 }
 
-declare module 'WechatXrFrame/components/Text' {
-    import Component, { IComponentSchema } from 'WechatXrFrame/core/Component'
-    import Element from 'WechatXrFrame/core/Element'
-    import { Kanata } from 'WechatXrFrame/ext'
-    import Material from 'WechatXrFrame/assets/Material'
-    import Transform from 'WechatXrFrame/components/Transform'
-    import { IGlyph } from 'WechatXrFrame/glyph'
+declare module 'XrFrame/components/Text' {
+    import Component, { IComponentSchema } from 'XrFrame/core/Component'
+    import Element from 'XrFrame/core/Element'
+    import { Kanata } from 'XrFrame/ext'
+    import Material from 'XrFrame/assets/Material'
+    import Transform from 'XrFrame/components/Transform'
+    import { IGlyph } from 'XrFrame/glyph'
     export interface ITextData {
         neverCull?: boolean
         material?: Material
@@ -5862,14 +5854,14 @@ declare module 'WechatXrFrame/components/Text' {
     }
 }
 
-declare module 'WechatXrFrame/components/particle/Particle' {
-    import Element from 'WechatXrFrame/core/Element'
-    import Material from 'WechatXrFrame/assets/Material'
+declare module 'XrFrame/components/particle/Particle' {
+    import Element from 'XrFrame/core/Element'
+    import Material from 'XrFrame/assets/Material'
     import BasicParticle, {
         IParticleData
-    } from 'WechatXrFrame/components/particle/BasicParticle'
-    import ParticleInstance from 'WechatXrFrame/components/particle/ParticleInstance'
-    import { BasicShapeEmitter } from 'WechatXrFrame/components/emitter/BasicShapeEmitter'
+    } from 'XrFrame/components/particle/BasicParticle'
+    import ParticleInstance from 'XrFrame/components/particle/ParticleInstance'
+    import { BasicShapeEmitter } from 'XrFrame/components/emitter/BasicShapeEmitter'
     export default class Particle extends BasicParticle {
         readonly priority: number
         subEmitters: any
@@ -5977,26 +5969,26 @@ declare module 'WechatXrFrame/components/particle/Particle' {
     }
 }
 
-declare module 'WechatXrFrame/components/particle/BasicParticle' {
-    import Material from 'WechatXrFrame/assets/Material'
-    import Component from 'WechatXrFrame/core/Component'
-    import { IComponentSchema } from 'WechatXrFrame/core/Component'
+declare module 'XrFrame/components/particle/BasicParticle' {
+    import Material from 'XrFrame/assets/Material'
+    import Component from 'XrFrame/core/Component'
+    import { IComponentSchema } from 'XrFrame/core/Component'
     import {
         BoxShapeEmitter,
         PointShapeEmitter,
         SphereShapeEmitter
-    } from 'WechatXrFrame/components/emitter'
-    import { Kanata } from 'WechatXrFrame/ext'
-    import Transform from 'WechatXrFrame/components/Transform'
-    import { BasicShapeEmitter } from 'WechatXrFrame/components/emitter/BasicShapeEmitter'
-    import Vector3 from 'WechatXrFrame/math/vector3'
-    import Particle from 'WechatXrFrame/components/particle/Particle'
-    import { Scene } from 'WechatXrFrame/elements'
-    import { SubEmitter } from 'WechatXrFrame/components/emitter/SubEmitter'
-    import ParticleInstance from 'WechatXrFrame/components/particle/ParticleInstance'
-    import Atlas from 'WechatXrFrame/assets/Atlas'
-    import Vector4 from 'WechatXrFrame/math/vector4'
-    import Geometry from 'WechatXrFrame/assets/Geometry'
+    } from 'XrFrame/components/emitter'
+    import { Kanata } from 'XrFrame/ext'
+    import Transform from 'XrFrame/components/Transform'
+    import { BasicShapeEmitter } from 'XrFrame/components/emitter/BasicShapeEmitter'
+    import Vector3 from 'XrFrame/math/vector3'
+    import Particle from 'XrFrame/components/particle/Particle'
+    import { Scene } from 'XrFrame/elements'
+    import { SubEmitter } from 'XrFrame/components/emitter/SubEmitter'
+    import ParticleInstance from 'XrFrame/components/particle/ParticleInstance'
+    import Atlas from 'XrFrame/assets/Atlas'
+    import Vector4 from 'XrFrame/math/vector4'
+    import Geometry from 'XrFrame/assets/Geometry'
     /**
      * {@link Particle}组件数据接口。
      */
@@ -6419,14 +6411,14 @@ declare module 'WechatXrFrame/components/particle/BasicParticle' {
     }
 }
 
-declare module 'WechatXrFrame/components/AssetRenderTexture' {
+declare module 'XrFrame/components/AssetRenderTexture' {
     /**
      * AssetRenderTexture.ts
      *
      *         * @Date    : 8/29/2022, 11:27:00 AM
      */
-    import Component, { IComponentSchema } from 'WechatXrFrame/core/Component'
-    import Element from 'WechatXrFrame/core/Element'
+    import Component, { IComponentSchema } from 'XrFrame/core/Component'
+    import Element from 'XrFrame/core/Element'
     /**
      * `AssetRenderTexture`资源数据接口。
      */
@@ -6457,17 +6449,17 @@ declare module 'WechatXrFrame/components/AssetRenderTexture' {
     }
 }
 
-declare module 'WechatXrFrame/components/Env' {
+declare module 'XrFrame/components/Env' {
     /**
      * Env.ts
      *
      *         * @Date    : 5/11/2022, 5:21:48 PM
      */
-    import { Kanata } from 'WechatXrFrame/ext'
-    import Component, { IComponentSchema } from 'WechatXrFrame/core/Component'
-    import EnvData from 'WechatXrFrame/assets/EnvData'
-    import Element from 'WechatXrFrame/core/Element'
-    import { ITextureWrapper } from 'WechatXrFrame/core/DataValue'
+    import { Kanata } from 'XrFrame/ext'
+    import Component, { IComponentSchema } from 'XrFrame/core/Component'
+    import EnvData from 'XrFrame/assets/EnvData'
+    import Element from 'XrFrame/core/Element'
+    import { ITextureWrapper } from 'XrFrame/core/DataValue'
     /**
      * {@link Env}组件数据接口。
      */
@@ -6515,7 +6507,7 @@ declare module 'WechatXrFrame/components/Env' {
          */
         readonly schema: IComponentSchema
         get useHalfSkyMap(): boolean
-        get skyMap(): import('WechatXrFrame/kanata/lib/index').Texture
+        get skyMap(): import('XrFrame/kanata/lib/index').Texture
         get isSky2D(): boolean
         get isSkyRT(): boolean
         get rotation(): number
@@ -6526,7 +6518,7 @@ declare module 'WechatXrFrame/components/Env' {
         get specularRGBD(): boolean
         get specularMipmaps(): boolean
         get specularMipmapCount(): number
-        get specularMap(): import('WechatXrFrame/kanata/lib/index').Texture
+        get specularMap(): import('XrFrame/kanata/lib/index').Texture
         get specularExp(): number
         onAdd(parent: Element, data: IEnvData): void
         onUpdate(data: IEnvData, preData: IEnvData): void
@@ -6534,16 +6526,16 @@ declare module 'WechatXrFrame/components/Env' {
     }
 }
 
-declare module 'WechatXrFrame/components/Animator' {
+declare module 'XrFrame/components/Animator' {
     /**
      * Animator.ts
      *
      *         * @Date    : 6/17/2022, 2:52:44 PM
      */
-    import Component, { IComponentSchema } from 'WechatXrFrame/core/Component'
-    import Animation from 'WechatXrFrame/animation/Animation'
-    import Element from 'WechatXrFrame/core/Element'
-    type Scene = import('WechatXrFrame/core/Scene').default
+    import Component, { IComponentSchema } from 'XrFrame/core/Component'
+    import Animation from 'XrFrame/animation/Animation'
+    import Element from 'XrFrame/core/Element'
+    type Scene = import('XrFrame/core/Scene').default
     /**
      * 使用`Animator`播放动画时可以传入的默认选项。
      */
@@ -6715,15 +6707,15 @@ declare module 'WechatXrFrame/components/Animator' {
     export {}
 }
 
-declare module 'WechatXrFrame/components/CameraOrbitControl' {
+declare module 'XrFrame/components/CameraOrbitControl' {
     /**
      * CameraOrbitControl.ts
      *
      *         * @Date    : 5/19/2022, 1:22:59 PM
      */
-    import Component, { IComponentSchema } from 'WechatXrFrame/core/Component'
-    import Element from 'WechatXrFrame/core/Element'
-    import Vector3 from 'WechatXrFrame/math/vector3'
+    import Component, { IComponentSchema } from 'XrFrame/core/Component'
+    import Element from 'XrFrame/core/Element'
+    import Vector3 from 'XrFrame/math/vector3'
     /**
      * {@link CameraOrbitControl}组件数据接口。
      */
@@ -6878,18 +6870,18 @@ declare module 'WechatXrFrame/components/CameraOrbitControl' {
     }
 }
 
-declare module 'WechatXrFrame/components/ARTracker' {
+declare module 'XrFrame/components/ARTracker' {
     /**
      * ARTracker.ts
      *
      *         * @Date    : 6/24/2022, 11:35:30 AM
      */
-    import { Kanata } from 'WechatXrFrame/ext'
-    import Component, { IComponentSchema } from 'WechatXrFrame/core/Component'
-    import Element from 'WechatXrFrame/core/Element'
-    import Vector3 from 'WechatXrFrame/math/vector3'
+    import { Kanata } from 'XrFrame/ext'
+    import Component, { IComponentSchema } from 'XrFrame/core/Component'
+    import Element from 'XrFrame/core/Element'
+    import Vector3 from 'XrFrame/math/vector3'
     /**
-     * Tracker的跟踪模式。
+     * {@link ARSystem}和{@link ARTracker}的跟踪模式。
      */
     export type TTrackMode =
         | 'Plane'
@@ -6899,7 +6891,17 @@ declare module 'WechatXrFrame/components/ARTracker' {
         | 'Hand'
         | 'Body'
     /**
-     * `Face`/`Body`/`Hand`模式下，`ARTracker`存储的原始数据类型。
+     * {@link ARTracker}的识别状态。
+     * @version v2.29.1
+     */
+    export enum EARTrackerState {
+        Init = 0,
+        Detecting = 1,
+        Detected = 2,
+        Error = 3
+    }
+    /**
+     * `Face`/`Body`/`Hand`模式下，{@link ARTracker}存储的原始数据类型。
      */
     export interface IARTrackerRawData {
         /**
@@ -7004,7 +7006,19 @@ declare module 'WechatXrFrame/components/ARTracker' {
          */
         get mode(): TTrackMode
         /**
-         * 是否出于启动状态。
+         * 当前识别状态。
+         *
+         * @version v2.29.1
+         */
+        get state(): EARTrackerState
+        /**
+         * 如果为错误状态，错误信息。
+         *
+         * @version v2.29.1
+         */
+        get errorMessage(): string
+        /**
+         * 是否已经检测到了目标。
          */
         get arActive(): boolean
         /**
@@ -7048,15 +7062,15 @@ declare module 'WechatXrFrame/components/ARTracker' {
     }
 }
 
-declare module 'WechatXrFrame/components/physics/Shape' {
-    import Component from 'WechatXrFrame/core/Component'
-    import Element from 'WechatXrFrame/core/Element'
-    import Vector3 from 'WechatXrFrame/math/vector3'
-    import { Kanata } from 'WechatXrFrame/ext'
-    import Rigidbody from 'WechatXrFrame/components/physics/Rigidbody'
-    import Mesh from 'WechatXrFrame/components/Mesh'
-    import GLTFComponent from 'WechatXrFrame/components/GLTF'
-    export const shapeMap: Map<WechatPhys3D.Collider, Shape>
+declare module 'XrFrame/components/physics/Shape' {
+    import Component from 'XrFrame/core/Component'
+    import Element from 'XrFrame/core/Element'
+    import Vector3 from 'XrFrame/math/vector3'
+    import { Kanata } from 'XrFrame/ext'
+    import Rigidbody from 'XrFrame/components/physics/Rigidbody'
+    import Mesh from 'XrFrame/components/Mesh'
+    import GLTFComponent from 'XrFrame/components/GLTF'
+    export const shapeMap: Map<phys3D.Collider, Shape>
     export enum EShapeType {
         /**
          * @internal
@@ -7132,8 +7146,8 @@ declare module 'WechatXrFrame/components/physics/Shape' {
      */
     export default abstract class Shape extends Component<IShapeData> {
         readonly priority: number
-        _nativeStaticRigidbody: WechatPhys3D.Rigidbody | null
-        _nativeColliders: WechatPhys3D.Collider[]
+        _nativeStaticRigidbody: phys3D.Rigidbody | null
+        _nativeColliders: phys3D.Collider[]
         protected _rigidbodyComp: Rigidbody | null
         protected _type: EShapeType
         protected _shadowShapes: Shape[]
@@ -7222,15 +7236,15 @@ declare module 'WechatXrFrame/components/physics/Shape' {
     }
 }
 
-declare module 'WechatXrFrame/components/physics/SphereShape' {
+declare module 'XrFrame/components/physics/SphereShape' {
     import Shape, {
         EShapeType,
         IShapeData
-    } from 'WechatXrFrame/components/physics/Shape'
-    import Vector3 from 'WechatXrFrame/math/vector3'
-    import { IComponentSchema } from 'WechatXrFrame/core/Component'
-    import Mesh from 'WechatXrFrame/components/Mesh'
-    import GLTFComponent from 'WechatXrFrame/components/GLTF'
+    } from 'XrFrame/components/physics/Shape'
+    import Vector3 from 'XrFrame/math/vector3'
+    import { IComponentSchema } from 'XrFrame/core/Component'
+    import Mesh from 'XrFrame/components/Mesh'
+    import GLTFComponent from 'XrFrame/components/GLTF'
     /**
      * @see {@link SphereShapes}
      */
@@ -7274,13 +7288,13 @@ declare module 'WechatXrFrame/components/physics/SphereShape' {
     }
 }
 
-declare module 'WechatXrFrame/components/physics/MeshShape' {
+declare module 'XrFrame/components/physics/MeshShape' {
     import Shape, {
         IShapeData,
         EShapeType
-    } from 'WechatXrFrame/components/physics/Shape'
-    import { IComponentSchema } from 'WechatXrFrame/xrFrameSystem'
-    import GLTFComponent from 'WechatXrFrame/components/GLTF'
+    } from 'XrFrame/components/physics/Shape'
+    import { IComponentSchema } from 'XrFrame/xrFrameSystem'
+    import GLTFComponent from 'XrFrame/components/GLTF'
     /**
      * @see {@link MeshShape}
      */
@@ -7299,7 +7313,7 @@ declare module 'WechatXrFrame/components/physics/MeshShape' {
     export default class MeshShape extends Shape {
         readonly schema: IComponentSchema
         readonly priority: number
-        _nativeColliders: WechatPhys3D.MeshCollider[]
+        _nativeColliders: phys3D.MeshCollider[]
         _shadowShapes: MeshShape[]
         protected _type: EShapeType
         protected _createBasic(data: IMeshShapeData): void
@@ -7311,15 +7325,15 @@ declare module 'WechatXrFrame/components/physics/MeshShape' {
     }
 }
 
-declare module 'WechatXrFrame/components/physics/CapsuleShape' {
+declare module 'XrFrame/components/physics/CapsuleShape' {
     import Shape, {
         EShapeType,
         IShapeData
-    } from 'WechatXrFrame/components/physics/Shape'
-    import Vector3 from 'WechatXrFrame/math/vector3'
-    import { IComponentSchema } from 'WechatXrFrame/xrFrameSystem'
-    import Mesh from 'WechatXrFrame/components/Mesh'
-    import GLTFComponent from 'WechatXrFrame/components/GLTF'
+    } from 'XrFrame/components/physics/Shape'
+    import Vector3 from 'XrFrame/math/vector3'
+    import { IComponentSchema } from 'XrFrame/xrFrameSystem'
+    import Mesh from 'XrFrame/components/Mesh'
+    import GLTFComponent from 'XrFrame/components/GLTF'
     /**
      * @see {@link CapsuleShape}
      */
@@ -7390,15 +7404,15 @@ declare module 'WechatXrFrame/components/physics/CapsuleShape' {
     }
 }
 
-declare module 'WechatXrFrame/components/physics/CubeShape' {
+declare module 'XrFrame/components/physics/CubeShape' {
     import Shape, {
         EShapeType,
         IShapeData
-    } from 'WechatXrFrame/components/physics/Shape'
-    import Vector3 from 'WechatXrFrame/math/vector3'
-    import { IComponentSchema } from 'WechatXrFrame/xrFrameSystem'
-    import Mesh from 'WechatXrFrame/components/Mesh'
-    import GLTFComponent from 'WechatXrFrame/components/GLTF'
+    } from 'XrFrame/components/physics/Shape'
+    import Vector3 from 'XrFrame/math/vector3'
+    import { IComponentSchema } from 'XrFrame/xrFrameSystem'
+    import Mesh from 'XrFrame/components/Mesh'
+    import GLTFComponent from 'XrFrame/components/GLTF'
     /**
      * @see {@link CubeShape}
      */
@@ -7438,14 +7452,12 @@ declare module 'WechatXrFrame/components/physics/CubeShape' {
     }
 }
 
-declare module 'WechatXrFrame/components/gizmo/ShapeGizmos' {
-    import Component from 'WechatXrFrame/core/Component'
-    import Element from 'WechatXrFrame/core/Element'
-    import CapsuleGizmo from 'WechatXrFrame/components/gizmo/CapsuleGizmo'
-    import Shape, {
-        ShapeImplType
-    } from 'WechatXrFrame/components/physics/Shape'
-    import CubeGizmo from 'WechatXrFrame/components/gizmo/CubeGizmo'
+declare module 'XrFrame/components/gizmo/ShapeGizmos' {
+    import Component from 'XrFrame/core/Component'
+    import Element from 'XrFrame/core/Element'
+    import CapsuleGizmo from 'XrFrame/components/gizmo/CapsuleGizmo'
+    import Shape, { ShapeImplType } from 'XrFrame/components/physics/Shape'
+    import CubeGizmo from 'XrFrame/components/gizmo/CubeGizmo'
     /**
      * @see {@link ShapeGizmos}
      */
@@ -7478,14 +7490,14 @@ declare module 'WechatXrFrame/components/gizmo/ShapeGizmos' {
     export {}
 }
 
-declare module 'WechatXrFrame/components/AssetPostProcess' {
+declare module 'XrFrame/components/AssetPostProcess' {
     /**
      * AssetPostProcess.ts
      *
      *         * @Date    : 10/14/2022, 4:35:12 PM
      */
-    import Component, { IComponentSchema } from 'WechatXrFrame/core/Component'
-    import Element from 'WechatXrFrame/core/Element'
+    import Component, { IComponentSchema } from 'XrFrame/core/Component'
+    import Element from 'XrFrame/core/Element'
     /**
      * `AssetPostProcess`资源数据接口。
      */
@@ -7539,13 +7551,13 @@ declare module 'WechatXrFrame/components/AssetPostProcess' {
     }
 }
 
-declare module 'WechatXrFrame/elements/xr-node' {
+declare module 'XrFrame/elements/xr-node' {
     /**
      * xr-node.ts
      *
      *         * @Date    : 2022/3/18下午2:15:02
      */
-    import Element, { IEntityComponents } from 'WechatXrFrame/core/Element'
+    import Element, { IEntityComponents } from 'XrFrame/core/Element'
     /**
      * 默认包含{@link Transform}组件。
      */
@@ -7578,13 +7590,13 @@ declare module 'WechatXrFrame/elements/xr-node' {
     }
 }
 
-declare module 'WechatXrFrame/elements/xr-shadow' {
+declare module 'XrFrame/elements/xr-shadow' {
     /**
      * xr-shadow.ts
      *
      *         * @Date    : 6/14/2022, 3:59:17 PM
      */
-    import Element, { IEntityComponents } from 'WechatXrFrame/core/Element'
+    import Element, { IEntityComponents } from 'XrFrame/core/Element'
     /**
      * 默认包含{@link XRNode}的所有默认组件。
      */
@@ -7631,13 +7643,13 @@ declare module 'WechatXrFrame/elements/xr-shadow' {
     }
 }
 
-declare module 'WechatXrFrame/elements/xr-camera' {
+declare module 'XrFrame/elements/xr-camera' {
     /**
      * xr-camera.ts
      *
      *         * @Date    : 2022/3/29下午5:03:57
      */
-    import Element, { IEntityComponents } from 'WechatXrFrame/core/Element'
+    import Element, { IEntityComponents } from 'XrFrame/core/Element'
     /**
      * 默认包含{@link XRNode}的所有默认组件，以及{@link Camera}组件。
      */
@@ -7687,13 +7699,13 @@ declare module 'WechatXrFrame/elements/xr-camera' {
     }
 }
 
-declare module 'WechatXrFrame/elements/xr-mesh' {
+declare module 'XrFrame/elements/xr-mesh' {
     /**
      * xr-mesh.ts
      *
      *         * @Date    : 2022/3/29下午5:05:49
      */
-    import Element, { IEntityComponents } from 'WechatXrFrame/core/Element'
+    import Element, { IEntityComponents } from 'XrFrame/core/Element'
     /**
      * 默认包含{@link XRNode}的所有默认组件，以及{@link Mesh}组件。
      */
@@ -7732,13 +7744,13 @@ declare module 'WechatXrFrame/elements/xr-mesh' {
     }
 }
 
-declare module 'WechatXrFrame/elements/xr-light' {
+declare module 'XrFrame/elements/xr-light' {
     /**
      * xr-light.ts
      *
      *         * @Date    : 4/12/2022, 10:37:57 AM
      */
-    import Element, { IEntityComponents } from 'WechatXrFrame/core/Element'
+    import Element, { IEntityComponents } from 'XrFrame/core/Element'
     /**
      * 默认包含{@link XRNode}的所有默认组件，以及{@link Light}组件。
      */
@@ -7780,9 +7792,9 @@ declare module 'WechatXrFrame/elements/xr-light' {
     }
 }
 
-declare module 'WechatXrFrame/elements/xr-gltf' {
-    import { IEntityComponents } from 'WechatXrFrame/core/Element'
-    import XRShadow from 'WechatXrFrame/elements/xr-shadow'
+declare module 'XrFrame/elements/xr-gltf' {
+    import { IEntityComponents } from 'XrFrame/core/Element'
+    import XRShadow from 'XrFrame/elements/xr-shadow'
     /**
      * 默认包含{@link XRNode}的所有默认组件，以及{@link GLTF}组件。
      */
@@ -7824,13 +7836,13 @@ declare module 'WechatXrFrame/elements/xr-gltf' {
     }
 }
 
-declare module 'WechatXrFrame/elements/xr-asset-material' {
+declare module 'XrFrame/elements/xr-asset-material' {
     /**
      * xr-asset-material.ts
      *
      *         * @Date    : 2022/3/18下午5:27:37
      */
-    import Element, { IEntityComponents } from 'WechatXrFrame/core/Element'
+    import Element, { IEntityComponents } from 'XrFrame/core/Element'
     export const AssetMaterialDefaultComponents: IEntityComponents
     /**
      * 将{@link AssetMaterial}的属性进行映射。
@@ -7858,13 +7870,13 @@ declare module 'WechatXrFrame/elements/xr-asset-material' {
     }
 }
 
-declare module 'WechatXrFrame/elements/xr-asset-render-texture' {
+declare module 'XrFrame/elements/xr-asset-render-texture' {
     /**
      * xr-asset-render-texture.ts
      *
      *         * @Date    : 8/29/2022, 12:51:29 PM
      */
-    import Element, { IEntityComponents } from 'WechatXrFrame/core/Element'
+    import Element, { IEntityComponents } from 'XrFrame/core/Element'
     export const AssetRenderTextureDefaultComponents: IEntityComponents
     /**
      * 将{@link AssetRenderTexture}的属性进行映射。
@@ -7890,13 +7902,13 @@ declare module 'WechatXrFrame/elements/xr-asset-render-texture' {
     }
 }
 
-declare module 'WechatXrFrame/elements/xr-asset-load' {
+declare module 'XrFrame/elements/xr-asset-load' {
     /**
      * xr-asset-load.ts
      *
      *         * @Date    : 2022/3/16下午5:29:40
      */
-    import Element from 'WechatXrFrame/core/Element'
+    import Element from 'XrFrame/core/Element'
     /**
      * 将{@link AssetLoad}组件的属性进行映射。
      */
@@ -7922,13 +7934,13 @@ declare module 'WechatXrFrame/elements/xr-asset-load' {
     }
 }
 
-declare module 'WechatXrFrame/elements/xr-assets' {
+declare module 'XrFrame/elements/xr-assets' {
     /**
      * xr-assets.ts
      *
      *         * @Date    : 2022/3/16下午5:28:52
      */
-    import Element, { IEntityComponents } from 'WechatXrFrame/core/Element'
+    import Element, { IEntityComponents } from 'XrFrame/core/Element'
     /**
      * 默认包含{@link Assets}组件。
      */
@@ -7944,13 +7956,13 @@ declare module 'WechatXrFrame/elements/xr-assets' {
     }
 }
 
-declare module 'WechatXrFrame/elements/xr-env' {
+declare module 'XrFrame/elements/xr-env' {
     /**
      * xr-env.ts
      *
      *         * @Date    : 5/12/2022, 12:56:19 PM
      */
-    import Element, { IEntityComponents } from 'WechatXrFrame/core/Element'
+    import Element, { IEntityComponents } from 'XrFrame/core/Element'
     /**
      * 默认包含{@link Env}组件。
      */
@@ -7982,13 +7994,13 @@ declare module 'WechatXrFrame/elements/xr-env' {
     }
 }
 
-declare module 'WechatXrFrame/elements/xr-ar-tracker' {
+declare module 'XrFrame/elements/xr-ar-tracker' {
     /**
      * xr-ar-tracker.ts
      *
      *         * @Date    : 6/27/2022, 3:42:45 PM
      */
-    import Element, { IEntityComponents } from 'WechatXrFrame/core/Element'
+    import Element, { IEntityComponents } from 'XrFrame/core/Element'
     /**
      * 默认包含{@link XRNode}的所有默认组件，以及{@link ARTracker}组件。
      */
@@ -8025,8 +8037,8 @@ declare module 'WechatXrFrame/elements/xr-ar-tracker' {
     }
 }
 
-declare module 'WechatXrFrame/elements/xr-text' {
-    import Element, { IEntityComponents } from 'WechatXrFrame/core/Element'
+declare module 'XrFrame/elements/xr-text' {
+    import Element, { IEntityComponents } from 'XrFrame/core/Element'
     export const TextDefaultComponents: IEntityComponents
     export const TextDataMapping: {
         [key: string]: string[]
@@ -8039,8 +8051,8 @@ declare module 'WechatXrFrame/elements/xr-text' {
     }
 }
 
-declare module 'WechatXrFrame/elements/xr-particle' {
-    import Element, { IEntityComponents } from 'WechatXrFrame/core/Element'
+declare module 'XrFrame/elements/xr-particle' {
+    import Element, { IEntityComponents } from 'XrFrame/core/Element'
     export const ParticleDefaultComponents: IEntityComponents
     export const ParticleDataMapping: {
         [key: string]: string[]
@@ -8053,13 +8065,13 @@ declare module 'WechatXrFrame/elements/xr-particle' {
     }
 }
 
-declare module 'WechatXrFrame/elements/xr-asset-post-process' {
+declare module 'XrFrame/elements/xr-asset-post-process' {
     /**
      * xr-asset-post-process.ts
      *
      *         * @Date    : 10/14/2022, 5:18:21 PM
      */
-    import Element, { IEntityComponents } from 'WechatXrFrame/core/Element'
+    import Element, { IEntityComponents } from 'XrFrame/core/Element'
     export const AssetPostProcessDefaultComponents: IEntityComponents
     /**
      * 将{@link AssetPostProcess}的属性进行映射。
@@ -8085,10 +8097,10 @@ declare module 'WechatXrFrame/elements/xr-asset-post-process' {
     }
 }
 
-declare module 'WechatXrFrame/systems/AssetsSystem' {
-    import Component from 'WechatXrFrame/core/Component'
-    import Element from 'WechatXrFrame/core/Element'
-    import { IAssetLoadData, IAssetWithState } from 'WechatXrFrame/loader/types'
+declare module 'XrFrame/systems/AssetsSystem' {
+    import Component from 'XrFrame/core/Component'
+    import Element from 'XrFrame/core/Element'
+    import { IAssetLoadData, IAssetWithState } from 'XrFrame/loader/types'
     export interface IAssetsSystemData {}
     /**
      * 资源系统，负责整个场景的资源管理。
@@ -8140,8 +8152,8 @@ declare module 'WechatXrFrame/systems/AssetsSystem' {
     }
 }
 
-declare module 'WechatXrFrame/systems/NodeSystem' {
-    import Component from 'WechatXrFrame/core/Component'
+declare module 'XrFrame/systems/NodeSystem' {
+    import Component from 'XrFrame/core/Component'
     export interface INodeSystemData {}
     /**
      * 节点系统，负责整个场景节点的管理。
@@ -8152,13 +8164,13 @@ declare module 'WechatXrFrame/systems/NodeSystem' {
     }
 }
 
-declare module 'WechatXrFrame/systems/TickSystem' {
+declare module 'XrFrame/systems/TickSystem' {
     /**
      * TickSystem.ts
      *
      *         * @Date    : 2022/3/29上午10:50:57
      */
-    import Component from 'WechatXrFrame/core/Component'
+    import Component from 'XrFrame/core/Component'
     export interface ITickSystemData {}
     /**
      * Tick系统，负责整个场景生命周期的驱动。
@@ -8169,14 +8181,14 @@ declare module 'WechatXrFrame/systems/TickSystem' {
     }
 }
 
-declare module 'WechatXrFrame/systems/AnimationSystem' {
+declare module 'XrFrame/systems/AnimationSystem' {
     /**
      * AnimationSystem.ts
      *
      *         * @Date    : 6/17/2022, 2:35:17 PM
      */
-    import Animator from 'WechatXrFrame/components/Animator'
-    import Component from 'WechatXrFrame/core/Component'
+    import Animator from 'XrFrame/components/Animator'
+    import Component from 'XrFrame/core/Component'
     export interface IAnimationSystemData {}
     /**
      * 动画系统，负责整个场景动画的管理。
@@ -8193,14 +8205,14 @@ declare module 'WechatXrFrame/systems/AnimationSystem' {
     }
 }
 
-declare module 'WechatXrFrame/systems/VideoSystem' {
+declare module 'XrFrame/systems/VideoSystem' {
     /**
      * VideoSystem.ts
      *
      *         * @Date    : 8/26/2022, 8:02:21 PM
      */
-    import VideoTexture from 'WechatXrFrame/assets/VideoTexture'
-    import Component from 'WechatXrFrame/core/Component'
+    import VideoTexture from 'XrFrame/assets/VideoTexture'
+    import Component from 'XrFrame/core/Component'
     export interface IVideoSystemData {}
     /**
      * 视频系统，负责整个场景视频的管理。
@@ -8217,19 +8229,19 @@ declare module 'WechatXrFrame/systems/VideoSystem' {
     }
 }
 
-declare module 'WechatXrFrame/systems/RenderSystem' {
+declare module 'XrFrame/systems/RenderSystem' {
     /**
      * RenderSystem.ts
      *
      *         * @Date    : 2022/3/16下午4:20:58
      */
-    import Component, { IComponentSchema } from 'WechatXrFrame/core/Component'
-    import Element from 'WechatXrFrame/core/Element'
-    import Camera from 'WechatXrFrame/components/Camera'
-    import Env from 'WechatXrFrame/components/Env'
-    import RenderGraph from 'WechatXrFrame/render-graph/RenderGraph'
-    import LightManager from 'WechatXrFrame/systems/LightManager'
-    import Observable from 'WechatXrFrame/core/Observable'
+    import Component, { IComponentSchema } from 'XrFrame/core/Component'
+    import Element from 'XrFrame/core/Element'
+    import Camera from 'XrFrame/components/Camera'
+    import Env from 'XrFrame/components/Env'
+    import RenderGraph from 'XrFrame/render-graph/RenderGraph'
+    import LightManager from 'XrFrame/systems/LightManager'
+    import Observable from 'XrFrame/core/Observable'
     /**
      * `RenderSystem`系统数据接口。
      */
@@ -8326,13 +8338,13 @@ declare module 'WechatXrFrame/systems/RenderSystem' {
     }
 }
 
-declare module 'WechatXrFrame/systems/PhysicsSystem' {
-    import { Camera } from 'WechatXrFrame/components'
-    import Component from 'WechatXrFrame/core/Component'
-    import { Kanata } from 'WechatXrFrame/ext'
-    import { RaycastDesc } from 'WechatXrFrame/physics/raycast'
-    import Element from 'WechatXrFrame/core/Element'
-    import Shape from 'WechatXrFrame/components/physics/Shape'
+declare module 'XrFrame/systems/PhysicsSystem' {
+    import { Camera } from 'XrFrame/components'
+    import Component from 'XrFrame/core/Component'
+    import { Kanata } from 'XrFrame/ext'
+    import { RaycastDesc } from 'XrFrame/physics/raycast'
+    import Element from 'XrFrame/core/Element'
+    import Shape from 'XrFrame/components/physics/Shape'
     /**
      * `touch-shape`和`untouch-shape`事件的回调参数。
      */
@@ -8394,7 +8406,7 @@ declare module 'WechatXrFrame/systems/PhysicsSystem' {
         /**
          * @internal
          */
-        nativeSystem: WechatPhys3D.PhysSystem
+        nativeSystem: phys3D.PhysSystem
         constructor()
         /** @internal */
         addShape(shape: Shape): void
@@ -8406,7 +8418,7 @@ declare module 'WechatXrFrame/systems/PhysicsSystem' {
          * @internal
          */
         bindRigidbodyWithEntity(
-            rigidbody: WechatPhys3D.Rigidbody,
+            rigidbody: phys3D.Rigidbody,
             entity: Kanata.Entity3D
         ): void
         /**
@@ -8417,13 +8429,13 @@ declare module 'WechatXrFrame/systems/PhysicsSystem' {
     }
 }
 
-declare module 'WechatXrFrame/systems/ARSystem' {
-    import { Camera, Mesh } from 'WechatXrFrame/components'
-    import ARTracker, { TTrackMode } from 'WechatXrFrame/components/ARTracker'
-    import Component, { IComponentSchema } from 'WechatXrFrame/core/Component'
-    import Matrix4 from 'WechatXrFrame/math/matrix4'
-    import Vector3 from 'WechatXrFrame/math/vector3'
-    type Element = import('WechatXrFrame/core/Element').default
+declare module 'XrFrame/systems/ARSystem' {
+    import { Camera, Mesh } from 'XrFrame/components'
+    import ARTracker, { TTrackMode } from 'XrFrame/components/ARTracker'
+    import Component, { IComponentSchema } from 'XrFrame/core/Component'
+    import Matrix4 from 'XrFrame/math/matrix4'
+    import Vector3 from 'XrFrame/math/vector3'
+    type Element = import('XrFrame/core/Element').default
     /**
      * AR追踪原始数据。
      */
@@ -8554,13 +8566,13 @@ declare module 'WechatXrFrame/systems/ARSystem' {
     export {}
 }
 
-declare module 'WechatXrFrame/systems/ShareSystem' {
+declare module 'XrFrame/systems/ShareSystem' {
     /**
      * ShareSystem.ts
      *
      *         * @Date    : 9/19/2022, 5:04:24 PM
      */
-    import Component from 'WechatXrFrame/core/Component'
+    import Component from 'XrFrame/core/Component'
     export interface IShareSystemData {}
     /**
      * 分享到临时文件的配置。
@@ -8610,14 +8622,14 @@ declare module 'WechatXrFrame/systems/ShareSystem' {
     }
 }
 
-declare module 'WechatXrFrame/systems/GizmoSystem' {
+declare module 'XrFrame/systems/GizmoSystem' {
     /**
      * @author shanexyzhou@tencent.com
      */
-    import CapsuleGizmo from 'WechatXrFrame/components/gizmo/CapsuleGizmo'
-    import CubeGizmo from 'WechatXrFrame/components/gizmo/CubeGizmo'
-    import Component from 'WechatXrFrame/core/Component'
-    import Element from 'WechatXrFrame/core/Element'
+    import CapsuleGizmo from 'XrFrame/components/gizmo/CapsuleGizmo'
+    import CubeGizmo from 'XrFrame/components/gizmo/CubeGizmo'
+    import Component from 'XrFrame/core/Component'
+    import Element from 'XrFrame/core/Element'
     export interface IGizmoSystemData {}
     type GizmoComponent = CubeGizmo | CapsuleGizmo
     /**
@@ -8641,17 +8653,128 @@ declare module 'WechatXrFrame/systems/GizmoSystem' {
     export {}
 }
 
-declare module 'WechatXrFrame/loader/TextureLoader' {
+declare module 'XrFrame/loader/AssetLoader' {
+    import { IAssetLoadData } from 'XrFrame/loader/types'
+    type Scene = import('XrFrame/core/Scene').default
+    /**
+     * 指定继承自{@link AssetLoader}的自定义资源加载器，可以接受的的额外配置的`schema`。
+     * 在基础库版本**v2.29.2**以上导出。
+     *
+     * 比如使用{@link CubeTextureLoader}加载资源时：
+     *
+     * ```xml
+     * <xr-asset-load
+     *   type="cube-texture" asset-id="sky-cube" src="/assets/textures/skybox/"
+     *   options="faces: right.jpg left.jpg top.jpg bottom.jpg front.jpg back.jpg"
+     * />
+     * ```
+     *
+     * 对应的`schema`接口为：
+     * ```ts
+     * export interface ICubeTextureLoaderOptions {
+     *   // left right top bottom front back
+     *   faces: string[];
+     * }
+     * ```ts
+     *
+     * 对应的`schema`为：
+     * ```ts
+     * schema = {
+     *   faces: {type: 'array'}
+     * };
+     * ```
+     */
+    export interface ILoaderOptionsSchema {
+        [key: string]: {
+            type: string
+            defaultValue?: any
+        }
+    }
+    /**
+     * 资源加载器的基类，配合{@link AssetsSystem}使用。
+     * 在基础库版本**v2.29.2**以上导出。
+     *
+     * @template T 加载资源的类型。
+     * @template ILoadOptions 可接受额外配置的类型。
+     */
+    export default class AssetLoader<T, ILoadOptions> {
+        /**
+         * 和{@link Component.schema}类似，指定解析Options的实际`schema`，对应于`ILoadOptions`。
+         */
+        readonly schema: ILoaderOptionsSchema
+        /**
+         * 当前资源所属场景的实例。
+         */
+        get scene(): import('XrFrame/core/Scene').default
+        constructor(_scene: Scene, type: string)
+        /**
+         * @internal
+         */
+        /**
+         * 加载一个资源，并根据情况执行`callbacks`中的回调。
+         * **理论上必须要实现！**
+         *
+         * @param callbacks 开发者需要在加载进度更新时执行`onLoading`，在加载完成时执行`onLoaded`，在加载出错是执行`onError`
+         */
+        load(
+            data: IAssetLoadData<ILoadOptions>,
+            callbacks: {
+                onLoading(progress: number): void
+                onLoaded(result: T, localPath?: string): void
+                onError(error: Error): void
+            }
+        ): void
+        /**
+         * 取消加载特定资源。一般不需要自己编写逻辑，而是使用`entity.canceled`在加载终点丢弃。
+         * 注意`entity.canceled`是在这里赋值的，所以一般继承请务必先执行`super.cancel()`！
+         */
+        cancel(params: IAssetLoadData<ILoadOptions>): void
+        /**
+         * 释放资源时将会调用，用于自定义释放逻辑。
+         */
+        release(params: IAssetLoadData<ILoadOptions>, value: T): void
+        /**
+         * 返回默认资源列表。
+         * 所有默认资源都是惰性加载的。
+         */
+        getBuiltin(): Array<{
+            assetId: string
+            src: string
+            options: ILoadOptions
+        }>
+    }
+    export function getAssetLoaderTypes(): string[]
+    export function getAssetLoader(
+        type: string
+    ): new (
+        scene: import('XrFrame/core/Scene').default,
+        type: string
+    ) => AssetLoader<any, any>
+    /**
+     * 注册一个资源加载器。注意注册后该`type`会被自动注册到DataValue中：{@link registerDataValue}。
+     * 在基础库版本**v2.29.2**以上导出。
+     *
+     * @param type 类型，也是写在{@link AssetLoad}上的那个`type`。
+     * @param clz 继承自{@link AssetLoader}的自定义资源加载器类。
+     */
+    export function registerAssetLoader(
+        type: string,
+        clz: new (scene: Scene, type: string) => AssetLoader<any, any>
+    ): void
+    export {}
+}
+
+declare module 'XrFrame/loader/TextureLoader' {
     /**
      * TextureLoader.ts
      *
      *         * @Date    : 2022/4/1下午5:19:36
      */
-    import { Kanata } from 'WechatXrFrame/ext'
+    import { Kanata } from 'XrFrame/ext'
     import AssetLoader, {
         ILoaderOptionsSchema
-    } from 'WechatXrFrame/loader/AssetLoader'
-    import { IAssetLoadData } from 'WechatXrFrame/loader/types'
+    } from 'XrFrame/loader/AssetLoader'
+    import { IAssetLoadData } from 'XrFrame/loader/types'
     export function isPOT(img: Kanata.IImage): boolean
     /**
      * {@link TextureLoader}可接受的自定义参数`schema`。
@@ -8717,17 +8840,17 @@ declare module 'WechatXrFrame/loader/TextureLoader' {
     export {}
 }
 
-declare module 'WechatXrFrame/loader/ImageLoader' {
+declare module 'XrFrame/loader/ImageLoader' {
     /**
      * ImageLoader.ts
      *
      *         * @Date    : 6/13/2022, 12:40:11 PM
      */
-    import { Kanata } from 'WechatXrFrame/ext'
+    import { Kanata } from 'XrFrame/ext'
     import AssetLoader, {
         ILoaderOptionsSchema
-    } from 'WechatXrFrame/loader/AssetLoader'
-    import { IAssetLoadData } from 'WechatXrFrame/loader/types'
+    } from 'XrFrame/loader/AssetLoader'
+    import { IAssetLoadData } from 'XrFrame/loader/types'
     export interface IImageLoaderOptions {}
     type IImageLoadData = IAssetLoadData<IImageLoaderOptions>
     /**
@@ -8753,17 +8876,17 @@ declare module 'WechatXrFrame/loader/ImageLoader' {
     export {}
 }
 
-declare module 'WechatXrFrame/loader/CubeTextureLoader' {
+declare module 'XrFrame/loader/CubeTextureLoader' {
     /**
      * CubeCubeTextureLoader.ts
      *
      *         * @Date    : 5/10/2022, 11:24:51 AM
      */
-    import { Kanata } from 'WechatXrFrame/ext'
+    import { Kanata } from 'XrFrame/ext'
     import AssetLoader, {
         ILoaderOptionsSchema
-    } from 'WechatXrFrame/loader/AssetLoader'
-    import { IAssetLoadData } from 'WechatXrFrame/loader/types'
+    } from 'XrFrame/loader/AssetLoader'
+    import { IAssetLoadData } from 'XrFrame/loader/types'
     /**
      * {@link CubeTextureLoader}可接受的自定义参数`schema`。
      */
@@ -8835,17 +8958,17 @@ declare module 'WechatXrFrame/loader/CubeTextureLoader' {
     export {}
 }
 
-declare module 'WechatXrFrame/loader/VideoTextureLoader' {
+declare module 'XrFrame/loader/VideoTextureLoader' {
     /**
      * VideoTextureLoader.ts
      *
      *         * @Date    : 8/26/2022, 8:02:51 PM
      */
-    import VideoTexture from 'WechatXrFrame/assets/VideoTexture'
+    import VideoTexture from 'XrFrame/assets/VideoTexture'
     import AssetLoader, {
         ILoaderOptionsSchema
-    } from 'WechatXrFrame/loader/AssetLoader'
-    import { IAssetLoadData } from 'WechatXrFrame/loader/types'
+    } from 'XrFrame/loader/AssetLoader'
+    import { IAssetLoadData } from 'XrFrame/loader/types'
     /**
      * {@link VideoTextureLoader}可接受的自定义参数`schema`。
      *
@@ -8883,17 +9006,17 @@ declare module 'WechatXrFrame/loader/VideoTextureLoader' {
     export {}
 }
 
-declare module 'WechatXrFrame/loader/EnvDataLoader' {
+declare module 'XrFrame/loader/EnvDataLoader' {
     /**
      * EnvDataLoader.ts
      *
      *         * @Date    : 5/10/2022, 11:27:49 AM
      */
-    import EnvData from 'WechatXrFrame/assets/EnvData'
+    import EnvData from 'XrFrame/assets/EnvData'
     import AssetLoader, {
         ILoaderOptionsSchema
-    } from 'WechatXrFrame/loader/AssetLoader'
-    import { IAssetLoadData } from 'WechatXrFrame/loader/types'
+    } from 'XrFrame/loader/AssetLoader'
+    import { IAssetLoadData } from 'XrFrame/loader/types'
     interface IBufferSlice {
         offset: number
         length: number
@@ -8947,18 +9070,18 @@ declare module 'WechatXrFrame/loader/EnvDataLoader' {
     export {}
 }
 
-declare module 'WechatXrFrame/loader/GlTFLoader' {
+declare module 'XrFrame/loader/GlTFLoader' {
     /**
      * GLTFLoader.ts
      *
      *         * @Date    : 2022/3/16下午3:47:56
      */
-    import GLTFModel from 'WechatXrFrame/assets/GLTFModel'
+    import GLTFModel from 'XrFrame/assets/GLTFModel'
     import AssetLoader, {
         ILoaderOptionsSchema
-    } from 'WechatXrFrame/loader/AssetLoader'
-    import { IAssetLoadData } from 'WechatXrFrame/loader/types'
-    import { Scene } from 'WechatXrFrame/elements'
+    } from 'XrFrame/loader/AssetLoader'
+    import { IAssetLoadData } from 'XrFrame/loader/types'
+    import { Scene } from 'XrFrame/elements'
     export enum GLBChunkType {
         JSON = 1313821514,
         BIN = 5130562
@@ -8998,17 +9121,17 @@ declare module 'WechatXrFrame/loader/GlTFLoader' {
     export {}
 }
 
-declare module 'WechatXrFrame/loader/KeyframeLoader' {
+declare module 'XrFrame/loader/KeyframeLoader' {
     /**
      * KeyframeLoader.ts
      *
      *         * @Date    : 6/21/2022, 6:48:33 PM
      */
-    import KeyframeAnimation from 'WechatXrFrame/animation/KeyframeAnimation'
+    import KeyframeAnimation from 'XrFrame/animation/KeyframeAnimation'
     import AssetLoader, {
         ILoaderOptionsSchema
-    } from 'WechatXrFrame/loader/AssetLoader'
-    import { IAssetLoadData } from 'WechatXrFrame/loader/types'
+    } from 'XrFrame/loader/AssetLoader'
+    import { IAssetLoadData } from 'XrFrame/loader/types'
     export interface IKeyframeLoaderOptions {}
     type IKeyframeLoadData = IAssetLoadData<IKeyframeLoaderOptions>
     /**
@@ -9031,11 +9154,11 @@ declare module 'WechatXrFrame/loader/KeyframeLoader' {
     export {}
 }
 
-declare module 'WechatXrFrame/loader/RawLoader' {
+declare module 'XrFrame/loader/RawLoader' {
     import AssetLoader, {
         ILoaderOptionsSchema
-    } from 'WechatXrFrame/loader/AssetLoader'
-    import { IAssetLoadData } from 'WechatXrFrame/loader/types'
+    } from 'XrFrame/loader/AssetLoader'
+    import { IAssetLoadData } from 'XrFrame/loader/types'
     /**
      * 原始数据加载器的参数。
      */
@@ -9066,17 +9189,17 @@ declare module 'WechatXrFrame/loader/RawLoader' {
     export {}
 }
 
-declare module 'WechatXrFrame/loader/AtlasLoader' {
+declare module 'XrFrame/loader/AtlasLoader' {
     /**
      * AtlasLoader.ts
      *
      *         * @Date    : 10/13/2022, 5:35:00 PM
      */
-    import Atlas from 'WechatXrFrame/assets/Atlas'
+    import Atlas from 'XrFrame/assets/Atlas'
     import AssetLoader, {
         ILoaderOptionsSchema
-    } from 'WechatXrFrame/loader/AssetLoader'
-    import { IAssetLoadData } from 'WechatXrFrame/loader/types'
+    } from 'XrFrame/loader/AssetLoader'
+    import { IAssetLoadData } from 'XrFrame/loader/types'
     export interface IAtlasSource {
         meta: {
             image: string
@@ -9136,13 +9259,13 @@ declare module 'WechatXrFrame/loader/AtlasLoader' {
     export {}
 }
 
-declare module 'WechatXrFrame/loader/types' {
+declare module 'XrFrame/loader/types' {
     /**
      * types.ts
      *
      *         * @Date    : 2022/4/1下午2:19:33
      */
-    type Assets = import('WechatXrFrame/components/Assets').default
+    type Assets = import('XrFrame/components/Assets').default
     export function isAsset(value: any): value is IAssetWithState<any>
     export enum EAssetState {
         Undefined = 0,
@@ -9212,10 +9335,10 @@ declare module 'WechatXrFrame/loader/types' {
     export {}
 }
 
-declare module 'WechatXrFrame/animation/NativeAnimation' {
-    import { Kanata } from 'WechatXrFrame/ext'
-    import Animation, { TDirection } from 'WechatXrFrame/animation/Animation'
-    import Element from 'WechatXrFrame/core/Element'
+declare module 'XrFrame/animation/NativeAnimation' {
+    import { Kanata } from 'XrFrame/ext'
+    import Animation, { TDirection } from 'XrFrame/animation/Animation'
+    import Element from 'XrFrame/core/Element'
     export enum ENativeAnimationSimulatorType {
         None = 0,
         Morph = 1
@@ -9251,47 +9374,47 @@ declare module 'WechatXrFrame/animation/NativeAnimation' {
     }
 }
 
-declare module 'WechatXrFrame/loader/glTF/GLTFRootNode' {
+declare module 'XrFrame/loader/glTF/GLTFRootNode' {
     import {
         GLTFAnimationsLoaded,
         GLTFAnimationsNodeRaw
-    } from 'WechatXrFrame/loader/glTF/animations/GLTFAnimationsNode'
-    import { GLTFAccessorsNodeRaw } from 'WechatXrFrame/loader/glTF/buffers/GLTFAccessorsNode'
-    import { GLTFBuffersNodeRaw } from 'WechatXrFrame/loader/glTF/buffers/GLTFBuffersNode'
-    import { GLTFBufferViewsNodeRaw } from 'WechatXrFrame/loader/glTF/buffers/GLTFBufferViewsNode'
-    import { GLTFExtensionsProfiles } from 'WechatXrFrame/loader/glTF/extensions/GLTFExtensions'
+    } from 'XrFrame/loader/glTF/animations/GLTFAnimationsNode'
+    import { GLTFAccessorsNodeRaw } from 'XrFrame/loader/glTF/buffers/GLTFAccessorsNode'
+    import { GLTFBuffersNodeRaw } from 'XrFrame/loader/glTF/buffers/GLTFBuffersNode'
+    import { GLTFBufferViewsNodeRaw } from 'XrFrame/loader/glTF/buffers/GLTFBufferViewsNode'
+    import { GLTFExtensionsProfiles } from 'XrFrame/loader/glTF/extensions/GLTFExtensions'
     import {
         GLTFMeshesLoaded,
         GLTFMeshesNodeRaw
-    } from 'WechatXrFrame/loader/glTF/geometry/GLTFMeshesNode'
-    import { GLTFBaseNode } from 'WechatXrFrame/loader/glTF/GLTFBaseNode'
+    } from 'XrFrame/loader/glTF/geometry/GLTFMeshesNode'
+    import { GLTFBaseNode } from 'XrFrame/loader/glTF/GLTFBaseNode'
     import {
         GLTFMaterialsLoaded,
         GLTFMaterialsNodeRaw
-    } from 'WechatXrFrame/loader/glTF/materials/GLTFMaterialsNode'
+    } from 'XrFrame/loader/glTF/materials/GLTFMaterialsNode'
     import GLTFNodesNode, {
         GLTFNodesLoaded,
         GLTFNodesNodeRaw
-    } from 'WechatXrFrame/loader/glTF/scenes/GLTFNodesNode'
-    import { GLTFSceneLoaded } from 'WechatXrFrame/loader/glTF/scenes/GLTFSceneNode'
+    } from 'XrFrame/loader/glTF/scenes/GLTFNodesNode'
+    import { GLTFSceneLoaded } from 'XrFrame/loader/glTF/scenes/GLTFSceneNode'
     import {
         GLTFScenesLoaded,
         GLTFScenesNodeRaw
-    } from 'WechatXrFrame/loader/glTF/scenes/GLTFScenesNode'
+    } from 'XrFrame/loader/glTF/scenes/GLTFScenesNode'
     import {
         GLTFSkinsLoaded,
         GLTFSkinsNodeRaw
-    } from 'WechatXrFrame/loader/glTF/skins/GLTFSkinsNode'
-    import { GLTFImagesNodeRaw } from 'WechatXrFrame/loader/glTF/textures/GLTFImagesNode'
+    } from 'XrFrame/loader/glTF/skins/GLTFSkinsNode'
+    import { GLTFImagesNodeRaw } from 'XrFrame/loader/glTF/textures/GLTFImagesNode'
     import {
         GLTFSamplersLoaded,
         GLTFSamplersNodeRaw
-    } from 'WechatXrFrame/loader/glTF/textures/GLTFSamplersNode'
+    } from 'XrFrame/loader/glTF/textures/GLTFSamplersNode'
     import {
         GLTFTexturesLoaded,
         GLTFTexturesNodeRaw
-    } from 'WechatXrFrame/loader/glTF/textures/GLTFTexturesNode'
-    type Scene = import('WechatXrFrame/core/Scene').default
+    } from 'XrFrame/loader/glTF/textures/GLTFTexturesNode'
+    type Scene = import('XrFrame/core/Scene').default
     export interface GLTFRootNodeRaw {
         buffers?: GLTFBuffersNodeRaw
         bufferViews?: GLTFBufferViewsNodeRaw
@@ -9351,13 +9474,13 @@ declare module 'WechatXrFrame/loader/glTF/GLTFRootNode' {
     export {}
 }
 
-declare module 'WechatXrFrame/loader/glTF/scenes/GLTFNodesNode' {
-    import { GLTFArrayNode } from 'WechatXrFrame/loader/glTF/GLTFBaseNode'
+declare module 'XrFrame/loader/glTF/scenes/GLTFNodesNode' {
+    import { GLTFArrayNode } from 'XrFrame/loader/glTF/GLTFBaseNode'
     import GLTFNodeNode, {
         GLTFNodeLoaded,
         GLTFNodeNodeRaw,
         GLTFNodePrerequisites
-    } from 'WechatXrFrame/loader/glTF/scenes/GLTFNodeNode'
+    } from 'XrFrame/loader/glTF/scenes/GLTFNodeNode'
     type ChildNode = GLTFNodeNode
     export type GLTFNodesNodeRaw = GLTFNodesNodeRaw[]
     export type GLTFTreeNode = {
@@ -9379,57 +9502,55 @@ declare module 'WechatXrFrame/loader/glTF/scenes/GLTFNodesNode' {
     export {}
 }
 
-declare module 'WechatXrFrame/kanata/lib/frontend' {
-    import MeshRendererComponent from 'WechatXrFrame/kanata/lib/frontend/component/MeshRendererComponent'
-    import renderEnv from 'WechatXrFrame/kanata/lib/frontend/resource/renderEnv'
-    export { RenderEnv } from 'WechatXrFrame/kanata/lib/frontend/resource/renderEnv'
-    export { default as AnimatorComponent } from 'WechatXrFrame/kanata/lib/frontend/component/AnimatorComponent'
-    export { default as CameraComponent } from 'WechatXrFrame/kanata/lib/frontend/component/CameraComponent'
-    export { default as LightCameraComponent } from 'WechatXrFrame/kanata/lib/frontend/component/LightCameraComponent'
-    export { default as CullingComponent } from 'WechatXrFrame/kanata/lib/frontend/component/CullingComponent'
-    export { default as MeshRendererComponent } from 'WechatXrFrame/kanata/lib/frontend/component/MeshRendererComponent'
-    export { default as SkinnedSkeletonComponent } from 'WechatXrFrame/kanata/lib/frontend/component/SkinnedSkeletonComponent'
-    export { default as DynamicBonesComponent } from 'WechatXrFrame/kanata/lib/frontend/component/DynamicBonesComponent'
-    export { default as Entity2D } from 'WechatXrFrame/kanata/lib/frontend/entity/Entity2D'
-    export { default as Entity3D } from 'WechatXrFrame/kanata/lib/frontend/entity/Entity3D'
-    export { default as AnimationClipModel } from 'WechatXrFrame/kanata/lib/frontend/resource/AnimationClipModel'
-    export { default as AnimationClipBinding } from 'WechatXrFrame/kanata/lib/frontend/resource/AnimationClipBinding'
-    export { default as AnimatorControllerModel } from 'WechatXrFrame/kanata/lib/frontend/resource/AnimatorControllerModel'
-    export { default as AnimatorControllerStateModel } from 'WechatXrFrame/kanata/lib/frontend/resource/AnimatorControllerStateModel'
-    export { default as DataBuffer } from 'WechatXrFrame/kanata/lib/frontend/resource/DataBuffer'
-    export { default as DataModel } from 'WechatXrFrame/kanata/lib/frontend/resource/DataModel'
-    export { default as Effect } from 'WechatXrFrame/kanata/lib/frontend/resource/Effect'
-    export { default as Material } from 'WechatXrFrame/kanata/lib/frontend/resource/Material'
+declare module 'XrFrame/kanata/lib/frontend' {
+    import MeshRendererComponent from 'XrFrame/kanata/lib/frontend/component/MeshRendererComponent'
+    import renderEnv from 'XrFrame/kanata/lib/frontend/resource/renderEnv'
+    export { RenderEnv } from 'XrFrame/kanata/lib/frontend/resource/renderEnv'
+    export { default as AnimatorComponent } from 'XrFrame/kanata/lib/frontend/component/AnimatorComponent'
+    export { default as CameraComponent } from 'XrFrame/kanata/lib/frontend/component/CameraComponent'
+    export { default as LightCameraComponent } from 'XrFrame/kanata/lib/frontend/component/LightCameraComponent'
+    export { default as CullingComponent } from 'XrFrame/kanata/lib/frontend/component/CullingComponent'
+    export { default as MeshRendererComponent } from 'XrFrame/kanata/lib/frontend/component/MeshRendererComponent'
+    export { default as SkinnedSkeletonComponent } from 'XrFrame/kanata/lib/frontend/component/SkinnedSkeletonComponent'
+    export { default as DynamicBonesComponent } from 'XrFrame/kanata/lib/frontend/component/DynamicBonesComponent'
+    export { default as Entity2D } from 'XrFrame/kanata/lib/frontend/entity/Entity2D'
+    export { default as Entity3D } from 'XrFrame/kanata/lib/frontend/entity/Entity3D'
+    export { default as AnimationClipModel } from 'XrFrame/kanata/lib/frontend/resource/AnimationClipModel'
+    export { default as AnimationClipBinding } from 'XrFrame/kanata/lib/frontend/resource/AnimationClipBinding'
+    export { default as AnimatorControllerModel } from 'XrFrame/kanata/lib/frontend/resource/AnimatorControllerModel'
+    export { default as AnimatorControllerStateModel } from 'XrFrame/kanata/lib/frontend/resource/AnimatorControllerStateModel'
+    export { default as DataBuffer } from 'XrFrame/kanata/lib/frontend/resource/DataBuffer'
+    export { default as DataModel } from 'XrFrame/kanata/lib/frontend/resource/DataModel'
+    export { default as Effect } from 'XrFrame/kanata/lib/frontend/resource/Effect'
+    export { default as Material } from 'XrFrame/kanata/lib/frontend/resource/Material'
     export {
         default as RenderPass,
         IRenderPassOptions
-    } from 'WechatXrFrame/kanata/lib/frontend/resource/RenderPass'
-    export { default as SkeletonBoneInverseModel } from 'WechatXrFrame/kanata/lib/frontend/resource/SkeletonBoneInverseModel'
+    } from 'XrFrame/kanata/lib/frontend/resource/RenderPass'
+    export { default as SkeletonBoneInverseModel } from 'XrFrame/kanata/lib/frontend/resource/SkeletonBoneInverseModel'
     export {
         default as Texture,
         ITextureOptions
-    } from 'WechatXrFrame/kanata/lib/frontend/resource/Texture'
-    export { default as UniformBlock } from 'WechatXrFrame/kanata/lib/frontend/resource/UniformBlock'
-    export { default as UniformDescriptor } from 'WechatXrFrame/kanata/lib/frontend/resource/UniformDescriptor'
-    export { default as IndexBuffer } from 'WechatXrFrame/kanata/lib/frontend/resource/IndexBuffer'
-    export { default as IndexData } from 'WechatXrFrame/kanata/lib/frontend/resource/IndexData'
-    export { default as VertexBuffer } from 'WechatXrFrame/kanata/lib/frontend/resource/VertexBuffer'
-    export { default as VertexData } from 'WechatXrFrame/kanata/lib/frontend/resource/VertexData'
-    export { default as VertexLayout } from 'WechatXrFrame/kanata/lib/frontend/resource/VertexLayout'
-    export { default as VertexDataDescriptor } from 'WechatXrFrame/kanata/lib/frontend/resource/VertexDataDescriptor'
-    export { default as View } from 'WechatXrFrame/kanata/lib/frontend/resource/View'
-    export { default as ScalableList } from 'WechatXrFrame/kanata/lib/frontend/resource/ScalableList'
-    export { default as crossContext } from 'WechatXrFrame/kanata/lib/frontend/shared/crossContext'
+    } from 'XrFrame/kanata/lib/frontend/resource/Texture'
+    export { default as UniformBlock } from 'XrFrame/kanata/lib/frontend/resource/UniformBlock'
+    export { default as UniformDescriptor } from 'XrFrame/kanata/lib/frontend/resource/UniformDescriptor'
+    export { default as IndexBuffer } from 'XrFrame/kanata/lib/frontend/resource/IndexBuffer'
+    export { default as IndexData } from 'XrFrame/kanata/lib/frontend/resource/IndexData'
+    export { default as VertexBuffer } from 'XrFrame/kanata/lib/frontend/resource/VertexBuffer'
+    export { default as VertexData } from 'XrFrame/kanata/lib/frontend/resource/VertexData'
+    export { default as VertexLayout } from 'XrFrame/kanata/lib/frontend/resource/VertexLayout'
+    export { default as VertexDataDescriptor } from 'XrFrame/kanata/lib/frontend/resource/VertexDataDescriptor'
+    export { default as View } from 'XrFrame/kanata/lib/frontend/resource/View'
+    export { default as ScalableList } from 'XrFrame/kanata/lib/frontend/resource/ScalableList'
+    export { default as crossContext } from 'XrFrame/kanata/lib/frontend/shared/crossContext'
     const IS_VALID: () => boolean,
         GET_MAIN_CANVAS: () => HTMLCanvasElement,
         Image: {
-            new (): import('WechatXrFrame/kanata/lib/backend').IImage
-            IS(
-                obj: any
-            ): obj is import('WechatXrFrame/kanata/lib/backend').IImage
+            new (): import('XrFrame/kanata/lib/backend').IImage
+            IS(obj: any): obj is import('XrFrame/kanata/lib/backend').IImage
         },
         Phys3D: any
-    const downloader: import('WechatXrFrame/kanata/lib/backend').IDownloader
+    const downloader: import('XrFrame/kanata/lib/backend').IDownloader
     export { renderEnv }
     export {
         Image,
@@ -9442,17 +9563,17 @@ declare module 'WechatXrFrame/kanata/lib/frontend' {
         deref: () => T
     }
     export const createWeakRefSentry: () => any
-    export const createNativeUUMap: () => import('WechatXrFrame/kanata/lib/backend').INativeMap<number>
-    export const createNativeSUMap: () => import('WechatXrFrame/kanata/lib/backend').INativeMap<string>
-    export const createNativeULUMap: () => import('WechatXrFrame/kanata/lib/backend').ILongIntNativeMap
+    export const createNativeUUMap: () => import('XrFrame/kanata/lib/backend').INativeMap<number>
+    export const createNativeSUMap: () => import('XrFrame/kanata/lib/backend').INativeMap<string>
+    export const createNativeULUMap: () => import('XrFrame/kanata/lib/backend').ILongIntNativeMap
     export const loadTTFFont: (
         url: string,
         callback: (font: string) => void
     ) => void
     export const getGlyphInfo: (
-        fontSetting: import('WechatXrFrame/kanata/lib/backend').IFontSetting,
+        fontSetting: import('XrFrame/kanata/lib/backend').IFontSetting,
         charCode: number
-    ) => import('WechatXrFrame/kanata/lib/backend').IGlyphInfo
+    ) => import('XrFrame/kanata/lib/backend').IGlyphInfo
     export const refreshNodesWorldTransform: () => void
     export const setGlobalPhysicSystem: (system: any) => void
     export const bindRigidBodyToNode: (rigidBody: any, nodeId: number) => void
@@ -9476,7 +9597,7 @@ declare module 'WechatXrFrame/kanata/lib/frontend' {
     }
 }
 
-declare module 'WechatXrFrame/kanata/lib/backend/interface' {
+declare module 'XrFrame/kanata/lib/backend/interface' {
     /**
      * index.ts
      *
@@ -9882,9 +10003,10 @@ declare module 'WechatXrFrame/kanata/lib/backend/interface' {
         UV0 = 4,
         UV1 = 5,
         UV2 = 6,
-        COLOR = 7,
-        BONEINDEX = 8,
-        BONEWEIGHT = 9
+        UV3 = 7,
+        COLOR = 8,
+        BONEINDEX = 9,
+        BONEWEIGHT = 10
     }
     /**
      * 动态合批操作符枚举。
@@ -10157,7 +10279,7 @@ declare module 'WechatXrFrame/kanata/lib/backend/interface' {
         /**
          * @internal
          */
-        buffer?: Buffer
+        buffer?: ArrayBuffer
         /**
          * 对于`ArrayBuffer`创建的图片，第一次使用后是否要自动释放内存，在`xr-frame`中，默认自动释放。
          */
@@ -10432,14 +10554,14 @@ declare module 'WechatXrFrame/kanata/lib/backend/interface' {
     export type WeakRef = any
 }
 
-declare module 'WechatXrFrame/kanata/lib/index' {
+declare module 'XrFrame/kanata/lib/index' {
     /**
      * index.ts
      *
      *         * @Date    : 2020/8/18 下午4:48:36
      */
-    export * from 'WechatXrFrame/kanata/lib/frontend'
-    export * from 'WechatXrFrame/kanata/lib/backend/interface'
+    export * from 'XrFrame/kanata/lib/frontend'
+    export * from 'XrFrame/kanata/lib/backend/interface'
     export const VERSION = '1.0.4'
     const Puppet: any
     export { Puppet }
@@ -10471,7 +10593,7 @@ declare module 'WechatXrFrame/kanata/lib/index' {
     ): Float32Array
 }
 
-declare module 'WechatXrFrame/glyph' {
+declare module 'XrFrame/glyph' {
     export interface IGlyph {
         character?: string
         offsetX: number
@@ -10486,15 +10608,15 @@ declare module 'WechatXrFrame/glyph' {
     }
 }
 
-declare module 'WechatXrFrame/components/particle/ParticleInstance' {
+declare module 'XrFrame/components/particle/ParticleInstance' {
     import {
         FactorGradient,
         ColorGradient
-    } from 'WechatXrFrame/components/particle/gradient'
-    import Particle from 'WechatXrFrame/components/particle/Particle'
-    import Vector2 from 'WechatXrFrame/math/vector2'
-    import Vector3 from 'WechatXrFrame/math/vector3'
-    import Vector4 from 'WechatXrFrame/math/vector4'
+    } from 'XrFrame/components/particle/gradient'
+    import Particle from 'XrFrame/components/particle/Particle'
+    import Vector2 from 'XrFrame/math/vector2'
+    import Vector3 from 'XrFrame/math/vector3'
+    import Vector4 from 'XrFrame/math/vector4'
     export default class ParticleInstance {
         static count: number
         id: number
@@ -10555,10 +10677,10 @@ declare module 'WechatXrFrame/components/particle/ParticleInstance' {
     }
 }
 
-declare module 'WechatXrFrame/components/emitter/BasicShapeEmitter' {
-    import Vector3 from 'WechatXrFrame/math/vector3'
-    import ParticleInstance from 'WechatXrFrame/components/particle/ParticleInstance'
-    import Matrix4 from 'WechatXrFrame/math/matrix4'
+declare module 'XrFrame/components/emitter/BasicShapeEmitter' {
+    import Vector3 from 'XrFrame/math/vector3'
+    import ParticleInstance from 'XrFrame/components/particle/ParticleInstance'
+    import Matrix4 from 'XrFrame/math/matrix4'
     export abstract class BasicShapeEmitter {
         /**
          * keep normalized length
@@ -10583,13 +10705,13 @@ declare module 'WechatXrFrame/components/emitter/BasicShapeEmitter' {
     }
 }
 
-declare module 'WechatXrFrame/components/emitter' {
-    import BoxShapeEmitter from 'WechatXrFrame/components/emitter/BoxShapeEmitter'
-    import PointShapeEmitter from 'WechatXrFrame/components/emitter/PointShapeEmitter'
-    import DrawShapeEmitter from 'WechatXrFrame/components/emitter/DrawShapeEmitter'
-    import SphereShapeEmitter from 'WechatXrFrame/components/emitter/SphereShapeEmitter'
-    import ConeShapeEmitter from 'WechatXrFrame/components/emitter/ConeShapeEmitter'
-    import CircleShapeEmitter from 'WechatXrFrame/components/emitter/CircleShapeEmitter'
+declare module 'XrFrame/components/emitter' {
+    import BoxShapeEmitter from 'XrFrame/components/emitter/BoxShapeEmitter'
+    import PointShapeEmitter from 'XrFrame/components/emitter/PointShapeEmitter'
+    import DrawShapeEmitter from 'XrFrame/components/emitter/DrawShapeEmitter'
+    import SphereShapeEmitter from 'XrFrame/components/emitter/SphereShapeEmitter'
+    import ConeShapeEmitter from 'XrFrame/components/emitter/ConeShapeEmitter'
+    import CircleShapeEmitter from 'XrFrame/components/emitter/CircleShapeEmitter'
     export {
         BoxShapeEmitter,
         PointShapeEmitter,
@@ -10600,8 +10722,8 @@ declare module 'WechatXrFrame/components/emitter' {
     }
 }
 
-declare module 'WechatXrFrame/components/emitter/SubEmitter' {
-    import Particle from 'WechatXrFrame/components/particle/Particle'
+declare module 'XrFrame/components/emitter/SubEmitter' {
+    import Particle from 'XrFrame/components/particle/Particle'
     /**
      * 粒子子发射器的依附状态。
      */
@@ -10627,15 +10749,15 @@ declare module 'WechatXrFrame/components/emitter/SubEmitter' {
     }
 }
 
-declare module 'WechatXrFrame/components/physics/Rigidbody' {
+declare module 'XrFrame/components/physics/Rigidbody' {
     export default class Rigidbody {
-        nativeComp: WechatPhys3D.Rigidbody
+        nativeComp: phys3D.Rigidbody
     }
 }
 
-declare module 'WechatXrFrame/components/gizmo/CapsuleGizmo' {
-    import Component from 'WechatXrFrame/core/Component'
-    import Element from 'WechatXrFrame/core/Element'
+declare module 'XrFrame/components/gizmo/CapsuleGizmo' {
+    import Component from 'XrFrame/core/Component'
+    import Element from 'XrFrame/core/Element'
     export interface ICapsuleGizmoData {
         radius: number
         height: number
@@ -10653,9 +10775,9 @@ declare module 'WechatXrFrame/components/gizmo/CapsuleGizmo' {
     }
 }
 
-declare module 'WechatXrFrame/components/gizmo/CubeGizmo' {
-    import Component from 'WechatXrFrame/core/Component'
-    import Element from 'WechatXrFrame/core/Element'
+declare module 'XrFrame/components/gizmo/CubeGizmo' {
+    import Component from 'XrFrame/core/Component'
+    import Element from 'XrFrame/core/Element'
     export interface ICubeGizmoData {
         size: [number, number, number]
         center: [number, number, number]
@@ -10670,11 +10792,11 @@ declare module 'WechatXrFrame/components/gizmo/CubeGizmo' {
     }
 }
 
-declare module 'WechatXrFrame/render-graph/RenderGraph' {
-    import RGNode, { TRGNodeAny } from 'WechatXrFrame/render-graph/RGNode'
-    import Camera from 'WechatXrFrame/components/Camera'
-    type RenderSystem = import('WechatXrFrame/systems/RenderSystem').default
-    type Scene = import('WechatXrFrame/core/Scene').default
+declare module 'XrFrame/render-graph/RenderGraph' {
+    import RGNode, { TRGNodeAny } from 'XrFrame/render-graph/RGNode'
+    import Camera from 'XrFrame/components/Camera'
+    type RenderSystem = import('XrFrame/systems/RenderSystem').default
+    type Scene = import('XrFrame/core/Scene').default
     interface IDigraphNode {
         node: TRGNodeAny
         ins: number
@@ -10701,11 +10823,11 @@ declare module 'WechatXrFrame/render-graph/RenderGraph' {
         /**
          * 当前正在运行的Game实例。
          */
-        get scene(): import('WechatXrFrame/core/Scene').default
+        get scene(): import('XrFrame/core/Scene').default
         /**
          * 当前的渲染上下文。
          */
-        get context(): import('WechatXrFrame/systems/RenderSystem').default
+        get context(): import('XrFrame/systems/RenderSystem').default
         constructor(_name: string, _options: IOptions)
         /**
          * 创建一个节点。
@@ -10786,14 +10908,14 @@ declare module 'WechatXrFrame/render-graph/RenderGraph' {
     export {}
 }
 
-declare module 'WechatXrFrame/systems/LightManager' {
+declare module 'XrFrame/systems/LightManager' {
     /**
      * LightManager.ts
      *
      *       * @Date    : 4/11/2022, 2:29:36 PM
      */
-    import Camera from 'WechatXrFrame/components/Camera'
-    import Light from 'WechatXrFrame/components/Light'
+    import Camera from 'XrFrame/components/Camera'
+    import Light from 'XrFrame/components/Light'
     export interface IMainLightsInfo {
         hasAmbient: boolean
         hasMainDir: boolean
@@ -10811,9 +10933,9 @@ declare module 'WechatXrFrame/systems/LightManager' {
     export default class LightManager {}
 }
 
-declare module 'WechatXrFrame/physics/raycast' {
-    import Vector3 from 'WechatXrFrame/math/vector3'
-    import RaycastHit from 'WechatXrFrame/physics/RaycastHit'
+declare module 'XrFrame/physics/raycast' {
+    import Vector3 from 'XrFrame/math/vector3'
+    import RaycastHit from 'XrFrame/physics/RaycastHit'
     /**
      * raycast函数的参数。
      * @field origin 射线起点。
@@ -10834,128 +10956,20 @@ declare module 'WechatXrFrame/physics/raycast' {
      * 射线检测，判断给定射线是否与至少一个碰撞体相交，并返回与**最近**的那个碰撞体相交的信息。
      */
     export function raycast(
-        Phys3D: typeof WechatPhys3D,
-        system: WechatPhys3D.PhysSystem,
+        Phys3D: typeof phys3D,
+        system: phys3D.PhysSystem,
         desc: RaycastDesc
     ): boolean
 }
 
-declare module 'WechatXrFrame/loader/AssetLoader' {
-    import { IAssetLoadData } from 'WechatXrFrame/loader/types'
-    type Scene = import('WechatXrFrame/core/Scene').default
-    /**
-     * 指定继承自{@link AssetLoader}的自定义资源加载器，可以接受的的额外配置的`schema`。
-     *
-     * 比如使用{@link CubeTextureLoader}加载资源时：
-     *
-     * ```xml
-     * <xr-asset-load
-     *   type="cube-texture" asset-id="sky-cube" src="/assets/textures/skybox/"
-     *   options="faces: right.jpg left.jpg top.jpg bottom.jpg front.jpg back.jpg"
-     * />
-     * ```
-     *
-     * 对应的`schema`接口为：
-     * ```ts
-     * export interface ICubeTextureLoaderOptions {
-     *   // left right top bottom front back
-     *   faces: string[];
-     * }
-     * ```ts
-     *
-     * 对应的`schema`为：
-     * ```ts
-     * schema = {
-     *   faces: {type: 'array'}
-     * };
-     * ```
-     */
-    export interface ILoaderOptionsSchema {
-        [key: string]: {
-            type: string
-            defaultValue?: any
-        }
-    }
-    /**
-     * 资源加载器的基类，配合{@link AssetsSystem}使用。
-     *
-     * @template T 加载资源的类型。
-     * @template ILoadOptions 可接受额外配置的类型。
-     */
-    export default class AssetLoader<T, ILoadOptions> {
-        /**
-         * 和{@link Component.schema}类似，指定解析Options的实际`schema`，对应于`ILoadOptions`。
-         */
-        readonly schema: ILoaderOptionsSchema
-        /**
-         * 当前资源所属场景的实例。
-         */
-        get scene(): import('WechatXrFrame/core/Scene').default
-        constructor(_scene: Scene, type: string)
-        /**
-         * @internal
-         */
-        /**
-         * 加载一个资源，并根据情况执行`callbacks`中的回调。
-         * **理论上必须要实现！**
-         *
-         * @param callbacks 开发者需要在加载进度更新时执行`onLoading`，在加载完成时执行`onLoaded`，在加载出错是执行`onError`
-         */
-        load(
-            data: IAssetLoadData<ILoadOptions>,
-            callbacks: {
-                onLoading(progress: number): void
-                onLoaded(result: T, localPath?: string): void
-                onError(error: Error): void
-            }
-        ): void
-        /**
-         * 取消加载特定资源。一般不需要自己编写逻辑，而是使用`entity.canceled`在加载终点丢弃。
-         * 注意`entity.canceled`是在这里赋值的，所以一般继承请务必先执行`super.cancel()`！
-         */
-        cancel(params: IAssetLoadData<ILoadOptions>): void
-        /**
-         * 释放资源时将会调用，用于自定义释放逻辑。
-         */
-        release(params: IAssetLoadData<ILoadOptions>, value: T): void
-        /**
-         * 返回默认资源列表。
-         * 所有默认资源都是惰性加载的。
-         */
-        getBuiltin(): Array<{
-            assetId: string
-            src: string
-            options: ILoadOptions
-        }>
-    }
-    export function getAssetLoaderTypes(): string[]
-    export function getAssetLoader(
-        type: string
-    ): new (
-        scene: import('WechatXrFrame/core/Scene').default,
-        type: string
-    ) => AssetLoader<any, any>
-    /**
-     * 注册一个资源加载器。注意注册后该`type`会被自动注册到DataValue中：{@link registerDataValue}。
-     *
-     * @param type 类型，也是写在{@link AssetLoad}上的那个`type`。
-     * @param clz 继承自{@link AssetLoader}的自定义资源加载器类。
-     */
-    export function registerAssetLoader(
-        type: string,
-        clz: new (scene: Scene, type: string) => AssetLoader<any, any>
-    ): void
-    export {}
-}
-
-declare module 'WechatXrFrame/loader/glTF/animations/GLTFAnimationsNode' {
-    import { GLTFArrayNode } from 'WechatXrFrame/loader/glTF/GLTFBaseNode'
-    import { GLTFNodesLoaded } from 'WechatXrFrame/loader/glTF/scenes/GLTFNodesNode'
+declare module 'XrFrame/loader/glTF/animations/GLTFAnimationsNode' {
+    import { GLTFArrayNode } from 'XrFrame/loader/glTF/GLTFBaseNode'
+    import { GLTFNodesLoaded } from 'XrFrame/loader/glTF/scenes/GLTFNodesNode'
     import GLTFAnimationNode, {
         GLTFAnimationLoaded,
         GLTFAnimationNodeRaw
-    } from 'WechatXrFrame/loader/glTF/animations/GLTFAnimationNode'
-    import { GLTFAccessorsLoaded } from 'WechatXrFrame/loader/glTF/buffers/GLTFAccessorsNode'
+    } from 'XrFrame/loader/glTF/animations/GLTFAnimationNode'
+    import { GLTFAccessorsLoaded } from 'XrFrame/loader/glTF/buffers/GLTFAccessorsNode'
     type ChildNode = GLTFAnimationNode
     export type GLTFAnimationsNodeRaw = GLTFAnimationsNodeRaw[]
     export type GLTFAnimationsLoaded = GLTFAnimationLoaded[]
@@ -10974,13 +10988,13 @@ declare module 'WechatXrFrame/loader/glTF/animations/GLTFAnimationsNode' {
     export {}
 }
 
-declare module 'WechatXrFrame/loader/glTF/buffers/GLTFAccessorsNode' {
-    import { GLTFArrayNode } from 'WechatXrFrame/loader/glTF/GLTFBaseNode'
+declare module 'XrFrame/loader/glTF/buffers/GLTFAccessorsNode' {
+    import { GLTFArrayNode } from 'XrFrame/loader/glTF/GLTFBaseNode'
     import GLTFAccessorNode, {
         GLTFAccessorLoaded,
         GLTFAccessorNodeRaw
-    } from 'WechatXrFrame/loader/glTF/buffers/GLTFAccessorNode'
-    import { GLTFBufferViewsLoaded } from 'WechatXrFrame/loader/glTF/buffers/GLTFBufferViewsNode'
+    } from 'XrFrame/loader/glTF/buffers/GLTFAccessorNode'
+    import { GLTFBufferViewsLoaded } from 'XrFrame/loader/glTF/buffers/GLTFBufferViewsNode'
     type ChildNode = GLTFAccessorNode
     export type GLTFAccessorsNodeRaw = GLTFAccessorsNodeRaw[]
     export type GLTFAccessorsLoaded = GLTFAccessorLoaded[]
@@ -10996,11 +11010,11 @@ declare module 'WechatXrFrame/loader/glTF/buffers/GLTFAccessorsNode' {
     export {}
 }
 
-declare module 'WechatXrFrame/loader/glTF/buffers/GLTFBuffersNode' {
-    import { GLTFArrayNode } from 'WechatXrFrame/loader/glTF/GLTFBaseNode'
+declare module 'XrFrame/loader/glTF/buffers/GLTFBuffersNode' {
+    import { GLTFArrayNode } from 'XrFrame/loader/glTF/GLTFBaseNode'
     import GLTFBufferNode, {
         GLTFBufferNodeRaw
-    } from 'WechatXrFrame/loader/glTF/buffers/GLTFBufferNode'
+    } from 'XrFrame/loader/glTF/buffers/GLTFBufferNode'
     type ChildNode = GLTFBufferNode
     export type GLTFBuffersNodeRaw = GLTFBufferNodeRaw[]
     export type GLTFBuffersLoaded = ArrayBuffer[]
@@ -11013,13 +11027,13 @@ declare module 'WechatXrFrame/loader/glTF/buffers/GLTFBuffersNode' {
     export {}
 }
 
-declare module 'WechatXrFrame/loader/glTF/buffers/GLTFBufferViewsNode' {
-    import { GLTFArrayNode } from 'WechatXrFrame/loader/glTF/GLTFBaseNode'
-    import { GLTFBufferLoaded } from 'WechatXrFrame/loader/glTF/buffers/GLTFBufferNode'
+declare module 'XrFrame/loader/glTF/buffers/GLTFBufferViewsNode' {
+    import { GLTFArrayNode } from 'XrFrame/loader/glTF/GLTFBaseNode'
+    import { GLTFBufferLoaded } from 'XrFrame/loader/glTF/buffers/GLTFBufferNode'
     import GLTFBufferViewNode, {
         GLTFBufferViewLoaded,
         GLTFBufferViewNodeRaw
-    } from 'WechatXrFrame/loader/glTF/buffers/GLTFBufferViewNode'
+    } from 'XrFrame/loader/glTF/buffers/GLTFBufferViewNode'
     type ChildNode = GLTFBufferViewNode
     export type GLTFBufferViewsNodeRaw = GLTFBufferViewsNodeRaw[]
     export type GLTFBufferViewsLoaded = GLTFBufferViewLoaded[]
@@ -11035,7 +11049,7 @@ declare module 'WechatXrFrame/loader/glTF/buffers/GLTFBufferViewsNode' {
     export {}
 }
 
-declare module 'WechatXrFrame/loader/glTF/extensions/GLTFExtensions' {
+declare module 'XrFrame/loader/glTF/extensions/GLTFExtensions' {
     /**
      * 创建GLTFExtensionProfileBuilder实例来定义一种extension，
      * 类内提供了三种方法来操作gltf树：
@@ -11098,15 +11112,15 @@ declare module 'WechatXrFrame/loader/glTF/extensions/GLTFExtensions' {
     export {}
 }
 
-declare module 'WechatXrFrame/loader/glTF/geometry/GLTFMeshesNode' {
-    import { Kanata } from 'WechatXrFrame/ext'
-    import { GLTFAccessorsLoaded } from 'WechatXrFrame/loader/glTF/buffers/GLTFAccessorsNode'
-    import { GLTFArrayNode } from 'WechatXrFrame/loader/glTF/GLTFBaseNode'
-    import { GLTFMaterialsLoaded } from 'WechatXrFrame/loader/glTF/materials/GLTFMaterialsNode'
+declare module 'XrFrame/loader/glTF/geometry/GLTFMeshesNode' {
+    import { Kanata } from 'XrFrame/ext'
+    import { GLTFAccessorsLoaded } from 'XrFrame/loader/glTF/buffers/GLTFAccessorsNode'
+    import { GLTFArrayNode } from 'XrFrame/loader/glTF/GLTFBaseNode'
+    import { GLTFMaterialsLoaded } from 'XrFrame/loader/glTF/materials/GLTFMaterialsNode'
     import GLTFMeshNode, {
         GLTFMeshLoaded,
         GLTFMeshNodeRaw
-    } from 'WechatXrFrame/loader/glTF/geometry/GLTFMeshNode'
+    } from 'XrFrame/loader/glTF/geometry/GLTFMeshNode'
     type ChildNode = GLTFMeshNode
     export type GLTFMeshesNodeRaw = GLTFMeshesNodeRaw[]
     export type GLTFMeshesLoaded = GLTFMeshLoaded[]
@@ -11126,8 +11140,8 @@ declare module 'WechatXrFrame/loader/glTF/geometry/GLTFMeshesNode' {
     export {}
 }
 
-declare module 'WechatXrFrame/loader/glTF/GLTFBaseNode' {
-    type Scene = import('WechatXrFrame/core/Scene').default
+declare module 'XrFrame/loader/glTF/GLTFBaseNode' {
+    type Scene = import('XrFrame/core/Scene').default
     function _empty(): {
         and: typeof _empty
     }
@@ -11200,13 +11214,13 @@ declare module 'WechatXrFrame/loader/glTF/GLTFBaseNode' {
     export {}
 }
 
-declare module 'WechatXrFrame/loader/glTF/materials/GLTFMaterialsNode' {
-    import { GLTFArrayNode } from 'WechatXrFrame/loader/glTF/GLTFBaseNode'
-    import { GLTFTexturesLoaded } from 'WechatXrFrame/loader/glTF/textures/GLTFTexturesNode'
+declare module 'XrFrame/loader/glTF/materials/GLTFMaterialsNode' {
+    import { GLTFArrayNode } from 'XrFrame/loader/glTF/GLTFBaseNode'
+    import { GLTFTexturesLoaded } from 'XrFrame/loader/glTF/textures/GLTFTexturesNode'
     import GLTFMaterialNode, {
         GLTFMaterialLoaded,
         GLTFMaterialNodeRaw
-    } from 'WechatXrFrame/loader/glTF/materials/GLTFMaterialNode'
+    } from 'XrFrame/loader/glTF/materials/GLTFMaterialNode'
     type ChildNode = GLTFMaterialNode
     export type GLTFMaterialsNodeRaw = GLTFMaterialsNodeRaw[]
     export type GLTFMaterialsLoaded = GLTFMaterialLoaded[]
@@ -11222,12 +11236,12 @@ declare module 'WechatXrFrame/loader/glTF/materials/GLTFMaterialsNode' {
     export {}
 }
 
-declare module 'WechatXrFrame/loader/glTF/scenes/GLTFSceneNode' {
-    import { GLTFBaseNode } from 'WechatXrFrame/loader/glTF/GLTFBaseNode'
+declare module 'XrFrame/loader/glTF/scenes/GLTFSceneNode' {
+    import { GLTFBaseNode } from 'XrFrame/loader/glTF/GLTFBaseNode'
     import {
         GLTFNodesLoaded,
         GLTFTreeNode
-    } from 'WechatXrFrame/loader/glTF/scenes/GLTFNodesNode'
+    } from 'XrFrame/loader/glTF/scenes/GLTFNodesNode'
     export interface GLTFSceneNodeRaw {
         nodes?: number[]
         name?: string
@@ -11244,13 +11258,13 @@ declare module 'WechatXrFrame/loader/glTF/scenes/GLTFSceneNode' {
     }
 }
 
-declare module 'WechatXrFrame/loader/glTF/scenes/GLTFScenesNode' {
-    import { GLTFArrayNode } from 'WechatXrFrame/loader/glTF/GLTFBaseNode'
-    import { GLTFNodesLoaded } from 'WechatXrFrame/loader/glTF/scenes/GLTFNodesNode'
+declare module 'XrFrame/loader/glTF/scenes/GLTFScenesNode' {
+    import { GLTFArrayNode } from 'XrFrame/loader/glTF/GLTFBaseNode'
+    import { GLTFNodesLoaded } from 'XrFrame/loader/glTF/scenes/GLTFNodesNode'
     import GLTFSceneNode, {
         GLTFSceneLoaded,
         GLTFSceneNodeRaw
-    } from 'WechatXrFrame/loader/glTF/scenes/GLTFSceneNode'
+    } from 'XrFrame/loader/glTF/scenes/GLTFSceneNode'
     type ChildNode = GLTFSceneNode
     export type GLTFScenesNodeRaw = GLTFScenesNodeRaw[]
     export type GLTFScenesLoaded = GLTFSceneLoaded[]
@@ -11266,13 +11280,13 @@ declare module 'WechatXrFrame/loader/glTF/scenes/GLTFScenesNode' {
     export {}
 }
 
-declare module 'WechatXrFrame/loader/glTF/skins/GLTFSkinsNode' {
-    import { GLTFAccessorsLoaded } from 'WechatXrFrame/loader/glTF/buffers/GLTFAccessorsNode'
-    import { GLTFArrayNode } from 'WechatXrFrame/loader/glTF/GLTFBaseNode'
+declare module 'XrFrame/loader/glTF/skins/GLTFSkinsNode' {
+    import { GLTFAccessorsLoaded } from 'XrFrame/loader/glTF/buffers/GLTFAccessorsNode'
+    import { GLTFArrayNode } from 'XrFrame/loader/glTF/GLTFBaseNode'
     import GLTFSkinNode, {
         GLTFSkinLoaded,
         GLTFSkinNodeRaw
-    } from 'WechatXrFrame/loader/glTF/skins/GLTFSkinNode'
+    } from 'XrFrame/loader/glTF/skins/GLTFSkinNode'
     type ChildNode = GLTFSkinNode
     export type GLTFSkinsNodeRaw = GLTFSkinsNodeRaw[]
     export type GLTFSkinsLoaded = GLTFSkinLoaded[]
@@ -11288,13 +11302,13 @@ declare module 'WechatXrFrame/loader/glTF/skins/GLTFSkinsNode' {
     export {}
 }
 
-declare module 'WechatXrFrame/loader/glTF/textures/GLTFImagesNode' {
-    import { GLTFBufferViewsLoaded } from 'WechatXrFrame/loader/glTF/buffers/GLTFBufferViewsNode'
-    import { GLTFArrayNode } from 'WechatXrFrame/loader/glTF/GLTFBaseNode'
+declare module 'XrFrame/loader/glTF/textures/GLTFImagesNode' {
+    import { GLTFBufferViewsLoaded } from 'XrFrame/loader/glTF/buffers/GLTFBufferViewsNode'
+    import { GLTFArrayNode } from 'XrFrame/loader/glTF/GLTFBaseNode'
     import GLTFImageNode, {
         GLTFImageLoaded,
         GLTFImageNodeRaw
-    } from 'WechatXrFrame/loader/glTF/textures/GLTFImageNode'
+    } from 'XrFrame/loader/glTF/textures/GLTFImageNode'
     type ChildNode = GLTFImageNode
     export type GLTFImagesNodeRaw = GLTFImagesNodeRaw[]
     export type GLTFImagesLoaded = GLTFImageLoaded[]
@@ -11310,12 +11324,12 @@ declare module 'WechatXrFrame/loader/glTF/textures/GLTFImagesNode' {
     export {}
 }
 
-declare module 'WechatXrFrame/loader/glTF/textures/GLTFSamplersNode' {
-    import { GLTFArrayNode } from 'WechatXrFrame/loader/glTF/GLTFBaseNode'
+declare module 'XrFrame/loader/glTF/textures/GLTFSamplersNode' {
+    import { GLTFArrayNode } from 'XrFrame/loader/glTF/GLTFBaseNode'
     import GLTFSamplerNode, {
         GLTFSamplerLoaded,
         GLTFSamplerNodeRaw
-    } from 'WechatXrFrame/loader/glTF/textures/GLTFSamplerNode'
+    } from 'XrFrame/loader/glTF/textures/GLTFSamplerNode'
     type ChildNode = GLTFSamplerNode
     export type GLTFSamplersNodeRaw = GLTFSamplersNodeRaw[]
     export type GLTFSamplersLoaded = GLTFSamplerLoaded[]
@@ -11329,14 +11343,14 @@ declare module 'WechatXrFrame/loader/glTF/textures/GLTFSamplersNode' {
     export {}
 }
 
-declare module 'WechatXrFrame/loader/glTF/textures/GLTFTexturesNode' {
-    import { GLTFArrayNode } from 'WechatXrFrame/loader/glTF/GLTFBaseNode'
-    import { GLTFImagesLoaded } from 'WechatXrFrame/loader/glTF/textures/GLTFImagesNode'
-    import { GLTFSamplersLoaded } from 'WechatXrFrame/loader/glTF/textures/GLTFSamplersNode'
+declare module 'XrFrame/loader/glTF/textures/GLTFTexturesNode' {
+    import { GLTFArrayNode } from 'XrFrame/loader/glTF/GLTFBaseNode'
+    import { GLTFImagesLoaded } from 'XrFrame/loader/glTF/textures/GLTFImagesNode'
+    import { GLTFSamplersLoaded } from 'XrFrame/loader/glTF/textures/GLTFSamplersNode'
     import GLTFTextureNode, {
         GLTFTextureLoaded,
         GLTFTextureNodeRaw
-    } from 'WechatXrFrame/loader/glTF/textures/GLTFTextureNode'
+    } from 'XrFrame/loader/glTF/textures/GLTFTextureNode'
     type ChildNode = GLTFTextureNode
     export type GLTFTexturesNodeRaw = GLTFTexturesNodeRaw[]
     export type GLTFTexturesLoaded = GLTFTextureLoaded[]
@@ -11355,13 +11369,13 @@ declare module 'WechatXrFrame/loader/glTF/textures/GLTFTexturesNode' {
     export {}
 }
 
-declare module 'WechatXrFrame/loader/glTF/scenes/GLTFNodeNode' {
-    import { GLTFMeshesLoaded } from 'WechatXrFrame/loader/glTF/geometry/GLTFMeshesNode'
-    import { GLTFMeshLoaded } from 'WechatXrFrame/loader/glTF/geometry/GLTFMeshNode'
-    import { GLTFBaseNode } from 'WechatXrFrame/loader/glTF/GLTFBaseNode'
-    import { GLTFSkinLoaded } from 'WechatXrFrame/loader/glTF/skins/GLTFSkinNode'
-    import { GLTFSkinsLoaded } from 'WechatXrFrame/loader/glTF/skins/GLTFSkinsNode'
-    import { GLTF } from 'WechatXrFrame/loader/glTF/utils/types'
+declare module 'XrFrame/loader/glTF/scenes/GLTFNodeNode' {
+    import { GLTFMeshesLoaded } from 'XrFrame/loader/glTF/geometry/GLTFMeshesNode'
+    import { GLTFMeshLoaded } from 'XrFrame/loader/glTF/geometry/GLTFMeshNode'
+    import { GLTFBaseNode } from 'XrFrame/loader/glTF/GLTFBaseNode'
+    import { GLTFSkinLoaded } from 'XrFrame/loader/glTF/skins/GLTFSkinNode'
+    import { GLTFSkinsLoaded } from 'XrFrame/loader/glTF/skins/GLTFSkinsNode'
+    import { GLTF } from 'XrFrame/loader/glTF/utils/types'
     export interface GLTFNodeNodeRaw {
         children?: number[]
         mesh?: number
@@ -11394,24 +11408,24 @@ declare module 'WechatXrFrame/loader/glTF/scenes/GLTFNodeNode' {
     }
 }
 
-declare module 'WechatXrFrame/kanata/lib/frontend/component/MeshRendererComponent' {
+declare module 'XrFrame/kanata/lib/frontend/component/MeshRendererComponent' {
     /**
      * MeshRendererComponent.ts
      *
      *       * @Date    : 9/3/2020, 7:54:23 PM
      */
-    import { EMeshRenderType } from 'WechatXrFrame/kanata/lib/backend'
-    import NativeObject from 'WechatXrFrame/kanata/lib/frontend/shared/NativeObject'
-    import Entity3D from 'WechatXrFrame/kanata/lib/frontend/entity/Entity3D'
-    import Entity2D from 'WechatXrFrame/kanata/lib/frontend/entity/Entity2D'
-    import UniformBlock from 'WechatXrFrame/kanata/lib/frontend/resource/UniformBlock'
-    import VertexBuffer from 'WechatXrFrame/kanata/lib/frontend/resource/VertexBuffer'
-    import IndexBuffer from 'WechatXrFrame/kanata/lib/frontend/resource/IndexBuffer'
-    import VertexData from 'WechatXrFrame/kanata/lib/frontend/resource/VertexData'
-    import IndexData from 'WechatXrFrame/kanata/lib/frontend/resource/IndexData'
-    import Material from 'WechatXrFrame/kanata/lib/frontend/resource/Material'
-    import SkinnedSkeletonComponent from 'WechatXrFrame/kanata/lib/frontend/component/SkinnedSkeletonComponent'
-    import CullingComponent from 'WechatXrFrame/kanata/lib/frontend/component/CullingComponent'
+    import { EMeshRenderType } from 'XrFrame/kanata/lib/backend'
+    import NativeObject from 'XrFrame/kanata/lib/frontend/shared/NativeObject'
+    import Entity3D from 'XrFrame/kanata/lib/frontend/entity/Entity3D'
+    import Entity2D from 'XrFrame/kanata/lib/frontend/entity/Entity2D'
+    import UniformBlock from 'XrFrame/kanata/lib/frontend/resource/UniformBlock'
+    import VertexBuffer from 'XrFrame/kanata/lib/frontend/resource/VertexBuffer'
+    import IndexBuffer from 'XrFrame/kanata/lib/frontend/resource/IndexBuffer'
+    import VertexData from 'XrFrame/kanata/lib/frontend/resource/VertexData'
+    import IndexData from 'XrFrame/kanata/lib/frontend/resource/IndexData'
+    import Material from 'XrFrame/kanata/lib/frontend/resource/Material'
+    import SkinnedSkeletonComponent from 'XrFrame/kanata/lib/frontend/component/SkinnedSkeletonComponent'
+    import CullingComponent from 'XrFrame/kanata/lib/frontend/component/CullingComponent'
     export default class MeshRendererComponent extends NativeObject {
         static OFFSETS: {
             dynamicBatch: number
@@ -11468,7 +11482,7 @@ declare module 'WechatXrFrame/kanata/lib/frontend/component/MeshRendererComponen
                     [name: string]: string | number | boolean
                 }
             }
-        ): import('WechatXrFrame/kanata/lib/backend').IHandle & {
+        ): import('XrFrame/kanata/lib/backend').IHandle & {
             setSharedDirty(): void
         }
         changeMacros(macros?: {
@@ -11518,7 +11532,7 @@ declare module 'WechatXrFrame/kanata/lib/frontend/component/MeshRendererComponen
     export {}
 }
 
-declare module 'WechatXrFrame/kanata/lib/frontend/resource/renderEnv' {
+declare module 'XrFrame/kanata/lib/frontend/resource/renderEnv' {
     /**
      * renderEnv.ts
      *
@@ -11530,11 +11544,11 @@ declare module 'WechatXrFrame/kanata/lib/frontend/resource/renderEnv' {
         IFeatures,
         IRenderEnv,
         TCompressTexture
-    } from 'WechatXrFrame/kanata/lib/backend'
-    import View from 'WechatXrFrame/kanata/lib/frontend/resource/View'
-    import Effect from 'WechatXrFrame/kanata/lib/frontend/resource/Effect'
-    import RenderPass from 'WechatXrFrame/kanata/lib/frontend/resource/RenderPass'
-    import UniformBlock from 'WechatXrFrame/kanata/lib/frontend/resource/UniformBlock'
+    } from 'XrFrame/kanata/lib/backend'
+    import View from 'XrFrame/kanata/lib/frontend/resource/View'
+    import Effect from 'XrFrame/kanata/lib/frontend/resource/Effect'
+    import RenderPass from 'XrFrame/kanata/lib/frontend/resource/RenderPass'
+    import UniformBlock from 'XrFrame/kanata/lib/frontend/resource/UniformBlock'
     export class RenderEnv {
         id: number
         __handle: IRenderEnv
@@ -11586,10 +11600,10 @@ declare module 'WechatXrFrame/kanata/lib/frontend/resource/renderEnv' {
     export default renderEnv
 }
 
-declare module 'WechatXrFrame/kanata/lib/frontend/component/AnimatorComponent' {
-    import NativeObject from 'WechatXrFrame/kanata/lib/frontend/shared/NativeObject'
-    import Entity3D from 'WechatXrFrame/kanata/lib/frontend/entity/Entity3D'
-    import AnimationClipModel from 'WechatXrFrame/kanata/lib/frontend/resource/AnimationClipModel'
+declare module 'XrFrame/kanata/lib/frontend/component/AnimatorComponent' {
+    import NativeObject from 'XrFrame/kanata/lib/frontend/shared/NativeObject'
+    import Entity3D from 'XrFrame/kanata/lib/frontend/entity/Entity3D'
+    import AnimationClipModel from 'XrFrame/kanata/lib/frontend/resource/AnimationClipModel'
     export default class AnimatorComponent extends NativeObject {
         static UPDATE_ANIMATORS(
             animators: AnimatorComponent[],
@@ -11618,12 +11632,12 @@ declare module 'WechatXrFrame/kanata/lib/frontend/component/AnimatorComponent' {
     }
 }
 
-declare module 'WechatXrFrame/kanata/lib/frontend/component/CameraComponent' {
-    import NativeObject from 'WechatXrFrame/kanata/lib/frontend/shared/NativeObject'
-    import Entity3D from 'WechatXrFrame/kanata/lib/frontend/entity/Entity3D'
-    import Entity2D from 'WechatXrFrame/kanata/lib/frontend/entity/Entity2D'
-    import View from 'WechatXrFrame/kanata/lib/frontend/resource/View'
-    import ScalableList from 'WechatXrFrame/kanata/lib/frontend/resource/ScalableList'
+declare module 'XrFrame/kanata/lib/frontend/component/CameraComponent' {
+    import NativeObject from 'XrFrame/kanata/lib/frontend/shared/NativeObject'
+    import Entity3D from 'XrFrame/kanata/lib/frontend/entity/Entity3D'
+    import Entity2D from 'XrFrame/kanata/lib/frontend/entity/Entity2D'
+    import View from 'XrFrame/kanata/lib/frontend/resource/View'
+    import ScalableList from 'XrFrame/kanata/lib/frontend/resource/ScalableList'
     export default class CameraComponent extends NativeObject {
         static OFFSETS: {
             size: number
@@ -11686,18 +11700,18 @@ declare module 'WechatXrFrame/kanata/lib/frontend/component/CameraComponent' {
     }
 }
 
-declare module 'WechatXrFrame/kanata/lib/frontend/component/LightCameraComponent' {
+declare module 'XrFrame/kanata/lib/frontend/component/LightCameraComponent' {
     /**
      * CameraLightComponent.ts
      *
      *       * @Date    : 9/3/2020, 7:54:13 PM
      */
-    import { EShadowMode } from 'WechatXrFrame/kanata/lib/backend'
-    import NativeObject from 'WechatXrFrame/kanata/lib/frontend/shared/NativeObject'
-    import View from 'WechatXrFrame/kanata/lib/frontend/resource/View'
-    import UniformBlock from 'WechatXrFrame/kanata/lib/frontend/resource/UniformBlock'
-    import ScalableList from 'WechatXrFrame/kanata/lib/frontend/resource/ScalableList'
-    import CameraComponent from 'WechatXrFrame/kanata/lib/frontend/component/CameraComponent'
+    import { EShadowMode } from 'XrFrame/kanata/lib/backend'
+    import NativeObject from 'XrFrame/kanata/lib/frontend/shared/NativeObject'
+    import View from 'XrFrame/kanata/lib/frontend/resource/View'
+    import UniformBlock from 'XrFrame/kanata/lib/frontend/resource/UniformBlock'
+    import ScalableList from 'XrFrame/kanata/lib/frontend/resource/ScalableList'
+    import CameraComponent from 'XrFrame/kanata/lib/frontend/component/CameraComponent'
     export default class LightCameraComponent extends NativeObject {
         static OFFSETS: {
             size: number
@@ -11739,11 +11753,11 @@ declare module 'WechatXrFrame/kanata/lib/frontend/component/LightCameraComponent
     }
 }
 
-declare module 'WechatXrFrame/kanata/lib/frontend/component/CullingComponent' {
-    import Entity3D from 'WechatXrFrame/kanata/lib/frontend/entity/Entity3D'
-    import Entity2D from 'WechatXrFrame/kanata/lib/frontend/entity/Entity2D'
-    import PoolObject from 'WechatXrFrame/kanata/lib/frontend/pool/PoolObject'
-    import PoolManager from 'WechatXrFrame/kanata/lib/frontend/pool/PoolManager'
+declare module 'XrFrame/kanata/lib/frontend/component/CullingComponent' {
+    import Entity3D from 'XrFrame/kanata/lib/frontend/entity/Entity3D'
+    import Entity2D from 'XrFrame/kanata/lib/frontend/entity/Entity2D'
+    import PoolObject from 'XrFrame/kanata/lib/frontend/pool/PoolObject'
+    import PoolManager from 'XrFrame/kanata/lib/frontend/pool/PoolManager'
     export default class CullingComponent extends PoolObject {
         static POLL_MANAGER: PoolManager
         constructor(entity: Entity2D | Entity3D)
@@ -11760,10 +11774,10 @@ declare module 'WechatXrFrame/kanata/lib/frontend/component/CullingComponent' {
     }
 }
 
-declare module 'WechatXrFrame/kanata/lib/frontend/component/SkinnedSkeletonComponent' {
-    import NativeObject from 'WechatXrFrame/kanata/lib/frontend/shared/NativeObject'
-    import SkeletonBoneInverseModel from 'WechatXrFrame/kanata/lib/frontend/resource/SkeletonBoneInverseModel'
-    import Entity3D from 'WechatXrFrame/kanata/lib/frontend/entity/Entity3D'
+declare module 'XrFrame/kanata/lib/frontend/component/SkinnedSkeletonComponent' {
+    import NativeObject from 'XrFrame/kanata/lib/frontend/shared/NativeObject'
+    import SkeletonBoneInverseModel from 'XrFrame/kanata/lib/frontend/resource/SkeletonBoneInverseModel'
+    import Entity3D from 'XrFrame/kanata/lib/frontend/entity/Entity3D'
     export default class SkinnedSkeletonComponent extends NativeObject {
         static UPDATE_MATS(
             comps: SkinnedSkeletonComponent[],
@@ -11783,9 +11797,9 @@ declare module 'WechatXrFrame/kanata/lib/frontend/component/SkinnedSkeletonCompo
     }
 }
 
-declare module 'WechatXrFrame/kanata/lib/frontend/component/DynamicBonesComponent' {
-    import NativeObject from 'WechatXrFrame/kanata/lib/frontend/shared/NativeObject'
-    import Entity3D from 'WechatXrFrame/kanata/lib/frontend/entity/Entity3D'
+declare module 'XrFrame/kanata/lib/frontend/component/DynamicBonesComponent' {
+    import NativeObject from 'XrFrame/kanata/lib/frontend/shared/NativeObject'
+    import Entity3D from 'XrFrame/kanata/lib/frontend/entity/Entity3D'
     export default class DynamicBonesComponent extends NativeObject {
         static OFFSETS: {
             stiffness: number
@@ -11813,9 +11827,9 @@ declare module 'WechatXrFrame/kanata/lib/frontend/component/DynamicBonesComponen
     }
 }
 
-declare module 'WechatXrFrame/kanata/lib/frontend/entity/Entity2D' {
-    import PoolObject from 'WechatXrFrame/kanata/lib/frontend/pool/PoolObject'
-    import PoolManager from 'WechatXrFrame/kanata/lib/frontend/pool/PoolManager'
+declare module 'XrFrame/kanata/lib/frontend/entity/Entity2D' {
+    import PoolObject from 'XrFrame/kanata/lib/frontend/pool/PoolObject'
+    import PoolManager from 'XrFrame/kanata/lib/frontend/pool/PoolManager'
     export default class Entity2D extends PoolObject {
         static POLL_MANAGER: PoolManager
         static OFFSETS: {
@@ -11841,9 +11855,9 @@ declare module 'WechatXrFrame/kanata/lib/frontend/entity/Entity2D' {
     }
 }
 
-declare module 'WechatXrFrame/kanata/lib/frontend/entity/Entity3D' {
-    import PoolObject from 'WechatXrFrame/kanata/lib/frontend/pool/PoolObject'
-    import PoolManager from 'WechatXrFrame/kanata/lib/frontend/pool/PoolManager'
+declare module 'XrFrame/kanata/lib/frontend/entity/Entity3D' {
+    import PoolObject from 'XrFrame/kanata/lib/frontend/pool/PoolObject'
+    import PoolManager from 'XrFrame/kanata/lib/frontend/pool/PoolManager'
     export default class Entity3D extends PoolObject {
         static POLL_MANAGER: PoolManager
         static OFFSETS: {
@@ -11894,23 +11908,23 @@ declare module 'WechatXrFrame/kanata/lib/frontend/entity/Entity3D' {
     }
 }
 
-declare module 'WechatXrFrame/kanata/lib/frontend/resource/AnimationClipModel' {
-    import DataModel from 'WechatXrFrame/kanata/lib/frontend/resource/DataModel'
+declare module 'XrFrame/kanata/lib/frontend/resource/AnimationClipModel' {
+    import DataModel from 'XrFrame/kanata/lib/frontend/resource/DataModel'
     export default class AnimationClipModel extends DataModel {
         setAnimationClip(ab: ArrayBuffer): void
     }
 }
 
-declare module 'WechatXrFrame/kanata/lib/frontend/resource/AnimationClipBinding' {
+declare module 'XrFrame/kanata/lib/frontend/resource/AnimationClipBinding' {
     /**
      * AnimationClipBinding.ts
      *
      *       */
-    import Entity3D from 'WechatXrFrame/kanata/lib/frontend/entity/Entity3D'
-    import AnimationClipModel from 'WechatXrFrame/kanata/lib/frontend/resource/AnimationClipModel'
-    import { EUseDefaultAddedAction } from 'WechatXrFrame/kanata/lib/backend'
-    import PureResource from 'WechatXrFrame/kanata/lib/frontend/shared/PureResource'
-    import { INativeWorker } from 'WechatXrFrame/kanata/lib/backend/native/worker'
+    import Entity3D from 'XrFrame/kanata/lib/frontend/entity/Entity3D'
+    import AnimationClipModel from 'XrFrame/kanata/lib/frontend/resource/AnimationClipModel'
+    import { EUseDefaultAddedAction } from 'XrFrame/kanata/lib/backend'
+    import PureResource from 'XrFrame/kanata/lib/frontend/shared/PureResource'
+    import { INativeWorker } from 'XrFrame/kanata/lib/backend/native/worker'
     export default class AnimationClipBinding extends PureResource {
         __handle: INativeWorker.IAnimationClipBinding
         constructor(
@@ -11950,14 +11964,14 @@ declare module 'WechatXrFrame/kanata/lib/frontend/resource/AnimationClipBinding'
     }
 }
 
-declare module 'WechatXrFrame/kanata/lib/frontend/resource/AnimatorControllerModel' {
+declare module 'XrFrame/kanata/lib/frontend/resource/AnimatorControllerModel' {
     /**
      * AnimatorControllerModel.ts
      *
      *       */
-    import AnimatorControllerStateModel from 'WechatXrFrame/kanata/lib/frontend/resource/AnimatorControllerStateModel'
-    import PureResource from 'WechatXrFrame/kanata/lib/frontend/shared/PureResource'
-    import AnimationClipBinding from 'WechatXrFrame/kanata/lib/frontend/resource/AnimationClipBinding'
+    import AnimatorControllerStateModel from 'XrFrame/kanata/lib/frontend/resource/AnimatorControllerStateModel'
+    import PureResource from 'XrFrame/kanata/lib/frontend/shared/PureResource'
+    import AnimationClipBinding from 'XrFrame/kanata/lib/frontend/resource/AnimationClipBinding'
     export default class AnimatorControllerModel extends PureResource {
         layerCount: number
         static UPDATE_ANIMATOR_CONTROLLERS(
@@ -11985,9 +11999,9 @@ declare module 'WechatXrFrame/kanata/lib/frontend/resource/AnimatorControllerMod
     }
 }
 
-declare module 'WechatXrFrame/kanata/lib/frontend/resource/AnimatorControllerStateModel' {
-    import PureResource from 'WechatXrFrame/kanata/lib/frontend/shared/PureResource'
-    import AnimationClipModel from 'WechatXrFrame/kanata/lib/frontend/resource/AnimationClipModel'
+declare module 'XrFrame/kanata/lib/frontend/resource/AnimatorControllerStateModel' {
+    import PureResource from 'XrFrame/kanata/lib/frontend/shared/PureResource'
+    import AnimationClipModel from 'XrFrame/kanata/lib/frontend/resource/AnimationClipModel'
     export default class AnimatorControllerStateModel extends PureResource {
         readonly count: number
         get weight(): number
@@ -12007,14 +12021,14 @@ declare module 'WechatXrFrame/kanata/lib/frontend/resource/AnimatorControllerSta
     }
 }
 
-declare module 'WechatXrFrame/kanata/lib/frontend/resource/DataBuffer' {
+declare module 'XrFrame/kanata/lib/frontend/resource/DataBuffer' {
     /**
      * DataBuffer.ts
      *
      *       * @Date    : 9/4/2020, 1:21:59 PM
      */
-    import { IHandle } from 'WechatXrFrame/kanata/lib/backend'
-    import NativeObject from 'WechatXrFrame/kanata/lib/frontend/shared/NativeObject'
+    import { IHandle } from 'XrFrame/kanata/lib/backend'
+    import NativeObject from 'XrFrame/kanata/lib/frontend/shared/NativeObject'
     export default class DataBuffer extends NativeObject {
         constructor(nativeObj: IHandle)
         get dataLength(): number
@@ -12023,14 +12037,14 @@ declare module 'WechatXrFrame/kanata/lib/frontend/resource/DataBuffer' {
     }
 }
 
-declare module 'WechatXrFrame/kanata/lib/frontend/resource/DataModel' {
+declare module 'XrFrame/kanata/lib/frontend/resource/DataModel' {
     /**
      * DataModel.ts
      *
      *       * @Date    : 9/4/2020, 1:18:13 PM
      */
-    import { EDataModelType } from 'WechatXrFrame/kanata/lib/backend'
-    import PureResource from 'WechatXrFrame/kanata/lib/frontend/shared/PureResource'
+    import { EDataModelType } from 'XrFrame/kanata/lib/backend'
+    import PureResource from 'XrFrame/kanata/lib/frontend/shared/PureResource'
     export default class DataModel extends PureResource {
         protected _createNativeModel(
             type: EDataModelType,
@@ -12039,7 +12053,7 @@ declare module 'WechatXrFrame/kanata/lib/frontend/resource/DataModel' {
     }
 }
 
-declare module 'WechatXrFrame/kanata/lib/frontend/resource/Effect' {
+declare module 'XrFrame/kanata/lib/frontend/resource/Effect' {
     /**
      * Effect.ts
      *
@@ -12052,8 +12066,8 @@ declare module 'WechatXrFrame/kanata/lib/frontend/resource/Effect' {
         ECompareFunc,
         EPrimitiveType,
         EStencilOp
-    } from 'WechatXrFrame/kanata/lib/backend'
-    import NativeObject from 'WechatXrFrame/kanata/lib/frontend/shared/NativeObject'
+    } from 'XrFrame/kanata/lib/backend'
+    import NativeObject from 'XrFrame/kanata/lib/frontend/shared/NativeObject'
     export default class Effect extends NativeObject {
         static OFFSETS: {
             size: number
@@ -12168,7 +12182,7 @@ declare module 'WechatXrFrame/kanata/lib/frontend/resource/Effect' {
     }
 }
 
-declare module 'WechatXrFrame/kanata/lib/frontend/resource/Material' {
+declare module 'XrFrame/kanata/lib/frontend/resource/Material' {
     /**
      * Material.ts
      *
@@ -12181,10 +12195,10 @@ declare module 'WechatXrFrame/kanata/lib/frontend/resource/Material' {
         ECullMode,
         EStencilOp,
         EPrimitiveType
-    } from 'WechatXrFrame/kanata/lib/backend'
-    import UniformBlock from 'WechatXrFrame/kanata/lib/frontend/resource/UniformBlock'
-    import NativeObject from 'WechatXrFrame/kanata/lib/frontend/shared/NativeObject'
-    import Effect from 'WechatXrFrame/kanata/lib/frontend/resource/Effect'
+    } from 'XrFrame/kanata/lib/backend'
+    import UniformBlock from 'XrFrame/kanata/lib/frontend/resource/UniformBlock'
+    import NativeObject from 'XrFrame/kanata/lib/frontend/shared/NativeObject'
+    import Effect from 'XrFrame/kanata/lib/frontend/resource/Effect'
     export default class Material extends NativeObject {
         static OFFSETS: {
             size: number
@@ -12325,9 +12339,9 @@ declare module 'WechatXrFrame/kanata/lib/frontend/resource/Material' {
     }
 }
 
-declare module 'WechatXrFrame/kanata/lib/frontend/resource/RenderPass' {
-    import PureResource from 'WechatXrFrame/kanata/lib/frontend/shared/PureResource'
-    import Texture from 'WechatXrFrame/kanata/lib/frontend/resource/Texture'
+declare module 'XrFrame/kanata/lib/frontend/resource/RenderPass' {
+    import PureResource from 'XrFrame/kanata/lib/frontend/shared/PureResource'
+    import Texture from 'XrFrame/kanata/lib/frontend/resource/Texture'
     export interface IRenderPassOptions {
         colors: Array<{
             texture: Texture
@@ -12351,15 +12365,15 @@ declare module 'WechatXrFrame/kanata/lib/frontend/resource/RenderPass' {
     }
 }
 
-declare module 'WechatXrFrame/kanata/lib/frontend/resource/SkeletonBoneInverseModel' {
-    import DataModel from 'WechatXrFrame/kanata/lib/frontend/resource/DataModel'
+declare module 'XrFrame/kanata/lib/frontend/resource/SkeletonBoneInverseModel' {
+    import DataModel from 'XrFrame/kanata/lib/frontend/resource/DataModel'
     export default class SkeletonBoneInverseModel extends DataModel {
         boneNum: number
         setBoneInverseMatrix(matrices: Float32Array): void
     }
 }
 
-declare module 'WechatXrFrame/kanata/lib/frontend/resource/Texture' {
+declare module 'XrFrame/kanata/lib/frontend/resource/Texture' {
     /**
      * Texture.ts
      *
@@ -12371,8 +12385,8 @@ declare module 'WechatXrFrame/kanata/lib/frontend/resource/Texture' {
         EWrapMode,
         EFilterMode,
         TTextureSource
-    } from 'WechatXrFrame/kanata/lib/backend'
-    import PureResource from 'WechatXrFrame/kanata/lib/frontend/shared/PureResource'
+    } from 'XrFrame/kanata/lib/backend'
+    import PureResource from 'XrFrame/kanata/lib/frontend/shared/PureResource'
     /**
      * 纹理资源{@link Texture}的创建参数。
      */
@@ -12511,16 +12525,16 @@ declare module 'WechatXrFrame/kanata/lib/frontend/resource/Texture' {
     }
 }
 
-declare module 'WechatXrFrame/kanata/lib/frontend/resource/UniformBlock' {
+declare module 'XrFrame/kanata/lib/frontend/resource/UniformBlock' {
     /**
      * UniformBlock.ts
      *
      *         * @Date    : 9/4/2020, 2:34:36 PM
      */
-    import { IHandle } from 'WechatXrFrame/kanata/lib/backend'
-    import UniformDescriptor from 'WechatXrFrame/kanata/lib/frontend/resource/UniformDescriptor'
-    import Texture from 'WechatXrFrame/kanata/lib/frontend/resource/Texture'
-    import PureResource from 'WechatXrFrame/kanata/lib/frontend/shared/PureResource'
+    import { IHandle } from 'XrFrame/kanata/lib/backend'
+    import UniformDescriptor from 'XrFrame/kanata/lib/frontend/resource/UniformDescriptor'
+    import Texture from 'XrFrame/kanata/lib/frontend/resource/Texture'
+    import PureResource from 'XrFrame/kanata/lib/frontend/shared/PureResource'
     /**
      * 存储Uniform的一个区块。
      */
@@ -12593,7 +12607,7 @@ declare module 'WechatXrFrame/kanata/lib/frontend/resource/UniformBlock' {
     export {}
 }
 
-declare module 'WechatXrFrame/kanata/lib/frontend/resource/UniformDescriptor' {
+declare module 'XrFrame/kanata/lib/frontend/resource/UniformDescriptor' {
     /**
      * UniformDescriptor.ts
      *
@@ -12602,8 +12616,8 @@ declare module 'WechatXrFrame/kanata/lib/frontend/resource/UniformDescriptor' {
     import {
         EUniformType,
         IUniformDescriptorOptions
-    } from 'WechatXrFrame/kanata/lib/backend'
-    import PureResource from 'WechatXrFrame/kanata/lib/frontend/shared/PureResource'
+    } from 'XrFrame/kanata/lib/backend'
+    import PureResource from 'XrFrame/kanata/lib/frontend/shared/PureResource'
     /**
      * UniformBlock描述符。
      */
@@ -12653,8 +12667,8 @@ declare module 'WechatXrFrame/kanata/lib/frontend/resource/UniformDescriptor' {
     }
 }
 
-declare module 'WechatXrFrame/kanata/lib/frontend/resource/IndexBuffer' {
-    import PureResource from 'WechatXrFrame/kanata/lib/frontend/shared/PureResource'
+declare module 'XrFrame/kanata/lib/frontend/resource/IndexBuffer' {
+    import PureResource from 'XrFrame/kanata/lib/frontend/shared/PureResource'
     export default class IndexBuffer extends PureResource {
         get byteSize(): number
         constructor(buffer: ArrayBuffer | ArrayBufferView, is32bits?: boolean)
@@ -12662,17 +12676,17 @@ declare module 'WechatXrFrame/kanata/lib/frontend/resource/IndexBuffer' {
     }
 }
 
-declare module 'WechatXrFrame/kanata/lib/frontend/resource/IndexData' {
-    import PureResource from 'WechatXrFrame/kanata/lib/frontend/shared/PureResource'
+declare module 'XrFrame/kanata/lib/frontend/resource/IndexData' {
+    import PureResource from 'XrFrame/kanata/lib/frontend/shared/PureResource'
     export default class IndexData extends PureResource {
         get data(): ArrayBuffer
         constructor(size: number)
     }
 }
 
-declare module 'WechatXrFrame/kanata/lib/frontend/resource/VertexBuffer' {
-    import VertexLayout from 'WechatXrFrame/kanata/lib/frontend/resource/VertexLayout'
-    import PureResource from 'WechatXrFrame/kanata/lib/frontend/shared/PureResource'
+declare module 'XrFrame/kanata/lib/frontend/resource/VertexBuffer' {
+    import VertexLayout from 'XrFrame/kanata/lib/frontend/resource/VertexLayout'
+    import PureResource from 'XrFrame/kanata/lib/frontend/shared/PureResource'
     /**
      * 顶点数据。
      */
@@ -12684,15 +12698,15 @@ declare module 'WechatXrFrame/kanata/lib/frontend/resource/VertexBuffer' {
     }
 }
 
-declare module 'WechatXrFrame/kanata/lib/frontend/resource/VertexData' {
+declare module 'XrFrame/kanata/lib/frontend/resource/VertexData' {
     /**
      * VertexData.ts
      *
      *         * @Date    : 9/11/2020, 4:43:52 PM
      */
-    import VertexDataDescriptor from 'WechatXrFrame/kanata/lib/frontend/resource/VertexDataDescriptor'
-    import PureResource from 'WechatXrFrame/kanata/lib/frontend/shared/PureResource'
-    import VertexLayout from 'WechatXrFrame/kanata/lib/frontend/resource/VertexLayout'
+    import VertexDataDescriptor from 'XrFrame/kanata/lib/frontend/resource/VertexDataDescriptor'
+    import PureResource from 'XrFrame/kanata/lib/frontend/shared/PureResource'
+    import VertexLayout from 'XrFrame/kanata/lib/frontend/resource/VertexLayout'
     /**
      * 用于合批的顶点数据。
      */
@@ -12707,7 +12721,7 @@ declare module 'WechatXrFrame/kanata/lib/frontend/resource/VertexData' {
     }
 }
 
-declare module 'WechatXrFrame/kanata/lib/frontend/resource/VertexLayout' {
+declare module 'XrFrame/kanata/lib/frontend/resource/VertexLayout' {
     /**
      * VertexLayout.ts
      *
@@ -12716,8 +12730,8 @@ declare module 'WechatXrFrame/kanata/lib/frontend/resource/VertexLayout' {
     import {
         IVertexLayoutOptions,
         EVertexLayoutUsage
-    } from 'WechatXrFrame/kanata/lib/backend'
-    import PureResource from 'WechatXrFrame/kanata/lib/frontend/shared/PureResource'
+    } from 'XrFrame/kanata/lib/backend'
+    import PureResource from 'XrFrame/kanata/lib/frontend/shared/PureResource'
     /**
      * 顶点布局描述。
      */
@@ -12732,7 +12746,7 @@ declare module 'WechatXrFrame/kanata/lib/frontend/resource/VertexLayout' {
          */
         getConfigByName(name: string): {
             name: string
-            format: import('WechatXrFrame/kanata/lib/backend').EVertexFormat
+            format: import('XrFrame/kanata/lib/backend').EVertexFormat
             offset: number
             usage: EVertexLayoutUsage
         }
@@ -12741,21 +12755,21 @@ declare module 'WechatXrFrame/kanata/lib/frontend/resource/VertexLayout' {
          */
         getConfigByUsage(usage: EVertexLayoutUsage): {
             name: string
-            format: import('WechatXrFrame/kanata/lib/backend').EVertexFormat
+            format: import('XrFrame/kanata/lib/backend').EVertexFormat
             offset: number
             usage: EVertexLayoutUsage
         }
     }
 }
 
-declare module 'WechatXrFrame/kanata/lib/frontend/resource/VertexDataDescriptor' {
+declare module 'XrFrame/kanata/lib/frontend/resource/VertexDataDescriptor' {
     /**
      * VertexDataDescriptor.ts
      *
      *         * @Date    : 4/28/2021, 4:38:37 PM
      */
-    import { IVertexDataDescriptorOptions } from 'WechatXrFrame/kanata/lib/backend'
-    import PureResource from 'WechatXrFrame/kanata/lib/frontend/shared/PureResource'
+    import { IVertexDataDescriptorOptions } from 'XrFrame/kanata/lib/backend'
+    import PureResource from 'XrFrame/kanata/lib/frontend/shared/PureResource'
     /**
      * 用于合批的顶点数据的描述符。
      */
@@ -12764,14 +12778,14 @@ declare module 'WechatXrFrame/kanata/lib/frontend/resource/VertexDataDescriptor'
     }
 }
 
-declare module 'WechatXrFrame/kanata/lib/frontend/resource/View' {
+declare module 'XrFrame/kanata/lib/frontend/resource/View' {
     /**
      * View.ts
      *
      *         * @Date    : 9/4/2020, 6:43:18 PM
      */
-    import { IRect, IViewAction } from 'WechatXrFrame/kanata/lib/backend'
-    import PureResource from 'WechatXrFrame/kanata/lib/frontend/shared/PureResource'
+    import { IRect, IViewAction } from 'XrFrame/kanata/lib/backend'
+    import PureResource from 'XrFrame/kanata/lib/frontend/shared/PureResource'
     /**
      * 视图，用于控制清屏、视图区域等配置。
      */
@@ -12784,8 +12798,8 @@ declare module 'WechatXrFrame/kanata/lib/frontend/resource/View' {
     }
 }
 
-declare module 'WechatXrFrame/kanata/lib/frontend/resource/ScalableList' {
-    import PureResource from 'WechatXrFrame/kanata/lib/frontend/shared/PureResource'
+declare module 'XrFrame/kanata/lib/frontend/resource/ScalableList' {
+    import PureResource from 'XrFrame/kanata/lib/frontend/shared/PureResource'
     export const SL_MAP: Set<ScalableList>
     export function CHECK_SLS_RESIZE(): void
     export function CLEAR_SLS(): void
@@ -12834,7 +12848,7 @@ declare module 'WechatXrFrame/kanata/lib/frontend/resource/ScalableList' {
     }
 }
 
-declare module 'WechatXrFrame/kanata/lib/frontend/shared/crossContext' {
+declare module 'XrFrame/kanata/lib/frontend/shared/crossContext' {
     /**
      * 跨域信息通道，用于主域和子域之间的通信。
      */
@@ -12848,9 +12862,9 @@ declare module 'WechatXrFrame/kanata/lib/frontend/shared/crossContext' {
     export default crossContext
 }
 
-declare module 'WechatXrFrame/components/particle/gradient' {
-    import Vector3 from 'WechatXrFrame/math/vector3'
-    import Vector4 from 'WechatXrFrame/math/vector4'
+declare module 'XrFrame/components/particle/gradient' {
+    import Vector3 from 'XrFrame/math/vector3'
+    import Vector4 from 'XrFrame/math/vector4'
     export class ColorGradient {
         gradient: number
         color: Vector4
@@ -12893,9 +12907,9 @@ declare module 'WechatXrFrame/components/particle/gradient' {
     }
 }
 
-declare module 'WechatXrFrame/components/emitter/BoxShapeEmitter' {
-    import Vector3 from 'WechatXrFrame/math/vector3'
-    import { BasicShapeEmitter } from 'WechatXrFrame/components/emitter/BasicShapeEmitter'
+declare module 'XrFrame/components/emitter/BoxShapeEmitter' {
+    import Vector3 from 'XrFrame/math/vector3'
+    import { BasicShapeEmitter } from 'XrFrame/components/emitter/BasicShapeEmitter'
     export default class BoxShapeEmitter extends BasicShapeEmitter {
         direction: Vector3
         direction2: Vector3
@@ -12907,9 +12921,9 @@ declare module 'WechatXrFrame/components/emitter/BoxShapeEmitter' {
     }
 }
 
-declare module 'WechatXrFrame/components/emitter/PointShapeEmitter' {
-    import Vector3 from 'WechatXrFrame/math/vector3'
-    import { BasicShapeEmitter } from 'WechatXrFrame/components/emitter/BasicShapeEmitter'
+declare module 'XrFrame/components/emitter/PointShapeEmitter' {
+    import Vector3 from 'XrFrame/math/vector3'
+    import { BasicShapeEmitter } from 'XrFrame/components/emitter/BasicShapeEmitter'
     export default class PointShapeEmitter extends BasicShapeEmitter {
         /**
          * 粒子运动方向左区间。
@@ -12925,10 +12939,10 @@ declare module 'WechatXrFrame/components/emitter/PointShapeEmitter' {
     }
 }
 
-declare module 'WechatXrFrame/components/emitter/DrawShapeEmitter' {
-    import Vector3 from 'WechatXrFrame/math/vector3'
-    import ParticleInstance from 'WechatXrFrame/components/particle/ParticleInstance'
-    import { BasicShapeEmitter } from 'WechatXrFrame/components/emitter/BasicShapeEmitter'
+declare module 'XrFrame/components/emitter/DrawShapeEmitter' {
+    import Vector3 from 'XrFrame/math/vector3'
+    import ParticleInstance from 'XrFrame/components/particle/ParticleInstance'
+    import { BasicShapeEmitter } from 'XrFrame/components/emitter/BasicShapeEmitter'
     export default class DrawShapeEmitter extends BasicShapeEmitter {
         direction: Vector3
         constructor()
@@ -12947,10 +12961,10 @@ declare module 'WechatXrFrame/components/emitter/DrawShapeEmitter' {
     }
 }
 
-declare module 'WechatXrFrame/components/emitter/SphereShapeEmitter' {
-    import Vector3 from 'WechatXrFrame/math/vector3'
-    import { BasicShapeEmitter } from 'WechatXrFrame/components/emitter/BasicShapeEmitter'
-    import Matrix4 from 'WechatXrFrame/math/matrix4'
+declare module 'XrFrame/components/emitter/SphereShapeEmitter' {
+    import Vector3 from 'XrFrame/math/vector3'
+    import { BasicShapeEmitter } from 'XrFrame/components/emitter/BasicShapeEmitter'
+    import Matrix4 from 'XrFrame/math/matrix4'
     export default class SphereShapeEmitter extends BasicShapeEmitter {
         /**
          * 球形半径
@@ -12978,9 +12992,9 @@ declare module 'WechatXrFrame/components/emitter/SphereShapeEmitter' {
     }
 }
 
-declare module 'WechatXrFrame/components/emitter/ConeShapeEmitter' {
-    import Vector3 from 'WechatXrFrame/math/vector3'
-    import { BasicShapeEmitter } from 'WechatXrFrame/components/emitter/BasicShapeEmitter'
+declare module 'XrFrame/components/emitter/ConeShapeEmitter' {
+    import Vector3 from 'XrFrame/math/vector3'
+    import { BasicShapeEmitter } from 'XrFrame/components/emitter/BasicShapeEmitter'
     export default class ConeShapeEmitter extends BasicShapeEmitter {
         /**
          * [0-1]
@@ -13010,10 +13024,10 @@ declare module 'WechatXrFrame/components/emitter/ConeShapeEmitter' {
     }
 }
 
-declare module 'WechatXrFrame/components/emitter/CircleShapeEmitter' {
-    import Vector3 from 'WechatXrFrame/math/vector3'
-    import { BasicShapeEmitter } from 'WechatXrFrame/components/emitter/BasicShapeEmitter'
-    import Matrix4 from 'WechatXrFrame/math/matrix4'
+declare module 'XrFrame/components/emitter/CircleShapeEmitter' {
+    import Vector3 from 'XrFrame/math/vector3'
+    import { BasicShapeEmitter } from 'XrFrame/components/emitter/BasicShapeEmitter'
+    import Matrix4 from 'XrFrame/math/matrix4'
     export default class CircleShapeEmitter extends BasicShapeEmitter {
         radius: number
         radiusRange: number
@@ -13031,18 +13045,18 @@ declare module 'WechatXrFrame/components/emitter/CircleShapeEmitter' {
     }
 }
 
-declare module 'WechatXrFrame/render-graph/RGNode' {
+declare module 'XrFrame/render-graph/RGNode' {
     /**
      * RGNode.ts
      *
      *         * @Date    : 1/13/2021, 8:29:55 PM
      */
-    import { Kanata } from 'WechatXrFrame/ext'
-    import Camera from 'WechatXrFrame/components/Camera'
-    import { IRenderTarget } from 'WechatXrFrame/assets/RenderTexture'
-    type RenderGraph = import('WechatXrFrame/render-graph/RenderGraph').default
-    type RenderSystem = import('WechatXrFrame/systems/RenderSystem').default
-    type Scene = import('WechatXrFrame/core/Scene').default
+    import { Kanata } from 'XrFrame/ext'
+    import Camera from 'XrFrame/components/Camera'
+    import { IRenderTarget } from 'XrFrame/assets/RenderTexture'
+    type RenderGraph = import('XrFrame/render-graph/RenderGraph').default
+    type RenderSystem = import('XrFrame/systems/RenderSystem').default
+    type Scene = import('XrFrame/core/Scene').default
     export type TRGNodeAny = RGNode<any, any, any>
     /**
      * RGNode支持传输的数据类型。
@@ -13182,16 +13196,16 @@ declare module 'WechatXrFrame/render-graph/RGNode' {
     export {}
 }
 
-declare module 'WechatXrFrame/physics/RaycastHit' {
-    import { Scene } from 'WechatXrFrame/elements'
-    import Vector3 from 'WechatXrFrame/math/vector3'
-    import Shape from 'WechatXrFrame/components/physics/Shape'
+declare module 'XrFrame/physics/RaycastHit' {
+    import { Scene } from 'XrFrame/elements'
+    import Vector3 from 'XrFrame/math/vector3'
+    import Shape from 'XrFrame/components/physics/Shape'
     export default class RaycastHit {
-        constructor(scene: Scene, nativeComp?: WechatPhys3D.RaycastHit)
+        constructor(scene: Scene, nativeComp?: phys3D.RaycastHit)
         /**
          * native层真正的raycastHit对象，业务侧无需关心
          */
-        get nativeRaycastHit(): WechatPhys3D.RaycastHit
+        get nativeRaycastHit(): phys3D.RaycastHit
         /**
          * 被射线射中的collider所附的Rigidbody，如果collider没有附着在一个Rigidbody上，则为null
          */
@@ -13218,17 +13232,17 @@ declare module 'WechatXrFrame/physics/RaycastHit' {
     }
 }
 
-declare module 'WechatXrFrame/loader/glTF/animations/GLTFAnimationNode' {
-    import { Kanata } from 'WechatXrFrame/ext'
-    import { GLTFAccessorsLoaded } from 'WechatXrFrame/loader/glTF/buffers/GLTFAccessorsNode'
-    import { GLTFBaseNode } from 'WechatXrFrame/loader/glTF/GLTFBaseNode'
-    import { GLTFNodesLoaded } from 'WechatXrFrame/loader/glTF/scenes/GLTFNodesNode'
-    import { GLTF } from 'WechatXrFrame/loader/glTF/utils/types'
+declare module 'XrFrame/loader/glTF/animations/GLTFAnimationNode' {
+    import { Kanata } from 'XrFrame/ext'
+    import { GLTFAccessorsLoaded } from 'XrFrame/loader/glTF/buffers/GLTFAccessorsNode'
+    import { GLTFBaseNode } from 'XrFrame/loader/glTF/GLTFBaseNode'
+    import { GLTFNodesLoaded } from 'XrFrame/loader/glTF/scenes/GLTFNodesNode'
+    import { GLTF } from 'XrFrame/loader/glTF/utils/types'
     import {
         GLTFChannelsLoaded,
         GLTFChannelsNodeRaw
-    } from 'WechatXrFrame/loader/glTF/animations/channels/GLTFChannelsNode'
-    import { GLTFSamplersNodeRaw } from 'WechatXrFrame/loader/glTF/animations/samplers/GLTFSamplersNode'
+    } from 'XrFrame/loader/glTF/animations/channels/GLTFChannelsNode'
+    import { GLTFSamplersNodeRaw } from 'XrFrame/loader/glTF/animations/samplers/GLTFSamplersNode'
     /**
      * 二进制格式
      * | contentoffset | fps(float) | totalFrame | totalSampleGroup |
@@ -13263,11 +13277,11 @@ declare module 'WechatXrFrame/loader/glTF/animations/GLTFAnimationNode' {
     }
 }
 
-declare module 'WechatXrFrame/loader/glTF/buffers/GLTFAccessorNode' {
-    import { GLTF } from 'WechatXrFrame/loader/glTF/utils/types'
-    import { GLTFBaseNode } from 'WechatXrFrame/loader/glTF/GLTFBaseNode'
-    import { GLTFBufferViewLoaded } from 'WechatXrFrame/loader/glTF/buffers/GLTFBufferViewNode'
-    import { GLTFBufferViewsLoaded } from 'WechatXrFrame/loader/glTF/buffers/GLTFBufferViewsNode'
+declare module 'XrFrame/loader/glTF/buffers/GLTFAccessorNode' {
+    import { GLTF } from 'XrFrame/loader/glTF/utils/types'
+    import { GLTFBaseNode } from 'XrFrame/loader/glTF/GLTFBaseNode'
+    import { GLTFBufferViewLoaded } from 'XrFrame/loader/glTF/buffers/GLTFBufferViewNode'
+    import { GLTFBufferViewsLoaded } from 'XrFrame/loader/glTF/buffers/GLTFBufferViewsNode'
     export enum EnumGLTFAccessorComponentType {
         BYTE = 5120,
         UNSIGNED_BYTE = 5121,
@@ -13336,8 +13350,8 @@ declare module 'WechatXrFrame/loader/glTF/buffers/GLTFAccessorNode' {
     }
 }
 
-declare module 'WechatXrFrame/loader/glTF/buffers/GLTFBufferNode' {
-    import { GLTFBaseNode } from 'WechatXrFrame/loader/glTF/GLTFBaseNode'
+declare module 'XrFrame/loader/glTF/buffers/GLTFBufferNode' {
+    import { GLTFBaseNode } from 'XrFrame/loader/glTF/GLTFBaseNode'
     export interface GLTFBufferNodeRaw {
         uri?: string
         byteLength: number
@@ -13353,9 +13367,9 @@ declare module 'WechatXrFrame/loader/glTF/buffers/GLTFBufferNode' {
     }
 }
 
-declare module 'WechatXrFrame/loader/glTF/buffers/GLTFBufferViewNode' {
-    import { GLTFBaseNode } from 'WechatXrFrame/loader/glTF/GLTFBaseNode'
-    import { GLTFBufferLoaded } from 'WechatXrFrame/loader/glTF/buffers/GLTFBufferNode'
+declare module 'XrFrame/loader/glTF/buffers/GLTFBufferViewNode' {
+    import { GLTFBaseNode } from 'XrFrame/loader/glTF/GLTFBaseNode'
+    import { GLTFBufferLoaded } from 'XrFrame/loader/glTF/buffers/GLTFBufferNode'
     export interface GLTFBufferViewNodeRaw {
         buffer: number
         byteLength: number
@@ -13389,15 +13403,15 @@ declare module 'WechatXrFrame/loader/glTF/buffers/GLTFBufferViewNode' {
     }
 }
 
-declare module 'WechatXrFrame/loader/glTF/geometry/GLTFMeshNode' {
-    import { Kanata } from 'WechatXrFrame/ext'
-    import { GLTFAccessorsLoaded } from 'WechatXrFrame/loader/glTF/buffers/GLTFAccessorsNode'
-    import { GLTFBaseNode } from 'WechatXrFrame/loader/glTF/GLTFBaseNode'
-    import { GLTFMaterialsLoaded } from 'WechatXrFrame/loader/glTF/materials/GLTFMaterialsNode'
+declare module 'XrFrame/loader/glTF/geometry/GLTFMeshNode' {
+    import { Kanata } from 'XrFrame/ext'
+    import { GLTFAccessorsLoaded } from 'XrFrame/loader/glTF/buffers/GLTFAccessorsNode'
+    import { GLTFBaseNode } from 'XrFrame/loader/glTF/GLTFBaseNode'
+    import { GLTFMaterialsLoaded } from 'XrFrame/loader/glTF/materials/GLTFMaterialsNode'
     import {
         GLTFPrimitivesLoaded,
         GLTFPrimitivesNodeRaw
-    } from 'WechatXrFrame/loader/glTF/geometry/primitives/GLTFPrimitivesNode'
+    } from 'XrFrame/loader/glTF/geometry/primitives/GLTFPrimitivesNode'
     export interface GLTFMeshNodeRaw {
         primitives: GLTFPrimitivesNodeRaw
         weights?: number[]
@@ -13423,23 +13437,23 @@ declare module 'WechatXrFrame/loader/glTF/geometry/GLTFMeshNode' {
     }
 }
 
-declare module 'WechatXrFrame/loader/glTF/materials/GLTFMaterialNode' {
-    import { GLTFBaseNode } from 'WechatXrFrame/loader/glTF/GLTFBaseNode'
+declare module 'XrFrame/loader/glTF/materials/GLTFMaterialNode' {
+    import { GLTFBaseNode } from 'XrFrame/loader/glTF/GLTFBaseNode'
     import GLTFTextureInfoNode, {
         GLTFTextureInfoNodeRaw
-    } from 'WechatXrFrame/loader/glTF/materials/texture/GLTFTextureInfoNode'
+    } from 'XrFrame/loader/glTF/materials/texture/GLTFTextureInfoNode'
     import GLTFPBRMetallicRoughnessNode, {
         GLTFPBRMetallicRoughnessNodeRaw
-    } from 'WechatXrFrame/loader/glTF/materials/pbr/GLTFPBRMetallicRoughnessNode'
+    } from 'XrFrame/loader/glTF/materials/pbr/GLTFPBRMetallicRoughnessNode'
     import GLTFNormalTextureInfoNode, {
         GLTFNormalTextureInfoNodeRaw
-    } from 'WechatXrFrame/loader/glTF/materials/texture/GLTFNormalTextureInfoNode'
+    } from 'XrFrame/loader/glTF/materials/texture/GLTFNormalTextureInfoNode'
     import GLTFOcclusionTextureInfoNode, {
         GLTFOcclusionTextureInfoNodeRaw
-    } from 'WechatXrFrame/loader/glTF/materials/texture/GLTFOcclusionTextureInfoNode'
-    import Material from 'WechatXrFrame/assets/Material'
-    import { IRenderStates } from 'WechatXrFrame/assets/Effect'
-    import { GLTFTexturesLoaded } from 'WechatXrFrame/loader/glTF/textures/GLTFTexturesNode'
+    } from 'XrFrame/loader/glTF/materials/texture/GLTFOcclusionTextureInfoNode'
+    import Material from 'XrFrame/assets/Material'
+    import { IRenderStates } from 'XrFrame/assets/Effect'
+    import { GLTFTexturesLoaded } from 'XrFrame/loader/glTF/textures/GLTFTexturesNode'
     export interface GLTFMaterialExtArgs {
         uniform: object
         renderStates: IRenderStates
@@ -13488,10 +13502,10 @@ declare module 'WechatXrFrame/loader/glTF/materials/GLTFMaterialNode' {
     }
 }
 
-declare module 'WechatXrFrame/loader/glTF/skins/GLTFSkinNode' {
-    import { Kanata } from 'WechatXrFrame/ext'
-    import { GLTFAccessorsLoaded } from 'WechatXrFrame/loader/glTF/buffers/GLTFAccessorsNode'
-    import { GLTFBaseNode } from 'WechatXrFrame/loader/glTF/GLTFBaseNode'
+declare module 'XrFrame/loader/glTF/skins/GLTFSkinNode' {
+    import { Kanata } from 'XrFrame/ext'
+    import { GLTFAccessorsLoaded } from 'XrFrame/loader/glTF/buffers/GLTFAccessorsNode'
+    import { GLTFBaseNode } from 'XrFrame/loader/glTF/GLTFBaseNode'
     export interface GLTFSkinNodeRaw {
         inverseBindMatrices?: number
         skeleton?: number
@@ -13514,10 +13528,10 @@ declare module 'WechatXrFrame/loader/glTF/skins/GLTFSkinNode' {
     }
 }
 
-declare module 'WechatXrFrame/loader/glTF/textures/GLTFImageNode' {
-    import { Kanata } from 'WechatXrFrame/ext'
-    import { GLTFBufferViewsLoaded } from 'WechatXrFrame/loader/glTF/buffers/GLTFBufferViewsNode'
-    import { GLTFBaseNode } from 'WechatXrFrame/loader/glTF/GLTFBaseNode'
+declare module 'XrFrame/loader/glTF/textures/GLTFImageNode' {
+    import { Kanata } from 'XrFrame/ext'
+    import { GLTFBufferViewsLoaded } from 'XrFrame/loader/glTF/buffers/GLTFBufferViewsNode'
+    import { GLTFBaseNode } from 'XrFrame/loader/glTF/GLTFBaseNode'
     export interface GLTFImageNodeRaw {
         uri?: string
         mimeType?: string
@@ -13539,8 +13553,8 @@ declare module 'WechatXrFrame/loader/glTF/textures/GLTFImageNode' {
     }
 }
 
-declare module 'WechatXrFrame/loader/glTF/textures/GLTFSamplerNode' {
-    import { GLTFBaseNode } from 'WechatXrFrame/loader/glTF/GLTFBaseNode'
+declare module 'XrFrame/loader/glTF/textures/GLTFSamplerNode' {
+    import { GLTFBaseNode } from 'XrFrame/loader/glTF/GLTFBaseNode'
     export enum EnumGLTFSamplerFilter {
         NEAREST = 9728,
         LINEAR = 9729,
@@ -13577,11 +13591,11 @@ declare module 'WechatXrFrame/loader/glTF/textures/GLTFSamplerNode' {
     }
 }
 
-declare module 'WechatXrFrame/loader/glTF/textures/GLTFTextureNode' {
-    import { GLTFBaseNode } from 'WechatXrFrame/loader/glTF/GLTFBaseNode'
-    import { GLTFImagesLoaded } from 'WechatXrFrame/loader/glTF/textures/GLTFImagesNode'
-    import { GLTFSamplersLoaded } from 'WechatXrFrame/loader/glTF/textures/GLTFSamplersNode'
-    import { Kanata } from 'WechatXrFrame/ext'
+declare module 'XrFrame/loader/glTF/textures/GLTFTextureNode' {
+    import { GLTFBaseNode } from 'XrFrame/loader/glTF/GLTFBaseNode'
+    import { GLTFImagesLoaded } from 'XrFrame/loader/glTF/textures/GLTFImagesNode'
+    import { GLTFSamplersLoaded } from 'XrFrame/loader/glTF/textures/GLTFSamplersNode'
+    import { Kanata } from 'XrFrame/ext'
     export interface GLTFTextureNodeRaw {
         sampler?: number
         source?: number
@@ -13602,11 +13616,11 @@ declare module 'WechatXrFrame/loader/glTF/textures/GLTFTextureNode' {
     }
 }
 
-declare module 'WechatXrFrame/loader/glTF/utils/types' {
-    import { ITransformData } from 'WechatXrFrame/components'
-    import { Kanata } from 'WechatXrFrame/ext'
-    import Quaternion from 'WechatXrFrame/math/quaternion'
-    import Vector3, { Vector3ReadOnly } from 'WechatXrFrame/math/vector3'
+declare module 'XrFrame/loader/glTF/utils/types' {
+    import { ITransformData } from 'XrFrame/components'
+    import { Kanata } from 'XrFrame/ext'
+    import Quaternion from 'XrFrame/math/quaternion'
+    import Vector3, { Vector3ReadOnly } from 'XrFrame/math/vector3'
     export namespace GLTF {
         type BufferView =
             | Int8Array
@@ -13659,15 +13673,15 @@ declare module 'WechatXrFrame/loader/glTF/utils/types' {
     }
 }
 
-declare module 'WechatXrFrame/kanata/lib/backend' {
+declare module 'XrFrame/kanata/lib/backend' {
     /**
      * index.ts
      *
      *       * @Date    : 9/3/2020, 8:45:18 PM
      */
-    export * from 'WechatXrFrame/kanata/lib/backend/interface'
-    import { IImage } from 'WechatXrFrame/kanata/lib/backend/interface'
-    import { IWorker } from 'WechatXrFrame/kanata/lib/backend/interface/IWorker'
+    export * from 'XrFrame/kanata/lib/backend/interface'
+    import { IImage } from 'XrFrame/kanata/lib/backend/interface'
+    import { IWorker } from 'XrFrame/kanata/lib/backend/interface/IWorker'
     export interface IBackend {
         IS_VALID: () => boolean
         GET_MAIN_CANVAS(): HTMLCanvasElement
@@ -13682,13 +13696,13 @@ declare module 'WechatXrFrame/kanata/lib/backend' {
     export default backend
 }
 
-declare module 'WechatXrFrame/kanata/lib/frontend/shared/NativeObject' {
+declare module 'XrFrame/kanata/lib/frontend/shared/NativeObject' {
     /**
      * NativeObject.ts
      *
      *       * @Date    : 9/3/2020, 9:17:03 PM
      */
-    import { IHandle } from 'WechatXrFrame/kanata/lib/backend'
+    import { IHandle } from 'XrFrame/kanata/lib/backend'
     export default class NativeObject {
         _bufferName: string
         _byteOffset: number
@@ -13710,8 +13724,8 @@ declare module 'WechatXrFrame/kanata/lib/frontend/shared/NativeObject' {
     }
 }
 
-declare module 'WechatXrFrame/kanata/lib/frontend/pool/PoolObject' {
-    import Pool from 'WechatXrFrame/kanata/lib/frontend/pool/Pool'
+declare module 'XrFrame/kanata/lib/frontend/pool/PoolObject' {
+    import Pool from 'XrFrame/kanata/lib/frontend/pool/Pool'
     export interface INativePools {
         [poolId: number]: Pool
     }
@@ -13735,16 +13749,16 @@ declare module 'WechatXrFrame/kanata/lib/frontend/pool/PoolObject' {
     }
 }
 
-declare module 'WechatXrFrame/kanata/lib/frontend/pool/PoolManager' {
+declare module 'XrFrame/kanata/lib/frontend/pool/PoolManager' {
     /**
      * PoolManager.ts
      *
      *       * @Date    : 9/3/2020, 9:19:34 PM
      */
-    import { IHandle } from 'WechatXrFrame/kanata/lib/backend'
+    import { IHandle } from 'XrFrame/kanata/lib/backend'
     import PoolObject, {
         INativePools
-    } from 'WechatXrFrame/kanata/lib/frontend/pool/PoolObject'
+    } from 'XrFrame/kanata/lib/frontend/pool/PoolObject'
     export default class PoolManager {
         pools: INativePools
         constructor(
@@ -13758,13 +13772,13 @@ declare module 'WechatXrFrame/kanata/lib/frontend/pool/PoolManager' {
     }
 }
 
-declare module 'WechatXrFrame/kanata/lib/frontend/shared/PureResource' {
+declare module 'XrFrame/kanata/lib/frontend/shared/PureResource' {
     /**
      * PureResource.ts
      *
      *       * @Date    : 9/8/2020, 9:04:32 PM
      */
-    import { IHandle } from 'WechatXrFrame/kanata/lib/backend'
+    import { IHandle } from 'XrFrame/kanata/lib/backend'
     export default class PureResource {
         id: number
         __handle: IHandle
@@ -13774,7 +13788,7 @@ declare module 'WechatXrFrame/kanata/lib/frontend/shared/PureResource' {
     }
 }
 
-declare module 'WechatXrFrame/kanata/lib/backend/native/worker' {
+declare module 'XrFrame/kanata/lib/backend/native/worker' {
     import {
         IHandle,
         ETextureType,
@@ -13785,7 +13799,7 @@ declare module 'WechatXrFrame/kanata/lib/backend/native/worker' {
         ILongIntNativeMap,
         IGlyphInfo,
         IRenderEnv
-    } from 'WechatXrFrame/kanata/lib/backend/interface'
+    } from 'XrFrame/kanata/lib/backend/interface'
     export interface INativeWorker {
         createVertexLayout(options: string): IHandle
         createVertexDataDescriptor(options: string): IHandle
@@ -14029,14 +14043,14 @@ declare module 'WechatXrFrame/kanata/lib/backend/native/worker' {
     export { Phys3D }
 }
 
-declare module 'WechatXrFrame/loader/glTF/animations/channels/GLTFChannelsNode' {
-    import { GLTFArrayNode } from 'WechatXrFrame/loader/glTF/GLTFBaseNode'
-    import { GLTFNodesLoaded } from 'WechatXrFrame/loader/glTF/scenes/GLTFNodesNode'
-    import { GLTFSamplersLoaded } from 'WechatXrFrame/loader/glTF/animations/samplers/GLTFSamplersNode'
+declare module 'XrFrame/loader/glTF/animations/channels/GLTFChannelsNode' {
+    import { GLTFArrayNode } from 'XrFrame/loader/glTF/GLTFBaseNode'
+    import { GLTFNodesLoaded } from 'XrFrame/loader/glTF/scenes/GLTFNodesNode'
+    import { GLTFSamplersLoaded } from 'XrFrame/loader/glTF/animations/samplers/GLTFSamplersNode'
     import GLTFChannelNode, {
         GLTFChannelLoaded,
         GLTFChannelNodeRaw
-    } from 'WechatXrFrame/loader/glTF/animations/channels/GLTFChannelNode'
+    } from 'XrFrame/loader/glTF/animations/channels/GLTFChannelNode'
     type ChildNode = GLTFChannelNode
     export type GLTFChannelsNodeRaw = GLTFChannelsNodeRaw[]
     export type GLTFChannelsLoaded = GLTFChannelLoaded[]
@@ -14055,13 +14069,13 @@ declare module 'WechatXrFrame/loader/glTF/animations/channels/GLTFChannelsNode' 
     export {}
 }
 
-declare module 'WechatXrFrame/loader/glTF/animations/samplers/GLTFSamplersNode' {
-    import { GLTFAccessorsLoaded } from 'WechatXrFrame/loader/glTF/buffers/GLTFAccessorsNode'
-    import { GLTFArrayNode } from 'WechatXrFrame/loader/glTF/GLTFBaseNode'
+declare module 'XrFrame/loader/glTF/animations/samplers/GLTFSamplersNode' {
+    import { GLTFAccessorsLoaded } from 'XrFrame/loader/glTF/buffers/GLTFAccessorsNode'
+    import { GLTFArrayNode } from 'XrFrame/loader/glTF/GLTFBaseNode'
     import GLTFSamplerNode, {
         GLTFSamplerLoaded,
         GLTFSamplerNodeRaw
-    } from 'WechatXrFrame/loader/glTF/animations/samplers/GLTFSamplerNode'
+    } from 'XrFrame/loader/glTF/animations/samplers/GLTFSamplerNode'
     type ChildNode = GLTFSamplerNode
     export type GLTFSamplersNodeRaw = GLTFSamplersNodeRaw[]
     export type GLTFSamplersLoaded = GLTFSamplerLoaded[]
@@ -14077,15 +14091,15 @@ declare module 'WechatXrFrame/loader/glTF/animations/samplers/GLTFSamplersNode' 
     export {}
 }
 
-declare module 'WechatXrFrame/loader/glTF/geometry/primitives/GLTFPrimitivesNode' {
-    import { Kanata } from 'WechatXrFrame/ext'
-    import { GLTFAccessorsLoaded } from 'WechatXrFrame/loader/glTF/buffers/GLTFAccessorsNode'
-    import { GLTFArrayNode } from 'WechatXrFrame/loader/glTF/GLTFBaseNode'
-    import { GLTFMaterialsLoaded } from 'WechatXrFrame/loader/glTF/materials/GLTFMaterialsNode'
+declare module 'XrFrame/loader/glTF/geometry/primitives/GLTFPrimitivesNode' {
+    import { Kanata } from 'XrFrame/ext'
+    import { GLTFAccessorsLoaded } from 'XrFrame/loader/glTF/buffers/GLTFAccessorsNode'
+    import { GLTFArrayNode } from 'XrFrame/loader/glTF/GLTFBaseNode'
+    import { GLTFMaterialsLoaded } from 'XrFrame/loader/glTF/materials/GLTFMaterialsNode'
     import GLTFPrimitiveNode, {
         GLTFPrimitiveLoaded,
         GLTFPrimitiveNodeRaw
-    } from 'WechatXrFrame/loader/glTF/geometry/primitives/GLTFPrimitiveNode'
+    } from 'XrFrame/loader/glTF/geometry/primitives/GLTFPrimitiveNode'
     type ChildNode = GLTFPrimitiveNode
     export type GLTFPrimitivesNodeRaw = GLTFPrimitivesNodeRaw[]
     export type GLTFPrimitivesLoaded = GLTFPrimitiveLoaded[]
@@ -14105,8 +14119,8 @@ declare module 'WechatXrFrame/loader/glTF/geometry/primitives/GLTFPrimitivesNode
     export {}
 }
 
-declare module 'WechatXrFrame/loader/glTF/materials/texture/GLTFTextureInfoNode' {
-    import { GLTFBaseNode } from 'WechatXrFrame/loader/glTF/GLTFBaseNode'
+declare module 'XrFrame/loader/glTF/materials/texture/GLTFTextureInfoNode' {
+    import { GLTFBaseNode } from 'XrFrame/loader/glTF/GLTFBaseNode'
     export interface GLTFTextureInfoNodeRaw {
         index: number
         texCoord?: number
@@ -14124,11 +14138,11 @@ declare module 'WechatXrFrame/loader/glTF/materials/texture/GLTFTextureInfoNode'
     }
 }
 
-declare module 'WechatXrFrame/loader/glTF/materials/pbr/GLTFPBRMetallicRoughnessNode' {
-    import { Kanata } from 'WechatXrFrame/ext'
-    import { GLTFBaseNode } from 'WechatXrFrame/loader/glTF/GLTFBaseNode'
-    import { GLTFTexturesLoaded } from 'WechatXrFrame/loader/glTF/textures/GLTFTexturesNode'
-    import { GLTFTextureInfoNodeRaw } from 'WechatXrFrame/loader/glTF/materials/texture/GLTFTextureInfoNode'
+declare module 'XrFrame/loader/glTF/materials/pbr/GLTFPBRMetallicRoughnessNode' {
+    import { Kanata } from 'XrFrame/ext'
+    import { GLTFBaseNode } from 'XrFrame/loader/glTF/GLTFBaseNode'
+    import { GLTFTexturesLoaded } from 'XrFrame/loader/glTF/textures/GLTFTexturesNode'
+    import { GLTFTextureInfoNodeRaw } from 'XrFrame/loader/glTF/materials/texture/GLTFTextureInfoNode'
     export interface GLTFPBRMetallicRoughnessNodeRaw {
         baseColorFactor?: [number, number, number, number]
         baseColorTexture?: GLTFTextureInfoNodeRaw
@@ -14156,8 +14170,8 @@ declare module 'WechatXrFrame/loader/glTF/materials/pbr/GLTFPBRMetallicRoughness
     }
 }
 
-declare module 'WechatXrFrame/loader/glTF/materials/texture/GLTFNormalTextureInfoNode' {
-    import { GLTFBaseNode } from 'WechatXrFrame/loader/glTF/GLTFBaseNode'
+declare module 'XrFrame/loader/glTF/materials/texture/GLTFNormalTextureInfoNode' {
+    import { GLTFBaseNode } from 'XrFrame/loader/glTF/GLTFBaseNode'
     export interface GLTFNormalTextureInfoNodeRaw {
         index: number
         texCoord?: number
@@ -14177,8 +14191,8 @@ declare module 'WechatXrFrame/loader/glTF/materials/texture/GLTFNormalTextureInf
     }
 }
 
-declare module 'WechatXrFrame/loader/glTF/materials/texture/GLTFOcclusionTextureInfoNode' {
-    import { GLTFBaseNode } from 'WechatXrFrame/loader/glTF/GLTFBaseNode'
+declare module 'XrFrame/loader/glTF/materials/texture/GLTFOcclusionTextureInfoNode' {
+    import { GLTFBaseNode } from 'XrFrame/loader/glTF/GLTFBaseNode'
     export interface GLTFOcclusionTextureInfoNodeRaw {
         index: number
         texCoord?: number
@@ -14198,7 +14212,7 @@ declare module 'WechatXrFrame/loader/glTF/materials/texture/GLTFOcclusionTexture
     }
 }
 
-declare module 'WechatXrFrame/kanata/lib/backend/interface/IWorker' {
+declare module 'XrFrame/kanata/lib/backend/interface/IWorker' {
     /**
      * IWorker.ts
      *
@@ -14225,7 +14239,7 @@ declare module 'WechatXrFrame/kanata/lib/backend/interface/IWorker' {
         IVertexDataDescriptorOptions,
         IRenderEnv,
         IEngineSettings
-    } from 'WechatXrFrame/kanata/lib/backend/interface'
+    } from 'XrFrame/kanata/lib/backend/interface'
     global {
         const MAIN_CANVAS: HTMLCanvasElement
         const ENGINE_SETTINGS: IEngineSettings
@@ -14554,9 +14568,9 @@ declare module 'WechatXrFrame/kanata/lib/backend/interface/IWorker' {
     }
 }
 
-declare module 'WechatXrFrame/kanata/lib/frontend/pool/Pool' {
-    import { IHandle } from 'WechatXrFrame/kanata/lib/backend'
-    import NativeObject from 'WechatXrFrame/kanata/lib/frontend/shared/NativeObject'
+declare module 'XrFrame/kanata/lib/frontend/pool/Pool' {
+    import { IHandle } from 'XrFrame/kanata/lib/backend'
+    import NativeObject from 'XrFrame/kanata/lib/frontend/shared/NativeObject'
     export default class Pool extends NativeObject {
         u32viewExt: Uint32Array
         constructor(nativeObj: IHandle)
@@ -14564,17 +14578,17 @@ declare module 'WechatXrFrame/kanata/lib/frontend/pool/Pool' {
     }
 }
 
-declare module 'WechatXrFrame/loader/glTF/animations/channels/GLTFChannelNode' {
-    import { StreamReader } from 'WechatXrFrame/core/utils'
-    import { GLTFBaseNode } from 'WechatXrFrame/loader/glTF/GLTFBaseNode'
-    import { GLTFNodesLoaded } from 'WechatXrFrame/loader/glTF/scenes/GLTFNodesNode'
-    import { GLTF } from 'WechatXrFrame/loader/glTF/utils/types'
-    import { GLTFSamplerLoaded } from 'WechatXrFrame/loader/glTF/animations/samplers/GLTFSamplerNode'
-    import { GLTFSamplersLoaded } from 'WechatXrFrame/loader/glTF/animations/samplers/GLTFSamplersNode'
+declare module 'XrFrame/loader/glTF/animations/channels/GLTFChannelNode' {
+    import { StreamReader } from 'XrFrame/core/utils'
+    import { GLTFBaseNode } from 'XrFrame/loader/glTF/GLTFBaseNode'
+    import { GLTFNodesLoaded } from 'XrFrame/loader/glTF/scenes/GLTFNodesNode'
+    import { GLTF } from 'XrFrame/loader/glTF/utils/types'
+    import { GLTFSamplerLoaded } from 'XrFrame/loader/glTF/animations/samplers/GLTFSamplerNode'
+    import { GLTFSamplersLoaded } from 'XrFrame/loader/glTF/animations/samplers/GLTFSamplersNode'
     import {
         GLTFTargetLoaded,
         GLTFTargetNodeRaw
-    } from 'WechatXrFrame/loader/glTF/animations/channels/GLTFTargetNode'
+    } from 'XrFrame/loader/glTF/animations/channels/GLTFTargetNode'
     export enum EnumPuppetAnimationSampleGroupType {
         tx = 1,
         ty = 2,
@@ -14640,10 +14654,10 @@ declare module 'WechatXrFrame/loader/glTF/animations/channels/GLTFChannelNode' {
     }
 }
 
-declare module 'WechatXrFrame/loader/glTF/animations/samplers/GLTFSamplerNode' {
-    import { GLTFAccessorLoaded } from 'WechatXrFrame/loader/glTF/buffers/GLTFAccessorNode'
-    import { GLTFAccessorsLoaded } from 'WechatXrFrame/loader/glTF/buffers/GLTFAccessorsNode'
-    import { GLTFBaseNode } from 'WechatXrFrame/loader/glTF/GLTFBaseNode'
+declare module 'XrFrame/loader/glTF/animations/samplers/GLTFSamplerNode' {
+    import { GLTFAccessorLoaded } from 'XrFrame/loader/glTF/buffers/GLTFAccessorNode'
+    import { GLTFAccessorsLoaded } from 'XrFrame/loader/glTF/buffers/GLTFAccessorsNode'
+    import { GLTFBaseNode } from 'XrFrame/loader/glTF/GLTFBaseNode'
     export enum EnumGLTFSamplerInterpolation {
         STEP = 0,
         LINEAR = 1,
@@ -14671,15 +14685,15 @@ declare module 'WechatXrFrame/loader/glTF/animations/samplers/GLTFSamplerNode' {
     }
 }
 
-declare module 'WechatXrFrame/loader/glTF/geometry/primitives/GLTFPrimitiveNode' {
-    import Geometry from 'WechatXrFrame/assets/Geometry'
-    import { GLTFAccessorsLoaded } from 'WechatXrFrame/loader/glTF/buffers/GLTFAccessorsNode'
-    import { GLTFBaseNode } from 'WechatXrFrame/loader/glTF/GLTFBaseNode'
-    import { GLTFAttributesNodeRaw } from 'WechatXrFrame/loader/glTF/geometry/primitives/attributes/GLTFAttributesNode'
-    import { GLTFMaterialsLoaded } from 'WechatXrFrame/loader/glTF/materials/GLTFMaterialsNode'
-    import Material from 'WechatXrFrame/assets/Material'
-    import { GLTF } from 'WechatXrFrame/loader/glTF/utils/types'
-    import { GLTFTargetsNodeRaw } from 'WechatXrFrame/loader/glTF/geometry/primitives/targets/GLTFTargetsNode'
+declare module 'XrFrame/loader/glTF/geometry/primitives/GLTFPrimitiveNode' {
+    import Geometry from 'XrFrame/assets/Geometry'
+    import { GLTFAccessorsLoaded } from 'XrFrame/loader/glTF/buffers/GLTFAccessorsNode'
+    import { GLTFBaseNode } from 'XrFrame/loader/glTF/GLTFBaseNode'
+    import { GLTFAttributesNodeRaw } from 'XrFrame/loader/glTF/geometry/primitives/attributes/GLTFAttributesNode'
+    import { GLTFMaterialsLoaded } from 'XrFrame/loader/glTF/materials/GLTFMaterialsNode'
+    import Material from 'XrFrame/assets/Material'
+    import { GLTF } from 'XrFrame/loader/glTF/utils/types'
+    import { GLTFTargetsNodeRaw } from 'XrFrame/loader/glTF/geometry/primitives/targets/GLTFTargetsNode'
     export enum EnumGLTFPrimitiveMode {
         POINTS = 0,
         LINES = 1,
@@ -14715,7 +14729,7 @@ declare module 'WechatXrFrame/loader/glTF/geometry/primitives/GLTFPrimitiveNode'
     }
 }
 
-declare module 'WechatXrFrame/core/utils' {
+declare module 'XrFrame/core/utils' {
     export function assert(pred: boolean, msg: string): void
     export function decode(data: ArrayBuffer, format: 'utf-8' | 'gbk'): string
     export function wxPromiseWrapper<T = any>(
@@ -14757,12 +14771,12 @@ declare module 'WechatXrFrame/core/utils' {
     }
 }
 
-declare module 'WechatXrFrame/loader/glTF/animations/channels/GLTFTargetNode' {
-    import { GLTFBaseNode } from 'WechatXrFrame/loader/glTF/GLTFBaseNode'
+declare module 'XrFrame/loader/glTF/animations/channels/GLTFTargetNode' {
+    import { GLTFBaseNode } from 'XrFrame/loader/glTF/GLTFBaseNode'
     import {
         GLTFNodesLoaded,
         GLTFTreeNode
-    } from 'WechatXrFrame/loader/glTF/scenes/GLTFNodesNode'
+    } from 'XrFrame/loader/glTF/scenes/GLTFNodesNode'
     export enum GLTFEnumAnimationTargetPath {
         TRANSLATION = 0,
         ROTATION = 1,
@@ -14788,11 +14802,11 @@ declare module 'WechatXrFrame/loader/glTF/animations/channels/GLTFTargetNode' {
     }
 }
 
-declare module 'WechatXrFrame/loader/glTF/geometry/primitives/attributes/GLTFAttributesNode' {
-    import { GLTFAccessorsLoaded } from 'WechatXrFrame/loader/glTF/buffers/GLTFAccessorsNode'
-    import { GLTFBaseNode } from 'WechatXrFrame/loader/glTF/GLTFBaseNode'
-    import { GLTF } from 'WechatXrFrame/loader/glTF/utils/types'
-    import { GLTFTargetsLoaded } from 'WechatXrFrame/loader/glTF/geometry/primitives/targets/GLTFTargetsNode'
+declare module 'XrFrame/loader/glTF/geometry/primitives/attributes/GLTFAttributesNode' {
+    import { GLTFAccessorsLoaded } from 'XrFrame/loader/glTF/buffers/GLTFAccessorsNode'
+    import { GLTFBaseNode } from 'XrFrame/loader/glTF/GLTFBaseNode'
+    import { GLTF } from 'XrFrame/loader/glTF/utils/types'
+    import { GLTFTargetsLoaded } from 'XrFrame/loader/glTF/geometry/primitives/targets/GLTFTargetsNode'
     /**
      * GLTF.Attributes.Name -> Kanata.Layout.Name
      */
@@ -14830,8 +14844,8 @@ declare module 'WechatXrFrame/loader/glTF/geometry/primitives/attributes/GLTFAtt
     }
 }
 
-declare module 'WechatXrFrame/loader/glTF/geometry/primitives/targets/GLTFTargetsNode' {
-    import { GLTFBaseNode } from 'WechatXrFrame/loader/glTF/GLTFBaseNode'
+declare module 'XrFrame/loader/glTF/geometry/primitives/targets/GLTFTargetsNode' {
+    import { GLTFBaseNode } from 'XrFrame/loader/glTF/GLTFBaseNode'
     export type GLTFTargetsNodeRaw = Array<{
         [targetAttribName: string]: number
     }>

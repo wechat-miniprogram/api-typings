@@ -55,6 +55,7 @@ Both PR and issue are welcomed for definitions of pages (`Page`), custom compone
 - [Mr.Hope](https://github.com/Mister-Hope)
 - [chs97](https://github.com/chs97)
 - [Jelf](https://github.com/okxiaoliang4)
+- [xieyuhang](https://github.com/haiya6)
 
 ### Automated tests
 
