@@ -102,7 +102,12 @@ declare namespace WechatMiniprogram.Page {
         onShareAppMessage(
             /** 分享发起来源参数 */
             options: IShareAppMessageOption
-        ): ICustomShareContent | void
+        ):
+            | ICustomShareContent
+            | IAsyncCustomShareContent
+            | Promise<ICustomShareContent>
+            | void
+            | Promise<void>
         /**
          * 监听右上角菜单“分享到朋友圈”按钮的行为，并自定义分享内容
          *
@@ -174,6 +179,10 @@ declare namespace WechatMiniprogram.Page {
         path?: string
         /** 自定义图片路径，可以是本地文件路径、代码包文件路径或者网络图片路径。支持PNG及JPG。显示图片长宽比是 5:4，最低基础库： `1.5.0`。默认值：使用默认截图 */
         imageUrl?: string
+    }
+
+    interface IAsyncCustomShareContent extends ICustomShareContent {
+        promise: Promise<ICustomShareContent>
     }
 
     interface ICustomTimelineContent {

@@ -71,8 +71,8 @@ declare namespace WechatMiniprogram {
     // TODO: fill worklet type
     type WorkletFunction = (...args: any) => any
     type AnimationObject = any
-    type SharedValue = any
-    type DerivedValue = any
+    type SharedValue<T = any> = T
+    type DerivedValue<T = any> = T
 }
 
 declare let console: WechatMiniprogram.Console

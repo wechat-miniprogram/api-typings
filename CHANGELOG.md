@@ -1,3 +1,7 @@
+## 2023-04-10 v2.9.1
+- 更新 API 定义到 2.30.4
+- 修复页面 `onShareAppMessage` 异步形式的定义错误
+
 ## 2023-01-12 v3.9.0
 - 更新 API 定义到 2.29.1
 - 将 xr-frame 的命名空间由 `WechatXrFrame` 改为 `XrFrame`。这是一个 **破坏性改动**
