@@ -6,9 +6,9 @@ expectType<Record<string, any>>(getCurrentPages()[0].data)
 
 const app = getApp<{
   globalData: {
-    userInfo: WechatMiniprogram.UserInfo;
-  };
-  userInfoReadyCallback(userInfo: WechatMiniprogram.UserInfo): void;
+    userInfo: WechatMiniprogram.UserInfo
+  }
+  userInfoReadyCallback(userInfo: WechatMiniprogram.UserInfo): void
 }>()
 
 Page({
@@ -68,7 +68,7 @@ Page({
   onLoad(options) {
     expectType<string | undefined>(options.from)
     const app = getApp<{
-      globalData: { userInfo: WechatMiniprogram.UserInfo };
+      globalData: { userInfo: WechatMiniprogram.UserInfo }
     }>()
     expectType<string>(app.globalData.userInfo.nickName)
   },
