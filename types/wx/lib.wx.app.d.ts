@@ -333,6 +333,13 @@ declare namespace WechatMiniprogram.App {
         shareTicket: string
         /** 当场景为由从另一个小程序或公众号或App打开时，返回此字段 */
         referrerInfo?: ReferrerInfo
+        /** API 类别; 2.20.0及其以上版本支持
+         * - default：默认类别
+         * - nativeFunctionalized: 原生功能化，视频号直播商品、商品橱窗等场景打开的小程序
+         * - 仅浏览，朋友圈快照页等场景打开的小程序
+         * - 内嵌，通过打开半屏小程序能力打开的小程序
+         */
+        apiCategory?: 'default' | 'nativeFunctionalized' | 'browseOnly' | 'embedded';
     }
 
     interface PageNotFoundOption {
