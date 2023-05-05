@@ -11,14 +11,6 @@ Type definitions for APIs of Wechat Mini Program in TypeScript
 
 ## Install
 
-### By DefinitelyTyped
-
-```bash
-npm install @types/wechat-miniprogram
-```
-
-or:
-
 ### By standalone npm package
 
 ```bash
@@ -36,6 +28,14 @@ Or specify types in typescript config:
 Or reference by [Triple-Slash Directives](https://www.typescriptlang.org/docs/handbook/triple-slash-directives.html):
 
 - `/// <reference path="node_modules/miniprogram-api-typings/index.d.ts" />`
+
+or:
+
+### By DefinitelyTyped
+
+```bash
+npm install @types/wechat-miniprogram
+```
 
 ## Changelog
 
@@ -56,6 +56,7 @@ Both PR and issue are welcomed for definitions of pages (`Page`), custom compone
 - [chs97](https://github.com/chs97)
 - [Jelf](https://github.com/okxiaoliang4)
 - [xieyuhang](https://github.com/haiya6)
+- [苏杰豪](https://github.com/Megasu)
 
 ### Automated tests
 

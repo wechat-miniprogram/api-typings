@@ -17,14 +17,6 @@
 npm install miniprogram-api-typings
 ```
 
-或：
-
-### 通过 DefinitelyTyped
-
-```bash
-npm install @types/wechat-miniprogram
-```
-
 安装后手动导入：
 
 - `import 'miniprogram-api-typings';`
@@ -36,6 +28,14 @@ npm install @types/wechat-miniprogram
 或者通过 [三斜杠指令](https://www.tslang.cn/docs/handbook/triple-slash-directives.html) 引用：
 
 - `/// <reference path="node_modules/miniprogram-api-typings/index.d.ts" />`
+
+或：
+
+### 通过 DefinitelyTyped
+
+```bash
+npm install @types/wechat-miniprogram
+```
 
 ## 更新日志
 
@@ -56,6 +56,7 @@ API 的定义文件（`lib.wx.api.d.ts`）是随 [文档](https://developers.wei
 - [chs97](https://github.com/chs97)
 - [Jelf](https://github.com/okxiaoliang4)
 - [xieyuhang](https://github.com/haiya6)
+- [苏杰豪](https://github.com/Megasu)
 
 ### 测试
 
