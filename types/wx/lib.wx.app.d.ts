@@ -339,7 +339,7 @@ declare namespace WechatMiniprogram.App {
          * - 仅浏览，朋友圈快照页等场景打开的小程序
          * - 内嵌，通过打开半屏小程序能力打开的小程序
          */
-        apiCategory?: 'default' | 'nativeFunctionalized' | 'browseOnly' | 'embedded';
+        apiCategory?: 'default' | 'nativeFunctionalized' | 'browseOnly' | 'embedded'
     }
 
     interface PageNotFoundOption {
