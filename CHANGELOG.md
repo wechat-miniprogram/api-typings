@@ -1,3 +1,7 @@
+## 2023-06-09 v3.10.0
+- 更新 API 定义到 2.32.1
+- 新增 CanvasRenderingContext 类型定义 [#111](https://github.com/wechat-miniprogram/api-typings/issues/111)
+
 ## 2023-04-10 v3.9.1
 - 更新 API 定义到 2.30.4
 - 修复页面 `onShareAppMessage` 异步形式的定义错误
