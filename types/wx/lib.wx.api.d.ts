@@ -884,6 +884,16 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
          * - 2: 未知; */
         state: 0 | 1 | 2
     }
+    interface CameraContextSetZoomOption {
+        /** 缩放级别，范围[1, maxZoom]。zoom 可取小数，精确到小数后一位。maxZoom 可在 bindinitdone 返回值中获取。 */
+        zoom: number
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: SetZoomCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: SetZoomFailCallback
+        /** 接口调用成功的回调函数 */
+        success?: CameraContextSetZoomSuccessCallback
+    }
     interface CameraContextStartRecordOption {
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: StartRecordCompleteCallback
@@ -2208,16 +2218,16 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         scoreThreshold?: number
     }
     interface DeviceInfo {
-        /** 需要基础库： `2.29.0`
-         *
-         * 设备 CPU 型号（仅 Android 支持）（Tips: GPU 型号可通过 WebGLRenderingContext.getExtension('WEBGL_debug_renderer_info') 来获取） */
-        CPUType: string
         /** 应用（微信APP）二进制接口类型（仅 Android 支持） */
         abi: string
         /** 设备性能等级（仅 Android 支持）。取值为：-2 或 0（该设备无法运行小游戏），-1（性能未知），>=1（设备性能值，该值越高，设备性能越好，目前最高不到50） */
         benchmarkLevel: number
         /** 设备品牌 */
         brand: string
+        /** 需要基础库： `2.29.0`
+         *
+         * 设备 CPU 型号（仅 Android 支持）（Tips: GPU 型号可通过 WebGLRenderingContext.getExtension('WEBGL_debug_renderer_info') 来获取） */
+        cpuType: string
         /** 需要基础库： `2.25.1`
          *
          * 设备二进制接口类型（仅 Android 支持） */
@@ -2405,6 +2415,14 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         data: string
         /** 调用结果 */
         errMsg: string
+    }
+    interface ExitCastingOption {
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: ExitCastingCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: ExitCastingFailCallback
+        /** 接口调用成功的回调函数 */
+        success?: ExitCastingSuccessCallback
     }
     interface ExitFullScreenOption {
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
@@ -3331,6 +3349,19 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         length: number
         errMsg: string
     }
+    interface GetMaxZoomOption {
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: GetMaxZoomCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: GetMaxZoomFailCallback
+        /** 接口调用成功的回调函数 */
+        success?: GetMaxZoomSuccessCallback
+    }
+    interface GetMaxZoomSuccessCallbackResult {
+        /** 最大放缩级别 */
+        maxZoom: string
+        errMsg: string
+    }
     interface GetNetworkTypeOption {
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: GetNetworkTypeCompleteCallback
@@ -3388,6 +3419,14 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         /** 西南角经纬度 */
         southwest: MapPostion
         errMsg: string
+    }
+    interface GetRendererUserAgentOption {
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: GetRendererUserAgentCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: GetRendererUserAgentFailCallback
+        /** 接口调用成功的回调函数 */
+        success?: GetRendererUserAgentSuccessCallback
     }
     interface GetRotateOption {
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
@@ -3923,7 +3962,7 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         complete?: IncludePointsCompleteCallback
         /** 接口调用失败的回调函数 */
         fail?: IncludePointsFailCallback
-        /** 坐标点形成的矩形边缘到地图边缘的距离，单位像素。格式为[上,右,下,左]，安卓上只能识别数组第一项，上下左右的padding一致。开发者工具暂不支持padding参数。 */
+        /** 坐标点形成的矩形边缘到地图边缘的距离，单位像素。格式为[上,右,下,左]。开发者工具暂不支持padding参数。 */
         padding?: number[]
         /** 接口调用成功的回调函数 */
         success?: IncludePointsSuccessCallback
@@ -4289,6 +4328,16 @@ innerAudioContext.onError((res) => {
         /** 图片的宽度 */
         width: string
         errMsg: string
+    }
+    interface LivePusherContextSetZoomOption {
+        /** 缩放级别，范围[1, maxZoom]。zoom 可取小数，精确到小数后一位。 */
+        zoom: number
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: SetZoomCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: SetZoomFailCallback
+        /** 接口调用成功的回调函数 */
+        success?: LivePusherContextSetZoomSuccessCallback
     }
     interface LivePusherContextSnapshotOption {
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
@@ -5485,10 +5534,6 @@ innerAudioContext.onError((res) => {
         /** 接口调用成功的回调函数 */
         success?: PageScrollToSuccessCallback
     }
-    /** 需要基础库： `2.11.0`
-     *
-     * Canvas 2D API 的接口 Path2D 用来声明路径，此路径稍后会被CanvasRenderingContext2D 对象使用。CanvasRenderingContext2D 接口的 路径方法 也存在于 Path2D 这个接口中，允许你在 canvas 中根据需要创建可以保留并重用的路径。 */
-    interface Path2D {}
     interface PauseBGMOption {
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: PauseBGMCompleteCallback
@@ -5657,8 +5702,16 @@ innerAudioContext.onError((res) => {
         url: string
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: PlayBGMCompleteCallback
+        /** 需要基础库： `2.31.0`
+         *
+         * BGM结束播放时间点，单位ms，0代表播放至文件结尾，若入参为负或超过文件长度，则默认播放至文件结尾 */
+        endTimeMs?: number
         /** 接口调用失败的回调函数 */
         fail?: PlayBGMFailCallback
+        /** 需要基础库： `2.31.0`
+         *
+         * BGM开始播时间点，单位ms，若入参为负或超过文件长度，则默认从文件开头进行播放 */
+        startTimeMs?: number
         /** 接口调用成功的回调函数 */
         success?: PlayBGMSuccessCallback
     }
@@ -6013,6 +6066,14 @@ innerAudioContext.onError((res) => {
         /** 指定目录下的文件名数组。 */
         files: string[]
         errMsg: string
+    }
+    interface ReconnectCastingOption {
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: ReconnectCastingCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: ReconnectCastingFailCallback
+        /** 接口调用成功的回调函数 */
+        success?: ReconnectCastingSuccessCallback
     }
     interface RecorderManagerStartOption {
         /** 需要基础库： `2.1.0`
@@ -7213,16 +7274,6 @@ wx.createSelectorQuery()
         /** 接口调用成功的回调函数 */
         success?: SetWindowSizeSuccessCallback
     }
-    interface SetZoomOption {
-        /** 缩放级别，范围[1, maxZoom]。zoom 可取小数，精确到小数后一位。maxZoom 可在 bindinitdone 返回值中获取。 */
-        zoom: number
-        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
-        complete?: SetZoomCompleteCallback
-        /** 接口调用失败的回调函数 */
-        fail?: SetZoomFailCallback
-        /** 接口调用成功的回调函数 */
-        success?: SetZoomSuccessCallback
-    }
     interface SetZoomSuccessCallbackResult {
         /** 实际设置的缩放级别。由于系统限制，某些机型可能无法设置成指定值，会改用最接近的可设值。 */
         zoom: number
@@ -7585,6 +7636,14 @@ wx.createSelectorQuery()
         services?: string[]
         /** 接口调用成功的回调函数 */
         success?: StartBluetoothDevicesDiscoverySuccessCallback
+    }
+    interface StartCastingOption {
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: StartCastingCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: StartCastingFailCallback
+        /** 接口调用成功的回调函数 */
+        success?: StartCastingSuccessCallback
     }
     interface StartCompassOption {
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
@@ -8090,6 +8149,14 @@ wx.getSetting({
         /** 接口调用成功的回调函数 */
         success?: SwitchCameraSuccessCallback
     }
+    interface SwitchCastingOption {
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: SwitchCastingCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: SwitchCastingFailCallback
+        /** 接口调用成功的回调函数 */
+        success?: SwitchCastingSuccessCallback
+    }
     interface SwitchTabOption {
         /** 需要跳转的 tabBar 页面的路径 (代码包路径)（需在 app.json 的 [tabBar](https://developers.weixin.qq.com/miniprogram/dev/reference/configuration/app.html#tabbar) 字段定义的页面），路径后不能带参数。 */
         url: string
@@ -8194,7 +8261,7 @@ wx.getSetting({
         platform: 'ios' | 'android' | 'windows' | 'mac' | 'devtools'
         /** 需要基础库： `2.7.0`
          *
-         * 在竖屏正方向下的安全区域 */
+         * 在竖屏正方向下的安全区域。部分机型没有安全区域概念，也不会返回 safeArea 字段，开发者需自行兼容。 */
         safeArea: SafeArea
         /** 需要基础库： `1.1.0`
          *
@@ -9189,7 +9256,7 @@ setTimeout(audioCtx.resume, 2000)
     interface WindowInfo {
         /** 设备像素比 */
         pixelRatio: number
-        /** 在竖屏正方向下的安全区域 */
+        /** 在竖屏正方向下的安全区域。部分机型没有安全区域概念，也不会返回 safeArea 字段，开发者需自行兼容。 */
         safeArea: SafeArea
         /** 屏幕高度，单位px */
         screenHeight: number
@@ -10685,7 +10752,7 @@ const ruleId = cacheManager.addRule({
          * 在插件中使用：支持
          *
          * 设置缩放级别 */
-        setZoom(option: SetZoomOption): void
+        setZoom(option: CameraContextSetZoomOption): void
         /** [CameraContext.startRecord(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/camera/CameraContext.startRecord.html)
          *
          * 在插件中使用：支持
@@ -10791,7 +10858,49 @@ listener.start()
          * ****
          *
          * 支持获取 2D 和 WebGL 绘图上下文 */
-        getContext(contextType: string): any
+        getContext(
+            /** 上下文类型
+             *
+             * 参数 contextType 可选值：
+             * - '2d': 2d 绘图上下文; */
+            contextType: '2d'
+        ): CanvasRenderingContext.CanvasRenderingContext2D
+        /** [[RenderingContext](https://developers.weixin.qq.com/miniprogram/dev/api/canvas/RenderingContext.html) Canvas.getContext(string contextType)](https://developers.weixin.qq.com/miniprogram/dev/api/canvas/Canvas.getContext.html)
+         *
+         * 需要基础库： `2.7.0`
+         *
+         * 在插件中使用：支持
+         *
+         * 该方法返回 Canvas 的绘图上下文
+         *
+         * ****
+         *
+         * 支持获取 2D 和 WebGL 绘图上下文 */
+        getContext(
+            /** 上下文类型
+             *
+             * 参数 contextType 可选值：
+             * - 'webgl': webgl 绘图上下文; */
+            contextType: 'webgl'
+        ): CanvasRenderingContext.WebGLRenderingContext
+        /** [[RenderingContext](https://developers.weixin.qq.com/miniprogram/dev/api/canvas/RenderingContext.html) Canvas.getContext(string contextType)](https://developers.weixin.qq.com/miniprogram/dev/api/canvas/Canvas.getContext.html)
+         *
+         * 需要基础库： `2.7.0`
+         *
+         * 在插件中使用：支持
+         *
+         * 该方法返回 Canvas 的绘图上下文
+         *
+         * ****
+         *
+         * 支持获取 2D 和 WebGL 绘图上下文 */
+        getContext(
+            /** 上下文类型
+             *
+             * 参数 contextType 可选值：
+             * - 'webgl2': webgl2 绘图上下文; */
+            contextType: 'webgl2'
+        ): CanvasRenderingContext.WebGL2RenderingContext
         /** [number Canvas.requestAnimationFrame(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/canvas/Canvas.requestAnimationFrame.html)
          *
          * 需要基础库： `2.7.0`
@@ -15040,6 +15149,14 @@ InterstitialAd.offLoad(listener) // 需传入与监听时同一个的函数对�
          * | -1000 | 系统错误 |  | */ errCode: number
     }
     interface LivePlayerContext {
+        /** [LivePlayerContext.exitCasting(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/live/LivePlayerContext.exitCasting.html)
+         *
+         * 需要基础库： `2.32.0`
+         *
+         * 在插件中使用：支持
+         *
+         * 退出投屏。仅支持在 tap 事件回调内调用。 */
+        exitCasting(option?: ExitCastingOption): void
         /** [LivePlayerContext.exitFullScreen(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/live/LivePlayerContext.exitFullScreen.html)
          *
          * 在插件中使用：支持
@@ -15072,6 +15189,14 @@ InterstitialAd.offLoad(listener) // 需传入与监听时同一个的函数对�
          *
          * 播放 */
         play(option?: PlayOption): void
+        /** [LivePlayerContext.reconnectCasting(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/live/LivePlayerContext.reconnectCasting.html)
+         *
+         * 需要基础库： `2.32.0`
+         *
+         * 在插件中使用：支持
+         *
+         * 重连投屏设备。仅支持在 tap 事件回调内调用。 */
+        reconnectCasting(option?: ReconnectCastingOption): void
         /** [LivePlayerContext.requestFullScreen(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/live/LivePlayerContext.requestFullScreen.html)
          *
          * 在插件中使用：支持
@@ -15104,12 +15229,28 @@ InterstitialAd.offLoad(listener) // 需传入与监听时同一个的函数对�
          *
          * 截图 */
         snapshot(option: LivePlayerContextSnapshotOption): void
+        /** [LivePlayerContext.startCasting(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/live/LivePlayerContext.startCasting.html)
+         *
+         * 需要基础库： `2.32.0`
+         *
+         * 在插件中使用：支持
+         *
+         * 开始投屏, 拉起半屏搜索设备。仅支持在 tap 事件回调内调用。 */
+        startCasting(option?: StartCastingOption): void
         /** [LivePlayerContext.stop(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/live/LivePlayerContext.stop.html)
          *
          * 在插件中使用：支持
          *
          * 停止 */
         stop(option?: StopOption): void
+        /** [LivePlayerContext.switchCasting(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/live/LivePlayerContext.switchCasting.html)
+         *
+         * 需要基础库： `2.32.0`
+         *
+         * 在插件中使用：支持
+         *
+         * 切换投屏设备。仅支持在 tap 事件回调内调用。 */
+        switchCasting(option?: SwitchCastingOption): void
     }
     interface LivePusherContext {
         /** [LivePusherContext.applyBlusherStickMakeup(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/live/LivePusherContext.applyBlusherStickMakeup.html)
@@ -15211,6 +15352,14 @@ InterstitialAd.offLoad(listener) // 需传入与监听时同一个的函数对�
          *
          * 退出小窗，该方法可在任意页面调用 */
         exitPictureInPicture(option?: ExitPictureInPictureOption): void
+        /** [LivePusherContext.getMaxZoom(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/live/LivePusherContext.getMaxZoom.html)
+         *
+         * 需要基础库： `2.31.0`
+         *
+         * 在插件中使用：支持
+         *
+         * 获取最大缩放级别 */
+        getMaxZoom(option?: GetMaxZoomOption): void
         /** [LivePusherContext.onCustomRendererEvent(string event, function|function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/media/live/LivePusherContext.onCustomRendererEvent.html)
          *
          * 需要基础库： `2.29.0`
@@ -15288,6 +15437,14 @@ InterstitialAd.offLoad(listener) // 需传入与监听时同一个的函数对�
          *
          * 设置麦克风音量 */
         setMICVolume(option: SetMICVolumeOption): void
+        /** [LivePusherContext.setZoom(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/live/LivePusherContext.setZoom.html)
+         *
+         * 需要基础库： `2.31.0`
+         *
+         * 在插件中使用：支持
+         *
+         * 设置缩放级别 */
+        setZoom(option: LivePusherContextSetZoomOption): void
         /** [LivePusherContext.snapshot(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/live/LivePusherContext.snapshot.html)
          *
          * 需要基础库： `1.9.90`
@@ -16636,6 +16793,175 @@ Page({
              * - '2d': 2d类型上下文; */
             contextType: 'webgl' | '2d'
         ): any
+    }
+    interface Path2D {
+        /** [Path2D.addPath([Path2D](https://developers.weixin.qq.com/miniprogram/dev/api/canvas/Path2D.html) path)](https://developers.weixin.qq.com/miniprogram/dev/api/canvas/Path2D.addPath.html)
+         *
+         * 需要基础库： `2.11.0`
+         *
+         * 在插件中使用：不支持
+         *
+         * 添加路径到当前路径。 */
+        addPath(
+            /** [Path2D](https://developers.weixin.qq.com/miniprogram/dev/api/canvas/Path2D.html)
+             *
+             * 添加的 Path2D 路径。 */
+            path: Path2D
+        ): void
+        /** [Path2D.arc(number x, number y, number radius, number startAngle, number endAngle, boolean counterclockwise)](https://developers.weixin.qq.com/miniprogram/dev/api/canvas/Path2D.arc.html)
+         *
+         * 需要基础库： `2.11.0`
+         *
+         * 在插件中使用：不支持
+         *
+         * 添加一段圆弧路径。 */
+        arc(
+            /** 圆心横坐标。 */
+            x: number,
+            /** 圆心纵坐标。 */
+            y: number,
+            /** 圆形半径，必须为正数。 */
+            radius: number,
+            /** 圆弧开始角度。 */
+            startAngle: number,
+            /** 圆弧结束角度。 */
+            endAngle: number,
+            /** 是否逆时针绘制。如果传 true, 则会从 endAngle 开始绘制到 startAngle。 */
+            counterclockwise?: boolean
+        ): void
+        /** [Path2D.arcTo(number x1, number y1, number x2, number y2, number radius)](https://developers.weixin.qq.com/miniprogram/dev/api/canvas/Path2D.arcTo.html)
+         *
+         * 需要基础库： `2.11.0`
+         *
+         * 在插件中使用：不支持
+         *
+         * 通过给定控制点添加一段圆弧路径。 */
+        arcTo(
+            /** 第一个控制点横坐标。 */
+            x1: number,
+            /** 第一个控制点纵坐标。 */
+            y1: number,
+            /** 第二个控制点横坐标。 */
+            x2: number,
+            /** 第二个控制点纵坐标。 */
+            y2: number,
+            /** 圆形半径，必须为非负数。 */
+            radius: number
+        ): void
+        /** [Path2D.bezierCurveTo(number cp1x, number cp1y, number cp2x, number cp2y, number x, number y)](https://developers.weixin.qq.com/miniprogram/dev/api/canvas/Path2D.bezierCurveTo.html)
+         *
+         * 需要基础库： `2.11.0`
+         *
+         * 在插件中使用：不支持
+         *
+         * 添加三次贝塞尔曲线路径。 */
+        bezierCurveTo(
+            /** 第一个控制点横坐标。 */
+            cp1x: number,
+            /** 第一个控制点纵坐标。 */
+            cp1y: number,
+            /** 第二个控制点横坐标。 */
+            cp2x: number,
+            /** 第二个控制点纵坐标。 */
+            cp2y: number,
+            /** 结束点横坐标。 */
+            x: number,
+            /** 结束点纵坐标。 */
+            y: number
+        ): void
+        /** [Path2D.closePath()](https://developers.weixin.qq.com/miniprogram/dev/api/canvas/Path2D.closePath.html)
+         *
+         * 需要基础库： `2.11.0`
+         *
+         * 在插件中使用：不支持
+         *
+         * 闭合路径到起点。 */
+        closePath(): void
+        /** [Path2D.ellipse(number x, number y, number radiusX, number radiusY, number rotation, number startAngle, number endAngle, boolean counterclockwise)](https://developers.weixin.qq.com/miniprogram/dev/api/canvas/Path2D.ellipse.html)
+         *
+         * 需要基础库： `2.11.0`
+         *
+         * 在插件中使用：不支持
+         *
+         * 添加椭圆弧路径 */
+        ellipse(
+            /** 椭圆圆心横坐标。 */
+            x: number,
+            /** 椭圆圆心纵坐标。 */
+            y: number,
+            /** 椭圆长轴半径，必须为非负数。 */
+            radiusX: number,
+            /** 椭圆短轴半径，必须为非负数。 */
+            radiusY: number,
+            /** 椭圆旋转角度。 */
+            rotation: number,
+            /** 圆弧开始角度。 */
+            startAngle: number,
+            /** 圆弧结束角度。 */
+            endAngle: number,
+            /** 是否逆时针绘制。如果传 true, 则会从 endAngle 开始绘制到 startAngle。 */
+            counterclockwise?: boolean
+        ): void
+        /** [Path2D.lineTo(number x, number y)](https://developers.weixin.qq.com/miniprogram/dev/api/canvas/Path2D.lineTo.html)
+         *
+         * 需要基础库： `2.11.0`
+         *
+         * 在插件中使用：不支持
+         *
+         * 添加直线路径 */
+        lineTo(
+            /** 结束点横坐标。 */
+            x: number,
+            /** 结束点纵坐标。 */
+            y: number
+        ): void
+        /** [Path2D.moveTo(number x, number y)](https://developers.weixin.qq.com/miniprogram/dev/api/canvas/Path2D.moveTo.html)
+         *
+         * 需要基础库： `2.11.0`
+         *
+         * 在插件中使用：不支持
+         *
+         * 移动路径开始点 */
+        moveTo(
+            /** 横坐标。 */
+            x: number,
+            /** 纵坐标。 */
+            y: number
+        ): void
+        /** [Path2D.quadraticCurveTo(number cpx, number cpy, number x, number y)](https://developers.weixin.qq.com/miniprogram/dev/api/canvas/Path2D.quadraticCurveTo.html)
+         *
+         * 需要基础库： `2.11.0`
+         *
+         * 在插件中使用：不支持
+         *
+         * 添加二次贝塞尔曲线路径。 */
+        quadraticCurveTo(
+            /** 控制点横坐标。 */
+            cpx: number,
+            /** 控制点纵坐标。 */
+            cpy: number,
+            /** 结束点横坐标。 */
+            x: number,
+            /** 结束点纵坐标。 */
+            y: number
+        ): void
+        /** [Path2D.rect(number x, number y, number width, number height)](https://developers.weixin.qq.com/miniprogram/dev/api/canvas/Path2D.rect.html)
+         *
+         * 需要基础库： `2.11.0`
+         *
+         * 在插件中使用：不支持
+         *
+         * 添加方形路径。 */
+        rect(
+            /** 开始点横坐标。 */
+            x: number,
+            /** 开始点纵坐标。 */
+            y: number,
+            /** 方形宽度，正数向右，负数向左。 */
+            width: number,
+            /** 方形高度，正数向下，负数向上。 */
+            height: number
+        ): void
     }
     interface Performance {
         /** [Array.&lt;[PerformanceEntry](https://developers.weixin.qq.com/miniprogram/dev/api/base/performance/PerformanceEntry.html)&gt; Performance.getEntries()](https://developers.weixin.qq.com/miniprogram/dev/api/base/performance/Performance.getEntries.html)
@@ -18286,6 +18612,14 @@ wx.getRandomValues({
          *
          * 退出后台音频播放模式。 */
         exitBackgroundPlayback(): void
+        /** [VideoContext.exitCasting()](https://developers.weixin.qq.com/miniprogram/dev/api/media/video/VideoContext.exitCasting.html)
+         *
+         * 需要基础库： `2.32.0`
+         *
+         * 在插件中使用：支持
+         *
+         * 退出投屏。仅支持在 tap 事件回调内调用。 */
+        exitCasting(): void
         /** [VideoContext.exitFullScreen()](https://developers.weixin.qq.com/miniprogram/dev/api/media/video/VideoContext.exitFullScreen.html)
          *
          * 需要基础库： `1.4.0`
@@ -18331,6 +18665,14 @@ wx.getRandomValues({
             /** 倍率，支持 0.5/0.8/1.0/1.25/1.5，2.6.3 起支持 2.0 倍速 */
             rate: number
         ): void
+        /** [VideoContext.reconnectCasting()](https://developers.weixin.qq.com/miniprogram/dev/api/media/video/VideoContext.reconnectCasting.html)
+         *
+         * 需要基础库： `2.32.0`
+         *
+         * 在插件中使用：支持
+         *
+         * 重连投屏设备。仅支持在 tap 事件回调内调用。 */
+        reconnectCasting(): void
         /** [VideoContext.requestBackgroundPlayback()](https://developers.weixin.qq.com/miniprogram/dev/api/media/video/VideoContext.requestBackgroundPlayback.html)
          *
          * 需要基础库： `2.14.3`
@@ -18373,6 +18715,14 @@ wx.getRandomValues({
          *
          * 显示状态栏，仅在iOS全屏下有效 */
         showStatusBar(): void
+        /** [VideoContext.startCasting()](https://developers.weixin.qq.com/miniprogram/dev/api/media/video/VideoContext.startCasting.html)
+         *
+         * 需要基础库： `2.32.0`
+         *
+         * 在插件中使用：支持
+         *
+         * 开始投屏, 拉起半屏搜索设备。仅支持在 tap 事件回调内调用。 */
+        startCasting(): void
         /** [VideoContext.stop()](https://developers.weixin.qq.com/miniprogram/dev/api/media/video/VideoContext.stop.html)
          *
          * 需要基础库： `1.7.0`
@@ -18381,6 +18731,14 @@ wx.getRandomValues({
          *
          * 停止视频 */
         stop(): void
+        /** [VideoContext.switchCasting()](https://developers.weixin.qq.com/miniprogram/dev/api/media/video/VideoContext.switchCasting.html)
+         *
+         * 需要基础库： `2.32.0`
+         *
+         * 在插件中使用：支持
+         *
+         * 切换投屏设备。仅支持在 tap 事件回调内调用。 */
+        switchCasting(): void
     }
     interface VideoDecoder {
         /** [Object VideoDecoder.getFrameData()](https://developers.weixin.qq.com/miniprogram/dev/api/media/video-decoder/VideoDecoder.getFrameData.html)
@@ -19507,7 +19865,7 @@ console.log(windowInfo.safeArea)
 console.log(windowInfo.screenTop)
 ``` */
         getWindowInfo(): WindowInfo
-        /** [Promise<string> wx.getRendererUserAgent()](https://developers.weixin.qq.com/miniprogram/dev/api/base/system/wx.getRendererUserAgent.html)
+        /** [Promise<string> wx.getRendererUserAgent(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/base/system/wx.getRendererUserAgent.html)
 *
 * 需要基础库： `2.26.3`
 *
@@ -19518,9 +19876,16 @@ console.log(windowInfo.screenTop)
 * **示例代码**
 *
 * ```js
+// v2.30.4 前，仅支持 promise 风格调用
 wx.getRendererUserAgent().then(userAgent => console.log(userAgent))
+// v2.30.4 起，除 promise 风格调用外，也支持 invoke 风格使用
+wx.getRendererUserAgent({
+  success(res) { console.log(res.userAgent) }
+})
 ``` */
-        getRendererUserAgent(): Promise<string>
+        getRendererUserAgent(
+            option?: GetRendererUserAgentOption
+        ): Promise<string>
         /** [[Animation](https://developers.weixin.qq.com/miniprogram/dev/api/ui/animation/Animation.html) wx.createAnimation(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/ui/animation/wx.createAnimation.html)
          *
          * 在插件中使用：需要基础库 `1.9.6`
@@ -23098,26 +23463,20 @@ wx.offAudioInterruptionEnd(listener) // 需传入与监听时同一个的函数�
             /** onAudioInterruptionEnd 传入的监听函数。不传此参数则移除所有监听函数。 */
             listener?: OffAudioInterruptionEndCallback
         ): void
-        /** [wx.offBLECharacteristicValueChange(function listener)](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-ble/wx.offBLECharacteristicValueChange.html)
+        /** [wx.offBLECharacteristicValueChange()](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-ble/wx.offBLECharacteristicValueChange.html)
 *
 * 需要基础库： `2.9.0`
 *
 * 在插件中使用：需要基础库 `2.9.1`
 *
-* 移除蓝牙低功耗设备的特征值变化事件的监听函数
+* 移除蓝牙低功耗设备的特征值变化事件的全部监听函数
 *
 * **示例代码**
 *
 * ```js
-const listener = function (res) { console.log(res) }
-
-wx.onBLECharacteristicValueChange(listener)
-wx.offBLECharacteristicValueChange(listener) // 需传入与监听时同一个的函数对象
+wx.offBLECharacteristicValueChange()
 ``` */
-        offBLECharacteristicValueChange(
-            /** onBLECharacteristicValueChange 传入的监听函数。不传此参数则移除所有监听函数。 */
-            listener?: OffBLECharacteristicValueChangeCallback
-        ): void
+        offBLECharacteristicValueChange(): void
         /** [wx.offBLEConnectionStateChange(function listener)](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-ble/wx.offBLEConnectionStateChange.html)
 *
 * 需要基础库： `2.9.0`
@@ -23178,86 +23537,62 @@ wx.offBLEPeripheralConnectionStateChanged(listener) // 需传入与监听时同�
             /** onBLEPeripheralConnectionStateChanged 传入的监听函数。不传此参数则移除所有监听函数。 */
             listener?: OffBLEPeripheralConnectionStateChangedCallback
         ): void
-        /** [wx.offBeaconServiceChange(function listener)](https://developers.weixin.qq.com/miniprogram/dev/api/device/ibeacon/wx.offBeaconServiceChange.html)
+        /** [wx.offBeaconServiceChange()](https://developers.weixin.qq.com/miniprogram/dev/api/device/ibeacon/wx.offBeaconServiceChange.html)
 *
 * 需要基础库： `2.8.1`
 *
 * 在插件中使用：需要基础库 `2.9.1`
 *
-* 移除 Beacon 服务状态变化事件的监听函数
+* 移除 Beacon 服务状态变化事件的全部监听函数
 *
 * **示例代码**
 *
 * ```js
-const listener = function (res) { console.log(res) }
-
-wx.onBeaconServiceChange(listener)
-wx.offBeaconServiceChange(listener) // 需传入与监听时同一个的函数对象
+wx.offBeaconServiceChange()
 ``` */
-        offBeaconServiceChange(
-            /** onBeaconServiceChange 传入的监听函数。不传此参数则移除所有监听函数。 */
-            listener?: OffBeaconServiceChangeCallback
-        ): void
-        /** [wx.offBeaconUpdate(function listener)](https://developers.weixin.qq.com/miniprogram/dev/api/device/ibeacon/wx.offBeaconUpdate.html)
+        offBeaconServiceChange(): void
+        /** [wx.offBeaconUpdate()](https://developers.weixin.qq.com/miniprogram/dev/api/device/ibeacon/wx.offBeaconUpdate.html)
 *
 * 需要基础库： `2.8.1`
 *
 * 在插件中使用：需要基础库 `2.9.1`
 *
-* 移除 Beacon 设备更新事件的监听函数
+* 移除 Beacon 设备更新事件的全部监听函数
 *
 * **示例代码**
 *
 * ```js
-const listener = function (res) { console.log(res) }
-
-wx.onBeaconUpdate(listener)
-wx.offBeaconUpdate(listener) // 需传入与监听时同一个的函数对象
+wx.offBeaconUpdate()
 ``` */
-        offBeaconUpdate(
-            /** onBeaconUpdate 传入的监听函数。不传此参数则移除所有监听函数。 */
-            listener?: OffBeaconUpdateCallback
-        ): void
-        /** [wx.offBluetoothAdapterStateChange(function listener)](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/wx.offBluetoothAdapterStateChange.html)
+        offBeaconUpdate(): void
+        /** [wx.offBluetoothAdapterStateChange()](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/wx.offBluetoothAdapterStateChange.html)
 *
 * 需要基础库： `2.9.0`
 *
 * 在插件中使用：需要基础库 `2.9.1`
 *
-* 移除蓝牙适配器状态变化事件的监听函数
+* 移除蓝牙适配器状态变化事件的全部监听函数
 *
 * **示例代码**
 *
 * ```js
-const listener = function (res) { console.log(res) }
-
-wx.onBluetoothAdapterStateChange(listener)
-wx.offBluetoothAdapterStateChange(listener) // 需传入与监听时同一个的函数对象
+wx.offBluetoothAdapterStateChange()
 ``` */
-        offBluetoothAdapterStateChange(
-            /** onBluetoothAdapterStateChange 传入的监听函数。不传此参数则移除所有监听函数。 */
-            listener?: OffBluetoothAdapterStateChangeCallback
-        ): void
-        /** [wx.offBluetoothDeviceFound(function listener)](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/wx.offBluetoothDeviceFound.html)
+        offBluetoothAdapterStateChange(): void
+        /** [wx.offBluetoothDeviceFound()](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/wx.offBluetoothDeviceFound.html)
 *
 * 需要基础库： `2.9.0`
 *
 * 在插件中使用：需要基础库 `2.9.1`
 *
-* 移除搜索到新设备的事件的监听函数
+* 移除搜索到新设备的事件的全部监听函数
 *
 * **示例代码**
 *
 * ```js
-const listener = function (res) { console.log(res) }
-
-wx.onBluetoothDeviceFound(listener)
-wx.offBluetoothDeviceFound(listener) // 需传入与监听时同一个的函数对象
+wx.offBluetoothDeviceFound()
 ``` */
-        offBluetoothDeviceFound(
-            /** onBluetoothDeviceFound 传入的监听函数。不传此参数则移除所有监听函数。 */
-            listener?: OffBluetoothDeviceFoundCallback
-        ): void
+        offBluetoothDeviceFound(): void
         /** [wx.offCompassChange(function listener)](https://developers.weixin.qq.com/miniprogram/dev/api/device/compass/wx.offCompassChange.html)
 *
 * 需要基础库： `2.9.3`
@@ -23278,26 +23613,14 @@ wx.offCompassChange(listener) // 需传入与监听时同一个的函数对象
             /** onCompassChange 传入的监听函数。不传此参数则移除所有监听函数。 */
             listener?: OffCompassChangeCallback
         ): void
-        /** [wx.offCopyUrl(function listener)](https://developers.weixin.qq.com/miniprogram/dev/api/share/wx.offCopyUrl.html)
-*
-* 需要基础库： `2.14.3`
-*
-* 在插件中使用：不支持
-*
-* 移除用户点击右上角菜单的「复制链接」按钮时触发的事件的监听函数
-*
-* **示例代码**
-*
-* ```js
-const listener = function (res) { console.log(res) }
-
-wx.onCopyUrl(listener)
-wx.offCopyUrl(listener) // 需传入与监听时同一个的函数对象
-``` */
-        offCopyUrl(
-            /** onCopyUrl 传入的监听函数。不传此参数则移除所有监听函数。 */
-            listener?: OffCopyUrlCallback
-        ): void
+        /** [wx.offCopyUrl()](https://developers.weixin.qq.com/miniprogram/dev/api/share/wx.offCopyUrl.html)
+         *
+         * 需要基础库： `2.14.3`
+         *
+         * 在插件中使用：不支持
+         *
+         * 移除用户点击右上角菜单的「复制链接」按钮时触发的事件的全部监听函数 */
+        offCopyUrl(): void
         /** [wx.offDeviceMotionChange(function listener)](https://developers.weixin.qq.com/miniprogram/dev/api/device/motion/wx.offDeviceMotionChange.html)
 *
 * 需要基础库： `2.9.3`
@@ -23357,6 +23680,26 @@ wx.offGetWifiList(listener) // 需传入与监听时同一个的函数对象
         offGetWifiList(
             /** onGetWifiList 传入的监听函数。不传此参数则移除所有监听函数。 */
             listener?: OffGetWifiListCallback
+        ): void
+        /** [wx.offGyroscopeChange(function listener)](https://developers.weixin.qq.com/miniprogram/dev/api/device/gyroscope/wx.offGyroscopeChange.html)
+*
+* 需要基础库： `2.9.3`
+*
+* 在插件中使用：需要基础库 `2.9.1`
+*
+* 移除陀螺仪数据变化事件的监听函数
+*
+* **示例代码**
+*
+* ```js
+const listener = function (res) { console.log(res) }
+
+wx.onGyroscopeChange(listener)
+wx.offGyroscopeChange(listener) // 需传入与监听时同一个的函数对象
+``` */
+        offGyroscopeChange(
+            /** onGyroscopeChange 传入的监听函数。不传此参数则移除所有监听函数。 */
+            listener?: OffGyroscopeChangeCallback
         ): void
         /** [wx.offHCEMessage(function listener)](https://developers.weixin.qq.com/miniprogram/dev/api/device/nfc-hce/wx.offHCEMessage.html)
 *
@@ -24064,23 +24407,39 @@ wx.onBLEMTUChange(function (res) {
             listener: OnBackgroundFetchDataCallback
         ): void
         /** [wx.onBeaconServiceChange(function listener)](https://developers.weixin.qq.com/miniprogram/dev/api/device/ibeacon/wx.onBeaconServiceChange.html)
-         *
-         * 需要基础库： `1.2.0`
-         *
-         * 在插件中使用：需要基础库 `1.9.6`
-         *
-         * 监听 Beacon 服务状态变化事件，仅能注册一个监听 */
+*
+* 需要基础库： `1.2.0`
+*
+* 在插件中使用：需要基础库 `1.9.6`
+*
+* 监听 Beacon 服务状态变化事件，仅能注册一个监听
+*
+* **示例代码**
+*
+* ```js
+wx.onBeaconServiceChange(res => {
+   console.log(res.available, res.discovering)
+})
+``` */
         onBeaconServiceChange(
             /** Beacon 服务状态变化事件的监听函数 */
             listener: OnBeaconServiceChangeCallback
         ): void
         /** [wx.onBeaconUpdate(function listener)](https://developers.weixin.qq.com/miniprogram/dev/api/device/ibeacon/wx.onBeaconUpdate.html)
-         *
-         * 需要基础库： `1.2.0`
-         *
-         * 在插件中使用：需要基础库 `1.9.6`
-         *
-         * 监听 Beacon 设备更新事件，仅能注册一个监听 */
+*
+* 需要基础库： `1.2.0`
+*
+* 在插件中使用：需要基础库 `1.9.6`
+*
+* 监听 Beacon 设备更新事件，仅能注册一个监听
+*
+* **示例代码**
+*
+* ```js
+wx.onBeaconUpdate(res => {
+   console.log(res.beacons)
+})
+``` */
         onBeaconUpdate(
             /** Beacon 设备更新事件的监听函数 */
             listener: OnBeaconUpdateCallback
@@ -25277,6 +25636,7 @@ try {
 * 在插件中使用：需要基础库 `1.9.6`
 *
 * 在插件中使用时，可以被正常调用，但目前不会进行统计展示
+* @deprecated 基础库版本 [2.31.1](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html) 起已废弃
 *
 * 自定义分析数据上报接口。使用前，需要在小程序管理后台自定义分析中新建事件，配置好事件名与字段。
 *
@@ -27467,6 +27827,10 @@ wx.writeBLECharacteristicValue({
         result: BoundingClientRectCallbackResult
     ) => void
     /** 接口调用成功的回调函数 */
+    type CameraContextSetZoomSuccessCallback = (
+        result: SetZoomSuccessCallbackResult
+    ) => void
+    /** 接口调用成功的回调函数 */
     type CameraContextStartRecordSuccessCallback = (
         res: GeneralCallbackResult
     ) => void
@@ -27849,6 +28213,12 @@ wx.writeBLECharacteristicValue({
         result: ExecuteVisualLayerCommandSuccessCallbackResult
     ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type ExitCastingCompleteCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用失败的回调函数 */
+    type ExitCastingFailCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用成功的回调函数 */
+    type ExitCastingSuccessCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type ExitFullScreenCompleteCallback = (res: GeneralCallbackResult) => void
     /** 接口调用失败的回调函数 */
     type ExitFullScreenFailCallback = (res: GeneralCallbackResult) => void
@@ -28228,6 +28598,14 @@ wx.writeBLECharacteristicValue({
         result: GetMaxTransceiveLengthSuccessCallbackResult
     ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type GetMaxZoomCompleteCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用失败的回调函数 */
+    type GetMaxZoomFailCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用成功的回调函数 */
+    type GetMaxZoomSuccessCallback = (
+        result: GetMaxZoomSuccessCallbackResult
+    ) => void
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type GetNetworkTypeCompleteCallback = (res: GeneralCallbackResult) => void
     /** 接口调用失败的回调函数 */
     type GetNetworkTypeFailCallback = (res: GeneralCallbackResult) => void
@@ -28250,6 +28628,17 @@ wx.writeBLECharacteristicValue({
     /** 接口调用成功的回调函数 */
     type GetRegionSuccessCallback = (
         result: GetRegionSuccessCallbackResult
+    ) => void
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type GetRendererUserAgentCompleteCallback = (
+        res: GeneralCallbackResult
+    ) => void
+    /** 接口调用失败的回调函数 */
+    type GetRendererUserAgentFailCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用成功的回调函数 */
+    type GetRendererUserAgentSuccessCallback = (
+        /** UserAgent */
+        userAgent: string
     ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type GetRotateCompleteCallback = (res: GeneralCallbackResult) => void
@@ -28570,6 +28959,10 @@ wx.writeBLECharacteristicValue({
         result: LivePlayerContextSnapshotSuccessCallbackResult
     ) => void
     /** 接口调用成功的回调函数 */
+    type LivePusherContextSetZoomSuccessCallback = (
+        res: GeneralCallbackResult
+    ) => void
+    /** 接口调用成功的回调函数 */
     type LivePusherContextSnapshotSuccessCallback = (
         result: LivePusherContextSnapshotSuccessCallbackResult
     ) => void
@@ -28588,7 +28981,7 @@ wx.writeBLECharacteristicValue({
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type LoginCompleteCallback = (res: GeneralCallbackResult) => void
     /** 接口调用失败的回调函数 */
-    type LoginFailCallback = (res: GeneralCallbackResult) => void
+    type LoginFailCallback = (err: Err) => void
     /** 接口调用成功的回调函数 */
     type LoginSuccessCallback = (result: LoginSuccessCallbackResult) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
@@ -28703,10 +29096,6 @@ wx.writeBLECharacteristicValue({
     ) => void
     /** onAudioInterruptionEnd 传入的监听函数。不传此参数则移除所有监听函数。 */
     type OffAudioInterruptionEndCallback = (res: GeneralCallbackResult) => void
-    /** onBLECharacteristicValueChange 传入的监听函数。不传此参数则移除所有监听函数。 */
-    type OffBLECharacteristicValueChangeCallback = (
-        result: OnBLECharacteristicValueChangeListenerResult
-    ) => void
     /** onBLEConnectionStateChange 传入的监听函数。不传此参数则移除所有监听函数。 */
     type OffBLEConnectionStateChangeCallback = (
         result: OnBLEConnectionStateChangeListenerResult
@@ -28719,18 +29108,8 @@ wx.writeBLECharacteristicValue({
     type OffBLEPeripheralConnectionStateChangedCallback = (
         result: OnBLEPeripheralConnectionStateChangedListenerResult
     ) => void
-    /** onBeaconServiceChange 传入的监听函数。不传此参数则移除所有监听函数。 */
-    type OffBeaconServiceChangeCallback = (res: GeneralCallbackResult) => void
-    /** onBeaconUpdate 传入的监听函数。不传此参数则移除所有监听函数。 */
-    type OffBeaconUpdateCallback = (res: GeneralCallbackResult) => void
     /** onBindWifi 传入的监听函数。不传此参数则移除所有监听函数。 */
     type OffBindWifiCallback = (res: GeneralCallbackResult) => void
-    /** onBluetoothAdapterStateChange 传入的监听函数。不传此参数则移除所有监听函数。 */
-    type OffBluetoothAdapterStateChangeCallback = (
-        result: OnBluetoothAdapterStateChangeListenerResult
-    ) => void
-    /** onBluetoothDeviceFound 传入的监听函数。不传此参数则移除所有监听函数。 */
-    type OffBluetoothDeviceFoundCallback = (res: GeneralCallbackResult) => void
     /** onCanplay 传入的监听函数。不传此参数则移除所有监听函数。 */
     type OffCanplayCallback = (res: GeneralCallbackResult) => void
     /** onCharacteristicReadRequest 传入的监听函数。不传此参数则移除所有监听函数。 */
@@ -28757,8 +29136,6 @@ wx.writeBLECharacteristicValue({
     type OffCompassChangeCallback = (res: GeneralCallbackResult) => void
     /** onConnect 传入的监听函数。不传此参数则移除所有监听函数。 */
     type OffConnectCallback = (res: GeneralCallbackResult) => void
-    /** onCopyUrl 传入的监听函数。不传此参数则移除所有监听函数。 */
-    type OffCopyUrlCallback = (result: OnCopyUrlListenerResult) => void
     /** onDeviceMotionChange 传入的监听函数。不传此参数则移除所有监听函数。 */
     type OffDeviceMotionChangeCallback = (res: GeneralCallbackResult) => void
     /** onDiscovered 传入的监听函数。不传此参数则移除所有监听函数。 */
@@ -28767,6 +29144,8 @@ wx.writeBLECharacteristicValue({
     type OffEndedCallback = (res: GeneralCallbackResult) => void
     /** onGetWifiList 传入的监听函数。不传此参数则移除所有监听函数。 */
     type OffGetWifiListCallback = (result: OnGetWifiListListenerResult) => void
+    /** onGyroscopeChange 传入的监听函数。不传此参数则移除所有监听函数。 */
+    type OffGyroscopeChangeCallback = (res: GeneralCallbackResult) => void
     /** onHCEMessage 传入的监听函数。不传此参数则移除所有监听函数。 */
     type OffHCEMessageCallback = (result: OnHCEMessageListenerResult) => void
     /** onHeadersReceived 传入的监听函数。不传此参数则移除所有监听函数。 */
@@ -29418,6 +29797,12 @@ wx.writeBLECharacteristicValue({
     type ReaddirFailCallback = (res: FileError) => void
     /** 接口调用成功的回调函数 */
     type ReaddirSuccessCallback = (result: ReaddirSuccessCallbackResult) => void
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type ReconnectCastingCompleteCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用失败的回调函数 */
+    type ReconnectCastingFailCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用成功的回调函数 */
+    type ReconnectCastingSuccessCallback = (res: GeneralCallbackResult) => void
     /** 录音结束事件的监听函数 */
     type RecorderManagerOnStopCallback = (result: OnStopListenerResult) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
@@ -29931,8 +30316,6 @@ wx.writeBLECharacteristicValue({
     type SetZoomCompleteCallback = (res: GeneralCallbackResult) => void
     /** 接口调用失败的回调函数 */
     type SetZoomFailCallback = (res: GeneralCallbackResult) => void
-    /** 接口调用成功的回调函数 */
-    type SetZoomSuccessCallback = (result: SetZoomSuccessCallbackResult) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type ShareFileMessageCompleteCallback = (res: GeneralCallbackResult) => void
     /** 接口调用失败的回调函数 */
@@ -30079,6 +30462,12 @@ wx.writeBLECharacteristicValue({
     type StartBluetoothDevicesDiscoverySuccessCallback = (
         res: BluetoothError
     ) => void
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type StartCastingCompleteCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用失败的回调函数 */
+    type StartCastingFailCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用成功的回调函数 */
+    type StartCastingSuccessCallback = (res: GeneralCallbackResult) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type StartCompassCompleteCallback = (res: GeneralCallbackResult) => void
     /** 接口调用失败的回调函数 */
@@ -30371,6 +30760,12 @@ wx.writeBLECharacteristicValue({
     type SwitchCameraFailCallback = (res: GeneralCallbackResult) => void
     /** 接口调用成功的回调函数 */
     type SwitchCameraSuccessCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type SwitchCastingCompleteCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用失败的回调函数 */
+    type SwitchCastingFailCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用成功的回调函数 */
+    type SwitchCastingSuccessCallback = (res: GeneralCallbackResult) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type SwitchTabCompleteCallback = (res: GeneralCallbackResult) => void
     /** 接口调用失败的回调函数 */
