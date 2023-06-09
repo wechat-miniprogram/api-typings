@@ -97,3 +97,15 @@ wx.request<ArrayBuffer>({
   expectNotType<any>(thisShouldBeNumber)
   expectType<number>(thisShouldBeNumber)
 }
+
+wx.createSelectorQuery()
+  .select('#canvas')
+  .node(({ node }) => {
+    const canvas = node as WechatMiniprogram.Canvas
+    const ctx = canvas.getContext('2d')
+
+    expectNotType<any>(ctx)
+    expectType<string>(ctx.font)
+    expectType<() => void>(ctx.save)
+  })
+  .exec()
