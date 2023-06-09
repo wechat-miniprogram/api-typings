@@ -434,3 +434,10 @@ import WX = WechatMiniprogram
     }
   })
 }
+
+// https://github.com/wechat-miniprogram/api-typings/issues/189
+{
+  const offscreenCanvas = wx.createOffscreenCanvas(800, 600)
+  expectType<number>(offscreenCanvas.height)
+  expectType<number>(offscreenCanvas.width)
+}
