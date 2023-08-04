@@ -28,6 +28,7 @@ SOFTWARE.
 /// <reference path="./lib.wx.component.d.ts" />
 /// <reference path="./lib.wx.behavior.d.ts" />
 /// <reference path="./lib.wx.event.d.ts" />
+/// <reference path="./lib.wx.wasm.d.ts" />
 
 declare namespace WechatMiniprogram {
     type IAnyObject = Record<string, any>
@@ -57,7 +58,8 @@ declare namespace WechatMiniprogram {
     type GainNode = any
     type BiquadFilterNode = any
     type PeriodicWaveNode = any
-    type BufferSourceNode = any
+    type AudioNode = any
+    type AudioParam = any
     type ChannelSplitterNode = any
     type ChannelMergerNode = any
     type DelayNode = any

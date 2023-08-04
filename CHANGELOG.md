@@ -1,3 +1,8 @@
+## 2023-06-09 v3.11.0
+- 更新 API 定义到 3.0.0
+  - 暂未支持 [glass-easel](https://github.com/wechat-miniprogram/glass-easel) [Chaining API](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/glass-easel/chaining-api.html) 的类型定义
+- 补齐 `WXWebAssembly` 定义
+
 ## 2023-06-09 v3.10.0
 - 更新 API 定义到 2.32.1
 - 新增 CanvasRenderingContext 类型定义 [#111](https://github.com/wechat-miniprogram/api-typings/issues/111)
