@@ -153,6 +153,15 @@ declare namespace WechatMiniprogram.Page {
 
         /** 打开当前页面路径中的参数 */
         options: Record<string, string | undefined>
+
+        /** 相对于当前页面的 Router 对象 */
+        router: Component.Router
+
+        /** 相对于当前页面的 Router 对象 */
+        pageRouter: Component.Router
+
+        /** 渲染当前页面的渲染后端 */
+        renderer: 'webview' | 'skyline'
     }
 
     type DataOption = Record<string, any>
