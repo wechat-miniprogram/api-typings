@@ -1,3 +1,6 @@
+## 2023-08-24 v3.11.1
+- 更新 API 定义到 3.0.1
+
 ## 2023-08-04 v3.11.0
 - 更新 API 定义到 3.0.0
   - 暂未支持 [glass-easel](https://github.com/wechat-miniprogram/glass-easel) [Chaining API](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/glass-easel/chaining-api.html) 的类型定义
