@@ -648,11 +648,11 @@ declare namespace WechatMiniprogram.Component {
         (res: UpdatePerformance<WithDataPath>): void
     }
     interface UpdatePerformance<WithDataPath> {
-        /** 此次更新过程的 ID */
+        /** 此次更新过程的 ID */
         updateProcessId: number
         /** 对于子更新，返回它所属的更新过程 ID */
         parentUpdateProcessId?: number
-        /** 是否是被合并更新，如果是，则 updateProcessId 表示被合并到的更新过程 ID */
+        /** 是否是被合并更新，如果是，则 updateProcessId 表示被合并到的更新过程 ID */
         isMergedUpdate: boolean
         /** 此次更新的 data 字段信息，只有 withDataPaths 设为 true 时才会返回 */
         dataPaths: WithDataPath extends true ? string[] : undefined
