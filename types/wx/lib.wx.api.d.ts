@@ -6924,7 +6924,7 @@ InnerAudioContext.offWaiting(listener) // 需传入与监听时同一个的函�
         /** 启动小程序的路径 (代码包路径) */
         path: string
         /** 启动小程序的 query 参数 */
-        query: IAnyObject
+        query: Record<string, string>
         /** 来源信息。从另一个小程序、公众号或 App 进入小程序时返回。否则返回 `{}`。(参见后文注意) */
         referrerInfo: ReferrerInfo
         /** 启动小程序的[场景值](https://developers.weixin.qq.com/miniprogram/dev/framework/app-service/scene.html) */
@@ -7938,7 +7938,7 @@ NFCAdapter.offDiscovered(listener) // 需传入与监听时同一个的函数对
         /** 不存在页面的路径 (代码包路径) */
         path: string
         /** 打开不存在页面的 query 参数 */
-        query: IAnyObject
+        query: Record<string, string>
     }
     interface OnScreenRecordingStateChangedListenerResult {
         /** 录屏状态

@@ -1,3 +1,7 @@
+## 2023-08-24 v3.12.0
+- `App` 生命周期 `onLaunch`, `onShow` 参数中的 `referrerInfo` 字段类型对齐 API 定义中的 `ReferrerInfo`。这是一个 **破坏性改动**，其中 `extraData` 的类型从 `any` 收窄到了 `Record<string, any>`
+- 根据实际实现，修改了 `LaunchOptions` 中 `query` 字段的类型。这是一个 **破坏性改动**，该类型从 `Record<string, any>` 收窄到了 `Record<string, string>`
+
 ## 2023-08-24 v3.11.1
 - 更新 API 定义到 3.0.1
 
