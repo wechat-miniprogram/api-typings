@@ -103,6 +103,7 @@ declare namespace WechatMiniprogram.Component {
         | BooleanConstructor
         | ArrayConstructor
         | ObjectConstructor
+        | unknown
         | null
     type ValueType<T extends PropertyType> = T extends null
         ? any
@@ -116,6 +117,8 @@ declare namespace WechatMiniprogram.Component {
         ? any[]
         : T extends ObjectConstructor
         ? IAnyObject
+        : T extends unknown
+        ? T
         : never
     type FullProperty<T extends PropertyType> = {
         /** 属性类型 */
@@ -139,6 +142,7 @@ declare namespace WechatMiniprogram.Component {
         | FullProperty<BooleanConstructor>
         | FullProperty<ArrayConstructor>
         | FullProperty<ObjectConstructor>
+        | FullProperty<unknown>
         | FullProperty<null>
     type ShortProperty =
         | StringConstructor
