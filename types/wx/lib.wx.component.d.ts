@@ -287,6 +287,19 @@ declare namespace WechatMiniprogram.Component {
             options: SetUpdatePerformanceListenerOption<WithDataPath>,
             callback?: UpdatePerformanceListener<WithDataPath>
         ): void
+
+        /**
+         * 在运行时获取页面或组件所在页面 `touch` 相关事件的 passive 配置，详见 [enablePassiveEvent]((configuration/app#enablePassiveEvent))
+         *
+         * 最低基础库版本：[`2.25.1`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html)
+         */
+        getPassiveEvent(callback: (config: PassiveConfig) => void): void
+        /**
+         * 在运行时切换页面或组件所在页面 `touch` 相关事件的 passive 配置，详见 [enablePassiveEvent]((configuration/app#enablePassiveEvent))
+         *
+         * 最低基础库版本：[`2.25.1`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html)
+         */
+        setPassiveEvent(config: PassiveConfig): void
     }
 
     interface ComponentOptions {
@@ -663,6 +676,17 @@ declare namespace WechatMiniprogram.Component {
         /** 更新运算结束时的时间戳 */
         updateEndTimestamp: number
     }
+
+    type PassiveConfig =
+        | {
+              /** 是否设置 touchmove 事件为 passive，默认为 `false` */
+              touchmove?: boolean
+              /** 是否设置 touchstart 事件为 passive，默认为 `false` */
+              touchstart?: boolean
+              /** 是否设置 wheel 事件为 passive，默认为 `false` */
+              wheel?: boolean
+          }
+        | boolean
 }
 /** Component构造器可用于定义组件，调用Component构造器时可以指定组件的属性、数据、方法等。
  *

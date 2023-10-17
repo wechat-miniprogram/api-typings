@@ -89,6 +89,8 @@ declare module 'XrFrame' {
         IMeshShapeData,
         ICapsuleShapeData,
         ICubeShapeData,
+        IRigidbodyData,
+        IShapeInteractData,
         IShapeGizmosData,
         IAssetPostProcessData,
         IParticleData,
@@ -105,6 +107,7 @@ declare module 'XrFrame' {
         IARRawData,
         IShareSystemData,
         IShareCaptureOptions,
+        IShareRecordOptions,
         IGizmoSystemData,
         ILoaderOptionsSchema,
         ITextureLoaderOptions,
@@ -124,6 +127,7 @@ declare module 'XrFrame' {
         VertexLayout,
         TCameraBackground,
         TTrackMode,
+        EVideoState,
         EVertexFormat,
         EVertexStep,
         EIndexType,
@@ -155,7 +159,8 @@ declare module 'XrFrame' {
         EEventType,
         EARTrackerState,
         EShapeType,
-        ECapsuleShapeDirection
+        ECapsuleShapeDirection,
+        EShareRecordState
     } from 'XrFrame/xrFrameSystem'
 
     export type Component<IData> = xrFrameSystem.Component<IData>
@@ -203,6 +208,8 @@ declare module 'XrFrame' {
     export type MeshShape = xrFrameSystem.MeshShape
     export type CapsuleShape = xrFrameSystem.CapsuleShape
     export type CubeShape = xrFrameSystem.CubeShape
+    export type Rigidbody = xrFrameSystem.Rigidbody
+    export type ShapeInteract = xrFrameSystem.ShapeInteract
     export type ShapeGizmos = xrFrameSystem.ShapeGizmos
     export type AssetPostProcess = xrFrameSystem.AssetPostProcess
     export type Scene = xrFrameSystem.Scene
@@ -240,7 +247,7 @@ declare module 'XrFrame' {
     export type CubeTextureLoader = xrFrameSystem.CubeTextureLoader
     export type VideoTextureLoader = xrFrameSystem.VideoTextureLoader
     export type EnvDataLoader = xrFrameSystem.EnvDataLoader
-    export type GlTFLoader = xrFrameSystem.GlTFLoader
+    export type GLTFLoader = xrFrameSystem.GLTFLoader
     export type KeyframeLoader = xrFrameSystem.KeyframeLoader
     export type RawLoader = xrFrameSystem.RawLoader
     export type AtlasLoader = xrFrameSystem.AtlasLoader
@@ -250,6 +257,7 @@ declare module 'XrFrame' {
         registerElement: typeof xrFrameSystem.registerElement
         registerDataValue: typeof xrFrameSystem.registerDataValue
         isTextureWrapper: typeof xrFrameSystem.isTextureWrapper
+        genLspMeta: typeof xrFrameSystem.genLspMeta
         registerEffect: typeof xrFrameSystem.registerEffect
         registerGeometry: typeof xrFrameSystem.registerGeometry
         registerTexture: typeof xrFrameSystem.registerTexture
@@ -257,6 +265,11 @@ declare module 'XrFrame' {
         registerUniformDesc: typeof xrFrameSystem.registerUniformDesc
         registerVertexDataDesc: typeof xrFrameSystem.registerVertexDataDesc
         registerVertexLayout: typeof xrFrameSystem.registerVertexLayout
+        // EDracoDataType: typeof xrFrameSystem.// EDracoDataType;
+        // EDracoDecodeType: typeof xrFrameSystem.// EDracoDecodeType;
+        // EDracoErrorCode: typeof xrFrameSystem.// EDracoErrorCode;
+        // EDracoGeometryType: typeof xrFrameSystem.// EDracoGeometryType;
+        // DracoDecoded: typeof xrFrameSystem.// DracoDecoded;
         registerAssetLoader: typeof xrFrameSystem.registerAssetLoader
         Component: typeof xrFrameSystem.Component
         Element: typeof xrFrameSystem.Element
@@ -303,6 +316,8 @@ declare module 'XrFrame' {
         MeshShape: typeof xrFrameSystem.MeshShape
         CapsuleShape: typeof xrFrameSystem.CapsuleShape
         CubeShape: typeof xrFrameSystem.CubeShape
+        Rigidbody: typeof xrFrameSystem.Rigidbody
+        ShapeInteract: typeof xrFrameSystem.ShapeInteract
         ShapeGizmos: typeof xrFrameSystem.ShapeGizmos
         AssetPostProcess: typeof xrFrameSystem.AssetPostProcess
         Scene: typeof xrFrameSystem.Scene
@@ -337,10 +352,11 @@ declare module 'XrFrame' {
         CubeTextureLoader: typeof xrFrameSystem.CubeTextureLoader
         VideoTextureLoader: typeof xrFrameSystem.VideoTextureLoader
         EnvDataLoader: typeof xrFrameSystem.EnvDataLoader
-        GlTFLoader: typeof xrFrameSystem.GlTFLoader
+        GLTFLoader: typeof xrFrameSystem.GLTFLoader
         KeyframeLoader: typeof xrFrameSystem.KeyframeLoader
         RawLoader: typeof xrFrameSystem.RawLoader
         AtlasLoader: typeof xrFrameSystem.AtlasLoader
+        EVideoState: typeof xrFrameSystem.EVideoState
         EVertexFormat: typeof xrFrameSystem.EVertexFormat
         EVertexStep: typeof xrFrameSystem.EVertexStep
         EIndexType: typeof xrFrameSystem.EIndexType
@@ -373,6 +389,7 @@ declare module 'XrFrame' {
         EARTrackerState: typeof xrFrameSystem.EARTrackerState
         EShapeType: typeof xrFrameSystem.EShapeType
         ECapsuleShapeDirection: typeof xrFrameSystem.ECapsuleShapeDirection
+        EShareRecordState: typeof xrFrameSystem.EShareRecordState
         useParamsEaseFuncs: typeof xrFrameSystem.useParamsEaseFuncs
         noneParamsEaseFuncs: typeof xrFrameSystem.noneParamsEaseFuncs
         TransformSchema: IComponentSchema
@@ -393,6 +410,8 @@ declare module 'XrFrame' {
         MeshShapeSchema: IComponentSchema
         CapsuleShapeSchema: IComponentSchema
         CubeShapeSchema: IComponentSchema
+        RigidbodySchema: IComponentSchema
+        ShapeInteractSchema: IComponentSchema
         ParticleSchema: IComponentSchema
         RenderSystemSchema: IComponentSchema
         ARSystemSchema: IComponentSchema
@@ -460,6 +479,7 @@ declare module 'XrFrame/xrFrameSystem' {
         default as EventManager,
         TEventCallback
     } from 'XrFrame/core/EventManager'
+    export { genLspMeta } from 'XrFrame/genLspMeta'
     export * from 'XrFrame/components'
     export * from 'XrFrame/elements'
     export * from 'XrFrame/systems'
@@ -473,7 +493,8 @@ declare module 'XrFrame/xrFrameSystem' {
     export { default as Material } from 'XrFrame/assets/Material'
     export {
         default as VideoTexture,
-        IVideoTextureOptions
+        IVideoTextureOptions,
+        EVideoState
     } from 'XrFrame/assets/VideoTexture'
     export {
         default as RenderTexture,
@@ -517,6 +538,7 @@ declare module 'XrFrame/xrFrameSystem' {
         useParamsEaseFuncs,
         noneParamsEaseFuncs
     } from 'XrFrame/assets/easeFunctions'
+    export * from 'XrFrame/physics/exports'
     export { default as Vector2 } from 'XrFrame/math/vector2'
     export { default as Vector3 } from 'XrFrame/math/vector3'
     export { default as Vector4 } from 'XrFrame/math/vector4'
@@ -641,6 +663,7 @@ declare module 'XrFrame/core/Component' {
          * @internal
          */
         static TYPE: string
+        static EVENTS: string[]
         /**
          * @internal
          */
@@ -693,6 +716,10 @@ declare module 'XrFrame/core/Component' {
          */
         /**
          * @internal
+         * 仅针对某些hack情况！
+         */
+        /**
+         * @internal
          */
         /**
          * @internal
@@ -719,11 +746,13 @@ declare module 'XrFrame/core/Component' {
         onUpdate(data: IData, preData: IData): void
         /**
          * 渲染每帧触发的回调。
+         * @param deltaTime 单位为毫秒(ms)。
          */
         onTick(deltaTime: number, data: IData): void
         /**
          * 所挂载的`element`从父节点`parent`被移除时，或者自己从`element`上被移除时，触发的回调。
          * 一般用于消除功能的运作。
+         * **如果一个组件的元素直接被销毁了，那这个组件就不会经历onRemove而是直接进入onRelease。**
          */
         onRemove(parent: Element, data: IData): void
         /**
@@ -731,6 +760,9 @@ declare module 'XrFrame/core/Component' {
          * 一般用于释放持有的资源。
          */
         onRelease(data: IData): void
+    }
+    export const TABLE: {
+        [type: string]: new () => Component<any>
     }
     /**
      * @internal
@@ -908,6 +940,7 @@ declare module 'XrFrame/core/Element' {
         addChild(child: Element): void
         /**
          * 手动移除一个子节点，**注意需要保证当前节点是`xr-shadow`或其子节点**。
+         * **只调用removeChild没有办法走进子节点的onRelease里**，需要手动调用子节点的release才行。
          */
         removeChild(child: Element): void
         /**
@@ -983,6 +1016,9 @@ declare module 'XrFrame/core/Element' {
         _setAttribute(_name: string, _value: string): void
         _removeAttribute(_name: string): void
         _setText(_content: string): void
+    }
+    export const TABLE: {
+        [type: string]: typeof Element
     }
     export function getElement(type: string): typeof Element
     /**
@@ -1077,6 +1113,9 @@ declare module 'XrFrame/core/EventManager' {
                 bubbles: boolean
             }
         }
+        protected _wxmlBind: {
+            [type: string]: boolean
+        }
         constructor(_el: Element, _triggerElementEvent: TFrameworkEventTrigger)
         /**
          * 添加一个事件监听器。
@@ -1103,6 +1142,7 @@ declare module 'XrFrame/core/EventManager' {
         ): this
         /**
          * 判断一个事件是否被注册。
+         * 注册是指用户绑定过了至少一个事件处理器，无论是来自于wxml还是JS。
          */
         has(type: string): boolean
         /**
@@ -1140,6 +1180,65 @@ declare module 'XrFrame/core/EventManager' {
         flushAll(): this
     }
     export {}
+}
+
+declare module 'XrFrame/genLspMeta' {
+    import { Scene } from 'XrFrame/elements'
+    export interface IXRFrameMeta {
+        elements: {
+            name: string[]
+            meta: {
+                [name: string]: IXRFrameElement
+            }
+        }
+        components: {
+            name: string[]
+            meta: {
+                [name: string]: IXRFrameComponent
+            }
+        }
+    }
+    export interface IXRFrameElement {
+        defaultComps: string[]
+        mappings: {
+            name: string[]
+            meta: {
+                [name: string]: string[]
+            }
+        }
+        events: string[]
+        limitComps?: string[]
+    }
+    export interface IXRFrameComponent {
+        keys: string[]
+        meta: {
+            [key: string]: IXRFrameData
+        }
+        events: string[]
+    }
+    export interface IXRFrameData {
+        type: string
+        defaultValue: any
+        map?: IXRFrameMap
+        enum?: IXRFrameEnum
+    }
+    export interface IXRFrameMap {
+        keys: string[]
+        meta: {
+            [key: string]: {
+                type: string
+                defaultValue?: string | number
+                enum?: IXRFrameEnum
+            }
+        }
+    }
+    export interface IXRFrameEnum {
+        values: Array<{
+            value: string | number
+            desc?: string
+        }>
+    }
+    export function genLspMeta(scene: Scene): IXRFrameMeta
 }
 
 declare module 'XrFrame/components' {
@@ -1187,7 +1286,7 @@ declare module 'XrFrame/components' {
         default as Text,
         ITextData,
         TextSchema
-    } from 'XrFrame/components/Text'
+    } from 'XrFrame/components/text/Text'
     export { default as Particle } from 'XrFrame/components/particle/Particle'
     export {
         IParticleData,
@@ -1245,6 +1344,16 @@ declare module 'XrFrame/components' {
         ICubeShapeData,
         CubeShapeSchema
     } from 'XrFrame/components/physics/CubeShape'
+    export {
+        default as Rigidbody,
+        IRigidbodyData,
+        RigidbodySchema
+    } from 'XrFrame/components/physics/Rigidbody'
+    export {
+        default as ShapeInteract,
+        IShapeInteractData,
+        ShapeInteractSchema
+    } from 'XrFrame/components/physics/ShapeInteract'
     export {
         default as ShapeGizmos,
         IShapeGizmosData
@@ -1377,7 +1486,9 @@ declare module 'XrFrame/systems' {
     export {
         default as ShareSystem,
         IShareSystemData,
-        IShareCaptureOptions
+        IShareCaptureOptions,
+        IShareRecordOptions,
+        EShareRecordState
     } from 'XrFrame/systems/ShareSystem'
     export {
         default as GizmoSystem,
@@ -1412,7 +1523,7 @@ declare module 'XrFrame/loader' {
         IEnvDataLoaderOptions
     } from 'XrFrame/loader/EnvDataLoader'
     export {
-        default as GlTFLoader,
+        default as GLTFLoader,
         IGLTFLoaderOptions
     } from 'XrFrame/loader/GlTFLoader'
     export {
@@ -1468,6 +1579,10 @@ declare module 'XrFrame/assets/Effect' {
         depthWrite?: boolean
         depthTestOn?: boolean
         depthTestComp?: Kanata.ECompareFunc
+        /**
+         * 在基础库版本`v2.31.1`以上支持。
+         */
+        colorWrite?: number
         stencilWriteMask?: number
         stencilTestOn?: boolean
         stencilRef?: number
@@ -1668,8 +1783,9 @@ declare module 'XrFrame/assets/Geometry' {
         static readonly RAWLENGTH = 10
         /**
          * @internal
+         * 从 96 切换到 76 个，换取多余的 uniform 上限
          */
-        static readonly MAX_BONECOUNT = 96
+        static readonly MAX_BONECOUNT = 76
         /**
          * @internal
          */
@@ -1741,7 +1857,10 @@ declare module 'XrFrame/assets/Geometry' {
          * 更新IndexBuffer。
          * 仅在获取了`indexBuffer`后有效。
          */
-        uploadIndexBuffer(offset: number, buffer: ArrayBufferView): void
+        uploadIndexBuffer(
+            offset: number,
+            buffer: Uint16Array | Uint32Array
+        ): void
         /**
          * 获取当前mesh有多少subMesh
          */
@@ -1823,6 +1942,7 @@ declare module 'XrFrame/assets/Material' {
     import Vector4 from 'XrFrame/math/vector4'
     import Matrix3 from 'XrFrame/math/matrix3'
     import Matrix4 from 'XrFrame/math/matrix4'
+    import EnvData from 'XrFrame/assets/EnvData'
     type Scene = import('XrFrame/core/Scene').default
     /**
      * 材质资源，一般被代理到{@link XRMaterial}元素。
@@ -1956,6 +2076,9 @@ declare module 'XrFrame/assets/Material' {
         /**
          * @internal
          */
+        /**
+         * @internal
+         */
     }
     export {}
 }
@@ -1987,12 +2110,17 @@ declare module 'XrFrame/assets/VideoTexture' {
          * 是否禁止音频，默认禁止。
          */
         abortAudio?: boolean
+        /**
+         * 是否在小程序压后台时自动暂停，默认暂停。
+         */
+        autoPause?: boolean
     }
     export enum EVideoState {
         Idle = 0,
         WaitPlay = 1,
         Playing = 2,
-        Released = 3
+        Paused = 3,
+        Released = 4
     }
     /**
      * 视频纹理。
@@ -2002,6 +2130,11 @@ declare module 'XrFrame/assets/VideoTexture' {
         get texture(): import('XrFrame/kanata/lib/index').Texture
         get width(): number
         get height(): number
+        get autoPause(): boolean
+        /**
+         * 当前视频纹理播放状态。
+         */
+        get state(): EVideoState
         /**
          * @param onReady 创建成功时的回调。
          * @param onEnd 播放结束时的回调。
@@ -2018,16 +2151,23 @@ declare module 'XrFrame/assets/VideoTexture' {
         /**
          * 播放视频。
          */
-        play(first?: boolean): Promise<{
-            width: number
-            height: number
-        }>
+        play(): Promise<void>
         /**
          * 从某处开始播放。
          *
          * @param pos 事件，单位为s
          */
         seek(pos: number): Promise<any>
+        /**
+         * 暂停当前播放的视频。
+         * 需要在基础库`v2.33.0`及以上支持。
+         */
+        pause(): Promise<void>
+        /**
+         * 唤醒已暂停的视频。
+         * 需要在基础库`v2.33.0`及以上支持。
+         */
+        resume(): Promise<void>
         /**
          * 停止播放视频。
          */
@@ -2108,6 +2248,9 @@ declare module 'XrFrame/assets/GLTFModel' {
     import { Kanata } from 'XrFrame/ext'
     import { GLTFRootLoaded } from 'XrFrame/loader/glTF/GLTFRootNode'
     import { GLTFTreeNode } from 'XrFrame/loader/glTF/scenes/GLTFNodesNode'
+    import { IGLTFLoaderOptions } from 'XrFrame/loader/GlTFLoader'
+    import Vector3 from 'XrFrame/math/vector3'
+    import Quaternion from 'XrFrame/math/quaternion'
     type Scene = import('XrFrame/core/Scene').default
     /**
      * 收集glTF实例化过程中创建的对象，避免其GC。
@@ -2134,17 +2277,23 @@ declare module 'XrFrame/assets/GLTFModel' {
          */
         neverCull: boolean
     }
+    export type TQS = [pos: Vector3, quat: Quaternion, scale: Vector3]
     /**
      * 加载完毕的GLTF模型，可以在节点下创建{@link GLTF | GLTF组件}来将其实例化。
      */
     export default class GLTFModel {
+        /**
+         * 如果IGLTFLoaderOptions里开启了preserveRaw，则会将原始json保存下来。
+         */
+        readonly jsonRaw: object | undefined
         constructor(_scene: Scene, model: GLTFRootLoaded)
         /**
          * 使用GLB文件加载而成的buffer，来生成GLTF模型。
          */
         static createFromBuffer(
             scene: Scene,
-            buffer: ArrayBuffer
+            buffer: ArrayBuffer,
+            options: IGLTFLoaderOptions
         ): Promise<GLTFModel>
         /**
          * 实例化一个GLTF模型，将其加入到指定节点下，并返回一系列得到的物件。
@@ -2162,7 +2311,7 @@ declare module 'XrFrame/assets/GLTFModel' {
             subRoots: Element[],
             treeNodeMap: Map<GLTFTreeNode, Element>,
             animations: NativeAnimation[],
-            meshes: Mesh[]
+            meshes: Array<[mesh: Mesh, transform: TQS]>
         ]
     }
     export {}
@@ -2753,6 +2902,11 @@ declare module 'XrFrame/assets/factories' {
     import Effect from 'XrFrame/assets/Effect'
     import Geometry from 'XrFrame/assets/Geometry'
     import Material from 'XrFrame/assets/Material'
+    export const TABLE: {
+        [type: string]: {
+            [id: string]: (scene: Scene) => any
+        }
+    }
     /**
      * @internal
      */
@@ -2893,6 +3047,13 @@ declare module 'XrFrame/assets/easeFunctions' {
         'ease-in-out-bounce': (x: any) => number
     }
     export {}
+}
+
+declare module 'XrFrame/physics/exports' {
+    export { default as RaycastHit } from 'XrFrame/physics/RaycastHit'
+    export { ICollideEvent, IOverlapEvent } from 'XrFrame/physics/Collision'
+    export { IContactPoint } from 'XrFrame/physics/ContactPoint'
+    export { RaycastDesc } from 'XrFrame/physics/raycast'
 }
 
 declare module 'XrFrame/math/vector2' {
@@ -3289,6 +3450,7 @@ declare module 'XrFrame/math/vector3' {
          * @returns
          */
         negate(): this
+        abs(): this
         /**
          * 向量点乘
          *
@@ -3807,12 +3969,6 @@ declare module 'XrFrame/math/quaternion' {
          * 将该四元数转换成欧拉角，x代表Pitch,y代表Yaw,z代表Roll
          * 旋转的顺序为YXZ
          *
-         * @notation 2022.6.1 by shanexyzhou
-         * 这个函数有bug：
-         * 正确转换：[ -0.7, 0, 0, 0.7 ] → [ x: -1.5707963, y: 0, z: 0 ]
-         * 目前结果：[ x: -1.5707963, y: -1.5707963, z: 1.5707963 ] (错误)
-         * 待修复，目前先别用这个函数。
-         *
          * @param {Vector3} [dst] 计算结果输出到的目标对象，如不传则新建一个
          * @returns {Vector3} 计算结果
          * @memberof Quaternion
@@ -3840,6 +3996,11 @@ declare module 'XrFrame/math/quaternion' {
          */
         toPhysics(): phys3D.RawQuaternion
         setArray(value: ArrayLike<number>, offset?: number): Quaternion
+        transformVector3(vec: Vector3): Vector3
+        /**
+         * 对[1,1,1]向量进行转换。
+         */
+        toAxisUnit(): Vector3
     }
 }
 
@@ -4713,6 +4874,8 @@ declare module 'XrFrame/kanata/lib/kanata' {
         unbindRigidBody: typeof IKanata.unbindRigidBody
         unbindCCT: typeof IKanata.unbindCCT
         decodeBase64: typeof IKanata.decodeBase64
+        initDraco: typeof IKanata.initDraco
+        decodeDraco: typeof IKanata.decodeDraco
         setNodeName: typeof IKanata.setNodeName
         setRenderComponentName: typeof IKanata.setRenderComponentName
         debugPrint: typeof IKanata.debugPrint
@@ -5131,7 +5294,6 @@ declare module 'XrFrame/components/Transform' {
         setLocalMatrix(mat: Matrix4): void
         onAdd(parent: Element, data: ITransformData): void
         onUpdate(data: ITransformData, preData: ITransformData): void
-        onTick(deltaTime: number, data: ITransformData): void
         onRemove(parent: Element, data: ITransformData): void
         onRelease(data: ITransformData): void
     }
@@ -5187,6 +5349,7 @@ declare module 'XrFrame/components/Assets' {
      * 详见{@link IAssetLoadData}。
      */
     export default class Assets extends Component<IAssetsData> {
+        static EVENTS: string[]
         readonly schema: IComponentSchema
     }
 }
@@ -5309,6 +5472,11 @@ declare module 'XrFrame/components/Camera' {
          * `xml`中的数据类型为`array`，默认为空。
          */
         postProcess: string[]
+        /**
+         * 允许的渲染标记，配合{@link RenderSystem}的`changeFeatures`一起使用。
+         * `xml`中的数据类型为`array`，默认为空。
+         */
+        allowFeatures: string[]
     }
     /**
      * {@link Camera}的`schema`，详见{@link ICameraData}。
@@ -5356,6 +5524,13 @@ declare module 'XrFrame/components/Camera' {
         get cullMask(): number
         get postProcess(): PostProcess[]
         get hdr(): boolean
+        get allowFeatures(): string[]
+        /**
+         * 当前渲染特性集合。
+         */
+        get features(): {
+            [key: string]: string | number | boolean
+        }
         /**
          * @internal
          */
@@ -5407,9 +5582,13 @@ declare module 'XrFrame/components/Camera' {
          * @param states 同{@link Material.setRenderStates}
          */
         setBackgroundRenderStates(states: { [key: string]: any }): void
+        /**
+         * 清空相机背景渲染状态。
+         */
         clearBackgroundRenderStates(): void
         onAdd(parent: Element, data: ICameraData): void
         onUpdate(data: ICameraData, preData: ICameraData): void
+        onTick(deltaTime: number, data: ICameraData): void
         onRemove(parent: Element, data: ICameraData): void
         onRelease(data: ICameraData): void
         protected _processData(data: ICameraData, preData: ICameraData): void
@@ -5417,7 +5596,7 @@ declare module 'XrFrame/components/Camera' {
 }
 
 declare module 'XrFrame/components/GLTF' {
-    import GLTFModel from 'XrFrame/assets/GLTFModel'
+    import GLTFModel, { TQS } from 'XrFrame/assets/GLTFModel'
     import Component, { IComponentSchema } from 'XrFrame/core/Component'
     import Element from 'XrFrame/core/Element'
     import BoundBox from 'XrFrame/math/boundBox'
@@ -5464,9 +5643,11 @@ declare module 'XrFrame/components/GLTF' {
      * @see {@link IGLTFData}
      */
     export default class GLTFComponent extends Component<IGLTFData> {
+        static EVENTS: string[]
         readonly schema: IComponentSchema
         readonly priority: number
         _subRoots: Element[]
+        _nodeMap: Map<string, ElementGLTFInfo>
         onUpdate(data: IGLTFData, preData: IGLTFData): void
         onRemove(parent: Element, data: IGLTFData): void
         onRelease(data: IGLTFData): void
@@ -5558,7 +5739,7 @@ declare module 'XrFrame/components/Light' {
          */
         intensity: number
         /**
-         * 范围，仅在电光和聚光有效。
+         * 范围，仅在点光和聚光有效。
          * `xml`中的数据类型`number`，默认为`1`。
          */
         range: number
@@ -5635,6 +5816,7 @@ declare module 'XrFrame/components/AssetMaterial' {
     import Effect from 'XrFrame/assets/Effect'
     import Component, { IComponentSchema } from 'XrFrame/core/Component'
     import Element from 'XrFrame/core/Element'
+    import EnvData from 'XrFrame/assets/EnvData'
     /**
      * `AssetMaterial`数据接口。
      */
@@ -5667,6 +5849,10 @@ declare module 'XrFrame/components/AssetMaterial' {
          * 大于等于`2500`视为透明物体。
          */
         renderQueue: number
+        /**
+         * 用于覆盖全局的、材质维度的环境数据。
+         */
+        envData?: EnvData
     }
     /**
      * {@link AssetMaterial}的`schema`，详见{@link IAssetMaterialData}。
@@ -5698,6 +5884,7 @@ declare module 'XrFrame/components/Mesh' {
     import { Kanata } from 'XrFrame/ext'
     import Material from 'XrFrame/assets/Material'
     import Transform from 'XrFrame/components/Transform'
+    import EnvData from 'XrFrame/assets/EnvData'
     /**
      * `Mesh`数据接口。
      */
@@ -5729,14 +5916,19 @@ declare module 'XrFrame/components/Mesh' {
         material?: Material
         /**
          * 覆盖`material`中的默认`uniforms`，如果覆盖了，则会先创建一个材质副本。
-         * `xml`中同{@link IMaterialData.uniforms}。
+         * `xml`中同{@link IAssetMaterialData.uniforms}。
          */
         uniforms?: Array<[string, string]>
         /**
          * 覆盖`material`中的默认`states`，如果覆盖了，则会先创建一个材质副本。
-         * `xml`中同{@link IMaterialData.states}。
+         * `xml`中同{@link IAssetMaterialData.states}。
          */
         states?: Array<[string, string]>
+        /**
+         * 用于覆盖`material`中的，全局的、材质维度的环境数据。
+         * * `xml`中同{@link IAssetMaterialData.envData}。
+         */
+        envData?: EnvData
     }
     /**
      * {@link Mesh}的`schema`，详见{@link IMeshData}。
@@ -5797,37 +5989,98 @@ declare module 'XrFrame/components/Mesh' {
     }
 }
 
-declare module 'XrFrame/components/Text' {
+declare module 'XrFrame/components/text/Text' {
     import Component, { IComponentSchema } from 'XrFrame/core/Component'
     import Element from 'XrFrame/core/Element'
     import { Kanata } from 'XrFrame/ext'
     import Material from 'XrFrame/assets/Material'
     import Transform from 'XrFrame/components/Transform'
+    import {
+        IRenderData,
+        EHorzAlignment,
+        EVertAlignment
+    } from 'XrFrame/components/text/types'
     import { IGlyph } from 'XrFrame/glyph'
+    import { Typesetting } from 'XrFrame/components/text/typesetting'
+    import { FillRenderData } from 'XrFrame/components/text/fillRenderData'
+    /**
+     * `Text`数据接口。
+     */
     export interface ITextData {
-        neverCull?: boolean
-        material?: Material
-        uniforms?: Array<[string, string]>
-        states?: Array<[string, string]>
+        /**
+         * 文本内容
+         * `xml`中的数据类型为`string`
+         */
         value?: string
-    }
-    export interface ICharacterData {
-        x: number
-        y: number
-        width: number
-        height: number
-        batchIndex: number
-        character: string
-        glyph: IGlyph
-    }
-    export interface IRenderData {
-        vertexBuffer?: Kanata.VertexBuffer
-        indexBuffer?: Kanata.IndexBuffer
-        vertexNum?: number
-        indiceNum?: number
-        texture?: number
+        /**
+         * 文本大小
+         * `xml`中的数据类型为`number`
+         */
+        size?: number
+        /**
+         * 文本颜色
+         * `xml`中的数据类型为`number-array`，默认为`0 0 0 1`。
+         */
+        color?: number[]
+        /**
+         * 文本轴点
+         * `xml`中的数据类型为`number-array`，默认为`0 1`。
+         */
+        anchor?: number[]
+        /**
+         * 文本框宽度
+         * `xml`中的数据类型为`number`
+         */
+        width?: number
+        /**
+         * 文本框高度
+         * `xml`中的数据类型为`number`
+         */
+        height?: number
+        /**
+         * 文本框行高，为比例
+         * `xml`中的数据类型为`number`
+         */
+        lineHeight?: number
+        /**
+         * 文本内边距
+         * `xml`中的数据类型为`number-array`，默认为`0 0 0`。
+         */
+        padding?: number[]
+        /**
+         * 文本水平定位
+         * `xml`中的数据类型为`string`，默认为`left`。
+         */
+        horzAlign?: string
+        /**
+         * 文本垂直定位
+         * `xml`中的数据类型为`string`，默认为`top`。
+         */
+        vertAlign?: string
+        /**
+         * 是否不参与剔除，默认false(即参与剔除)。
+         */
+        neverCull?: boolean
+        /**
+         * 覆盖`material`中的默认`uniforms`，如果覆盖了，则会先创建一个材质副本。
+         * `xml`中同{@link IMaterialData.uniforms}。
+         */
+        uniforms?: Array<[string, string]>
+        /**
+         * 覆盖`material`中的默认`states`，如果覆盖了，则会先创建一个材质副本。
+         * `xml`中同{@link IMaterialData.states}。
+         */
+        states?: Array<[string, string]>
     }
     export const TextSchema: IComponentSchema
+    export const textAttributes: Array<{
+        name: string
+        format: number
+        offset: number
+        usage: number
+    }>
+    export const textStride = 32
+    export const textVertexSize = 8
     export default class Text extends Component<ITextData> {
         readonly schema: IComponentSchema
         readonly priority: number
@@ -5837,11 +6090,27 @@ declare module 'XrFrame/components/Text' {
         protected _material: Material
         protected _trs: Transform
         protected _value: string
+        protected _size: number
+        protected _color: number[]
+        protected _anchor: number[]
+        protected _width: number | undefined
+        protected _height: number | undefined
+        protected _lineHeight: number
+        protected _padding: number[]
+        protected _horzAlign: EHorzAlignment
+        protected _vertAlign: EVertAlignment
         protected _glyphs: IGlyph[]
         protected _renderDatas: IRenderData[]
-        get value(): string
-        get material(): Material
-        set material(value: Material)
+        static QueryGlyphs: (
+            scene: import('XrFrame/core/Scene').default,
+            characters: string,
+            italic: boolean,
+            bold: boolean,
+            fontSize: number,
+            fontFamily: string
+        ) => IGlyph[]
+        static Typesetting: typeof Typesetting
+        static FillRenderData: typeof FillRenderData
         get id(): number
         onAdd(parent: Element, data: ITextData): void
         onTick(deltaTime: number, data: ITextData): void
@@ -5863,6 +6132,7 @@ declare module 'XrFrame/components/particle/Particle' {
     import ParticleInstance from 'XrFrame/components/particle/ParticleInstance'
     import { BasicShapeEmitter } from 'XrFrame/components/emitter/BasicShapeEmitter'
     export default class Particle extends BasicParticle {
+        static EVENTS: string[]
         readonly priority: number
         subEmitters: any
         get material(): Material
@@ -5876,7 +6146,7 @@ declare module 'XrFrame/components/particle/Particle' {
          *
          * @param delay 设定粒子延时几秒后再播放。
          */
-        start(delay: any): void
+        start(delay?: number): void
         /**
          * 停止粒子系统与其子发射器的播放。
          */
@@ -6629,6 +6899,7 @@ declare module 'XrFrame/components/Animator' {
         }
     }
     export default class Animator extends Component<IAnimatorData> {
+        static EVENTS: string[]
         /**
          * 详见{@link AnimatorSchema}。
          */
@@ -6882,6 +7153,7 @@ declare module 'XrFrame/components/ARTracker' {
     import Vector3 from 'XrFrame/math/vector3'
     /**
      * {@link ARSystem}和{@link ARTracker}的跟踪模式。
+     * 其中`threeDof`需要基础库`2.30.4`以上支持。
      */
     export type TTrackMode =
         | 'Plane'
@@ -6890,6 +7162,7 @@ declare module 'XrFrame/components/ARTracker' {
         | 'Face'
         | 'Hand'
         | 'Body'
+        | 'threeDof'
     /**
      * {@link ARTracker}的识别状态。
      * @version v2.29.1
@@ -6940,11 +7213,19 @@ declare module 'XrFrame/components/ARTracker' {
          */
         confidence: number[]
         /**
-         * 106个关键点，屏幕空间。
+         * 关键点，屏幕空间。
          */
         points: Array<{
             x: number
             y: number
+        }>
+        /**
+         * 支持3D时，3D关键点，世界空间。
+         */
+        points3d: Array<{
+            x: number
+            y: number
+            z: number
         }>
     }
     /**
@@ -6997,6 +7278,7 @@ declare module 'XrFrame/components/ARTracker' {
      * 其提供了追踪的能力，节点将会自动同步识别到的追踪目标的位置和旋转，
      */
     export default class ARTracker extends Component<IARTrackerData> {
+        static EVENTS: string[]
         /**
          * 详见{@link ARTrackSchema}。
          */
@@ -7045,7 +7327,7 @@ declare module 'XrFrame/components/ARTracker' {
          * 在`Face`/`Body`/`Hand`模式下，获取某个特征点的位置。
          *
          * @param point 特征点索引，需要在`0~105`，否则返回`undefined`。
-         * @param relativeToTracker 是否相对于`ARTracker`本身，默认为`true`，否则返回世界空间坐标。
+         * @param relativeToTracker 仅在`ar-system`的`pose3d`属性为`false`时生效。是否相对于`ARTracker`本身，默认为`true`，否则返回世界空间坐标。
          * @returns 只有在`arActive`时才有值，否则返回`undefined`。
          */
         getPosition(
@@ -7067,10 +7349,13 @@ declare module 'XrFrame/components/physics/Shape' {
     import Element from 'XrFrame/core/Element'
     import Vector3 from 'XrFrame/math/vector3'
     import { Kanata } from 'XrFrame/ext'
-    import Rigidbody from 'XrFrame/components/physics/Rigidbody'
-    import Mesh from 'XrFrame/components/Mesh'
-    import GLTFComponent from 'XrFrame/components/GLTF'
-    export const shapeMap: Map<phys3D.Collider, Shape>
+    import type Rigidbody from 'XrFrame/components/physics/Rigidbody'
+    import type GLTFComponent from 'XrFrame/components/GLTF'
+    import Quaternion from 'XrFrame/math/quaternion'
+    import { Delegate } from 'XrFrame/physics/event'
+    import { ICollideEvent, IOverlapEvent } from 'XrFrame/physics/Collision'
+    import { TQS } from 'XrFrame/assets/GLTFModel'
+    export const shapeMap: Map<phys3D.Collider, Shape<any>>
     export enum EShapeType {
         /**
          * @internal
@@ -7097,12 +7382,6 @@ declare module 'XrFrame/components/physics/Shape' {
          */
         Sphere = 5
     }
-    export enum ShapeImplType {
-        None = 0,
-        Basic = 1,
-        AttachedToMesh = 2,
-        GLTFMultiple = 3
-    }
     export interface IShapeData {
         /**
          * 轮廓中心相对元素{@link Transform}中心的偏移量。
@@ -7118,6 +7397,12 @@ declare module 'XrFrame/components/physics/Shape' {
          * @default false
          */
         autoFit?: boolean
+        /**
+         * 是否禁用shape。
+         *
+         * @default false
+         */
+        disabled?: boolean
     }
     export const ShapeSchema: {
         center: {
@@ -7126,6 +7411,14 @@ declare module 'XrFrame/components/physics/Shape' {
         autoFit: {
             type: string
         }
+        disabled: {
+            type: string
+        }
+    }
+    export enum ShapeImplType {
+        None = 0,
+        Basic = 1,
+        GLTFAbstract = 2
     }
     /**
      * 轮廓组件的基类。
@@ -7144,107 +7437,105 @@ declare module 'XrFrame/components/physics/Shape' {
      *
      * @abstract
      */
-    export default abstract class Shape extends Component<IShapeData> {
+    export default abstract class Shape<
+        T extends IShapeData = any
+    > extends Component<IShapeData> {
+        static EVENTS: string[]
         readonly priority: number
-        _nativeStaticRigidbody: phys3D.Rigidbody | null
-        _nativeColliders: phys3D.Collider[]
-        protected _rigidbodyComp: Rigidbody | null
+        implType: ShapeImplType
         protected _type: EShapeType
-        protected _shadowShapes: Shape[]
-        /**
-         * @internal
-         */
-        get shadowShapes(): readonly Shape[]
-        onAdd(parent: Element, data: IShapeData): void
-        onUpdate(data: IShapeData, preData: IShapeData): void
-        onTick(dateTime: number, data: IShapeData): void
-        protected abstract _createBasic(data: IShapeData): void
-        protected abstract _createAttachedToMesh(
-            data: IShapeData,
-            mesh: Mesh
-        ): void
-        protected abstract _createGLTFMultiple(
-            data: IShapeData,
-            gltf: GLTFComponent
-        ): void
-        /**
-         * 无状态函数。
-         */
-        /**
-         * 如果需要重建，那就重建。
-         */
+        protected _onCollisionEnterDelegate?: Delegate<ICollideEvent>
+        protected _onCollisionExitDelegate?: Delegate<ICollideEvent>
+        protected _onCollisionStayDelegate?: Delegate<ICollideEvent>
+        protected _onTriggerEnterDelegate?: Delegate<IOverlapEvent>
+        protected _onTriggerExitDelegate?: Delegate<IOverlapEvent>
+        protected _onTriggerStayDelegate?: Delegate<IOverlapEvent>
+        get type(): EShapeType
+        onAdd(parent: Element, data: T): void
+        onUpdate(data: T, preData: T): void
+        onTick(dateTime: number, data: T): void
+        protected abstract getImplClass(
+            implType: ShapeImplType
+        ): new () => ShapeImpl | null
         onRemove(parent: Element, data: IShapeData): void
-        onRelease(): void
+        onRelease(data: IShapeData): void
+        shadowRoot?: GLTFAbstractShape<T>
+        setAsShadow(root: GLTFAbstractShape<T>, transform: TQS): void
+        getGLTFRootShape(): Shape<T> | undefined
+        getBasicImpl(): BasicShape<T> | undefined
+        getShadowShapes(): Array<Shape<T>>
+        initDelegates(el: Element): void
+        resetListeners(): void
+    }
+    export interface ShapeImpl {
+        el: Element
+        onElementAdd?(parent: Element): void
+        update(data: IShapeData, preData: IShapeData): void
+        onElementRemove(parent: Element): void
+        onTick(dateTime: number, data: IShapeData): any
+        create?(el: Element, shape: Shape<any>, data: IShapeData): any
+        cleanUp(): any
+        enable(): any
+        disable(): any
+    }
+    export abstract class BasicShape<T extends IShapeData>
+    implements ShapeImpl
+    {
+        el: Element
+        shapeComp: Shape<T>
+        nativeComp: phys3D.Collider
+        rigidbodyComp?: Rigidbody
+        _isShadow: boolean
+        _root: GLTFAbstractShape<T>
+        _positionInGLTF: Vector3
+        _quatInGLTF: Quaternion
+        protected afterCreateNativeComp(): void
+        protected destroyNativeComp(): void
+        onElementAdd(parent: Element): void
+        protected abstract autoFit(data: T): void
+        protected abstract applyData(data: T): void
+        update(data: T, preData: T): void
+        onElementRemove(parent: Element): void
+        onRelease(data: T): void
+        onTick(dateTime: number, data: IShapeData): void
+        cleanUp(): void
         /**
          * @internal
          */
         get entity(): Kanata.Entity3D
-        /**
-         * 轮廓类型。
-         */
-        get type(): EShapeType
-        set type(v: EShapeType)
-        /**
-         * @internal
-         * 碰撞体是否是Trigger，开启后不参与碰撞，但是能触发Trigger系列的事件：
-         * {@link onTriggerEnter}, {@link onTriggerStay}, {@link onTriggerExit}。
-         * @default false
-         */
-        get isTrigger(): boolean
-        set isTrigger(v: boolean)
-        /**
-         * @internal
-         */
-        get scale(): Vector3
-        set scale(v: Vector3)
-        /**
-         * @internal
-         * 获取碰撞体附着的刚体组件。
-         * 目前不支持刚体，必定返回null。
-         */
-        get attachedRigidbody(): any
-        /**
-         * @internal
-         * 设置碰撞体的contactOffset，必须为正数。
-         * *一对*碰撞体，如果他们之间的最近距离小于他们的contactOffset之和，那么物理系统在一次*物理模拟*后就会产生一次碰撞。
-         */
-        get contactOffset(): number
-        set contactOffset(v: number)
-        /** @internal */
-        constructor()
-        /**
-         * @internal
-         */
         enable(): void
-        /**
-         * @internal
-         */
         disable(): void
-        /**
-         * 交给子类重载实现
-         * @deprecated
-         */
-        protected _create(data: IShapeData): void
-        /** @internal */
-        onAddRigidbody(rigidbody: Rigidbody): void
-        /** @internal */
-        onRemoveRigidbody(): void
-        /**
-         * @virtual 子类调用该方法之前必须确保_nativeCollider已经创建
-         */
-        protected _baseInit(): void
+    }
+    export abstract class GLTFAbstractShape<T extends IShapeData>
+    implements ShapeImpl
+    {
+        el: Element
+        shapeComp: Shape<T>
+        protected gltf: GLTFComponent
+        shadowShapes: Array<Shape<T>>
+        update(data: T, preData: T): void
+        onElementRemove(parent: Element): void
+        onTick(dateTime: number, data: T): void
+        create(el: Element, shape: Shape<T>, data: T): void
+        protected abstract getShapeClass(): new () => Shape<T>
+        cleanUp(): void
+        protected abstract createShadowShape(el: Element, data: T): Shape<T>
+        enable(): void
+        disable(): void
     }
 }
 
 declare module 'XrFrame/components/physics/SphereShape' {
     import Shape, {
+        BasicShape,
         EShapeType,
-        IShapeData
+        IShapeData,
+        ShapeImpl,
+        ShapeImplType
     } from 'XrFrame/components/physics/Shape'
     import Vector3 from 'XrFrame/math/vector3'
+    import Element from 'XrFrame/core/Element'
     import { IComponentSchema } from 'XrFrame/core/Component'
-    import Mesh from 'XrFrame/components/Mesh'
-    import GLTFComponent from 'XrFrame/components/GLTF'
     /**
      * @see {@link SphereShapes}
      */
@@ -7262,43 +7553,51 @@ declare module 'XrFrame/components/physics/SphereShape' {
      *
      * @see {@link ISphereShapeData}
      */
-    export default class SphereShape extends Shape {
+    export default class SphereShape extends Shape<ISphereShapeData> {
+        static EVENTS: string[]
         readonly schema: IComponentSchema
         protected _type: EShapeType
+        protected getImplClass(implType: ShapeImplType): new () => ShapeImpl
+    }
+    export class BasicSphereShape extends BasicShape<ISphereShapeData> {
+        nativeComp: phys3D.SphereCollider
         /**
          * 轮廓相对于元素中心点的偏移量。
          */
         get center(): Vector3
         set center(v: Vector3)
-        static defaultRadius: number
         /**
          * 球形轮廓的半径。
          */
         get radius(): number
         set radius(v: number)
-        protected _createBasic(data: ISphereShapeData): void
-        protected _createAttachedToMesh(
-            data: ISphereShapeData,
-            mesh: Mesh
-        ): void
-        protected _createGLTFMultiple(
-            data: ISphereShapeData,
-            gltf: GLTFComponent
-        ): void
+        create(el: Element, shape: SphereShape, data: ISphereShapeData): void
+        protected autoFit(data: ISphereShapeData): void
+        protected applyData(data: ISphereShapeData): void
     }
 }
 
 declare module 'XrFrame/components/physics/MeshShape' {
     import Shape, {
         IShapeData,
-        EShapeType
+        EShapeType,
+        ShapeImplType,
+        ShapeImpl,
+        BasicShape
     } from 'XrFrame/components/physics/Shape'
-    import { IComponentSchema } from 'XrFrame/xrFrameSystem'
-    import GLTFComponent from 'XrFrame/components/GLTF'
+    import Element from 'XrFrame/core/Element'
+    import { IComponentSchema } from 'XrFrame/core/Component'
     /**
      * @see {@link MeshShape}
      */
-    export interface IMeshShapeData extends IShapeData {}
+    export interface IMeshShapeData extends IShapeData {
+        /**
+         * 是否使用凸多边形来包围Mesh。
+         * *如果元素有`shape-interact`属性，则会强制开启。*
+         * @default false
+         */
+        convex?: boolean
+    }
     export const MeshShapeSchema: IComponentSchema
     /**
      * 利用当前元素下的{@link Mesh | Mesh组件}或{@link GLTF | GLTF组件}，创建一个完全贴合的轮廓。如果当前元素下不存在Mesh组件或GLTF组件，则不生效。
@@ -7310,30 +7609,32 @@ declare module 'XrFrame/components/physics/MeshShape' {
      *
      * @see {@link IMeshShapeData}
      */
-    export default class MeshShape extends Shape {
+    export default class MeshShape extends Shape<IMeshShapeData> {
+        static EVENTS: string[]
         readonly schema: IComponentSchema
-        readonly priority: number
-        _nativeColliders: phys3D.MeshCollider[]
-        _shadowShapes: MeshShape[]
         protected _type: EShapeType
-        protected _createBasic(data: IMeshShapeData): void
-        protected _createAttachedToMesh(data: IMeshShapeData): void
-        protected _createGLTFMultiple(
-            data: IMeshShapeData,
-            gltf: GLTFComponent
-        ): void
+        protected getImplClass(implType: ShapeImplType): new () => ShapeImpl
+    }
+    export class BasicMeshShape extends BasicShape<IMeshShapeData> {
+        nativeComp: phys3D.MeshCollider
+        create(el: Element, shape: MeshShape, data: IMeshShapeData): void
+        onTick(dateTime: number, data: IShapeData): void
+        protected autoFit(data: IMeshShapeData): void
+        protected applyData(data: IMeshShapeData): void
     }
 }
 
 declare module 'XrFrame/components/physics/CapsuleShape' {
     import Shape, {
+        BasicShape,
         EShapeType,
-        IShapeData
+        IShapeData,
+        ShapeImpl,
+        ShapeImplType
     } from 'XrFrame/components/physics/Shape'
     import Vector3 from 'XrFrame/math/vector3'
-    import { IComponentSchema } from 'XrFrame/xrFrameSystem'
-    import Mesh from 'XrFrame/components/Mesh'
-    import GLTFComponent from 'XrFrame/components/GLTF'
+    import Element from 'XrFrame/core/Element'
+    import { IComponentSchema } from 'XrFrame/core/Component'
     /**
      * @see {@link CapsuleShape}
      */
@@ -7371,11 +7672,19 @@ declare module 'XrFrame/components/physics/CapsuleShape' {
      *
      * @see {@link ICapsuleShapeData}
      */
-    export default class CapsuleShape extends Shape {
+    export default class CapsuleShape extends Shape<ICapsuleShapeData> {
+        static EVENTS: string[]
         readonly schema: IComponentSchema
         protected _type: EShapeType
+        protected getImplClass(implType: ShapeImplType): new () => ShapeImpl
+    }
+    export class BasicCapsuleShape extends BasicShape<ICapsuleShapeData> {
+        nativeComp: phys3D.CapsuleCollider
+        /**
+         * 轮廓相对于元素中心点的偏移量。
+         */
+        get center(): Vector3
         set center(v: Vector3)
-        static defaultRadius: number
         /**
          * 胶囊体两端球体的半径。
          */
@@ -7392,27 +7701,23 @@ declare module 'XrFrame/components/physics/CapsuleShape' {
          */
         get direction(): ECapsuleShapeDirection
         set direction(v: ECapsuleShapeDirection)
-        protected _createBasic(data: ICapsuleShapeData): void
-        protected _createAttachedToMesh(
-            data: ICapsuleShapeData,
-            mesh: Mesh
-        ): void
-        protected _createGLTFMultiple(
-            data: ICapsuleShapeData,
-            gltf: GLTFComponent
-        ): void
+        create(el: Element, shape: CapsuleShape, data: ICapsuleShapeData): void
+        protected autoFit(data: ICapsuleShapeData): void
+        protected applyData(data: ICapsuleShapeData): void
     }
 }
 
 declare module 'XrFrame/components/physics/CubeShape' {
     import Shape, {
+        BasicShape,
         EShapeType,
-        IShapeData
+        IShapeData,
+        ShapeImpl,
+        ShapeImplType
     } from 'XrFrame/components/physics/Shape'
     import Vector3 from 'XrFrame/math/vector3'
-    import { IComponentSchema } from 'XrFrame/xrFrameSystem'
-    import Mesh from 'XrFrame/components/Mesh'
-    import GLTFComponent from 'XrFrame/components/GLTF'
+    import Element from 'XrFrame/core/Element'
+    import { IComponentSchema } from 'XrFrame/core/Component'
     /**
      * @see {@link CubeShape}
      */
@@ -7430,9 +7735,14 @@ declare module 'XrFrame/components/physics/CubeShape' {
      *
      * @see {@link ICubeShapeData}
      */
-    export default class CubeShape extends Shape {
+    export default class CubeShape extends Shape<ICubeShapeData> {
+        static EVENTS: string[]
         readonly schema: IComponentSchema
         protected _type: EShapeType
+        protected getImplClass(implType: ShapeImplType): new () => ShapeImpl
+    }
+    export class BasicCubeShape extends BasicShape<ICubeShapeData> {
+        nativeComp: phys3D.BoxCollider
         /**
          * 轮廓相对于元素中心点的偏移量。
          */
@@ -7443,12 +7753,466 @@ declare module 'XrFrame/components/physics/CubeShape' {
          */
         get size(): Vector3
         set size(v: Vector3)
-        protected _createBasic(data: ICubeShapeData): void
-        protected _createAttachedToMesh(data: ICubeShapeData, mesh: Mesh): void
-        protected _createGLTFMultiple(
-            data: ICubeShapeData,
-            gltf: GLTFComponent
+        create(el: Element, shape: CubeShape, data: ICubeShapeData): void
+        protected autoFit(data: ICubeShapeData): void
+        protected applyData(data: ICubeShapeData): void
+    }
+}
+
+declare module 'XrFrame/components/physics/Rigidbody' {
+    import Vector3 from 'XrFrame/math/vector3'
+    import Quaternion from 'XrFrame/math/quaternion'
+    import Component, { IComponentSchema } from 'XrFrame/core/Component'
+    import {
+        CollisionDetectionMode,
+        ForceMode
+    } from 'XrFrame/components/physics/types'
+    import Element from 'XrFrame/core/Element'
+    export interface IRigidbodyData {
+        /**
+         * 是否禁用刚体。
+         * @default false
+         */
+        disabled?: boolean
+        /**
+         * 物体的质量。
+         * @limit mass > 0
+         * @default 1
+         */
+        mass?: number
+        /**
+         * 刚体是否受重力影响。
+         * @default true
+         */
+        useGravity?: boolean
+        /**
+         * 限制刚体在某个轴上的位移和旋转。
+         * 具体值参考{@link RigidbodyConstraints}
+         */
+        constraintsMask?: number
+        /**
+         * 是否为*运动学(Kinematic)* 刚体。
+         * 设置为*运动学*刚体后，除非手动调用{@link movePosition}，否则物体不会在*物理模拟*阶段发生位移或旋转。可以理解为，刚体的行为完全在用户的控制之下。
+         * @default false
+         */
+        kinematic?: boolean
+    }
+    export const RigidbodySchema: {
+        mass: {
+            type: string
+        }
+        useGravity: {
+            type: string
+        }
+        constraintsMask: {
+            type: string
+        }
+        disabled: {
+            type: string
+        }
+        kinematic: {
+            type: string
+        }
+    }
+    /**
+     * 刚体组件。
+     *
+     * 让物体在物理系统中成为一个有质量的刚体。只有添加了这个组件之后，物体才有可能在物理系统的*物理模拟*阶段发生位移和旋转。
+     * @category Physics
+     */
+    export default class Rigidbody extends Component<IRigidbodyData> {
+        readonly schema: IComponentSchema
+        readonly priority: number
+        /**
+         * 刚体的质量。
+         * @limit mass > 0
+         * @default 1
+         */
+        get mass(): number
+        set mass(v: number)
+        /**
+         * 线性阻尼。
+         * 影响物体的{@link velocity | 线性速度}。
+         * @limit linearDamping >= 0
+         * @default 0
+         */
+        get linearDamping(): number
+        set linearDamping(v: number)
+        /**
+         * 角速度阻尼。
+         * 影响物体的{@link angularVelocity | 角速度}。
+         * @limit angularDamping >= 0
+         * @default 0.05
+         */
+        get angularDamping(): number
+        set angularDamping(v: number)
+        /**
+         * 刚体是否受重力影响。
+         * @default true
+         */
+        get useGravity(): boolean
+        set useGravity(v: boolean)
+        /**
+         * 是否为*运动学(Kinematic)* 刚体。
+         * 设置为*运动学*刚体后，除非手动调用{@link movePosition}，否则物体不会在*物理模拟*阶段发生位移或旋转。可以理解为，刚体的行为完全在用户的控制之下。
+         * @default false
+         */
+        get isKinematic(): boolean
+        set isKinematic(v: boolean)
+        /**
+         * @unimplemented
+         * @default true
+         */
+        get detectCollisions(): boolean
+        set detectCollisions(v: boolean)
+        /**
+         * 设置刚体的碰撞检测模式。
+         * 详见{@link CollisionDetectionMode}。
+         * @default {@link CollisionDetectionMode.Discrete}
+         */
+        get collisionDetectionMode(): CollisionDetectionMode
+        set collisionDetectionMode(v: CollisionDetectionMode)
+        /**
+         * 限制物体的旋转（X轴，Y轴，Z轴）。
+         * @default [false, false, false]
+         */
+        get rotationConstraints(): boolean[]
+        set rotationConstraints(v: boolean[])
+        /**
+         * 限制物体的位移（X轴，Y轴，Z轴）。
+         * @default [false, false, false]
+         */
+        get positionConstraints(): boolean[]
+        set positionConstraints(v: boolean[])
+        /**
+         * 直接获取或修改刚体在*物理系统*中的位置。
+         * 物理系统中的位置是独立于Transform组件的。
+         *
+         * \**如果你不清楚修改这一项的后果，请不要手动修改它。修改{@link Transform.position}来代替。*
+         */
+        get position(): Vector3
+        set position(v: Vector3)
+        /**
+         * 直接获取或修改刚体在*物理系统*中的旋转（以四元数表示）。
+         * 物理系统中的旋转是独立于节点系统中的Transform的，详见{@link //TODO}。
+         *
+         * \**如果你不清楚修改这一项的后果，请不要手动修改它。修改{@link Transform3D.euler}或{@link Transform3D.quaternion}来代替。*
+         */
+        get rotation(): Quaternion
+        set rotation(v: Quaternion)
+        /**
+         * 刚体的角速度。
+         */
+        get angularVelocity(): Vector3
+        set angularVelocity(v: Vector3)
+        /**
+         * 刚体的质心相对于LocalTransform的偏移量。
+         * 如果不手动设置这一项，会自动根据刚体附着的轮廓来计算质心。
+         * @see {@link resetCenterOfMass}
+         */
+        get centerOfMass(): Vector3
+        set centerOfMass(v: Vector3)
+        /**
+         * 是否允许*物理模拟*过程中对刚体进行旋转。
+         * @default true
+         */
+        get freezeRotation(): boolean
+        set freezeRotation(v: boolean)
+        /**
+         * 刚体的转动惯量。
+         * 如果不手动设置的话，会自动根据刚体上附着的轮廓计算得出。
+         * @see {@link resetInertiaTensor}
+         */
+        get inertiaTensor(): number
+        set inertiaTensor(v: number)
+        /**
+         * 最大角速度（弧度）。
+         * @default 7
+         */
+        get maxAngularVelocity(): number
+        set maxAngularVelocity(v: number)
+        /**
+         * 最大分离速度。
+         * *物理模拟*解决碰撞（相交）的过程中，最大能允许的分离速度。
+         * @default Infinity
+         */
+        get maxDepenetrationVelocity(): number
+        set maxDepenetrationVelocity(v: number)
+        /**
+         * 设置刚体进入休眠的动能阈值。
+         * @default 0.005
+         */
+        get sleepThreshold(): number
+        set sleepThreshold(v: number)
+        /**
+         * 设置*物理模拟*过程中解决碰撞的迭代次数。
+         * 更高的迭代次数，会消耗更多性能，产生更自然的物理碰撞效果。
+         * 如果发现静息状态的刚体（比如说放在地面上），会发生抖动，可以考虑提高这项数值。
+         *
+         * @limit solverIterations > 0
+         * @default 6
+         */
+        get solverIterations(): number
+        set solverIterations(v: number)
+        /**
+         * 设置*物理模拟*过程中计算碰撞后速度的迭代次数。
+         * 更高的迭代次数，会消耗更多性能，产生更准确的分离速度。
+         *
+         * @limit solverVelocityIterations > 0
+         * @default 1
+         */
+        get solverVelocityIterations(): number
+        set solverVelocityIterations(v: number)
+        /**
+         * 刚体的线性速度。
+         *
+         * \**修改这一项会造成速度突变，一般情况下可以使用{@link addForce}来代替。*
+         */
+        get velocity(): Vector3
+        set velocity(v: Vector3)
+        /**
+         * @internal
+         */
+        constructor()
+        applyData(data: IRigidbodyData): void
+        onTick(dateTime: number, data: IRigidbodyData): void
+        onAdd(parent: Element, data: IRigidbodyData): void
+        onUpdate(data: IRigidbodyData, preData: IRigidbodyData): void
+        onRemove(parent: Element, data: IRigidbodyData): void
+        onRelease(data: IRigidbodyData): void
+        enable(): void
+        disable(): void
+        /** @internal */
+        get nativeComp(): phys3D.DynamicRigidbody
+        /**
+         * @returns 刚体质心在世界坐标中的位置。
+         */
+        getWorldCenterOfMass(): Vector3
+        /**
+         * 为刚体施加力，会影响刚体的{@link velocity | 线性速度}。
+         * @param force 世界坐标下矢量形式的力，作用在物体质心上。
+         * @param mode 力的类型。
+         */
+        addForce(force: Vector3, mode: ForceMode): void
+        /**
+         * 为刚体施加力矩，会影响刚体的{@link angularVelocity | 角速度}。
+         * @param torque 世界坐标下矢量形式的力矩。
+         * @param mode 力矩的类型。
+         */
+        addTorque(torque: Vector3, mode: ForceMode): void
+        /**
+         * @returns 刚体是否处于休眠状态。
+         * @see {@link sleep}
+         */
+        isSleeping(): boolean
+        /**
+         * 强迫刚体进入休眠状态（至少一帧），休眠状态详见{@link //todo}。
+         * \**如果下一帧发生碰撞则会立刻醒来。*
+         */
+        sleep(): void
+        /**
+         * 强制唤醒刚体（离开休眠状态）。
+         * @see {@link sleep}
+         */
+        wakeUp(): void
+        /**
+         * 生成一次模拟爆炸的力。
+         * 爆炸范围可以视作一个球状物体，如果球体和刚体产生*相交*，则会在刚体上产生推力。
+         * 推力的大小和*相交点*与球心的距离有关，推力的方向从球心指向相交点，推力作用位于*相交点*。
+         *
+         * 视刚体有无附着的轮廓，分为两种情况：
+         * + 无轮廓（或爆炸球心在刚体轮廓内）
+         *   相交的判定使用刚体的质心；相交点也取刚体的质心。
+         * + 有轮廓
+         *   相交的判定使用刚体的所有轮廓；相交点取轮廓距离球心最近的那一点。
+         * @param explosionForce 爆炸力的大小。
+         * @param explosionPosition 爆炸球体的球心位置。
+         * @param explosionRadius 爆炸球体的半径。
+         * @param upwardsModifier 使用相对数值来修改推力的*作用位置*的y坐标。
+         * @param mode 力的类型。
+         * @limit explosionForce > 0
+         */
+        AddExplosionForce(
+            explosionForce: number,
+            explosionPosition: Vector3,
+            explosionRadius: number,
+            upwardsModifier: number,
+            mode: ForceMode
         ): void
+        /**
+         * 为刚体施加力，会影响刚体的{@link velocity | 线性速度}和{@link angularVelocity | 角速度}。
+         * @param force 世界坐标下矢量形式的力，作用在position位置上。
+         * @param position 力的作用位置。
+         * @param mode 力的类型。
+         */
+        AddForceAtPosition(
+            force: Vector3,
+            position: Vector3,
+            mode: ForceMode
+        ): void
+        /**
+         * 为刚体施加力，会影响刚体的{@link velocity | 线性速度}。
+         * @param force **局部**坐标下矢量形式的力，作用在物体质心上。
+         * @param mode 力的类型。
+         */
+        addRelativeForce(force: Vector3, mode: ForceMode): void
+        /**
+         * 为刚体施加力矩，会影响刚体的{@link angularVelocity | 角速度}。
+         * @param torque **局部**坐标下矢量形式的力矩。
+         * @param mode 力矩的类型。
+         */
+        addRelativeTorque(torque: Vector3, mode: ForceMode): void
+        /**
+         * 测试刚体**表面上**距离某点最近的位置。
+         * 如果给予的position在刚体内部，会返回position。
+         * 如果刚体无附着的轮廓，会返回[Infinity, Infinity, Infinity]。
+         */
+        closestPointOnBounds(position: Vector3): Vector3
+        /**
+         * 获取刚体内某一点在世界坐标下的速度。
+         * @param worldPoint 世界坐标下的位置（其实在刚体外也可以）。
+         */
+        getPointVelocity(worldPoint: Vector3): Vector3
+        /**
+         * 获取刚体内某一点在**局部**坐标下的速度。
+         * @param relativePoint **局部**坐标下的位置（其实在刚体外也可以）。
+         */
+        getRelativePointVelocity(relativePoint: Vector3): Vector3
+        /**
+         * 对于***非**运动学刚体*来说，等于直接修改{@link position}；
+         * 对于*运动学刚体*来说，位置变化会在下一帧生效。可以视作物体在这一帧的*物理模拟*中沿直线路径**移动**到了目的地。
+         * @param position 位移的终点
+         * @see {@link isKinematic}
+         */
+        movePosition(position: Vector3): void
+        /**
+         * @unimplemented 暂未支持，请使用{@link rotation}属性或{@link Transform3D.quaternion}代替。
+         */
+        moveRotation(rotation: Quaternion): void
+        /**
+         * 手动触发，根据刚体附着的轮廓重新计算刚体的质心。
+         * @see {@link centerOfMass}
+         */
+        resetCenterOfMass(): void
+        /**
+         * 手动触发，根据刚体附着的轮廓重新计算刚体的转动惯量。
+         * @see {@link inertiaTensor}
+         */
+        resetInertiaTensor(): void
+        /**
+         * 根据给定的密度和刚体附着的轮廓，来计算刚体的质量。
+         * @see {@link mass}
+         */
+        setDensity(density: number): void
+    }
+}
+
+declare module 'XrFrame/components/physics/ShapeInteract' {
+    import Component, { IComponentSchema } from 'XrFrame/core/Component'
+    import Element from 'XrFrame/core/Element'
+    import { CombineMode } from 'XrFrame/components/physics/types'
+    export enum EShapeInteractType {
+        None = 0,
+        Overlap = 1,
+        Collide = 2
+    }
+    export interface IShapeInteractData {
+        /**
+         * 是否禁用Shape间交互。
+         *
+         * @default false
+         */
+        disabled?: boolean
+        /**
+         * 是否能与其他Shape发生物理碰撞。
+         *
+         * @default false
+         */
+        collide?: boolean
+        /**
+         * 弹性系数，决定碰撞时的能量损失比例。
+         *
+         * 弹性系数 = 1时，碰撞无能量损失。
+         * @limit 0 <= bounciness <= 1
+         * @default 0
+         */
+        bounciness?: number
+        /**
+         * 静摩擦系数
+         * @limit 0 <= staticFriction <= 1
+         * @default 0.6
+         */
+        staticFriction?: number
+        /**
+         * 动摩擦系数。
+         * @limit 0 <= dynamicFriction <= 1
+         * @default 0.6
+         */
+        dynamicFriction?: number
+    }
+    export const ShapeInteractSchema: {
+        disabled: {
+            type: string
+        }
+        collide: {
+            type: string
+        }
+        bounciness: {
+            type: string
+        }
+        staticFriction: {
+            type: string
+        }
+        dynamicFriction: {
+            type: string
+        }
+    }
+    /**
+     * 拥有ShapeInterace组件的Shape才能与其他Shape发生交互。
+     * 将`collide`属性设置为true来与其他Shape进行物理碰撞，仅当两个Shape的collide属性**都为true**时它们才能发生碰撞。
+     */
+    export default class ShapeInteract extends Component<IShapeInteractData> {
+        readonly schema: IComponentSchema
+        _disabled: boolean
+        _collide: boolean
+        get dynamicFriction(): number
+        set dynamicFriction(value)
+        /**
+         * 静摩擦系数
+         * @limit 0 <= staticFriction <= 1
+         * @default 0.6
+         */
+        get staticFriction(): number
+        set staticFriction(value)
+        /**
+         * 弹性系数，决定碰撞时的能量损失比例。
+         *
+         * 弹性系数 = 1时，碰撞无能量损失。
+         * @limit 0 <= bounciness <= 1
+         * @default 0
+         */
+        get bounciness(): number
+        set bounciness(value)
+        /**
+         * 如何结合发生碰撞的两个物体的摩擦系数。
+         * @default {@link CombineMode.Average}
+         */
+        get frictionCombine(): CombineMode
+        set frictionCombine(v: CombineMode)
+        /**
+         * 如何结合发生碰撞的两个物体的弹性系数。
+         * @default {@link CombineMode.Average}
+         */
+        get bounceCombine(): CombineMode
+        set bounceCombine(v: CombineMode)
+        constructor()
+        /**
+         * @internal
+         */
+        get material(): phys3D.Material
+        onAdd(parent: Element, data: IShapeInteractData): void
+        onUpdate(data: IShapeInteractData, preData: IShapeInteractData): void
+        getInteractType(): EShapeInteractType
     }
 }
 
@@ -7464,7 +8228,7 @@ declare module 'XrFrame/components/gizmo/ShapeGizmos' {
     export interface IShapeGizmosData {}
     export const ShapeGizmosSchema: {}
     interface GizmoInfo {
-        shape: Shape
+        shape: Shape<any>
         gizmoCtor: null | typeof CubeGizmo | typeof CapsuleGizmo
         shadowGizmos: ShapeGizmos[]
         type: ShapeImplType
@@ -7676,6 +8440,7 @@ declare module 'XrFrame/elements/xr-camera' {
         'clear-stencil': string[]
         'clear-color': string[]
         'post-process': string[]
+        'allow-features': string[]
     } & {
         'node-id': string[]
         visible: string[]
@@ -7721,6 +8486,7 @@ declare module 'XrFrame/elements/xr-mesh' {
         material: string[]
         uniforms: string[]
         states: string[]
+        'env-data': string[]
     } & {
         'node-id': string[]
         visible: string[]
@@ -7825,6 +8591,7 @@ declare module 'XrFrame/elements/xr-gltf' {
     }
     /**
      * 标签为`xr-gltf`。
+     * 不能在这个标签内放置子标签。
      *
      * 默认组件见{@link GLTFDefaultComponents}，属性映射见{@link GLTFDataMapping}。
      */
@@ -7854,6 +8621,7 @@ declare module 'XrFrame/elements/xr-asset-material' {
         uniforms: string[]
         states: string[]
         'render-queue': string[]
+        'env-data': string[]
     } & {
         [key: string]: string[]
     }
@@ -8213,13 +8981,16 @@ declare module 'XrFrame/systems/VideoSystem' {
      */
     import VideoTexture from 'XrFrame/assets/VideoTexture'
     import Component from 'XrFrame/core/Component'
+    import { Element } from 'XrFrame/xrFrameSystem'
     export interface IVideoSystemData {}
     /**
      * 视频系统，负责整个场景视频的管理。
      */
     export default class VideoSystem extends Component<IVideoSystemData> {
         readonly priority: number
+        onAdd(parent: Element, data: IVideoSystemData): void
         onTick(deltaTime: number, data: IVideoSystemData): void
+        onRelease(data: IVideoSystemData): void
         /**
          * @internal
          */
@@ -8247,6 +9018,11 @@ declare module 'XrFrame/systems/RenderSystem' {
      */
     export interface IRenderSystemData {
         /**
+         * 是否支持画布输出透明通道，并且能够和背景混合。
+         * `xml`中数据类型为`boolean`。
+         */
+        alpha: boolean
+        /**
          * 场景中阴影的颜色。
          * `xml`中数据类型为`color`。
          */
@@ -8269,6 +9045,12 @@ declare module 'XrFrame/systems/RenderSystem' {
         protected _renderGraph?: RenderGraph
         protected _sortedCameras: Camera[]
         protected _dirtyCameras: Camera[]
+        protected _features: {
+            [key: string]: boolean | number | string
+        }
+        protected _dirtyFeatures: {
+            [key: string]: boolean | number | string
+        }
         protected _camerasChangeEvent: Observable<this>
         protected _env: Env
         /**
@@ -8310,6 +9092,16 @@ declare module 'XrFrame/systems/RenderSystem' {
          * 获取全局宏信息。
          */
         getMacro(key: string): string | number | boolean
+        /**
+         * 修改全局渲染特性。
+         */
+        changeFeatures(features: {
+            [key: string]: string | number | boolean
+        }): void
+        /**
+         * 获取全局渲染特性。
+         */
+        getFeature(key: string): boolean | number | string
         onAdd(parent: Element, data: IRenderSystemData): void
         onTick(): void
         onRelease(data: IRenderSystemData): void
@@ -8342,6 +9134,7 @@ declare module 'XrFrame/systems/PhysicsSystem' {
     import { Camera } from 'XrFrame/components'
     import Component from 'XrFrame/core/Component'
     import { Kanata } from 'XrFrame/ext'
+    import Vector3 from 'XrFrame/math/vector3'
     import { RaycastDesc } from 'XrFrame/physics/raycast'
     import Element from 'XrFrame/core/Element'
     import Shape from 'XrFrame/components/physics/Shape'
@@ -8400,20 +9193,29 @@ declare module 'XrFrame/systems/PhysicsSystem' {
      */
     export interface IPhysicsSystemData {}
     /**
-     * 物理系统，管理着场景中的所有{@link Shape | 轮廓}。
+     * 物理系统，管理着场景中的所有{@link Shape | 轮廓}和{@link Rigidbody | 刚体}。
      */
     export default class PhysicsSystem extends Component<IPhysicsSystemData> {
         /**
          * @internal
          */
         nativeSystem: phys3D.PhysSystem
+        /**
+         * 是否进行物理模拟。
+         */
+        enableSimulation: boolean
         constructor()
         /** @internal */
         addShape(shape: Shape): void
         /** @internal */
         removeShape(shape: Shape): void
         onAdd(): void
-        onTick(deltaTime: number, data: IPhysicsSystemData): void
+        maxPhysicsDeltaTime: number
+        fixedDeltaTime: number
+        /**
+         * @internal
+         */
+        onTick(dt: number, data: IPhysicsSystemData): void
         /**
          * @internal
          */
@@ -8423,9 +9225,34 @@ declare module 'XrFrame/systems/PhysicsSystem' {
         ): void
         /**
          * @internal
-         * 射线检测，判断给定射线是否与至少一个碰撞体相交，并返回与**最近**的那个碰撞体相交的信息。
+         */
+        unbindRigidbody(rigidbody: phys3D.Rigidbody): void
+        /**
+         * 射线检测，判断给定射线是否与至少一个轮廓相交，并返回与**最近**的那个轮廓相交的信息。
+         * 返回的信息记录在desc.hit里，需要事先创建一个RaycastHit对象来负责接收。
          */
         raycast(desc: RaycastDesc): boolean
+        /**
+         * 全局重力。
+         * @default [0, -9.8, 0]
+         */
+        get gravity(): Vector3
+        set gravity(v: Vector3)
+        /**
+         * 设置碰撞矩阵。
+         * @param str 用于表达碰撞矩阵的字符串
+         * @internal
+         */
+        setCollisionMatrix(str: string): void
+        /**
+         * 设定某一对layer之间是否会发生碰撞。
+         * @param ignore `true`表示**不**碰撞。
+         */
+        ignoreLayerCollision(
+            layer1: number,
+            layer2: number,
+            ignore?: boolean
+        ): void
     }
 }
 
@@ -8440,6 +9267,11 @@ declare module 'XrFrame/systems/ARSystem' {
      * AR追踪原始数据。
      */
     export interface IARRawData {
+        /**
+         * 该帧生成时间，单位是纳秒(ns)。
+         * 在版本`v2.30.1`之后支持。
+         */
+        timestamp: number
         /**
          * 当前相机帧画面宽度。
          */
@@ -8478,6 +9310,38 @@ declare module 'XrFrame/systems/ARSystem' {
          * 使用前置还是后置相机，默认后置`Back`。
          */
         camera?: 'Front' | 'Back'
+        /**
+         * 在支持的情况下，是否开启实时深度遮挡。
+         * **目前暂时不可用！**
+         */
+        depthMask?: boolean
+        /**
+         * 开启实时深度遮挡时，遮挡的近处阈值。
+         * 值是空间实际尺度（m），默认为`0.02`。
+         */
+        depthNear?: number
+        /**
+         * 开启实时深度遮挡时，遮挡的远处阈值。
+         * 值是空间实际尺度（m），默认为`20`。
+         */
+        depthFar?: number
+        /**
+         * 开启实时深度遮挡时，显示一个用于Debug的图层。
+         * **目前暂时不可用！**
+         */
+        depthDebug?: boolean
+        /**
+         * 在`v2`平面模式下，平面检测模式。
+         * `1`为水平面，`2`为垂直平面，`3`为两个都支持。
+         * 默认为`3`。
+         */
+        planeMode?: number
+        /**
+         * 在`Face`/`Body`/`Hand`模式下，使用原生的AI3D推理估计。
+         * 默认为`false`。
+         * **目前暂时不可用！**
+         */
+        pose3d?: boolean
     }
     /**
      * {@link ARSystem}的`schema`，详见{@link IARSystemData}。
@@ -8489,6 +9353,7 @@ declare module 'XrFrame/systems/ARSystem' {
      * 代理自小程序的`VKSession`。
      */
     export default class ARSystem extends Component<IARSystemData> {
+        static EVENTS: string[]
         /**
          * 详见{@link ARSystemSchema}。
          */
@@ -8516,6 +9381,7 @@ declare module 'XrFrame/systems/ARSystem' {
         get posCount(): number
         onAdd(parent: Element, data: IARSystemData): void
         onTick(deltaTime: number, data: IARSystemData): void
+        onUpdate(data: IARSystemData, preData: IARSystemData): void
         onRemove(parent: Element, data: IARSystemData): void
         onRelease(data: IARSystemData): void
         /**
@@ -8590,6 +9456,38 @@ declare module 'XrFrame/systems/ShareSystem' {
         quality?: number
     }
     /**
+     * 分享录屏的配置。
+     */
+    export interface IShareRecordOptions {
+        /**
+         * 输出帧率。
+         * @default 30
+         */
+        fps?: number
+        /**
+         * 视频比特率。
+         * @default 1000
+         */
+        videoBitsPerSecond?: number
+        /**
+         * 录制视频宽度，不传的话使用Canvas宽度。
+         */
+        width?: number
+        /**
+         * 录制视频高度，不传的话使用Canvas高度。
+         */
+        height?: number
+    }
+    /**
+     * 录屏状态枚举。
+     */
+    export enum EShareRecordState {
+        Idle = 0,
+        Waiting = 1,
+        Recording = 2,
+        Paused = 3
+    }
+    /**
      * 分享系统，负责分享相关功能。
      */
     export default class ShareSystem extends Component<IShareSystemData> {
@@ -8599,13 +9497,32 @@ declare module 'XrFrame/systems/ShareSystem' {
          */
         get supported(): boolean
         /**
+         * 当前录屏状态。
+         */
+        get recordState(): EShareRecordState
+        onTick(deltaTime: number, data: IShareSystemData): void
+        /**
+         * @deprecated 请在`v3.0.2`后使用异步版本，同步版本不再维护，请使用`captureToDataURLAsync`。
          * 截屏输出为`base64`。
          */
         captureToDataURL(options?: IShareCaptureOptions): string
         /**
+         * @deprecated 请在`v3.0.2`后使用异步版本，同步版本不再维护，请使用`captureToArrayBufferAsync`。
          * 截屏输出为`ArrayBuffer`。
          */
         captureToArrayBuffer(options?: IShareCaptureOptions): ArrayBuffer
+        /**
+         * 截屏输出为`base64`。
+         * 基础库`v3.0.2`以上版本支持。
+         */
+        captureToDataURLAsync(options?: IShareCaptureOptions): Promise<string>
+        /**
+         * 截屏输出为`ArrayBuffer`。
+         * 基础库`v3.0.2`以上版本支持。
+         */
+        captureToArrayBufferAsync(
+            options?: IShareCaptureOptions
+        ): Promise<ArrayBuffer>
         /**
          * 截屏输出为本地路径，回调完成后会自动释放。
          *
@@ -8614,11 +9531,37 @@ declare module 'XrFrame/systems/ShareSystem' {
         captureToLocalPath(
             options: IShareCaptureOptions,
             callback: (fp: string) => Promise<void> | void
-        ): void
+        ): Promise<void>
         /**
          * 直接截屏分享给好友。
          */
-        captureToFriends(options?: IShareCaptureOptions): void
+        captureToFriends(options?: IShareCaptureOptions): Promise<void>
+        /**
+         * 启动录屏。
+         * 基础库`v3.1.1`以上版本支持。
+         */
+        recordStart(options?: IShareRecordOptions): Promise<void>
+        /**
+         * 暂停本次录屏。
+         * 基础库`v3.1.1`以上版本支持。
+         */
+        recordPause(): Promise<void>
+        /**
+         * 唤醒本次录屏。
+         */
+        recordResume(): Promise<void>
+        /**
+         * 录屏完成，输出到临时文件。
+         * 基础库`v3.1.1`以上版本支持。
+         *
+         * @returns 临时文件地址
+         */
+        recordFinishToTempFile(): Promise<string>
+        /**
+         * 录屏完成，直接保存到用户相册。
+         * 基础库`v3.1.1`以上版本支持。
+         */
+        recordFinishToAlbum(): Promise<void>
     }
 }
 
@@ -9087,7 +10030,18 @@ declare module 'XrFrame/loader/GlTFLoader' {
         BIN = 5130562
     }
     export interface IGLTFLoaderOptions {
-        ignoreTextureError?: boolean
+        /**
+         * *(基础库2.31.1及之后)*
+         * 可以忽略xr-frame对GLTF模型的某一些限制，来强行渲染有问题的GLTF模型。
+         * ErrorCode会在渲染模型失败后，由console报出。
+         * 填写-1则忽略所有限制。
+         */
+        ignoreError: number[]
+        /**
+         * *(基础库2.32.1及之后)*
+         * 开启了之后会在GLTFModel中保留原始json。
+         */
+        preserveRaw: boolean
     }
     type IGLTFLoadData = IAssetLoadData<IGLTFLoaderOptions>
     /**
@@ -9099,7 +10053,7 @@ declare module 'XrFrame/loader/GlTFLoader' {
     > {
         readonly schema: ILoaderOptionsSchema
         load(
-            params: IGLTFLoadData,
+            param: IGLTFLoadData,
             callbacks: {
                 onLoading(progress: number): void
                 onLoaded(value: GLTFModel): void
@@ -9114,7 +10068,7 @@ declare module 'XrFrame/loader/GlTFLoader' {
         static createGLTFModel(
             scene: Scene,
             buffer: ArrayBuffer,
-            src?: string,
+            param: IGLTFLoadData,
             onLoading?: (progress: number) => void
         ): Promise<GLTFModel>
     }
@@ -9375,20 +10329,26 @@ declare module 'XrFrame/animation/NativeAnimation' {
 }
 
 declare module 'XrFrame/loader/glTF/GLTFRootNode' {
-    import {
+    import GLTFAnimationsNode, {
         GLTFAnimationsLoaded,
         GLTFAnimationsNodeRaw
     } from 'XrFrame/loader/glTF/animations/GLTFAnimationsNode'
-    import { GLTFAccessorsNodeRaw } from 'XrFrame/loader/glTF/buffers/GLTFAccessorsNode'
-    import { GLTFBuffersNodeRaw } from 'XrFrame/loader/glTF/buffers/GLTFBuffersNode'
-    import { GLTFBufferViewsNodeRaw } from 'XrFrame/loader/glTF/buffers/GLTFBufferViewsNode'
+    import GLTFAccessorsNode, {
+        GLTFAccessorsNodeRaw
+    } from 'XrFrame/loader/glTF/buffers/GLTFAccessorsNode'
+    import GLTFBuffersNode, {
+        GLTFBuffersNodeRaw
+    } from 'XrFrame/loader/glTF/buffers/GLTFBuffersNode'
+    import GLTFBufferViewsNode, {
+        GLTFBufferViewsNodeRaw
+    } from 'XrFrame/loader/glTF/buffers/GLTFBufferViewsNode'
     import { GLTFExtensionsProfiles } from 'XrFrame/loader/glTF/extensions/GLTFExtensions'
-    import {
+    import GLTFMeshesNode, {
         GLTFMeshesLoaded,
         GLTFMeshesNodeRaw
     } from 'XrFrame/loader/glTF/geometry/GLTFMeshesNode'
     import { GLTFBaseNode } from 'XrFrame/loader/glTF/GLTFBaseNode'
-    import {
+    import GLTFMaterialsNode, {
         GLTFMaterialsLoaded,
         GLTFMaterialsNodeRaw
     } from 'XrFrame/loader/glTF/materials/GLTFMaterialsNode'
@@ -9397,23 +10357,26 @@ declare module 'XrFrame/loader/glTF/GLTFRootNode' {
         GLTFNodesNodeRaw
     } from 'XrFrame/loader/glTF/scenes/GLTFNodesNode'
     import { GLTFSceneLoaded } from 'XrFrame/loader/glTF/scenes/GLTFSceneNode'
-    import {
+    import GLTFScenesNode, {
         GLTFScenesLoaded,
         GLTFScenesNodeRaw
     } from 'XrFrame/loader/glTF/scenes/GLTFScenesNode'
-    import {
+    import GLTFSkinsNode, {
         GLTFSkinsLoaded,
         GLTFSkinsNodeRaw
     } from 'XrFrame/loader/glTF/skins/GLTFSkinsNode'
-    import { GLTFImagesNodeRaw } from 'XrFrame/loader/glTF/textures/GLTFImagesNode'
-    import {
+    import GLTFImagesNode, {
+        GLTFImagesNodeRaw
+    } from 'XrFrame/loader/glTF/textures/GLTFImagesNode'
+    import GLTFSamplersNode, {
         GLTFSamplersLoaded,
         GLTFSamplersNodeRaw
     } from 'XrFrame/loader/glTF/textures/GLTFSamplersNode'
-    import {
+    import GLTFTexturesNode, {
         GLTFTexturesLoaded,
         GLTFTexturesNodeRaw
     } from 'XrFrame/loader/glTF/textures/GLTFTexturesNode'
+    import { EValidation } from 'XrFrame/loader/glTF/utils/exceptions'
     type Scene = import('XrFrame/core/Scene').default
     export interface GLTFRootNodeRaw {
         buffers?: GLTFBuffersNodeRaw
@@ -9448,6 +10411,7 @@ declare module 'XrFrame/loader/glTF/GLTFRootNode' {
         raw: object
         scene: Scene
         uri?: string
+        ignoreError?: number[]
         extensionProfiles?: GLTFExtensionsProfiles
         defaultBinary?: ArrayBuffer
     }
@@ -9456,7 +10420,29 @@ declare module 'XrFrame/loader/glTF/GLTFRootNode' {
         readonly raw: GLTFRootNodeRaw
         readonly uri: string
         readonly defaultBinary: ArrayBuffer | null
+        nodesCollector: {
+            [path: string]: GLTFBaseNode[]
+        }
+        extensionProfiles: GLTFExtensionsProfiles
+        extensionGlobals: {
+            [name: string]: object
+        }
+        resource: GLTFRootLoaded | null
+        buffersNode: GLTFBuffersNode | undefined
+        bufferViewsNode: GLTFBufferViewsNode | undefined
+        accessorsNode: GLTFAccessorsNode | undefined
+        imagesNode: GLTFImagesNode | undefined
+        samplersNode: GLTFSamplersNode | undefined
+        texturesNode: GLTFTexturesNode | undefined
+        materialsNode: GLTFMaterialsNode | undefined
+        meshesNode: GLTFMeshesNode | undefined
         nodesNode: GLTFNodesNode | undefined
+        scenesNode: GLTFScenesNode | undefined
+        skinsNode: GLTFSkinsNode | undefined
+        animationsNode: GLTFAnimationsNode | undefined
+        ignoreError: {
+            [errorType in EValidation]?: true
+        }
         constructor(desc: GLTFDesc)
         build(): void
         preload(
@@ -9488,7 +10474,7 @@ declare module 'XrFrame/loader/glTF/scenes/GLTFNodesNode' {
         children: GLTFTreeNode[]
         parent: GLTFTreeNode | null
         index: number
-        extension?: object
+        extensions?: object
     }
     export type GLTFNodesLoaded = GLTFTreeNode[]
     export default class GLTFNodesNode extends GLTFArrayNode<ChildNode> {
@@ -9500,6 +10486,160 @@ declare module 'XrFrame/loader/glTF/scenes/GLTFNodesNode' {
         getLoadedResource(): GLTFNodesLoaded
     }
     export {}
+}
+
+declare module 'XrFrame/physics/RaycastHit' {
+    import Shape from 'XrFrame/components/physics/Shape'
+    import { Scene } from 'XrFrame/elements'
+    import Vector3 from 'XrFrame/math/vector3'
+    export default class RaycastHit {
+        constructor(scene: Scene, nativeComp?: phys3D.RaycastHit)
+        /**
+         * @internal
+         * native层真正的raycastHit对象，业务侧无需关心
+         */
+        get nativeRaycastHit(): phys3D.RaycastHit
+        /**
+         * 与射线相交的Shape。
+         */
+        get shape(): Shape<any>
+        /**
+         * 从射线的原点到碰撞点的距离。
+         */
+        get distance(): number
+        set distance(v: number)
+        /**
+         * 射线与轮廓的交点表面的法线。
+         */
+        get normal(): Vector3
+        set normal(v: Vector3)
+        /**
+         * 在世界空间中，射线与轮廓的交点。
+         */
+        get point(): Vector3
+        set point(v: Vector3)
+    }
+}
+
+declare module 'XrFrame/physics/Collision' {
+    import Shape from 'XrFrame/components/physics/Shape'
+    import ContactPoint, { IContactPoint } from 'XrFrame/physics/ContactPoint'
+    import { Vector3ReadOnly } from 'XrFrame/math/vector3'
+    const collisionMap: WeakMap<phys3D.Collision, Collision>
+    export { collisionMap }
+    /**
+     * 物理碰撞事件（collide-begin等）的信息。
+     * @category Physics
+     * @readonly
+     */
+    export interface ICollideEvent {
+        /**
+         * 从碰撞到分离所用的冲量之和。
+         */
+        readonly impulse: Vector3ReadOnly
+        /**
+         * 两个刚体的相对线性碰撞速度。
+         */
+        readonly relativeVelocity: Vector3ReadOnly
+        /**
+         * 发生碰撞的另一个轮廓。
+         */
+        readonly shape: Shape
+        /**
+         * 本次碰撞的接触点。
+         */
+        readonly contacts: IContactPoint[]
+    }
+    /**
+     * 物理重叠事件（overlap-begin等）的信息。
+     * @category Physics
+     * @readonly
+     */
+    export interface IOverlapEvent {
+        /**
+         * 重叠的另一个轮廓。
+         */
+        readonly shape: Shape
+    }
+    export default class Collision implements ICollideEvent {
+        constructor(native: phys3D.Collision)
+        get impulse(): Vector3ReadOnly
+        get relativeVelocity(): Vector3ReadOnly
+        get shape(): Shape<any>
+        get contacts(): ContactPoint[]
+    }
+}
+
+declare module 'XrFrame/physics/ContactPoint' {
+    import Shape from 'XrFrame/components/physics/Shape'
+    import { Vector3ReadOnly } from 'XrFrame/math/vector3'
+    const contactPointMap: WeakMap<phys3D.ContactPoint, ContactPoint>
+    export { contactPointMap }
+    /**
+     * 物理事件返回的{@link ICollideEvent | 碰撞信息}中的碰撞点。
+     * @category Physics
+     */
+    export interface IContactPoint {
+        /**
+         * 在该碰撞点处，两个物体的距离。
+         *
+         * 不一定是0或小于0，因为只要两个物体的距离小于{@link Collider.contactOffset}之和，就会判定为碰撞。
+         */
+        readonly separation: number
+        /**
+         * 碰撞平面的法线。
+         */
+        readonly normal: Vector3ReadOnly
+        /**
+         * 碰撞点的位置。
+         */
+        readonly point: Vector3ReadOnly
+        /**
+         * 接收碰撞事件的轮廓。
+         */
+        readonly thisShape: Shape
+        /**
+         * 另一个轮廓。
+         */
+        readonly otherShape: Shape
+    }
+    export default class ContactPoint implements IContactPoint {
+        get separation(): number
+        get normal(): Vector3ReadOnly
+        get point(): Vector3ReadOnly
+        get thisShape(): Shape<any>
+        get otherShape(): Shape<any>
+        constructor(native: phys3D.ContactPoint)
+    }
+}
+
+declare module 'XrFrame/physics/raycast' {
+    import Vector3 from 'XrFrame/math/vector3'
+    import RaycastHit from 'XrFrame/physics/RaycastHit'
+    /**
+     * raycast函数的参数。
+     * @field origin 射线起点。
+     * @field unitDir 射线方向（单位向量）。
+     * @field distance 射线的最大长度。
+     * @field hit 用来接收碰撞信息的容器。
+     * @field layerMask 可以用来屏蔽一些物体。
+     * @field （未实现）queryTriggerInteraction，是否能与Trigger相交（默认能）。
+     */
+    export type RaycastDesc = {
+        origin: Vector3
+        unitDir: Vector3
+        distance?: number
+        hit?: RaycastHit
+        layerMask?: number
+    }
+    /**
+     * 射线检测，判断给定射线是否与至少一个碰撞体相交，并返回与**最近**的那个碰撞体相交的信息。
+     */
+    export function raycast(
+        Phys3D: typeof phys3D,
+        system: phys3D.PhysSystem,
+        desc: RaycastDesc
+    ): boolean
 }
 
 declare module 'XrFrame/kanata/lib/frontend' {
@@ -9581,6 +10721,11 @@ declare module 'XrFrame/kanata/lib/frontend' {
     export const unbindRigidBody: (rigidBody: any) => void
     export const unbindCCT: (cc: any) => void
     export const decodeBase64: (base64: string) => ArrayBuffer
+    export const initDraco: () => Promise<void>
+    export const decodeDraco: (
+        buffer: ArrayBuffer | ArrayBufferView,
+        decodeType: import('XrFrame/kanata/lib/backend').EDracoDecodeType
+    ) => import('XrFrame/kanata/lib/backend').DracoDecoded
     export function destroy(): void
     export function update(delta: number): void
     export const setNodeName: (id: number, name: string) => void
@@ -9622,6 +10767,8 @@ declare module 'XrFrame/kanata/lib/backend/interface' {
         renderHeight: number
         /** 是否开启MSAA */
         mainScreenMSAA: boolean
+        /** 是否开启透明通道输出 */
+        alpha?: boolean
         /** loader下载文件的默认根路径 */
         baseURL: string
         /** 如果baseURL找不到并且重试次数`globalHTTPRetry`大于0，则会依次尝试使用 */
@@ -9749,6 +10896,9 @@ declare module 'XrFrame/kanata/lib/backend/interface' {
         RGBA32F = 5,
         RGBA16F = 6,
         RG11B10F = 7,
+        RGB8 = 8,
+        RGB16F = 9,
+        RGB32F = 10,
         /** Render Target Only. */
         Depth_Low = 20,
         Depth_High = 21,
@@ -10552,6 +11702,51 @@ declare module 'XrFrame/kanata/lib/backend/interface' {
         del(key1: number, key2: number): void
     }
     export type WeakRef = any
+    export enum EDracoErrorCode {
+        kDecodeErrorNone = 0,
+        kDecodeErrorDecodeGeometryType = 1,
+        kDecodeErrorDracoDecode = 2,
+        kDecodeErrorAttributeEmpty = 3,
+        kDecodeErrorAttributeSizeNotEqual = 4,
+        kDecodeErrorDecodeTypeError = 5
+    }
+    export enum EDracoGeometryType {
+        kGeometryTypeInvalid = -1,
+        kGeometryTypeTriangleMesh = 0,
+        kGeometryTypePointCloud = 1
+    }
+    export enum EDracoDecodeType {
+        kDecodeTypeCross = 0
+    }
+    export enum EDracoDataType {
+        DT_INVALID = 0,
+        DT_INT8 = 1,
+        DT_UINT8 = 2,
+        DT_INT16 = 3,
+        DT_UINT16 = 4,
+        DT_INT32 = 5,
+        DT_UINT32 = 6,
+        DT_INT64 = 7,
+        DT_UINT64 = 8,
+        DT_FLOAT32 = 9,
+        DT_FLOAT64 = 10,
+        DT_BOOL = 11,
+        DT_TYPES_COUNT = 12
+    }
+    export interface DracoDecoded {
+        errCode: EDracoErrorCode
+        buffer: ArrayBuffer
+        geoType: EDracoGeometryType
+        stride: number
+        count: number
+        numIndices: number
+        attrs: Array<{
+            numComponents: number
+            dataType: EDracoDataType
+            offset: number
+            numBytes: number
+        }>
+    }
 }
 
 declare module 'XrFrame/kanata/lib/index' {
@@ -10593,6 +11788,37 @@ declare module 'XrFrame/kanata/lib/index' {
     ): Float32Array
 }
 
+declare module 'XrFrame/components/text/types' {
+    import { Kanata } from 'XrFrame/ext'
+    import { IGlyph } from 'XrFrame/glyph'
+    export interface IRenderData {
+        vertexBuffer?: Kanata.VertexBuffer
+        indexBuffer?: Kanata.IndexBuffer
+        vertexNum?: number
+        indiceNum?: number
+        texture?: number
+    }
+    export interface ICharacterData {
+        x: number
+        y: number
+        width: number
+        height: number
+        batchIndex: number
+        character: string
+        glyph: IGlyph
+    }
+    export enum EHorzAlignment {
+        Left = 0,
+        Center = 1,
+        Right = 2
+    }
+    export enum EVertAlignment {
+        Top = 0,
+        Middle = 1,
+        Bottom = 2
+    }
+}
+
 declare module 'XrFrame/glyph' {
     export interface IGlyph {
         character?: string
@@ -10606,6 +11832,36 @@ declare module 'XrFrame/glyph' {
         uvs: number[]
         texture: number
     }
+}
+
+declare module 'XrFrame/components/text/typesetting' {
+    import {
+        EHorzAlignment,
+        EVertAlignment,
+        ICharacterData
+    } from 'XrFrame/components/text/types'
+    import { IGlyph } from 'XrFrame/glyph'
+    export function Typesetting(
+        glyphs: IGlyph[],
+        batchArrays: ICharacterData[][],
+        batchIndexs: number[],
+        wrapWidth: number,
+        wrapHeight: number,
+        lineHeight: number,
+        anchor: number[],
+        padding: number[],
+        vertAlign: EVertAlignment,
+        horzAlign: EHorzAlignment
+    ): void
+}
+
+declare module 'XrFrame/components/text/fillRenderData' {
+    import { ICharacterData } from 'XrFrame/components/text/types'
+    export function FillRenderData(
+        vertexF32: Float32Array,
+        indexU16: Uint16Array,
+        batchArray: ICharacterData[]
+    ): void
 }
 
 declare module 'XrFrame/components/particle/ParticleInstance' {
@@ -10749,9 +12005,148 @@ declare module 'XrFrame/components/emitter/SubEmitter' {
     }
 }
 
-declare module 'XrFrame/components/physics/Rigidbody' {
-    export default class Rigidbody {
-        nativeComp: phys3D.Rigidbody
+declare module 'XrFrame/physics/event' {
+    import type Element from 'XrFrame/core/Element'
+    /**
+     * 物理{@link PhysicsDelegate | Delegate}注册的事件回调类型。
+     * @category Physics
+     * @template E 事件回调接收的参数类型。
+     */
+    export type DelegateHandler<E> = (e: E) => void
+    /**
+     * 挂在entity上的delegate, 不持有native comp,
+     * 而是持有多个subDelegate, 通过这些subDelegate来invoke.
+     * 主要作用是让script里可以直接写个onCollisionEnter()的函数来接收该节点下所有物理组件的事件.
+     */
+    export class SharedDelegate<E extends object> {
+        add(handler: DelegateHandler<E>, context?: any): void
+        remove(handler: DelegateHandler<E>): void
+        invoke(e: E): void
+        dispose(): void
+    }
+    /**
+     * 用来注册回调并接收某个**特定**物理事件的Delegate。
+     * @category Physics
+     * @template E 事件回调接收的参数类型。
+     * @see {@link Collider} {@link CharacterController}
+     */
+    export class Delegate<E extends object> {
+        /**
+         * @class 挂在物理组件上的Delegate, 内部持有native comp, 由native comp来invoke.
+         */
+        protected nativeMethod: string
+        _shared?: SharedDelegate<E>
+        /** @internal */
+        isPhysicsDelegate: true
+        protected xmlEvent: string
+        protected _el: Element
+        /** @internal */
+        protected _handlers: Map<DelegateHandler<E>, any>
+        /** @internal */
+        constructor(
+            nativeCollider: phys3D.Collider | undefined,
+            nativeMethod: string,
+            el: Element,
+            xmlEvent: string
+        )
+        get nativeCollider(): phys3D.Collider | undefined
+        set nativeCollider(v: phys3D.Collider | undefined)
+        clearNativeHandler(): void
+        /**
+         * 注册事件回调。
+         */
+        add(
+            handler: DelegateHandler<E>,
+            context?: any
+        ): DelegateHandler<E> | void
+        /**
+         * 移除已注册的事件回调。
+         */
+        remove(handler: DelegateHandler<E>): void
+        /**
+         * @internal
+         */
+        invoke(native: phys3D.ControllerColliderHit | phys3D.Collision): void
+        /**
+         * 移除所有事件回调。
+         */
+        clear(): void
+        /**
+         * @internal
+         */
+        dispose(): void
+        set el(v: Element)
+        xmlInvoker?: DelegateHandler<E>
+        addXMLInvoker(): void
+        removeXMLInvoker(): void
+    }
+}
+
+declare module 'XrFrame/components/physics/types' {
+    export const allShapeNames: string[]
+    /**
+     * 对刚体（在某个轴上的）位移和旋转的限制。
+     *
+     * @category Physics
+     * @see {@link IRigidbodyData.constraintsMask}
+     */
+    export enum RigidbodyConstraints {
+        None = 0,
+        FreezePositionX = 1,
+        FreezePositionY = 2,
+        FreezePositionZ = 4,
+        FreezeRotationX = 8,
+        FreezeRotationY = 16,
+        FreezeRotationZ = 32,
+        FreezePosition = 7,
+        FreezeRotation = 56,
+        FreezeAll = 63
+    }
+    /**
+     * @category Physics
+     */
+    export enum CollisionDetectionMode {
+        Discrete = 0,
+        Continuous = 1,
+        ContinuousDynamic = 2,
+        ContinuousSpeculative = 3
+    }
+    /**
+     * 力（或力矩）的类型，物理组件中某些接口会用到。
+     * @category Physics
+     * @see {@link Rigidbody.addForce} {@link Rigidbody.addTorque}
+     */
+    export enum ForceMode {
+        /**
+         * 持续性的力。
+         */
+        Force = 0,
+        /**
+         * 只持续一帧的力。
+         */
+        Impulse = 1,
+        /**
+         * 只持续一帧的力，无视物体的{@link Rigidbody.mass | 质量}（mass=1）。
+         *
+         * \**其实就是在下一帧修改物体速度。*
+         */
+        VelocityChange = 2,
+        /**
+         * 持续性的力，无视物体的{@link Rigidbody.mass | 质量}（mass=1）。
+         *
+         * \**其实就是每帧修改物体速度。*
+         */
+        Acceleration = 4
+    }
+    /**
+     * 发生碰撞时摩擦系数和弹性系数的结合方式。
+     * @see {@link Collider.frictionCombine} {@link Collider.bounceCombine}
+     */
+    export enum CombineMode {
+        Average = 0,
+        Mininum = 1,
+        Multiply = 2,
+        Maximum = 3
     }
 }
 
@@ -10933,35 +12328,6 @@ declare module 'XrFrame/systems/LightManager' {
     export default class LightManager {}
 }
 
-declare module 'XrFrame/physics/raycast' {
-    import Vector3 from 'XrFrame/math/vector3'
-    import RaycastHit from 'XrFrame/physics/RaycastHit'
-    /**
-     * raycast函数的参数。
-     * @field origin 射线起点。
-     * @field unitDir 射线方向（单位向量）。
-     * @field distance 射线的最大长度。
-     * @field hit 用来接收碰撞信息的容器。
-     * @field layerMask 可以用来屏蔽一些碰撞体。
-     * @field （未实现）queryTriggerInteraction，是否能与Trigger相交（默认能）。
-     */
-    export type RaycastDesc = {
-        origin: Vector3
-        unitDir: Vector3
-        distance?: number
-        hit?: RaycastHit
-        layerMask?: number
-    }
-    /**
-     * 射线检测，判断给定射线是否与至少一个碰撞体相交，并返回与**最近**的那个碰撞体相交的信息。
-     */
-    export function raycast(
-        Phys3D: typeof phys3D,
-        system: phys3D.PhysSystem,
-        desc: RaycastDesc
-    ): boolean
-}
-
 declare module 'XrFrame/loader/glTF/animations/GLTFAnimationsNode' {
     import { GLTFArrayNode } from 'XrFrame/loader/glTF/GLTFBaseNode'
     import { GLTFNodesLoaded } from 'XrFrame/loader/glTF/scenes/GLTFNodesNode'
@@ -11013,11 +12379,12 @@ declare module 'XrFrame/loader/glTF/buffers/GLTFAccessorsNode' {
 declare module 'XrFrame/loader/glTF/buffers/GLTFBuffersNode' {
     import { GLTFArrayNode } from 'XrFrame/loader/glTF/GLTFBaseNode'
     import GLTFBufferNode, {
+        GLTFBufferLoaded,
         GLTFBufferNodeRaw
     } from 'XrFrame/loader/glTF/buffers/GLTFBufferNode'
     type ChildNode = GLTFBufferNode
     export type GLTFBuffersNodeRaw = GLTFBufferNodeRaw[]
-    export type GLTFBuffersLoaded = ArrayBuffer[]
+    export type GLTFBuffersLoaded = GLTFBufferLoaded[]
     export default class GLTFBuffersNode extends GLTFArrayNode<ChildNode> {
         ChildCtor(childRaw: GLTFBufferNodeRaw): GLTFBufferNode
         readonly raw: GLTFBuffersNodeRaw
@@ -11141,6 +12508,7 @@ declare module 'XrFrame/loader/glTF/geometry/GLTFMeshesNode' {
 }
 
 declare module 'XrFrame/loader/glTF/GLTFBaseNode' {
+    import { GLTFValidation } from 'XrFrame/loader/glTF/utils/exceptions'
     type Scene = import('XrFrame/core/Scene').default
     function _empty(): {
         and: typeof _empty
@@ -11152,11 +12520,6 @@ declare module 'XrFrame/loader/glTF/GLTFBaseNode' {
         scene: Scene
         isValid: boolean
         constructor(raw: object, parent?: GLTFBaseNode)
-        /**
-         * 对raw进行校验。
-         * @deprecated 校验的事情还是交给官方的工具来做吧，规则太多了。
-         */
-        validate(): void
         /**
          * 利用raw生成子节点
          */
@@ -11172,11 +12535,11 @@ declare module 'XrFrame/loader/glTF/GLTFBaseNode' {
             | {
                   and: typeof _empty
               }
-        /** @internal */
-        and: (
-            pred: any,
-            msg?: string
-        ) =>
+        protected validate(
+            use: GLTFValidation<any>,
+            pred?: boolean | string,
+            ...args: string[]
+        ):
             | this
             | {
                   and: typeof _empty
@@ -11186,6 +12549,10 @@ declare module 'XrFrame/loader/glTF/GLTFBaseNode' {
          * 所有错误在这个方法抛出，包括格式错误，加载错误等。
          */
         abstract preload(prerequisites?: object): Promise<object>
+        /**
+         * 给extension内部使用的，在extension替换preload的时候，用来储存原preload。
+         */
+        protected _preload: (prerequisites?: object) => Promise<object>
         /**
          * 获取加载后的资源。
          * 无报错 throws nothing。
@@ -11206,7 +12573,6 @@ declare module 'XrFrame/loader/glTF/GLTFBaseNode' {
         abstract ChildCtor(childRaw: object): T
         children: T[]
         protected resources: any[]
-        validate(): void
         preload(prerequisites?: any): Promise<any>
         build(): void
         releaseLoadedResource(): void
@@ -11369,6 +12735,64 @@ declare module 'XrFrame/loader/glTF/textures/GLTFTexturesNode' {
     export {}
 }
 
+declare module 'XrFrame/loader/glTF/utils/exceptions' {
+    import type { GLTFTargetNodeRaw } from 'XrFrame/loader/glTF/animations/channels/GLTFTargetNode'
+    import type { GLTFAccessorNodeRaw } from 'XrFrame/loader/glTF/buffers/GLTFAccessorNode'
+    import type { GLTFAttributesNodeRaw } from 'XrFrame/loader/glTF/geometry/primitives/attributes/GLTFAttributesNode'
+    import type { GLTFPrimitiveNodeRaw } from 'XrFrame/loader/glTF/geometry/primitives/GLTFPrimitiveNode'
+    import type { GLTFNodeNodeRaw } from 'XrFrame/loader/glTF/scenes/GLTFNodeNode'
+    import type { GLTFTextureNodeRaw } from 'XrFrame/loader/glTF/textures/GLTFTextureNode'
+    export enum EValidation {
+        TextureSource = 10001,
+        SkinAccessor = 10101,
+        NodeWeights = 10201,
+        MorphAttrib = 10301,
+        UVSlot = 10401,
+        JointSlot = 10402,
+        WeightSlot = 10403,
+        MorphTargetsCount = 10501,
+        PrimitiveType = 10502,
+        IndexBufferLength = 10503,
+        SparseAccessor = 10601,
+        NormalizedAccessor = 10602
+    }
+    interface Validation<T> {
+        id: EValidation
+        msg: string
+        validate?(raw: T): boolean
+        fatal?: boolean
+    }
+    export namespace GLTFValidations {
+        const UndefinedTextureSource: Validation<GLTFTextureNodeRaw>
+        const SkinAccessorNotCompact: Validation<void>
+        const UnsupportedNodeWeights: Validation<GLTFNodeNodeRaw>
+        const UnsupportedMorphAttrib: Validation<GLTFTargetNodeRaw>
+        const UnsupportedUVSlot: Validation<GLTFAttributesNodeRaw>
+        const UnsupportedJointSlot: Validation<GLTFAttributesNodeRaw>
+        const UnsupportedWeightSlot: Validation<GLTFAttributesNodeRaw>
+        const MorphTargetsCountExceeded: Validation<GLTFPrimitiveNodeRaw>
+        const UnsupportedPrimitiveType: Validation<GLTFPrimitiveNodeRaw>
+        const InvalidIndexBufferLength: Validation<GLTFPrimitiveNodeRaw>
+        const UnsupportedSparseAccessor: Validation<GLTFAccessorNodeRaw>
+        const UnsupportedNormalizedAccessor: Validation<GLTFAccessorNodeRaw>
+    }
+    export { Validation as GLTFValidation }
+    export const GLTFValidationMap: {
+        10001: Validation<GLTFTextureNodeRaw>
+        10101: Validation<void>
+        10201: Validation<GLTFNodeNodeRaw>
+        10301: Validation<GLTFTargetNodeRaw>
+        10401: Validation<GLTFAttributesNodeRaw>
+        10402: Validation<GLTFAttributesNodeRaw>
+        10403: Validation<GLTFAttributesNodeRaw>
+        10501: Validation<GLTFPrimitiveNodeRaw>
+        10502: Validation<GLTFPrimitiveNodeRaw>
+        10503: Validation<GLTFPrimitiveNodeRaw>
+        10601: Validation<GLTFAccessorNodeRaw>
+        10602: Validation<GLTFAccessorNodeRaw>
+    }
+}
+
 declare module 'XrFrame/loader/glTF/scenes/GLTFNodeNode' {
     import { GLTFMeshesLoaded } from 'XrFrame/loader/glTF/geometry/GLTFMeshesNode'
     import { GLTFMeshLoaded } from 'XrFrame/loader/glTF/geometry/GLTFMeshNode'
@@ -11386,7 +12810,8 @@ declare module 'XrFrame/loader/glTF/scenes/GLTFNodeNode' {
         weights?: number
         skin?: number
         name?: string
-        extension?: object
+        extensions?: object
+        extras?: any
     }
     export interface GLTFNodeLoaded {
         children: number[]
@@ -11394,6 +12819,7 @@ declare module 'XrFrame/loader/glTF/scenes/GLTFNodeNode' {
         mesh?: GLTFMeshLoaded
         skin?: GLTFSkinLoaded
         name: string
+        extras?: any
     }
     export type GLTFNodePrerequisites = [
         meshes: GLTFMeshesLoaded,
@@ -12120,6 +13546,8 @@ declare module 'XrFrame/kanata/lib/frontend/resource/Effect' {
         setDepthTestComp(pass: number, value: ECompareFunc): void
         getDepthWrite(pass: number): boolean
         setDepthWrite(pass: number, value: boolean): void
+        getColorWrite(pass: number): number
+        setColorWrite(pass: number, value: number): void
         getCullFace(pass: number): ECullMode
         setCullFace(pass: number, value: ECullMode): void
         getCullOn(pass: number): boolean
@@ -12178,6 +13606,8 @@ declare module 'XrFrame/kanata/lib/frontend/resource/Effect' {
         setUseMaterialStateStencilTestFail(pass: number, value: boolean): void
         getUseMaterialStateStencilTestZFail(pass: number): boolean
         setUseMaterialStateStencilTestZFail(pass: number, value: boolean): void
+        getUseMaterialStateColorWrite(pass: number): boolean
+        setUseMaterialStateColorWrite(pass: number, value: boolean): void
         showDebugInfo(): string
     }
 }
@@ -12252,6 +13682,8 @@ declare module 'XrFrame/kanata/lib/frontend/resource/Material' {
         set depthTestComp(value: ECompareFunc)
         get depthWrite(): boolean
         set depthWrite(value: boolean)
+        get colorWrite(): number
+        set colorWrite(value: number)
         get cullFace(): ECullMode
         set cullFace(value: ECullMode)
         get cullOn(): boolean
@@ -12294,6 +13726,8 @@ declare module 'XrFrame/kanata/lib/frontend/resource/Material' {
         set depthTestCompMask(value: boolean)
         get depthWriteMask(): boolean
         set depthWriteMask(value: boolean)
+        get colorWriteMask(): boolean
+        set colorWriteMask(value: boolean)
         get cullFaceMask(): boolean
         set cullFaceMask(value: boolean)
         get cullOnMask(): boolean
@@ -13196,42 +14630,6 @@ declare module 'XrFrame/render-graph/RGNode' {
     export {}
 }
 
-declare module 'XrFrame/physics/RaycastHit' {
-    import { Scene } from 'XrFrame/elements'
-    import Vector3 from 'XrFrame/math/vector3'
-    import Shape from 'XrFrame/components/physics/Shape'
-    export default class RaycastHit {
-        constructor(scene: Scene, nativeComp?: phys3D.RaycastHit)
-        /**
-         * native层真正的raycastHit对象，业务侧无需关心
-         */
-        get nativeRaycastHit(): phys3D.RaycastHit
-        /**
-         * 被射线射中的collider所附的Rigidbody，如果collider没有附着在一个Rigidbody上，则为null
-         */
-        get rigidbody(): any
-        /**
-         * 被射线射中的collider
-         */
-        get collider(): Shape
-        /**
-         * 从光线的原点到碰撞点的距离
-         */
-        get distance(): number
-        set distance(v: number)
-        /**
-         * 射线锁碰到的表面的法线
-         */
-        get normal(): Vector3
-        set normal(v: Vector3)
-        /**
-         * 在世界空间中，射线碰到collider的碰撞点
-         */
-        get point(): Vector3
-        set point(v: Vector3)
-    }
-}
-
 declare module 'XrFrame/loader/glTF/animations/GLTFAnimationNode' {
     import { Kanata } from 'XrFrame/ext'
     import { GLTFAccessorsLoaded } from 'XrFrame/loader/glTF/buffers/GLTFAccessorsNode'
@@ -13255,12 +14653,14 @@ declare module 'XrFrame/loader/glTF/animations/GLTFAnimationNode' {
         channels: GLTFChannelsNodeRaw
         samplers: GLTFSamplersNodeRaw
         name?: string
+        extras?: any
     }
     export interface GLTFAnimationLoaded {
         clip: Kanata.AnimationClipModel
         channels: GLTFChannelsLoaded
         frameCount: number
         name?: string
+        extras?: any
     }
     export default class GLTFAnimationNode extends GLTFBaseNode {
         get nodeName(): string
@@ -13318,6 +14718,7 @@ declare module 'XrFrame/loader/glTF/buffers/GLTFAccessorNode' {
         normalized?: boolean
         sparse?: boolean
         name?: string
+        extras?: any
     }
     /**
      * 以FloatVec3为例：
@@ -13337,6 +14738,7 @@ declare module 'XrFrame/loader/glTF/buffers/GLTFAccessorNode' {
         max?: number[]
         min?: number[]
         compact: boolean
+        extras?: any
         getCompAt(element: number, comp: number): any
     }
     export default class GLTFAccessorNode extends GLTFBaseNode {
@@ -13356,11 +14758,16 @@ declare module 'XrFrame/loader/glTF/buffers/GLTFBufferNode' {
         uri?: string
         byteLength: number
         name?: string
+        extras?: any
     }
-    export type GLTFBufferLoaded = ArrayBuffer
+    export interface GLTFBufferLoaded {
+        buffer: ArrayBuffer
+        extras?: any
+    }
     export default class GLTFBufferNode extends GLTFBaseNode {
         get nodeName(): string
         readonly raw: GLTFBufferNodeRaw
+        protected resource: GLTFBufferLoaded | null
         build(): void
         preload(): Promise<GLTFBufferLoaded>
         getLoadedResource(): GLTFBufferLoaded
@@ -13369,7 +14776,7 @@ declare module 'XrFrame/loader/glTF/buffers/GLTFBufferNode' {
 
 declare module 'XrFrame/loader/glTF/buffers/GLTFBufferViewNode' {
     import { GLTFBaseNode } from 'XrFrame/loader/glTF/GLTFBaseNode'
-    import { GLTFBufferLoaded } from 'XrFrame/loader/glTF/buffers/GLTFBufferNode'
+    import { GLTFBuffersLoaded } from 'XrFrame/loader/glTF/buffers/GLTFBuffersNode'
     export interface GLTFBufferViewNodeRaw {
         buffer: number
         byteLength: number
@@ -13377,6 +14784,7 @@ declare module 'XrFrame/loader/glTF/buffers/GLTFBufferViewNode' {
         byteStride?: number
         target?: EnumGLTFBufferViewTarget
         name?: string
+        extras?: any
     }
     export interface GLTFBufferViewLoaded {
         data: ArrayBuffer
@@ -13384,6 +14792,7 @@ declare module 'XrFrame/loader/glTF/buffers/GLTFBufferViewNode' {
         byteStride: number
         byteLength: number
         target: EnumGLTFBufferViewTarget
+        extras?: any
         getSlicedData(): ArrayBuffer
         getUint8View(): Uint8Array
         _sliced: ArrayBuffer
@@ -13397,7 +14806,7 @@ declare module 'XrFrame/loader/glTF/buffers/GLTFBufferViewNode' {
         readonly raw: GLTFBufferViewNodeRaw
         build(): void
         preload(
-            prerequisites: [GLTFBufferLoaded]
+            prerequisites: [GLTFBuffersLoaded]
         ): Promise<GLTFBufferViewLoaded>
         getLoadedResource(): GLTFBufferViewLoaded
     }
@@ -13416,11 +14825,13 @@ declare module 'XrFrame/loader/glTF/geometry/GLTFMeshNode' {
         primitives: GLTFPrimitivesNodeRaw
         weights?: number[]
         name?: string
+        extras?: any
     }
     export interface GLTFMeshLoaded {
         subMeshes: GLTFPrimitivesLoaded
         weights: number[]
         name?: string
+        extras?: any
     }
     export default class GLTFMeshNode extends GLTFBaseNode {
         get nodeName(): string
@@ -13474,9 +14885,13 @@ declare module 'XrFrame/loader/glTF/materials/GLTFMaterialNode' {
         alphaMode?: string
         alphaCutoff?: number
         doubleSided?: boolean
+        extras?: any
     }
     export type GLTFMaterialPrerequisites = [textrues: GLTFTexturesLoaded]
-    export type GLTFMaterialLoaded = Material
+    export interface GLTFMaterialLoaded {
+        material: Material
+        extras?: any
+    }
     export default class GLTFMaterialNode extends GLTFBaseNode {
         get nodeName(): string
         readonly raw: GLTFMaterialNodeRaw
@@ -13510,11 +14925,13 @@ declare module 'XrFrame/loader/glTF/skins/GLTFSkinNode' {
         inverseBindMatrices?: number
         skeleton?: number
         joints: number[]
+        extras?: any
     }
     export interface GLTFSkinLoaded {
         inverseBindMatrices: Kanata.SkeletonBoneInverseModel
         skeleton?: number
         joints: number[]
+        extras?: any
     }
     export default class GLTFSkinNode extends GLTFBaseNode {
         get nodeName(): string
@@ -13537,17 +14954,23 @@ declare module 'XrFrame/loader/glTF/textures/GLTFImageNode' {
         mimeType?: string
         bufferView?: number
         name?: string
+        extras?: any
     }
     export interface GLTFImageLoaded {
         kanataImage?: Kanata.IImage
         type?: string
+        extras?: any
     }
+    export type GLTFImageNodePrerequisites = [
+        bufferViews: GLTFBufferViewsLoaded
+    ]
     export default class GLTFImageNode extends GLTFBaseNode {
         get nodeName(): string
         readonly raw: GLTFImageNodeRaw
+        protected resource: GLTFImageLoaded | null
         build(): void
         preload(
-            prerequisites: [bufferViews: GLTFBufferViewsLoaded]
+            prerequisites: GLTFImageNodePrerequisites
         ): Promise<GLTFImageLoaded>
         getLoadedResource(): GLTFImageLoaded
     }
@@ -13575,12 +14998,14 @@ declare module 'XrFrame/loader/glTF/textures/GLTFSamplerNode' {
         wrapS?: number
         wrapT?: number
         name?: string
+        extras?: any
     }
     export interface GLTFSamplerLoaded {
         magFilter: EnumGLTFSamplerFilter
         minFilter: EnumGLTFSamplerFilter
         wrapS: EnumGLTFSamplerWrap
         wrapT: EnumGLTFSamplerWrap
+        extras?: any
     }
     export default class GLTFSamplerNode extends GLTFBaseNode {
         get nodeName(): string
@@ -13600,8 +15025,12 @@ declare module 'XrFrame/loader/glTF/textures/GLTFTextureNode' {
         sampler?: number
         source?: number
         name?: string
+        extras?: any
     }
-    export type GLTFTextureLoaded = Kanata.Texture
+    export interface GLTFTextureLoaded {
+        texture: Kanata.Texture
+        extras?: any
+    }
     export default class GLTFTextureNode extends GLTFBaseNode {
         get nodeName(): string
         readonly raw: GLTFTextureNodeRaw
@@ -13613,6 +15042,135 @@ declare module 'XrFrame/loader/glTF/textures/GLTFTextureNode' {
             ]
         ): Promise<GLTFTextureLoaded>
         getLoadedResource(): GLTFTextureLoaded
+    }
+}
+
+declare module 'XrFrame/loader/glTF/animations/channels/GLTFTargetNode' {
+    import { GLTFBaseNode } from 'XrFrame/loader/glTF/GLTFBaseNode'
+    import {
+        GLTFNodesLoaded,
+        GLTFTreeNode
+    } from 'XrFrame/loader/glTF/scenes/GLTFNodesNode'
+    export enum GLTFEnumAnimationTargetPath {
+        TRANSLATION = 0,
+        ROTATION = 1,
+        SCALE = 2,
+        WEIGHTS = 3
+    }
+    export interface GLTFTargetNodeRaw {
+        node?: number
+        path: 'translation' | 'rotation' | 'scale' | 'weights'
+        extras?: any
+    }
+    export interface GLTFTargetLoaded {
+        node: GLTFTreeNode | null
+        path: GLTFEnumAnimationTargetPath
+        extras?: any
+    }
+    export default class GLTFTargetNode extends GLTFBaseNode {
+        get nodeName(): string
+        readonly raw: GLTFTargetNodeRaw
+        build(): void
+        preload(
+            prerequisites: [nodes: GLTFNodesLoaded]
+        ): Promise<GLTFTargetLoaded>
+        getLoadedResource(): GLTFTargetLoaded
+    }
+}
+
+declare module 'XrFrame/loader/glTF/geometry/primitives/attributes/GLTFAttributesNode' {
+    import { GLTFAccessorsLoaded } from 'XrFrame/loader/glTF/buffers/GLTFAccessorsNode'
+    import { GLTFBaseNode } from 'XrFrame/loader/glTF/GLTFBaseNode'
+    import { GLTF } from 'XrFrame/loader/glTF/utils/types'
+    import { GLTFTargetsLoaded } from 'XrFrame/loader/glTF/geometry/primitives/targets/GLTFTargetsNode'
+    /**
+     * GLTF.Attributes.Name -> Kanata.Layout.Name
+     */
+    export function convertAttributeName(name: string): string
+    /**
+     * GLTF.Attributes.Name -> Kanata.Layout.Format
+     * 在shader里不同用途的attribute的长度是固定的，无论他用的accessor实际元素的长度是多少
+     */
+    export function getComponentCountFromAttributeName(name: string): number
+    /**
+     * GLTF.Attributes.Name -> Shader Macros
+     */
+    export function genMacrosByAttrib(name: string, macros: object): void
+    export interface GLTFAttributesExtArgs {
+        trust?: boolean
+        check?: boolean
+    }
+    export type GLTFAttributesNodeRaw = {
+        [attribName: string]: number
+    }
+    export type GLTFAttributesLoaded = GLTF.VertexProperties
+    export default class GLTFAttributesNode extends GLTFBaseNode {
+        get nodeName(): string
+        readonly raw: GLTFAttributesNodeRaw
+        build(): void
+        preload(
+            prerequisites: [
+                targets: GLTFTargetsLoaded,
+                materials: any,
+                accessors: GLTFAccessorsLoaded,
+                vbMap: Map<string, GLTF.VertexProperties>
+            ]
+        ): Promise<GLTFAttributesLoaded>
+        getLoadedResource(): GLTFAttributesLoaded
+    }
+}
+
+declare module 'XrFrame/loader/glTF/geometry/primitives/GLTFPrimitiveNode' {
+    import Geometry from 'XrFrame/assets/Geometry'
+    import { GLTFAccessorsLoaded } from 'XrFrame/loader/glTF/buffers/GLTFAccessorsNode'
+    import { GLTFBaseNode } from 'XrFrame/loader/glTF/GLTFBaseNode'
+    import { GLTFAttributesNodeRaw } from 'XrFrame/loader/glTF/geometry/primitives/attributes/GLTFAttributesNode'
+    import { GLTFMaterialsLoaded } from 'XrFrame/loader/glTF/materials/GLTFMaterialsNode'
+    import Material from 'XrFrame/assets/Material'
+    import { GLTFAccessorLoaded } from 'XrFrame/loader/glTF/buffers/GLTFAccessorNode'
+    import { GLTF } from 'XrFrame/loader/glTF/utils/types'
+    import { GLTFTargetsNodeRaw } from 'XrFrame/loader/glTF/geometry/primitives/targets/GLTFTargetsNode'
+    export enum EnumGLTFPrimitiveMode {
+        POINTS = 0,
+        LINES = 1,
+        LINE_LOOP = 2,
+        LINE_STRIP = 3,
+        TRIANGLES = 4,
+        TRIANGLE_STRIP = 5,
+        TRIANGLE_FAN = 6
+    }
+    export interface GLTFPrimitiveNodeRaw {
+        attributes: GLTFAttributesNodeRaw
+        indices?: number
+        material?: number
+        mode?: number
+        targets?: GLTFTargetsNodeRaw
+        extras?: any
+    }
+    export interface GLTFPrimitiveLoaded {
+        geometry: Geometry
+        material: Material
+        extras?: any
+    }
+    export type GLTFPrimitivePrerequisites = [
+        materials: GLTFMaterialsLoaded,
+        accessors: GLTFAccessorsLoaded,
+        vbMap: Map<string, GLTF.VertexProperties>
+    ]
+    export interface GLTFPrimitiveVertexExtArgs {
+        vbInfo: GLTF.VertexProperties
+    }
+    export interface GLTFPrimitiveIndexExtArgs {
+        accessor: GLTFAccessorLoaded
+    }
+    export default class GLTFPrimitiveNode extends GLTFBaseNode {
+        get nodeName(): string
+        readonly raw: GLTFPrimitiveNodeRaw
+        build(): void
+        preload(
+            prerequisites: GLTFPrimitivePrerequisites
+        ): Promise<GLTFPrimitiveLoaded>
+        getLoadedResource(): GLTFPrimitiveLoaded
     }
 }
 
@@ -13634,6 +15192,7 @@ declare module 'XrFrame/loader/glTF/utils/types' {
             max: Vector3
             adoptMin: (newMin: Vector3) => void
             adoptMax: (newMax: Vector3) => void
+            adopt: (newPoint: Vector3) => void
         }
         interface BoundingBoxReadOnly {
             min: Vector3ReadOnly
@@ -13798,7 +15357,9 @@ declare module 'XrFrame/kanata/lib/backend/native/worker' {
         INativeMap,
         ILongIntNativeMap,
         IGlyphInfo,
-        IRenderEnv
+        IRenderEnv,
+        EDracoDecodeType,
+        DracoDecoded
     } from 'XrFrame/kanata/lib/backend/interface'
     export interface INativeWorker {
         createVertexLayout(options: string): IHandle
@@ -14029,6 +15590,10 @@ declare module 'XrFrame/kanata/lib/backend/native/worker' {
         createNativeSUMap(): INativeMap<string>
         createNativeULUMap(): ILongIntNativeMap
         decodeBase64(base64: string): ArrayBuffer
+        decodeDraco(
+            buffer: ArrayBuffer | ArrayBufferView,
+            decodeType: EDracoDecodeType
+        ): DracoDecoded
         setNodeName(id: number, name: string): void
         setRenderComponentName(id: number, name: string): void
         debugPrint(msg: string): void
@@ -14121,13 +15686,18 @@ declare module 'XrFrame/loader/glTF/geometry/primitives/GLTFPrimitivesNode' {
 
 declare module 'XrFrame/loader/glTF/materials/texture/GLTFTextureInfoNode' {
     import { GLTFBaseNode } from 'XrFrame/loader/glTF/GLTFBaseNode'
+    import GLTFTextureTransformInfo from 'XrFrame/loader/glTF/materials/texture/GLTFTextureTransformInfo'
     export interface GLTFTextureInfoNodeRaw {
         index: number
         texCoord?: number
+        extras?: any
+        extensions?: any
     }
     export interface GLTFTextureInfoLoaded {
         index: number
         texCoord: number
+        extras?: any
+        transformInfo?: GLTFTextureTransformInfo
     }
     export default class GLTFTextureInfoNode extends GLTFBaseNode {
         get nodeName(): string
@@ -14149,6 +15719,7 @@ declare module 'XrFrame/loader/glTF/materials/pbr/GLTFPBRMetallicRoughnessNode' 
         metallicFactor?: number
         roughnessFactor?: number
         metallicRoughnessTexture?: GLTFTextureInfoNodeRaw
+        extras?: any
     }
     export interface GLTFPBRMetallicRoughnessLoaded {
         uniform: {
@@ -14158,6 +15729,7 @@ declare module 'XrFrame/loader/glTF/materials/pbr/GLTFPBRMetallicRoughnessNode' 
         macros: {
             [key: string]: boolean | number
         }
+        extras?: any
     }
     export default class GLTFPBRMetallicRoughnessNode extends GLTFBaseNode {
         get nodeName(): string
@@ -14172,15 +15744,20 @@ declare module 'XrFrame/loader/glTF/materials/pbr/GLTFPBRMetallicRoughnessNode' 
 
 declare module 'XrFrame/loader/glTF/materials/texture/GLTFNormalTextureInfoNode' {
     import { GLTFBaseNode } from 'XrFrame/loader/glTF/GLTFBaseNode'
+    import GLTFTextureTransformInfo from 'XrFrame/loader/glTF/materials/texture/GLTFTextureTransformInfo'
     export interface GLTFNormalTextureInfoNodeRaw {
         index: number
         texCoord?: number
         scale?: number
+        extras?: any
+        extensions?: any
     }
     export interface GLTFNormalTextureInfoLoaded {
         index: number
         texCoord: number
         scale: number
+        extras?: any
+        transformInfo?: GLTFTextureTransformInfo
     }
     export default class GLTFNormalTextureInfoNode extends GLTFBaseNode {
         get nodeName(): string
@@ -14193,15 +15770,20 @@ declare module 'XrFrame/loader/glTF/materials/texture/GLTFNormalTextureInfoNode'
 
 declare module 'XrFrame/loader/glTF/materials/texture/GLTFOcclusionTextureInfoNode' {
     import { GLTFBaseNode } from 'XrFrame/loader/glTF/GLTFBaseNode'
+    import GLTFTextureTransformInfo from 'XrFrame/loader/glTF/materials/texture/GLTFTextureTransformInfo'
     export interface GLTFOcclusionTextureInfoNodeRaw {
         index: number
         texCoord?: number
         strength?: number
+        extras?: any
+        extensions?: any
     }
     export interface GLTFOcclusionTextureInfoLoaded {
         index: number
         texCoord: number
         strength: number
+        extras?: any
+        transformInfo?: GLTFTextureTransformInfo
     }
     export default class GLTFOcclusionTextureInfoNode extends GLTFBaseNode {
         get nodeName(): string
@@ -14209,6 +15791,26 @@ declare module 'XrFrame/loader/glTF/materials/texture/GLTFOcclusionTextureInfoNo
         build(): void
         preload(): Promise<GLTFOcclusionTextureInfoLoaded>
         getLoadedResource(): GLTFOcclusionTextureInfoLoaded
+    }
+}
+
+declare module 'XrFrame/loader/glTF/geometry/primitives/targets/GLTFTargetsNode' {
+    import { GLTFBaseNode } from 'XrFrame/loader/glTF/GLTFBaseNode'
+    export type GLTFTargetsNodeRaw = Array<{
+        [targetAttribName: string]: number
+    }>
+    export interface GLTFTargetsLoaded {
+        attributes: {
+            [targetAttribName: string]: number
+        }
+    }
+    export const validMorphAttribs: string[]
+    export default class GLTFTargetsNode extends GLTFBaseNode {
+        get nodeName(): string
+        readonly raw: GLTFTargetsNodeRaw
+        build(): void
+        preload(): Promise<GLTFTargetsLoaded>
+        getLoadedResource(): GLTFTargetsLoaded
     }
 }
 
@@ -14238,7 +15840,9 @@ declare module 'XrFrame/kanata/lib/backend/interface/IWorker' {
         IImage,
         IVertexDataDescriptorOptions,
         IRenderEnv,
-        IEngineSettings
+        IEngineSettings,
+        EDracoDecodeType,
+        DracoDecoded
     } from 'XrFrame/kanata/lib/backend/interface'
     global {
         const MAIN_CANVAS: HTMLCanvasElement
@@ -14562,6 +16166,11 @@ declare module 'XrFrame/kanata/lib/backend/interface/IWorker' {
         createNativeSUMap(): INativeMap<string>
         createNativeULUMap(): ILongIntNativeMap
         decodeBase64(base64: string): ArrayBuffer
+        initDraco?(): Promise<void>
+        decodeDraco(
+            buffer: ArrayBuffer | ArrayBufferView,
+            decodeType: EDracoDecodeType
+        ): DracoDecoded
         setNodeName(id: number, name: string): void
         setRenderComponentName(handle: IHandle, name: string): void
         debugPrint(msg: string): void
@@ -14626,6 +16235,7 @@ declare module 'XrFrame/loader/glTF/animations/channels/GLTFChannelNode' {
     export interface GLTFChannelNodeRaw {
         sampler: number
         target: GLTFTargetNodeRaw
+        extras?: any
     }
     export interface GLTFChannelLoaded {
         sampler: GLTFSamplerLoaded
@@ -14638,7 +16248,8 @@ declare module 'XrFrame/loader/glTF/animations/channels/GLTFChannelNode' {
             channelIndex: number
         ): void
         serializeBodyOnBuffer(stream: StreamReader): number
-        morphNodeCount: number
+        extraMorphNodeCount: number
+        extras?: any
     }
     export default class GLTFChannelNode extends GLTFBaseNode {
         get nodeName(): string
@@ -14667,12 +16278,14 @@ declare module 'XrFrame/loader/glTF/animations/samplers/GLTFSamplerNode' {
         input: number
         output: number
         interpolation?: 'STEP' | 'LINEAR' | 'CUBICSPLINE'
+        extras?: any
     }
     export interface GLTFSamplerLoaded {
         input: GLTFAccessorLoaded
         output: GLTFAccessorLoaded
         interpolation: EnumGLTFSamplerInterpolation
         sampleCount: number
+        extras?: any
     }
     export default class GLTFSamplerNode extends GLTFBaseNode {
         get nodeName(): string
@@ -14685,47 +16298,41 @@ declare module 'XrFrame/loader/glTF/animations/samplers/GLTFSamplerNode' {
     }
 }
 
-declare module 'XrFrame/loader/glTF/geometry/primitives/GLTFPrimitiveNode' {
-    import Geometry from 'XrFrame/assets/Geometry'
-    import { GLTFAccessorsLoaded } from 'XrFrame/loader/glTF/buffers/GLTFAccessorsNode'
-    import { GLTFBaseNode } from 'XrFrame/loader/glTF/GLTFBaseNode'
-    import { GLTFAttributesNodeRaw } from 'XrFrame/loader/glTF/geometry/primitives/attributes/GLTFAttributesNode'
-    import { GLTFMaterialsLoaded } from 'XrFrame/loader/glTF/materials/GLTFMaterialsNode'
-    import Material from 'XrFrame/assets/Material'
-    import { GLTF } from 'XrFrame/loader/glTF/utils/types'
-    import { GLTFTargetsNodeRaw } from 'XrFrame/loader/glTF/geometry/primitives/targets/GLTFTargetsNode'
-    export enum EnumGLTFPrimitiveMode {
-        POINTS = 0,
-        LINES = 1,
-        LINE_LOOP = 2,
-        LINE_STRIP = 3,
-        TRIANGLES = 4,
-        TRIANGLE_STRIP = 5,
-        TRIANGLE_FAN = 6
+declare module 'XrFrame/loader/glTF/materials/texture/GLTFTextureTransformInfo' {
+    import Vector2 from 'XrFrame/math/vector2'
+    export interface ITransformInfo {
+        offset?: number[]
+        rotation?: number
+        scale?: number[]
     }
-    export interface GLTFPrimitiveNodeRaw {
-        attributes: GLTFAttributesNodeRaw
-        indices?: number
-        material?: number
-        mode?: number
-        targets?: GLTFTargetsNodeRaw
-    }
-    export interface GLTFPrimitiveLoaded {
-        geometry: Geometry
-        material: Material
-    }
-    export default class GLTFPrimitiveNode extends GLTFBaseNode {
-        get nodeName(): string
-        readonly raw: GLTFPrimitiveNodeRaw
-        build(): void
-        preload(
-            prerequisites: [
-                materials: GLTFMaterialsLoaded,
-                accessors: GLTFAccessorsLoaded,
-                vbMap: Map<string, GLTF.VertexProperties>
-            ]
-        ): Promise<GLTFPrimitiveLoaded>
-        getLoadedResource(): GLTFPrimitiveLoaded
+    export default class GLTFTextureTransformInfo {
+        offset: Vector2
+        rotation: number
+        scale: Vector2
+        get uvMatrixArray(): number[]
+        constructor(textureTransform: ITransformInfo)
+        /**
+         * 设置UV变化矩阵，列主序
+         *
+         * @param {number} tx x轴偏移
+         * @param {number} ty y轴偏移
+         * @param {number} sx x轴缩放
+         * @param {number} sy y轴缩放
+         * @param {number} rotation 旋转
+         */
+        setUvTransform(
+            tx: number,
+            ty: number,
+            sx: number,
+            sy: number,
+            rotation: number
+        ): void
+        /**
+         * 更新UV矩阵
+         *
+         * @memberof GLTFTextureTransformInfo
+         */
+        updateUVMatrixArray(): void
     }
 }
 
@@ -14768,98 +16375,5 @@ declare module 'XrFrame/core/utils' {
             1: number
             2: number
         }
-    }
-}
-
-declare module 'XrFrame/loader/glTF/animations/channels/GLTFTargetNode' {
-    import { GLTFBaseNode } from 'XrFrame/loader/glTF/GLTFBaseNode'
-    import {
-        GLTFNodesLoaded,
-        GLTFTreeNode
-    } from 'XrFrame/loader/glTF/scenes/GLTFNodesNode'
-    export enum GLTFEnumAnimationTargetPath {
-        TRANSLATION = 0,
-        ROTATION = 1,
-        SCALE = 2,
-        WEIGHTS = 3
-    }
-    export interface GLTFTargetNodeRaw {
-        node?: number
-        path: 'translation' | 'rotation' | 'scale' | 'weights'
-    }
-    export interface GLTFTargetLoaded {
-        node: GLTFTreeNode | null
-        path: GLTFEnumAnimationTargetPath
-    }
-    export default class GLTFTargetNode extends GLTFBaseNode {
-        get nodeName(): string
-        readonly raw: GLTFTargetNodeRaw
-        build(): void
-        preload(
-            prerequisites: [nodes: GLTFNodesLoaded]
-        ): Promise<GLTFTargetLoaded>
-        getLoadedResource(): GLTFTargetLoaded
-    }
-}
-
-declare module 'XrFrame/loader/glTF/geometry/primitives/attributes/GLTFAttributesNode' {
-    import { GLTFAccessorsLoaded } from 'XrFrame/loader/glTF/buffers/GLTFAccessorsNode'
-    import { GLTFBaseNode } from 'XrFrame/loader/glTF/GLTFBaseNode'
-    import { GLTF } from 'XrFrame/loader/glTF/utils/types'
-    import { GLTFTargetsLoaded } from 'XrFrame/loader/glTF/geometry/primitives/targets/GLTFTargetsNode'
-    /**
-     * GLTF.Attributes.Name -> Kanata.Layout.Name
-     */
-    export function convertAttributeName(name: string): string
-    /**
-     * GLTF.Attributes.Name -> Kanata.Layout.Format
-     * 在shader里不同用途的attribute的长度是固定的，无论他用的accessor实际元素的长度是多少
-     */
-    export function getComponentCountFromAttributeName(name: string): number
-    /**
-     * GLTF.Attributes.Name -> Shader Macros
-     */
-    export function genMacrosByAttrib(name: string, macros: object): void
-    export interface GLTFAttributesExtArgs {
-        trust?: boolean
-        check?: boolean
-    }
-    export type GLTFAttributesNodeRaw = {
-        [attribName: string]: number
-    }
-    export type GLTFAttributesLoaded = GLTF.VertexProperties
-    export default class GLTFAttributesNode extends GLTFBaseNode {
-        get nodeName(): string
-        readonly raw: GLTFAttributesNodeRaw
-        build(): void
-        preload(
-            prerequisites: [
-                targets: GLTFTargetsLoaded,
-                materials: any,
-                accessors: GLTFAccessorsLoaded,
-                vbMap: Map<string, GLTF.VertexProperties>
-            ]
-        ): Promise<GLTFAttributesLoaded>
-        getLoadedResource(): GLTFAttributesLoaded
-    }
-}
-
-declare module 'XrFrame/loader/glTF/geometry/primitives/targets/GLTFTargetsNode' {
-    import { GLTFBaseNode } from 'XrFrame/loader/glTF/GLTFBaseNode'
-    export type GLTFTargetsNodeRaw = Array<{
-        [targetAttribName: string]: number
-    }>
-    export interface GLTFTargetsLoaded {
-        attributes: {
-            [targetAttribName: string]: number
-        }
-    }
-    export const validMorphAttribs: string[]
-    export default class GLTFTargetsNode extends GLTFBaseNode {
-        get nodeName(): string
-        readonly raw: GLTFTargetsNodeRaw
-        build(): void
-        preload(): Promise<GLTFTargetsLoaded>
-        getLoadedResource(): GLTFTargetsLoaded
     }
 }

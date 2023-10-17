@@ -59,7 +59,6 @@ declare namespace WechatMiniprogram {
     type BiquadFilterNode = any
     type PeriodicWaveNode = any
     type AudioNode = any
-    type AudioParam = any
     type ChannelSplitterNode = any
     type ChannelMergerNode = any
     type DelayNode = any
