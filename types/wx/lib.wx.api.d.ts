@@ -4605,6 +4605,10 @@ ctx.draw()
         tempFilePath: string
         errMsg: string
     }
+    interface DownloadTaskOnHeadersReceivedListenerResult {
+        /** 开发者服务器返回的 HTTP Response Header */
+        header: IAnyObject
+    }
     interface DownloadTaskOnProgressUpdateListenerResult {
         /** 下载进度百分比 */
         progress: number
@@ -4612,6 +4616,18 @@ ctx.draw()
         totalBytesExpectedToWrite: number
         /** 已经下载的数据长度，单位 Bytes */
         totalBytesWritten: number
+    }
+    interface DraggableSheetContextScrollToOption {
+        /** 是否启用滚动动画 */
+        animated?: boolean
+        /** 滚动动画时长（ms) */
+        duration?: number
+        /** 缓动函数 */
+        easingFunction?: string
+        /** 绝对目标位置 */
+        pixels?: number
+        /** 相对目标位置 */
+        size?: number
     }
     interface EditImageOption {
         /** 图片路径，图片的路径，支持本地路径、代码包路径 */
@@ -4693,6 +4709,13 @@ ctx.draw()
         fail?: EraseLinesFailCallback
         /** 接口调用成功的回调函数 */
         success?: EraseLinesSuccessCallback
+    }
+    /** 错误 */
+    interface Error {
+        /** 错误 */
+        message: string
+        /** 错误调用堆栈 */
+        stack: string
     }
     /** 本次请求底层失败信息，所有失败信息均符合Errno错误码 */
     interface ExceptionReason {
@@ -7869,10 +7892,6 @@ NFCAdapter.offDiscovered(listener) // 需传入与监听时同一个的函数对
         /** `messageType=2` 时，原因 */
         reason: number
     }
-    interface OnHeadersReceivedListenerResult {
-        /** 开发者服务器返回的 HTTP Response Header */
-        header: IAnyObject
-    }
     interface OnKeyboardHeightChangeListenerResult {
         /** 键盘高度 */
         height: number
@@ -9262,6 +9281,32 @@ NFCAdapter.offDiscovered(listener) // 需传入与监听时同一个的函数对
      * video 画到 2D Canvas 示例
      * [在微信开发者工具中查看示例](https://developers.weixin.qq.com/s/tJTak7mU7sfX) */
     interface RenderingContext {}
+    interface RequestCommonPaymentFailCallbackErr {
+        /** 错误码 */
+        errCode: number
+        /** 错误信息 */
+        errMsg: string
+    }
+    interface RequestCommonPaymentOption {
+        /** 支付的类型。b2b支付填 'retail_pay_goods' */
+        mode: string
+        /** 支付签名, 详见[《签名详解》](https://developers.weixin.qq.com/miniprogram/dev/platform-capabilities/industry/virtual-payment.html) */
+        paySig: string
+        /** 具体支付参数见signData, 该参数需以string形式传递, 例如signData: '{"offerId":"123","buyQuantity":1,"env":0,"currencyType":"CNY","platform":"android","productId":"testproductId","goodsPrice":10,"outTradeNo":"xxxxxx","attach":"testdata"}' */
+        signData: SignData
+        /** 用户态签名, 详见[《签名详解》](https://developers.weixin.qq.com/miniprogram/dev/platform-capabilities/industry/virtual-payment.html) */
+        signature: string
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: RequestCommonPaymentCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: RequestCommonPaymentFailCallback
+        /** 接口调用成功的回调函数 */
+        success?: RequestCommonPaymentSuccessCallback
+    }
+    interface RequestCommonPaymentSuccessCallbackResult {
+        /** 调用成功信息 */
+        errMsg: string
+    }
     interface RequestDeviceVoIPOption {
         /** 设备名称，将显示在授权弹窗内（长度不超过13）。授权框中「设备名字」= 「deviceName」 + 「modelId 对应设备型号」。 */
         deviceName: string
@@ -9375,6 +9420,14 @@ NFCAdapter.offDiscovered(listener) // 需传入与监听时同一个的函数对
             | 'DELETE'
             | 'TRACE'
             | 'CONNECT'
+        /** 需要基础库： `3.2.2`
+         *
+         * 重定向拦截策略。（目前仅安卓和iOS端支持，开发者工具和PC端将在后续支持）
+         *
+         * 可选值：
+         * - 'follow': 不拦截重定向，即客户端自动处理重定向;
+         * - 'manual': 拦截重定向。开启后，当 http 状态码为 3xx 时客户端不再自动重定向，而是触发 onHeadersReceived 回调，并结束本次 request 请求。可通过 onHeadersReceived 回调中的 header.Location 获取重定向的 url; */
+        redirect?: 'follow' | 'manual'
         /** 需要基础库： `1.7.0`
          *
          * 响应的数据类型
@@ -9602,11 +9655,13 @@ NFCAdapter.offDiscovered(listener) // 需传入与监听时同一个的函数对
         statusCode: number
         errMsg: string
     }
-    interface RequestVirtualPaymentFailCallbackErr {
-        /** 错误码 */
-        errCode: number
-        /** 错误信息 */
-        errMsg: string
+    interface RequestTaskOnHeadersReceivedListenerResult {
+        /** 开发者服务器返回的 cookies，格式为字符串数组 */
+        cookies: string[]
+        /** 开发者服务器返回的 HTTP Response Header */
+        header: IAnyObject
+        /** 开发者服务器返回的 HTTP 状态码 （目前开发者工具上不会返回 statusCode 字段，可用真机查看该字段，后续将会支持） */
+        statusCode: number
     }
     interface RequestVirtualPaymentOption {
         /** 支付的类型, 不同的支付类型有各自额外要传的附加参数
@@ -9627,10 +9682,6 @@ NFCAdapter.offDiscovered(listener) // 需传入与监听时同一个的函数对
         fail?: RequestVirtualPaymentFailCallback
         /** 接口调用成功的回调函数 */
         success?: RequestVirtualPaymentSuccessCallback
-    }
-    interface RequestVirtualPaymentSuccessCallbackResult {
-        /** 调用成功信息 */
-        errMsg: string
     }
     interface RequirePrivacyAuthorizeOption {
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
@@ -9863,18 +9914,6 @@ NFCAdapter.offDiscovered(listener) // 需传入与监听时同一个的函数对
         /** 节点的竖直滚动位置 */
         scrollTop: number
     }
-    interface ScrollToOption {
-        /** 是否启用滚动动画 */
-        animated?: boolean
-        /** 滚动动画时长 (仅在 iOS 下生效) */
-        duration?: number
-        /** 左边界距离 */
-        left?: number
-        /** 顶部距离 */
-        top?: number
-        /** 初始速度 (仅在 iOS 下生效) */
-        velocity?: number
-    }
     /** 需要基础库： `2.14.4`
 *
 * 增强 ScrollView 实例，可通过 [wx.createSelectorQuery](https://developers.weixin.qq.com/miniprogram/dev/api/wxml/wx.createSelectorQuery.html) 的 [NodesRef.node](https://developers.weixin.qq.com/miniprogram/dev/api/wxml/NodesRef.node.html) 方法获取。 仅在 scroll-view 组件开启 enhanced 属性后生效。
@@ -9941,7 +9980,7 @@ wx.createSelectorQuery()
          * 在插件中使用：支持
          *
          * 滚动至指定位置 */
-        scrollTo(option: ScrollToOption): void
+        scrollTo(option: ScrollViewContextScrollToOption): void
         /** [ScrollViewContext.triggerRefresh(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/ui/scroll/ScrollViewContext.triggerRefresh.html)
          *
          * 需要基础库： `3.0.0`
@@ -9958,6 +9997,18 @@ wx.createSelectorQuery()
          *
          * 触发下拉二级。 */
         triggerTwoLevel(option: TriggerRefreshOption): void
+    }
+    interface ScrollViewContextScrollToOption {
+        /** 是否启用滚动动画 */
+        animated?: boolean
+        /** 滚动动画时长 (仅在 iOS 下生效) */
+        duration?: number
+        /** 左边界距离 */
+        left?: number
+        /** 顶部距离 */
+        top?: number
+        /** 初始速度 (仅在 iOS 下生效) */
+        velocity?: number
     }
     interface SeekBackgroundAudioOption {
         /** 音乐位置，单位：秒 */
@@ -10482,8 +10533,20 @@ wx.createSelectorQuery()
         path: string
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: ShowShareImageMenuCompleteCallback
+        /** 需要基础库： `3.2.0`
+         *
+         * 从消息小程序入口打开小程序的路径，如果当前页面允许分享给朋友，则默认为当前页面路径，否则默认为小程序首页 */
+        entrancePath?: string
         /** 接口调用失败的回调函数 */
         fail?: ShowShareImageMenuFailCallback
+        /** 需要基础库： `3.2.0`
+         *
+         * 分享的图片消息是否要带小程序入口 */
+        needShowEntrance?: string
+        /** 需要基础库： `3.2.0`
+         *
+         * 分享样式，可选 v2 */
+        style?: string
         /** 接口调用成功的回调函数 */
         success?: ShowShareImageMenuSuccessCallback
     }
@@ -14233,6 +14296,58 @@ ctx.draw()
             color: string
         ): void
     }
+    interface CommonPaymentError {
+        /** 错误信息
+         *
+         * | 错误码 | 错误信息 | 说明 |
+         * | - | - | - |
+         * | -1 |  | 支付失败 |
+         * | -2 |  | 支付取消 |
+         * | -4 |  | 风控拦截 |
+         * | -5 |  | 开通签约结果未知 |
+         * | -15001 |  | 参数错误,具体原因见err_msg |
+         * | -15002 |  | outTradeNo重复使用,请换新单号重试 |
+         * | -15003 |  | 系统错误 |
+         * | -15004 |  | currencyType错误,目前只能填CNY |
+         * | -15005 |  | 用户态签名signature错误 |
+         * | -15006 |  | 支付签名paySig错误 |
+         * | -15007 |  | session_key过期 |
+         * | -15008 |  | 二级商户进件未完成 |
+         * | -15009 |  | 代币未发布 |
+         * | -15010 |  | 道具productId未发布 |
+         * | -15011 |  | 现网版本的env只能是0,不能填1(沙盒环境) |
+         * | -15012 |  | 调用米大师失败导致关单,请换新单号重试 |
+         * | -15013 |  | goodsPrice道具价格错误 |
+         * | -15014 |  | 道具/代币发布未生效，禁止下单，大概10分钟后生效 |
+         * | -15016 |  | signData格式有问题 |
+         * | -15017 |  | 此商家涉嫌违规，收款功能已被限制，暂无法支付。商家可以登录微信商户平台/微信支付商家助手小程序查看原因和解决方案 |
+         * | -15018 |  | 代币或者道具productId审核不通过 | */ errMsg: string
+        /** 错误码
+         *
+         * | 错误码 | 错误信息 | 说明 |
+         * | - | - | - |
+         * | -1 |  | 支付失败 |
+         * | -2 |  | 支付取消 |
+         * | -4 |  | 风控拦截 |
+         * | -5 |  | 开通签约结果未知 |
+         * | -15001 |  | 参数错误,具体原因见err_msg |
+         * | -15002 |  | outTradeNo重复使用,请换新单号重试 |
+         * | -15003 |  | 系统错误 |
+         * | -15004 |  | currencyType错误,目前只能填CNY |
+         * | -15005 |  | 用户态签名signature错误 |
+         * | -15006 |  | 支付签名paySig错误 |
+         * | -15007 |  | session_key过期 |
+         * | -15008 |  | 二级商户进件未完成 |
+         * | -15009 |  | 代币未发布 |
+         * | -15010 |  | 道具productId未发布 |
+         * | -15011 |  | 现网版本的env只能是0,不能填1(沙盒环境) |
+         * | -15012 |  | 调用米大师失败导致关单,请换新单号重试 |
+         * | -15013 |  | goodsPrice道具价格错误 |
+         * | -15014 |  | 道具/代币发布未生效，禁止下单，大概10分钟后生效 |
+         * | -15016 |  | signData格式有问题 |
+         * | -15017 |  | 此商家涉嫌违规，收款功能已被限制，暂无法支付。商家可以登录微信商户平台/微信支付商家助手小程序查看原因和解决方案 |
+         * | -15018 |  | 代币或者道具productId审核不通过 | */ errCode: number
+    }
     interface Console {
         /** [console.debug()](https://developers.weixin.qq.com/miniprogram/dev/api/base/debug/console.debug.html)
          *
@@ -14330,7 +14445,7 @@ DownloadTask.offHeadersReceived(listener) // 需传入与监听时同一个的�
 ``` */
         offHeadersReceived(
             /** onHeadersReceived 传入的监听函数。不传此参数则移除所有监听函数。 */
-            listener?: OffHeadersReceivedCallback
+            listener?: DownloadTaskOffHeadersReceivedCallback
         ): void
         /** [DownloadTask.offProgressUpdate(function listener)](https://developers.weixin.qq.com/miniprogram/dev/api/network/download/DownloadTask.offProgressUpdate.html)
 *
@@ -14361,7 +14476,7 @@ DownloadTask.offProgressUpdate(listener) // 需传入与监听时同一个的函
          * 监听 HTTP Response Header 事件。会比请求完成事件更早 */
         onHeadersReceived(
             /** HTTP Response Header 事件的监听函数 */
-            listener: OnHeadersReceivedCallback
+            listener: DownloadTaskOnHeadersReceivedCallback
         ): void
         /** [DownloadTask.onProgressUpdate(function listener)](https://developers.weixin.qq.com/miniprogram/dev/api/network/download/DownloadTask.onProgressUpdate.html)
          *
@@ -14374,6 +14489,36 @@ DownloadTask.offProgressUpdate(listener) // 需传入与监听时同一个的函
             /** 下载进度变化事件的监听函数 */
             listener: DownloadTaskOnProgressUpdateCallback
         ): void
+    }
+    interface DraggableSheetContext {
+        /** [DraggableSheetContext.scrollTo(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/skyline/DraggableSheetContext.scrollTo.html)
+*
+* 需要基础库： `3.2.0`
+*
+* 在插件中使用：支持
+*
+* 滚动到指定位置。`size` 取值 `[0, 1]`，`size = 1` 时表示撑满 `draggable-sheet` 组件。`size` 和 `pixels` 同时传入时，仅 size 生效。
+*
+* **示例代码**
+*
+* ```javascript
+Page({
+  onReady() {
+    this.createSelectorQuery()
+      .select(".sheet")
+      .node()
+      .exec(res => {
+        const sheetContext = res[0].node
+        sheetContext.scrollTo({
+          size: 0.7,
+          animated: true,
+          duration: 300,
+          easingFunction: 'ease'
+        })
+  },
+})
+``` */
+        scrollTo(option: DraggableSheetContextScrollToOption): void
     }
     interface EditorContext {
         /** [EditorContext.blur(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/editor/EditorContext.blur.html)
@@ -18484,7 +18629,7 @@ RequestTask.offHeadersReceived(listener) // 需传入与监听时同一个的函
 ``` */
         offHeadersReceived(
             /** onHeadersReceived 传入的监听函数。不传此参数则移除所有监听函数。 */
-            listener?: OffHeadersReceivedCallback
+            listener?: RequestTaskOffHeadersReceivedCallback
         ): void
         /** [RequestTask.onChunkReceived(function listener)](https://developers.weixin.qq.com/miniprogram/dev/api/network/request/RequestTask.onChunkReceived.html)
          *
@@ -18506,7 +18651,7 @@ RequestTask.offHeadersReceived(listener) // 需传入与监听时同一个的函
          * 监听 HTTP Response Header 事件。会比请求完成事件更早 */
         onHeadersReceived(
             /** HTTP Response Header 事件的监听函数 */
-            listener: OnHeadersReceivedCallback
+            listener: RequestTaskOnHeadersReceivedCallback
         ): void
     }
     interface RewardedVideoAd {
@@ -19228,7 +19373,7 @@ UploadTask.offHeadersReceived(listener) // 需传入与监听时同一个的函�
 ``` */
         offHeadersReceived(
             /** onHeadersReceived 传入的监听函数。不传此参数则移除所有监听函数。 */
-            listener?: OffHeadersReceivedCallback
+            listener?: DownloadTaskOffHeadersReceivedCallback
         ): void
         /** [UploadTask.offProgressUpdate(function listener)](https://developers.weixin.qq.com/miniprogram/dev/api/network/upload/UploadTask.offProgressUpdate.html)
 *
@@ -19259,7 +19404,7 @@ UploadTask.offProgressUpdate(listener) // 需传入与监听时同一个的函�
          * 监听 HTTP Response Header 事件。会比请求完成事件更早 */
         onHeadersReceived(
             /** HTTP Response Header 事件的监听函数 */
-            listener: OnHeadersReceivedCallback
+            listener: DownloadTaskOnHeadersReceivedCallback
         ): void
         /** [UploadTask.onProgressUpdate(function listener)](https://developers.weixin.qq.com/miniprogram/dev/api/network/upload/UploadTask.onProgressUpdate.html)
          *
@@ -19305,7 +19450,8 @@ userCryptoManager.getLatestUserKey({
 * **示例代码**
 *
 * ```js
-wx.getRandomValues({
+const userCryptoManager = wx.getUserCryptoManager()
+userCryptoManager.getRandomValues({
   length: 6 // 生成 6 个字节长度的随机数,
   success: res => {
     console.log(wx.arrayBufferToBase64(res.randomValues)) // 转换为 base64 字符串后打印
@@ -20831,7 +20977,7 @@ observer.observe({ entryTypes: ['render', 'script', 'navigation'] })
 {
   "workers": {
     "path": "myWorkersFolder",
-    "isSubpackage": true  // true 表示把 worker 打包为分包。默认 false。填 false 时等同于 { "workers": "workers" }
+    "isSubpackage": true  // true 表示把 worker 打包为分包。默认 false。填 false 时等同于 { "workers": "myWorkersFolder" }
   }
 }
 ```
@@ -21059,7 +21205,7 @@ wx.chooseImage({
 *
 * 在插件中使用：需要基础库 `2.20.0`
 *
-* 创建 vision kit 会话对象。
+* 创建 vision kit 会话对象。详见[指南](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/visionkit/base.html)
 *
 * **示例代码**
 *
@@ -26598,6 +26744,45 @@ wx.reportPerformance(1101, 680, 'custom')
             /** 自定义维度 (选填) */
             dimensions?: string | any[]
         ): void
+        /** [wx.requestCommonPayment(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/payment/wx.requestCommonPayment.html)
+*
+* 需要基础库： `2.19.2`
+*
+* 在插件中使用：不支持
+*
+* 发起b2b支付
+*
+* ****
+*
+* ## 注意事项：
+*
+* **示例代码**
+*
+* ```js
+  wx.requestCommonPayment({
+    signData: JSON.stringify({
+      offerId: '123',
+      buyQuantity: 1,
+      env: 0,
+      currencyType: 'CNY',
+      platform: 'android',
+      productId: 'testproductId',
+      goodsPrice: 10,
+      outTradeNo: 'xxxxxx',
+      attach: 'testdata',
+    }),
+    paySig: 'd0b8bbccbe109b11549bcfd6602b08711f46600965253a949cd6a2b895152f9d',
+    signature: 'd0b8bbccbe109b11549bcfd6602b08711f46600965253a949cd6a2b895152f9d',
+    mode: 'retail_pay_goods',
+    success(res) {
+      console.log('requestCommonPayment success', res)
+    },
+    fail({ errMsg, errCode }) {
+      console.error(errMsg, errCode)
+    },
+  })
+``` */
+        requestCommonPayment(option: RequestCommonPaymentOption): void
         /** [wx.requestDeviceVoIP(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/device-voip/wx.requestDeviceVoIP.html)
 *
 * 需要基础库： `2.27.3`
@@ -29214,9 +29399,17 @@ wx.writeBLECharacteristicValue({
     type DownloadFileSuccessCallback = (
         result: DownloadFileSuccessCallbackResult
     ) => void
+    /** onHeadersReceived 传入的监听函数。不传此参数则移除所有监听函数。 */
+    type DownloadTaskOffHeadersReceivedCallback = (
+        result: DownloadTaskOnHeadersReceivedListenerResult
+    ) => void
     /** onProgressUpdate 传入的监听函数。不传此参数则移除所有监听函数。 */
     type DownloadTaskOffProgressUpdateCallback = (
         result: DownloadTaskOnProgressUpdateListenerResult
+    ) => void
+    /** HTTP Response Header 事件的监听函数 */
+    type DownloadTaskOnHeadersReceivedCallback = (
+        result: DownloadTaskOnHeadersReceivedListenerResult
     ) => void
     /** 下载进度变化事件的监听函数 */
     type DownloadTaskOnProgressUpdateCallback = (
@@ -30227,10 +30420,6 @@ wx.writeBLECharacteristicValue({
     type OffGyroscopeChangeCallback = (res: GeneralCallbackResult) => void
     /** onHCEMessage 传入的监听函数。不传此参数则移除所有监听函数。 */
     type OffHCEMessageCallback = (result: OnHCEMessageListenerResult) => void
-    /** onHeadersReceived 传入的监听函数。不传此参数则移除所有监听函数。 */
-    type OffHeadersReceivedCallback = (
-        result: OnHeadersReceivedListenerResult
-    ) => void
     /** onKeyboardHeightChange 传入的监听函数。不传此参数则移除所有监听函数。 */
     type OffKeyboardHeightChangeCallback = (
         result: OnKeyboardHeightChangeListenerResult
@@ -30454,10 +30643,6 @@ wx.writeBLECharacteristicValue({
     ) => void
     /** 接收 NFC 设备消息事件的监听函数 */
     type OnHCEMessageCallback = (result: OnHCEMessageListenerResult) => void
-    /** HTTP Response Header 事件的监听函数 */
-    type OnHeadersReceivedCallback = (
-        result: OnHeadersReceivedListenerResult
-    ) => void
     /** 录音因为受到系统占用而被中断开始事件的监听函数 */
     type OnInterruptionBeginCallback = (res: GeneralCallbackResult) => void
     /** 录音中断结束事件的监听函数 */
@@ -31025,6 +31210,18 @@ wx.writeBLECharacteristicValue({
     /** 接口调用成功的回调函数 */
     type RenameSuccessCallback = (res: FileError) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type RequestCommonPaymentCompleteCallback = (
+        res: CommonPaymentError
+    ) => void
+    /** 接口调用失败的回调函数 */
+    type RequestCommonPaymentFailCallback = (
+        err: RequestCommonPaymentFailCallbackErr
+    ) => void
+    /** 接口调用成功的回调函数 */
+    type RequestCommonPaymentSuccessCallback = (
+        result: RequestCommonPaymentSuccessCallbackResult
+    ) => void
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type RequestCompleteCallback = (res: GeneralCallbackResult) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type RequestDeviceVoIPCompleteCallback = (
@@ -31113,17 +31310,25 @@ wx.writeBLECharacteristicValue({
             | IAnyObject
             | ArrayBuffer
     > = (result: RequestSuccessCallbackResult<T>) => void
+    /** onHeadersReceived 传入的监听函数。不传此参数则移除所有监听函数。 */
+    type RequestTaskOffHeadersReceivedCallback = (
+        result: RequestTaskOnHeadersReceivedListenerResult
+    ) => void
+    /** HTTP Response Header 事件的监听函数 */
+    type RequestTaskOnHeadersReceivedCallback = (
+        result: RequestTaskOnHeadersReceivedListenerResult
+    ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type RequestVirtualPaymentCompleteCallback = (
         res: VirtualPaymentError
     ) => void
     /** 接口调用失败的回调函数 */
     type RequestVirtualPaymentFailCallback = (
-        err: RequestVirtualPaymentFailCallbackErr
+        err: RequestCommonPaymentFailCallbackErr
     ) => void
     /** 接口调用成功的回调函数 */
     type RequestVirtualPaymentSuccessCallback = (
-        result: RequestVirtualPaymentSuccessCallbackResult
+        result: RequestCommonPaymentSuccessCallbackResult
     ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type RequirePrivacyAuthorizeCompleteCallback = (
@@ -32171,9 +32376,7 @@ wx.writeBLECharacteristicValue({
     /** 小程序错误事件的监听函数 */
     type WxOnErrorCallback = (
         /** 错误 */
-        message: string,
-        /** 错误调用堆栈 */
-        stack: string
+        error: Error
     ) => void
     /** 接口调用成功的回调函数 */
     type WxStartRecordSuccessCallback = (

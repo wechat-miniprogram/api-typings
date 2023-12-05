@@ -62,7 +62,7 @@ Component({
     moved() {},
     detached() {},
     error(err) {
-      expectType<Error>(err)
+      expectType<WechatMiniprogram.Error>(err)
     },
   },
 
@@ -488,6 +488,19 @@ Component<{}, {}, { fn(): void }>({
         expectType<number>(res.updateProcessId)
       })
       this.setUpdatePerformanceListener({})
+    }
+  })
+}
+
+{
+  type CustomProperties = {
+    customProp: string
+  }
+  Component<{}, {}, {}, CustomProperties>({
+    lifetimes: {
+      created() {
+        this.customProp = 'customProp'
+      }
     }
   })
 }
