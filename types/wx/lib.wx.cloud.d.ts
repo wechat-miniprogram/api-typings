@@ -55,7 +55,7 @@ interface IInitCloudConfig {
 }
 
 interface ICloudConfig {
-    env?: string
+    env?: string | WxCloud['DYNAMIC_CURRENT_ENV']
     traceUser?: boolean
 }
 
@@ -92,6 +92,7 @@ type AnyFunction = (...args: any[]) => any
  * extend wx with cloud
  */
 interface WxCloud {
+    readonly DYNAMIC_CURRENT_ENV: unique symbol
     init: (config?: ICloudConfig) => void
 
     callFunction(param: OQ<ICloud.CallFunctionParam>): void
