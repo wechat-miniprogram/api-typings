@@ -303,7 +303,7 @@ declare namespace WechatMiniprogram.Component {
         applyAnimatedStyle(
             selector: string,
             updater: () => Record<string, string>,
-            userConfig?: { immediate: boolean; flush: 'sync' | 'async' },
+            userConfig?: { immediate: boolean, flush: 'sync' | 'async' },
             callback?: (res: { styleId: number }) => void
         ): void
         /**
