@@ -20,10 +20,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ***************************************************************************** */
 
-/**
- * Common interfaces and types
- */
-
 interface IAPIError {
     errMsg: string
 }
@@ -55,7 +51,7 @@ interface IInitCloudConfig {
 }
 
 interface ICloudConfig {
-    env?: string
+    env?: string | WxCloud['DYNAMIC_CURRENT_ENV']
     traceUser?: boolean
 }
 
@@ -87,19 +83,89 @@ interface AnyObject {
 type AnyArray = any[]
 
 type AnyFunction = (...args: any[]) => any
+interface WXContext {
+    /**
+     * 小程序用户 openid，小程序端调用云函数时有
+     */
+    OPENID: string
+    /**
+     * 小程序 AppID，小程序端调用云函数时有
+     */
+    APPID: string
+    /**
+     * 小程序用户 unionid，小程序端调用云函数，并且满足 unionid 获取条件时有
+     */
+    UNIONID: string
+    /**
+     * 调用来源方小程序/公众号用户 openid，跨账号调用时有
+     */
+    FROM_OPENID: string
+    /**
+     * 调用来源方小程序/公众号 AppID，跨账号调用时有
+     */
+    FROM_APPID: string
+    /**
+     * 调用来源方用户 unionid，跨账号调用时有，并且满足 unionid 获取条件时有
+     */
+    FROM_UNIONID: string
+    /**
+     * 云函数所在环境的 ID
+     */
+    ENV: string
+    /**
+     * 调用来源（云函数本次运行是被什么触发）
+     */
+    SOURCE: string
+    /**
+     * 小程序客户端 IPv4 地址
+     */
+    CLIENTIP: string
+    /**
+     * 小程序客户端 IPv6 地址
+     */
+    CLIENTIPV6: string
+    /**
+     * 通过云函数获取开放数据时，可用此校验入参中的开放数据是否来自微信后台
+     */
+    OPEN_DATA_INFO: string
+}
 
+interface UnifiedOrderParam {
+    body: string
+    outTradeNo: string
+    spbillCreateIp: string // "127.0.0.1",
+    subMchId: string
+    totalFee: number
+    envId: string
+    functionName: string
+}
+interface IUnifiedOrderResult {
+    returnCode: string //16
+    returnMsg: string //128
+}
+interface CloudPay {
+    unifiedOrder: (param: UnifiedOrderParam) => Promise<IUnifiedOrderResult>
+}
 /**
  * extend wx with cloud
  */
 interface WxCloud {
+    readonly DYNAMIC_CURRENT_ENV: unique symbol
     init: (config?: ICloudConfig) => void
-
+    cloudPay: CloudPay
     callFunction(param: OQ<ICloud.CallFunctionParam>): void
     callFunction(
         param: RQ<ICloud.CallFunctionParam>
     ): Promise<ICloud.CallFunctionResult>
 
     uploadFile(param: OQ<ICloud.UploadFileParam>): WechatMiniprogram.UploadTask
+    uploadFile(param: {
+        cloudPath: string
+        /**
+         * @description 类型应为 Buffer | ReadStream; 对应@types/node下的全局Buffer类型和fs模块下的ReadStream
+         */
+        fileContent: unknown
+    }): Promise<ICloud.UploadFileResult>
     uploadFile(
         param: RQ<ICloud.UploadFileParam>
     ): Promise<ICloud.UploadFileResult>
@@ -121,7 +187,7 @@ interface WxCloud {
         param: RQ<ICloud.DeleteFileParam>
     ): Promise<ICloud.DeleteFileResult>
 
-    database: (config?: ICloudConfig) => DB.Database
+    database: (config?: ICloud.DatabaseConfig) => DB.Database
 
     CloudID: ICloud.ICloudIDConstructor
     CDN: ICloud.ICDNConstructor
@@ -135,11 +201,14 @@ interface WxCloud {
     connectContainer(
         param: RQ<ICloud.ConnectContainerParam>
     ): Promise<ICloud.ConnectContainerResult>
-
-    services: ICloud.CloudServices
 }
 
 declare namespace ICloud {
+
+    interface DatabaseConfig {
+        env?: string
+        throwOnNotFound?: boolean
+    }
     interface ICloudAPIParam<T = any> extends IAPIParam<T> {
         config?: ICloudConfig
     }
@@ -201,37 +270,6 @@ declare namespace ICloud {
             service: string
             path?: string
         }
-    // === end ===
-
-    // === API: services ===
-    type AsyncSession<T> = T | PromiseLike<T>
-    interface GatewayCallOptions {
-        path: string
-        data: any
-        shouldSerialize?: boolean
-        apiVersion?: number
-    }
-    interface GatewayInstance {
-        call: (
-            param: CallContainerParam & GatewayCallOptions
-        ) => Promise<CallContainerResult>
-        refresh: (session: AsyncSession<string>) => Promise<void>
-    }
-    interface GatewayConstructOptions {
-        id: string
-        appid?: string
-        domain?: string
-        keepalive?: boolean
-        prefetch?: boolean
-        prefetchOptions?: {
-            concurrent?: number
-            enableQuic?: boolean
-            enableHttp2?: boolean
-        }
-    }
-    interface CloudServices {
-        Gateway: (opts: GatewayConstructOptions) => GatewayInstance
-    }
     // === end ===
 
     // === API: uploadFile ===
@@ -333,12 +371,125 @@ declare namespace DB {
         readonly Geo: IGeo
         readonly serverDate: () => ServerDate
         readonly RegExp: IRegExpConstructor
-
+        /**
+         * @description 发起事务。仅可在云函数中使用 https://developers.weixin.qq.com/miniprogram/dev/wxcloud/reference-sdk-api/database/Database.runTransaction.html
+         */
+        runTransaction<T>(
+            /**
+             * @description 事务执行异步函数
+             */
+            func: (transaction: Transaction) => Promise<T>,
+            /**
+             * @description 事务执行最多次数，默认 3 次，成功后不重复执行，只有事务冲突时会重试，其他异常时不会重试
+             */
+            times?: number
+        ): Promise<T>
+        /**
+         * @description 开始事务。仅可在云函数中使用 https://developers.weixin.qq.com/miniprogram/dev/wxcloud/reference-sdk-api/database/Database.startTransaction.html
+         */
+        startTransaction(): Promise<Transaction>
         private constructor()
 
         collection(collectionName: string): CollectionReference
     }
+    interface TransactionDocumentReference {
+        get: <T = IQuerySingleResult>(
+            options?: RQ<IGetDocumentOptions>
+        ) => Promise<T>
 
+        update<T = IUpdateResult>(
+            options?: RQ<IUpdateSingleDocumentOptions>
+        ): Promise<T>
+
+        remove(
+            options?: RQ<IRemoveSingleDocumentOptions>
+        ): Promise<IRemoveResult>
+
+        set(options?: RQ<ISetSingleDocumentOptions>): Promise<ISetResult>
+    }
+    interface TransactionCollectionReference {
+        doc: (docId: string | number) => TransactionDocumentReference
+
+        add: <T = IAddResult>(options: RQ<IAddDocumentOptions>) => Promise<T>
+    }
+    interface Transaction {
+        /**
+         * 事务中获取集合的引用。方法接受一个 name 参数，指定需引用的集合名称
+         */
+        collection(collectionName: string): CollectionReference
+        commit(reason?: unknown): Promise<void>
+        rollback(reason?: unknown): Promise<void>
+    }
+    interface Aggregate {
+        /**
+         * @description 聚合阶段。添加新字段到输出的记录。经过 addFields 聚合阶段，输出的所有记录中除了输入时带有的字段外，还将带有 addFields 指定的字段。
+         */
+        addFields(options: object): Aggregate
+        /**
+         * @description  聚合阶段。将输入记录根据给定的条件和边界划分成不同的组，每组即一个 bucket。
+         */
+        bucket(options: object): Aggregate
+        /**
+         * @description 聚合阶段。将输入记录根据给定的条件划分成不同的组，每组即一个 bucket。与 bucket 的其中一个不同之处在于无需指定 boundaries，bucketAuto 会自动尝试将记录尽可能平均的分散到每组中。
+         */
+        bucketAuto(options: object): Aggregate
+        /**
+         * @description 聚合阶段。计算上一聚合阶段输入到本阶段的记录数，输出一个记录，其中指定字段的值为记录数。
+         */
+        count(fieldName: string): Aggregate
+        /**
+         * @description  标志聚合操作定义完成，发起实际聚合操作。
+         */
+        end(): Promise<object>
+        /**
+         * @description  聚合阶段。将记录按照离给定点从近到远输出。
+         */
+        geoNear(options: object): Aggregate
+        /**
+         * @description  聚合阶段。将输入记录按给定表达式分组，输出时每个记录代表一个分组，每个记录的 _id 是区分不同组的 key。输出记录中也可以包括累计值，将输出字段设为累计值即会从该分组中计算累计值。
+         */
+        group(options: object): Aggregate
+        /**
+         * @description 聚合阶段。限制输出到下一阶段的记录数。
+         */
+        limit(value: number): Aggregate
+        /**
+         * @description 聚合阶段。聚合阶段。联表查询。与同个数据库下的一个指定的集合做 left outer join(左外连接)。对该阶段的每一个输入记录，lookup 会在该记录中增加一个数组字段，该数组是被联表中满足匹配条件的记录列表。lookup 会将连接后的结果输出给下个阶段。
+         */
+        lookup(options: object): Aggregate
+        /**
+         * @description 聚合阶段。根据条件过滤文档，并且把符合条件的文档传递给下一个流水线阶段。
+         */
+        match(options: object): Aggregate
+        /**
+         * @description 聚合阶段。把指定的字段传递给下一个流水线，指定的字段可以是某个已经存在的字段，也可以是计算出来的新字段。
+         */
+        project(options: object): Aggregate
+        /**
+         * @description 聚合阶段。指定一个已有字段作为输出的根节点，也可以指定一个计算出的新字段作为根节点。
+         */
+        replaceRoot(options: object): Aggregate
+        /**
+         * @description 聚合阶段。随机从文档中选取指定数量的记录。
+         */
+        sample(size: number): Aggregate
+        /**
+         * @description 聚合阶段。指定一个正整数，跳过对应数量的文档，输出剩下的文档。
+         */
+        skip(value: number): Aggregate
+        /**
+         * @description 聚合阶段。根据指定的字段，对输入的文档进行排序。
+         */
+        sort(options: object): Aggregate
+        /**
+         * @description   聚合阶段。根据传入的表达式，将传入的集合进行分组（group）。然后计算不同组的数量，并且将这些组按照它们的数量进行排序，返回排序后的结果。
+         */
+        sortByCount(options: object): Aggregate
+        /**
+         * @description   聚合阶段。使用指定的数组字段中的每个元素，对文档进行拆分。拆分后，文档会从一个变为一个或多个，分别对应数组的每个元素。
+         */
+        unwind(value: string | object): Aggregate
+    }
     class CollectionReference extends Query {
         readonly collectionName: string
 
@@ -348,6 +499,7 @@ declare namespace DB {
 
         add(options: OQ<IAddDocumentOptions>): void
         add(options: RQ<IAddDocumentOptions>): Promise<IAddResult>
+        aggregate(): Aggregate
     }
 
     class DocumentReference {
@@ -397,6 +549,10 @@ declare namespace DB {
         count(options?: RQ<ICountDocumentOptions>): Promise<ICountResult>
 
         watch(options: IWatchOptions): RealtimeListener
+        update(options: OQ<IUpdateSingleDocumentOptions>): void
+        update(
+            options?: RQ<IUpdateSingleDocumentOptions>
+        ): Promise<IUpdateResult>
     }
 
     interface DatabaseCommand {
