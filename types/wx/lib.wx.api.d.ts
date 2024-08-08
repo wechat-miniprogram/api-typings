@@ -1,5 +1,5 @@
 /*! *****************************************************************************
-Copyright (c) 2023 Tencent, Inc. All rights reserved.
+Copyright (c) 2024 Tencent, Inc. All rights reserved.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -332,6 +332,24 @@ declare namespace WechatMiniprogram {
         /** 要广播的服务 UUID 列表。使用 16/32 位 UUID 时请参考注意事项。 */
         serviceUuids?: string[]
     }
+    /** 订单金额信息。 */
+    interface Amount {
+        /** 订单总需支付金额，也即是真正下单总金额，单位为分。示例值：1300 */
+        order_amount: number
+        /** 货币类型。示例值：CNY
+         *
+         * 可选值：
+         * - 'CNY': 人民币; */
+        currency?: 'CNY'
+        /** 订单总计优惠金额，单位为分。示例值：500 */
+        discount?: number
+        /** 订单运费，单位为分。示例值：200 */
+        freight?: number
+        /** 订单其他费用总金额，单位为分。示例值：600 */
+        other_fee?: number
+        /** 订单所有商品的原价总和，单位为分。示例值：1000 */
+        product_amount?: number
+    }
     /** animationData */
     interface AnimationExportResult {
         actions: IAnyObject[]
@@ -539,7 +557,7 @@ declare namespace WechatMiniprogram {
     }
     /** 需要基础库： `2.19.0`
      *
-     * AudioBuffer接口表示存在内存里的一段短小的音频资源，利用[WebAudioContext.decodeAudioData](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/WebAudioContext.decodeAudioData.html)方法从一个音频文件构建，或者利用 [AudioContext.createBuffer](#)从原始数据构建。把音频放入AudioBuffer后，可以传入到一个 AudioBufferSourceNode进行播放。 */
+     * AudioBuffer接口表示存在内存里的一段短小的音频资源，利用[WebAudioContext.decodeAudioData](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/WebAudioContext.decodeAudioData.html)方法从一个音频文件构建，或者利用 [WebAudioContext.createBuffer](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/WebAudioContext.createBuffer.html)从原始数据构建。把音频放入AudioBuffer后，可以传入到一个 AudioBufferSourceNode进行播放。 */
     interface AudioBuffer {
         /** 返回存储在缓存区的PCM数据的时长（单位为秒） */
         duration: number
@@ -581,6 +599,31 @@ declare namespace WechatMiniprogram {
             /** 要获取特定通道数据的索引 */
             channel: number
         ): Float32Array
+    }
+    /** 空间音频监听器，代表在一个音频场景内唯一的位置和方向信息。 */
+    interface AudioListener {
+        /** 表示监听器的前向系统在同一笛卡尔坐标系中的水平位置，作为位置（位置x，位置和位置和位置）值。 */
+        forwardX: number
+        /** 表示听众的前向方向在同一笛卡尔坐标系中作为位置（位置x，位置和位置和位置）值的垂直位置。 */
+        forwardY: number
+        /** 表示与position (positionX、positionY和positionZ)值在同一笛卡尔坐标系下的听者前进方向的纵向(前后)位置。 */
+        forwardZ: number
+        /** 右手笛卡尔坐标系中X轴的位置。 */
+        positionX: number
+        /** 右手笛卡尔坐标系中Y轴的位置。 */
+        positionY: number
+        /** 右手笛卡尔坐标系中Z轴的位置。 */
+        positionZ: number
+        /** 设置监听器的方向 */
+        setOrientation: (...args: any[]) => any
+        /** 设置监听器的位置 */
+        setPosition: (...args: any[]) => any
+        /** 表示在与position (positionX、positionY和positionZ)值相同的笛卡尔坐标系中侦听器向前方向的水平位置。 */
+        upX: number
+        /** 表示在与position (positionX、positionY和positionZ)值相同的笛卡尔坐标系中侦听器向上方向的水平位置。 */
+        upY: number
+        /** 表示在与position (positionX、positionY和positionZ)值相同的笛卡尔坐标系中侦听器向后方向的水平位置。 */
+        upZ: number
     }
     /** 需要基础库： `2.19.0`
      *
@@ -793,7 +836,7 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
          *
          * 在插件中使用：支持
          *
-         * 监听用户在系统音乐播放面板点击下一曲事件（仅iOS） */
+         * 监听用户在系统音乐播放面板点击下一曲事件 */
         onNext(
             /** 用户在系统音乐播放面板点击下一曲事件的监听函数 */
             listener: OnNextCallback
@@ -820,7 +863,7 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
          *
          * 在插件中使用：支持
          *
-         * 监听用户在系统音乐播放面板点击上一曲事件（仅iOS） */
+         * 监听用户在系统音乐播放面板点击上一曲事件 */
         onPrev(
             /** 用户在系统音乐播放面板点击上一曲事件的监听函数 */
             listener: OnPrevCallback
@@ -1043,10 +1086,6 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
 const source = audioCtx.createBufferSource()
 source.buffer = AudioBuffer
 source.connect(audioCtx.destination)
-sourceCache.add(source) // Tips：缓存住 source，防止被GC掉，GC掉的话音频会中断
-source.onended = () => {
-  sourceCache.delete(source) // Tips：播放完之后，再清掉source缓存
-}
 source.start()
 ``` */
     interface BufferSourceNode {
@@ -1060,10 +1099,7 @@ source.start()
         loopEnd?: number
         /** 定义音频循环播放时，开始播放的位置。单位是秒，默认值是0（可读可写） */
         loopStart?: number
-        /** 定义音频播放结束事件回调函数（可读可写）
-         *
-         * ## 注意事项
-         * - bug：从微信8.0.34开始，BufferSource在JS中如果不一直持有的话，会被客户端GC掉，GC掉之后，BufferSource如果正在播放的话会被中断。因此，建议开发者在 BufferSource.start() 开始播放之前缓存 BufferSource 并在 BufferSource.onended 的时候释放缓存。具体可参考下面示例代码中的缓存逻辑。 */
+        /** 定义音频播放结束事件回调函数（可读可写） */
         onended?: (...args: any[]) => any
         /** [AudioParam](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/AudioParam.html)
          *
@@ -4426,6 +4462,15 @@ ctx.draw()
         /** 初速度 */
         velocity?: number
     }
+    /** 帧深度纹理buffer对象 */
+    interface DepthBufferRes {
+        /** 深度纹理buffer */
+        DepthAddress: ArrayBuffer
+        /** 深度纹理高 */
+        height: number
+        /** 深度纹理宽 */
+        width: number
+    }
     /** 需要基础库： `3.0.0`
      *
      * 深度识别配置。用法详情[指南文档](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/visionkit/depth.html)。 */
@@ -4577,6 +4622,12 @@ ctx.draw()
         url: string
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: DownloadFileCompleteCallback
+        /** 需要基础库： `2.10.4`
+         *
+         * 是否开启 http2 */
+        enableHttp2?: boolean
+        /** 是否开启 profile，默认开启。开启后可在接口回调的 res.profile 中查看性能调试信息。 */
+        enableProfile?: boolean
         /** 接口调用失败的回调函数 */
         fail?: DownloadFileFailCallback
         /** 需要基础库： `1.8.0`
@@ -4898,6 +4949,10 @@ ctx.draw()
         properties?: string[]
         /** 是否返回节点布局位置（`left` `right` `top` `bottom`） */
         rect?: boolean
+        /** 需要基础库： `3.3.0`
+         *
+         * 是否返回节点对应的 Ref 对象，仅 `Skyline` 下支持 */
+        ref?: boolean
         /** 否 是否返回节点的 `scrollLeft` `scrollTop`，节点必须是 `scroll-view` 或者 `viewport` */
         scrollOffset?: boolean
         /** 是否返回节点尺寸（`width` `height`） */
@@ -5955,7 +6010,7 @@ ctx.draw()
         errMsg: string
     }
     interface GetShareInfoOption {
-        /** shareTicket */
+        /** shareTicket，详见[获取更多转发信息](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/share.html#获取更多转发信息) */
         shareTicket: string
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: GetShareInfoCompleteCallback
@@ -6302,6 +6357,18 @@ ctx.draw()
     interface HitTestRes {
         /** 包含位置、旋转、放缩信息的矩阵，以列为主序 */
         transform: Float32Array
+    }
+    /** 需要基础库： `3.3.0`
+     *
+     * 身份证检测配置。用法详情[指南文档](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/visionkit/idcard.html)。 */
+    interface IDCardTrack {
+        /** 需要基础库： `3.3.0`
+         *
+         * 身份证检测模式
+         *
+         * 可选值：
+         * - 2: 静态图片检测; */
+        mode: 2
     }
     /** 需要基础库： `2.7.0`
      *
@@ -6993,8 +7060,17 @@ InnerAudioContext.offWaiting(listener) // 需传入与监听时同一个的函�
          * - 3: 普通微信群聊;
          * - 4: 企业微信互通群聊; */
         chatType?: 1 | 2 | 3 | 4
-        /** shareTicket，详见[获取更多转发信息](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/share.html) */
+        /** shareTicket，详见[获取更多转发信息](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/share.html#获取更多转发信息) */
         shareTicket?: string
+    }
+    /** 帧深度纹理buffer对象，width * height 大小的 深度值（float32） */
+    interface LegSegmentBufferRes {
+        /** 腿部分割纹理buffer，width * height 大小的 裁剪值（0 为不是脚，越靠近 255 越接近腿部区域）（uint8） */
+        DepthAddress: ArrayBuffer
+        /** 腿部分割纹理高 */
+        height: number
+        /** 腿部分割纹理宽 */
+        width: number
     }
     interface LivePlayerContextRequestFullScreenOption {
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
@@ -8030,6 +8106,16 @@ NFCAdapter.offDiscovered(listener) // 需传入与监听时同一个的函数对
         /** 拒绝原因，一般是一个 Error 对象 */
         reason: string
     }
+    interface OnUserCaptureScreenListenerResult {
+        /** 需要基础库： `3.3.0`
+         *
+         * 如果该参数存在，则其它的参数将会以 resolve 结果为准，如果一秒内不 resolve，分享会使用上面传入的默认参数 */
+        promise?: Promise<any>
+        /** 需要基础库： `3.3.0`
+         *
+         * 支持开发者自定义一键打开小程序时的 query */
+        query?: string
+    }
     interface OnVoIPChatInterruptedListenerResult {
         /** 错误码 */
         errCode: number
@@ -8826,6 +8912,29 @@ NFCAdapter.offDiscovered(listener) // 需传入与监听时同一个的函数对
         /** 接口调用成功的回调函数 */
         success?: PreviewMediaSuccessCallback
     }
+    /** 订单详细商品信息列表。 */
+    interface ProductInfo {
+        /** 商户侧该商品所属的类目。示例值：玩偶 */
+        category: string
+        /** 商品主图的url，大小建议64*64。示例值：https://mp.weixin.qq.com/123 */
+        head_img: string
+        /** 该商品原价，单位为分。示例值：5000 */
+        org_price: number
+        /** 商户商品详请页小程序路径。示例值：pages/index */
+        path: string
+        /** 用户购买该商品的数量。示例值：5 */
+        quantity: number
+        /** 该商品售价，单位为分。示例值：4000 */
+        sale_price: number
+        /** 商户系统内该商品的sku属性。示例值：50cm */
+        sku_attr: string
+        /** 商户系统内该商品的skuid。示例值：sku123 */
+        sku_id: string
+        /** 商户系统内该商品的spuid。示例值：spu123456 */
+        spu_id: string
+        /** 商品标题。示例值：QQ长鹅 */
+        title: string
+    }
     /** 推广员 */
     interface PromoterResult {
         /** 推广员昵称 */
@@ -9129,6 +9238,10 @@ NFCAdapter.offDiscovered(listener) // 需传入与监听时同一个的函数对
         /** 接口调用成功的回调函数 */
         success?: RedoSuccessCallback
     }
+    interface RefCallbackResult {
+        /** 节点对应的 Ref 对象 */
+        ref: IAnyObject
+    }
     /** 来源信息。从另一个小程序、公众号或 App 进入小程序时返回。否则返回 `{}`。(参见后文注意) */
     interface ReferrerInfo {
         /** 来源小程序、公众号或 App 的 appId */
@@ -9146,17 +9259,6 @@ NFCAdapter.offDiscovered(listener) // 需传入与监听时同一个的函数对
         right: number
         /** 上边界 */
         top: number
-    }
-    /** 发送端地址信息 */
-    interface RemoteInfo {
-        /** 发送消息的 socket 的地址 */
-        address: string
-        /** 使用的协议族，为 IPv4 或者 IPv6 */
-        family: string
-        /** 端口号 */
-        port: number
-        /** message 的大小，单位：字节 */
-        size: number
     }
     interface RemoveArcOption {
         /** 圆弧 id */
@@ -9282,18 +9384,21 @@ NFCAdapter.offDiscovered(listener) // 需传入与监听时同一个的函数对
      * [在微信开发者工具中查看示例](https://developers.weixin.qq.com/s/tJTak7mU7sfX) */
     interface RenderingContext {}
     interface RequestCommonPaymentFailCallbackErr {
-        /** 错误码 */
-        errCode: number
         /** 错误信息 */
         errMsg: string
+        /** 错误码 */
+        errno: number
     }
     interface RequestCommonPaymentOption {
-        /** 支付的类型。b2b支付填 'retail_pay_goods' */
-        mode: string
+        /** 支付的类型
+         *
+         * 可选值：
+         * - 'retail_pay_goods': B2b支付; */
+        mode: 'retail_pay_goods'
         /** 支付签名, 详见[《签名详解》](https://developers.weixin.qq.com/miniprogram/dev/platform-capabilities/industry/virtual-payment.html) */
         paySig: string
-        /** 具体支付参数见signData, 该参数需以string形式传递, 例如signData: '{"offerId":"123","buyQuantity":1,"env":0,"currencyType":"CNY","platform":"android","productId":"testproductId","goodsPrice":10,"outTradeNo":"xxxxxx","attach":"testdata"}' */
-        signData: SignData
+        /** 具体支付参数见signData, 该参数需以string形式传递, 例如signData: '{"mchid":"1234567890","out_trade_no":"test1244","description":"测试测试","amount":{"order_amount":1,"currency":"CNY"},"attach":"test_attach","env":1}' */
+        signData: RequestCommonPaymentSignData
         /** 用户态签名, 详见[《签名详解》](https://developers.weixin.qq.com/miniprogram/dev/platform-capabilities/industry/virtual-payment.html) */
         signature: string
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
@@ -9302,6 +9407,35 @@ NFCAdapter.offDiscovered(listener) // 需传入与监听时同一个的函数对
         fail?: RequestCommonPaymentFailCallback
         /** 接口调用成功的回调函数 */
         success?: RequestCommonPaymentSuccessCallback
+    }
+    /** 具体支付参数见signData, 该参数需以string形式传递, 例如signData: '{"mchid":"1234567890","out_trade_no":"test1244","description":"测试测试","amount":{"order_amount":1,"currency":"CNY"},"attach":"test_attach","env":1}' */
+    interface RequestCommonPaymentSignData {
+        /** 订单金额信息。 */
+        amount: Amount
+        /** 商品描述。示例值：Image形象店-深圳腾大-QQ公仔 */
+        description: string
+        /** 下单环境。示例值：0
+         *
+         * 可选值：
+         * - 0: 生产环境/现网环境;
+         * - 1: 沙箱环境/测试环境; */
+        env: 0 | 1
+        /** 由微信支付生成并下发的商户号。示例值：1230000109 */
+        mchid: string
+        /** 商户系统内部订单号，只能是数字、大小写字母_-*且在同一个商户号下唯一，长度限制为[6,32]。示例值：1217752501201407033233368018 */
+        out_trade_no: string
+        /** 附加数据，在查询API和支付通知中原样返回，可作为自定义参数使用，实际情况下只有支付完成状态才会返回该字段。示例值：test_attach */
+        attach?: string
+        /** 配送方式。示例值：2
+         *
+         * 可选值：
+         * - 1: 同城配送;
+         * - 2: 快递配送;
+         * - 3: 门店自提;
+         * - 4: 无需配送与提货; */
+        delivery_type?: 1 | 2 | 3 | 4
+        /** 订单详细商品信息列表。 */
+        product_info?: ProductInfo
     }
     interface RequestCommonPaymentSuccessCallbackResult {
         /** 调用成功信息 */
@@ -9348,6 +9482,26 @@ NFCAdapter.offDiscovered(listener) // 需传入与监听时同一个的函数对
          * errno 错误码，错误码的详细说明参考 [Errno错误码](https://developers.weixin.qq.com/miniprogram/dev/framework/usability/PublicErrno.html) */
         errno: number
     }
+    interface RequestMerchantTransferOption {
+        /** 商户号 */
+        mchId: string
+        /** 商家转账付款单跳转收款页 pkg 信息,商家转账付款单受理成功时返回给商户 */
+        package: string
+        /** 商户 appId，普通模式下必填，服务商模式下，appId 和 subAppId 二选一填写 */
+        appId?: string
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: RequestMerchantTransferCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: RequestMerchantTransferFailCallback
+        /** 收款用户 openId， 对应传入的商户 appId 下，某用户的 openId */
+        openId?: string
+        /** 子商户 appId，服务商模式下，appId 和 subAppId 二选一填写 */
+        subAppId?: string
+        /** 子商户号，服务商模式下必填 */
+        subMchId?: string
+        /** 接口调用成功的回调函数 */
+        success?: RequestMerchantTransferSuccessCallback
+    }
     interface RequestOption<
         T extends string | IAnyObject | ArrayBuffer =
             | string
@@ -9382,6 +9536,8 @@ NFCAdapter.offDiscovered(listener) // 需传入与监听时同一个的函数对
          *
          * 是否开启 HttpDNS 服务。如开启，需要同时填入 httpDNSServiceId 。 HttpDNS 用法详见 [移动解析HttpDNS](https://developers.weixin.qq.com/miniprogram/dev/framework/ability/HTTPDNS.html) */
         enableHttpDNS?: boolean
+        /** 是否开启 profile，默认开启。开启后可在接口回调的 res.profile 中查看性能调试信息。 */
+        enableProfile?: boolean
         /** 需要基础库： `2.10.4`
          *
          * 开启 quic */
@@ -9422,7 +9578,7 @@ NFCAdapter.offDiscovered(listener) // 需传入与监听时同一个的函数对
             | 'CONNECT'
         /** 需要基础库： `3.2.2`
          *
-         * 重定向拦截策略。（目前仅安卓和iOS端支持，开发者工具和PC端将在后续支持）
+         * 重定向拦截策略。（目前安卓、iOS、开发者工具已支持，PC端将在后续支持）
          *
          * 可选值：
          * - 'follow': 不拦截重定向，即客户端自动处理重定向;
@@ -9442,6 +9598,10 @@ NFCAdapter.offDiscovered(listener) // 需传入与监听时同一个的函数对
          *
          * 超时时间，单位为毫秒。默认值为 60000 */
         timeout?: number
+        /** 需要基础库： `3.3.3`
+         *
+         * 使用高性能模式，暂仅支持 Android，默认关闭。该模式下有更优的网络性能表现，更多信息请查看下方说明。 */
+        useHighPerformanceMode?: boolean
     }
     interface RequestOrderPaymentOption {
         /** 随机字符串，长度为32个字符以下 */
@@ -9454,12 +9614,8 @@ NFCAdapter.offDiscovered(listener) // 需传入与监听时同一个的函数对
         timeStamp: string
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: RequestOrderPaymentCompleteCallback
-        /** 外部APP用户ID */
-        extUserUin?: string
         /** 接口调用失败的回调函数 */
         fail?: RequestOrderPaymentFailCallback
-        /** 订单信息，仅在需要校验的场景下需要传递，具体见[接口说明](https://developers.weixin.qq.com/miniprogram/dev/framework/ministore/minishopopencomponent2/API/order/requestOrderPayment) */
-        orderInfo?: IAnyObject
         /** 签名算法，应与后台下单时的值一致
          *
          * 可选值：
@@ -9663,6 +9819,12 @@ NFCAdapter.offDiscovered(listener) // 需传入与监听时同一个的函数对
         /** 开发者服务器返回的 HTTP 状态码 （目前开发者工具上不会返回 statusCode 字段，可用真机查看该字段，后续将会支持） */
         statusCode: number
     }
+    interface RequestVirtualPaymentFailCallbackErr {
+        /** 错误码 */
+        errCode: number
+        /** 错误信息 */
+        errMsg: string
+    }
     interface RequestVirtualPaymentOption {
         /** 支付的类型, 不同的支付类型有各自额外要传的附加参数
          *
@@ -9672,7 +9834,7 @@ NFCAdapter.offDiscovered(listener) // 需传入与监听时同一个的函数对
         mode: 'short_series_goods' | 'short_series_coin'
         /** 支付签名, 详见[《签名详解》](https://developers.weixin.qq.com/miniprogram/dev/platform-capabilities/industry/virtual-payment.html) */
         paySig: string
-        /** 具体支付参数见signData, 该参数需以string形式传递, 例如signData: '{"offerId":"123","buyQuantity":1,"env":0,"currencyType":"CNY","platform":"android","productId":"testproductId","goodsPrice":10,"outTradeNo":"xxxxxx","attach":"testdata"}' */
+        /** 具体支付参数见signData, 该参数需以string形式传递, 例如signData: '{"offerId":"123","buyQuantity":1,"env":0,"currencyType":"CNY","productId":"testproductId","goodsPrice":10,"outTradeNo":"xxxxxx","attach":"testdata"}' */
         signData: SignData
         /** 用户态签名, 详见[《签名详解》](https://developers.weixin.qq.com/miniprogram/dev/platform-capabilities/industry/virtual-payment.html) */
         signature: string
@@ -10436,6 +10598,18 @@ wx.createSelectorQuery()
         /** 缩略图路径，若留空则使用视频首帧 */
         thumbPath?: string
     }
+    /** 需要基础库： `3.2.1`
+     *
+     * 鞋部检测配置。用法详情[指南文档](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/visionkit/shoe.html)。 */
+    interface ShoeTrack {
+        /** 需要基础库： `3.2.1`
+         *
+         * 鞋部检测模式
+         *
+         * 可选值：
+         * - 1: 通过摄像头实时检测; */
+        mode: 1
+    }
     interface ShowActionSheetOption {
         /** 按钮的文字数组，数组长度最大为 6 */
         itemList: string[]
@@ -10541,7 +10715,7 @@ wx.createSelectorQuery()
         fail?: ShowShareImageMenuFailCallback
         /** 需要基础库： `3.2.0`
          *
-         * 分享的图片消息是否要带小程序入口 */
+         * 分享的图片消息是否要带小程序入口 (仅部分小程序类目可用) */
         needShowEntrance?: string
         /** 需要基础库： `3.2.0`
          *
@@ -10610,7 +10784,7 @@ wx.createSelectorQuery()
         /** 接口调用成功的回调函数 */
         success?: ShowToastSuccessCallback
     }
-    /** 具体支付参数见signData, 该参数需以string形式传递, 例如signData: '{"offerId":"123","buyQuantity":1,"env":0,"currencyType":"CNY","platform":"android","productId":"testproductId","goodsPrice":10,"outTradeNo":"xxxxxx","attach":"testdata"}' */
+    /** 具体支付参数见signData, 该参数需以string形式传递, 例如signData: '{"offerId":"123","buyQuantity":1,"env":0,"currencyType":"CNY","productId":"testproductId","goodsPrice":10,"outTradeNo":"xxxxxx","attach":"testdata"}' */
     interface SignData {
         /** 透传数据, 发货通知时会透传给开发者 */
         attach: string
@@ -10621,21 +10795,16 @@ wx.createSelectorQuery()
          * 可选值：
          * - 'CNY': 人民币; */
         currencyType: 'CNY'
-        /** 道具单价(分), **该字段仅mode=short_series_goods时可用**, 用来校验价格与后台道具价格是否一致, 避免用户在业务商城页看到的价格与实际价格不一致导致投诉 */
-        goodsPrice: number
         /** 在米大师侧申请的应用 id, mp-支付基础配置中的offerid */
         offerId: string
         /** 业务订单号, 每个订单号只能使用一次, 重复使用会失败(极端情况不保证唯一, 不建议业务强依赖唯一性).  要求8-32个字符内, 只能是数字、大小写字母、符号 _-|*@组成, 不能以下划线(_)开头 */
         outTradeNo: string
-        /** 道具ID, **该字段仅mode=short_series_goods时可用** */
-        productId: string
         /** 环境配置, 0 米大师正式环境, 1 米大师沙箱环境, 默认为 0 */
         env?: number
-        /** 申请接入时的平台, platform 与应用id有关
-         *
-         * 可选值：
-         * - 'android': 安卓平台; */
-        platform?: 'android'
+        /** 道具单价(分), **该字段仅mode=short_series_goods时需要必填**, 用来校验价格与后台道具价格是否一致, 避免用户在业务商城页看到的价格与实际价格不一致导致投诉 */
+        goodsPrice?: number
+        /** 道具ID, **该字段仅mode=short_series_goods时需要必填** */
+        productId?: string
     }
     interface Size {
         /** 变化后的窗口高度，单位 px */
@@ -10694,9 +10863,9 @@ wx.createSelectorQuery()
         /** 上层请求到返回的耗时 */
         cost: number
         /** DNS 域名查询完成的时间，如果使用了本地缓存（即无 DNS 查询）或持久连接，则与 fetchStart 值相等 */
-        domainLookupEnd: number
+        domainLookUpEnd: number
         /** DNS 域名查询开始的时间，如果使用了本地缓存（即无 DNS 查询）或持久连接，则与 fetchStart 值相等 */
-        domainLookupStart: number
+        domainLookUpStart: number
         /** 组件准备好使用 SOCKET 建立请求的时间，这发生在检查本地缓存之前 */
         fetchStart: number
         /** 握手耗时 */
@@ -11387,7 +11556,7 @@ wx.getSetting({
          *
          * 允许微信使用摄像头的开关 */
         cameraAuthorized: boolean
-        /** 设备方向
+        /** 设备方向（注意：IOS客户端横屏游戏获取deviceOrientation可能不准，建议以屏幕宽高为准）
          *
          * 可选值：
          * - 'portrait': 竖屏;
@@ -11501,7 +11670,7 @@ wx.getSetting({
     interface SystemSetting {
         /** 蓝牙的系统开关 */
         bluetoothEnabled: boolean
-        /** 设备方向
+        /** 设备方向（注意：IOS客户端横屏游戏获取deviceOrientation可能不准，建议以屏幕宽高为准）
          *
          * 可选值：
          * - 'portrait': 竖屏;
@@ -11526,7 +11695,16 @@ wx.getSetting({
         /** 收到的消息 */
         message: ArrayBuffer
         /** 发送端地址信息 */
-        remoteInfo: RemoteInfo
+        remoteInfo: TCPSocketOnMessageListenerResultRemoteInfo
+    }
+    /** 发送端地址信息 */
+    interface TCPSocketOnMessageListenerResultRemoteInfo {
+        /** 发送消息的 socket 的地址 */
+        address: string
+        /** 使用的协议族，为 IPv4 或者 IPv6 */
+        family: string
+        /** 端口号 */
+        port: number
     }
     interface TakePhotoOption {
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
@@ -11707,6 +11885,10 @@ session.run({
     interface Track {
         /** 平面跟踪配置 */
         plane: PlaneTrack
+        /** 需要基础库： `3.3.0`
+         *
+         * 身份证检测配置。用法详情[指南文档](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/visionkit/idcard.html)。 */
+        IDCard?: IDCardTrack
         /** 需要基础库： `2.27.0`
          *
          * OCR检测配置。用法详情[指南文档](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/visionkit/ocr.html)。 */
@@ -11735,6 +11917,10 @@ session.run({
          *
          * marker 跟踪配置，基础库(3.0.0)开始允许同时支持v2的水平面检测能力 */
         marker?: boolean
+        /** 需要基础库： `3.2.1`
+         *
+         * 鞋部检测配置。用法详情[指南文档](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/visionkit/shoe.html)。 */
+        shoe?: ShoeTrack
         /** 需要基础库： `2.28.0`
          *
          * 提供基础AR功能，输出相机旋转的3个自由度的位姿，利用手机陀螺仪传感器，实现快速稳定的AR定位能力，适用于简单AR场景。 */
@@ -11814,7 +12000,18 @@ session.run({
         /** 收到的消息。消息长度需要小于4096。 */
         message: ArrayBuffer
         /** 发送端地址信息 */
-        remoteInfo: RemoteInfo
+        remoteInfo: UDPSocketOnMessageListenerResultRemoteInfo
+    }
+    /** 发送端地址信息 */
+    interface UDPSocketOnMessageListenerResultRemoteInfo {
+        /** 发送消息的 socket 的地址 */
+        address: string
+        /** 使用的协议族，为 IPv4 或者 IPv6 */
+        family: string
+        /** 端口号 */
+        port: number
+        /** message 的大小，单位：字节 */
+        size: number
     }
     interface UDPSocketSendOption {
         /** 要发消息的地址。在基础库 <= 2.9.3 版本必须是和本机同网段的 IP 地址，或安全域名列表内的域名地址；之后版本可以是任意 IP 和域名 */
@@ -11874,6 +12071,10 @@ session.run({
         /** 参数列表 */
         parameterList: UpdatableMessageFrontEndParameter[]
     }
+    interface Update3DModeOption {
+        /** 是否开启三维识别 */
+        open3d: boolean
+    }
     interface UpdateGroundOverlayOption {
         /** 图片覆盖的经纬度范围 */
         bounds: MapBounds
@@ -11893,6 +12094,10 @@ session.run({
         visible?: boolean
         /** 图层绘制顺序 */
         zIndex?: number
+    }
+    interface UpdateMaskModeOption {
+        /** 设置是否开启试鞋，返回腿部遮挡纹理 */
+        useMask: boolean
     }
     interface UpdateShareMenuOption {
         /** 需要基础库： `2.4.0`
@@ -11951,6 +12156,12 @@ session.run({
         url: string
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: UploadFileCompleteCallback
+        /** 需要基础库： `2.10.4`
+         *
+         * 是否开启 http2 */
+        enableHttp2?: boolean
+        /** 是否开启 profile，默认开启。开启后可在接口回调的 res.profile 中查看性能调试信息。目前仅安卓端支持。 */
+        enableProfile?: boolean
         /** 接口调用失败的回调函数 */
         fail?: UploadFileFailCallback
         /** HTTP 请求中其他额外的 form data */
@@ -12170,6 +12381,22 @@ session.run({
             /** 画布 */
             gl: WebGLRenderingContext
         ): YUVTextureRes
+        /** [Object VKFrame.getDepthBuffer()](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKFrame.getDepthBuffer.html)
+         *
+         * 需要基础库： `3.0.0`
+         *
+         * 在插件中使用：不支持
+         *
+         * 获取每帧的深度图信息Buffer。安卓微信 8.0.38 开始支持，iOS微信 8.0.39 开始支持。 */
+        getDepthBuffer(): DepthBufferRes
+        /** [Object VKFrame.getLegSegmentBuffer()](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKFrame.getLegSegmentBuffer.html)
+         *
+         * 需要基础库： `3.2.1`
+         *
+         * 在插件中使用：不支持
+         *
+         * 获取每帧的腿部分割信息Buffer，安卓微信 8.0.43，iOS微信 8.0.43 开始支持。 */
+        getLegSegmentBuffer(): LegSegmentBufferRes
     }
     /** 需要基础库： `2.28.0`
      *
@@ -12519,6 +12746,17 @@ session.run({
          *
          * 静态图像OCR检测。当 wx.createVKSession 参数传入 {track: {OCR: {mode: 2} } } 时可用。用法详情[指南文档](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/visionkit/ocr.html)。 */
         runOCR(option: RunOCROption): void
+        /** [VKSession.setDepthOccRange(number threshold)](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKSession.setDepthOccRange.html)
+         *
+         * 需要基础库： `3.0.0`
+         *
+         * 在插件中使用：需要基础库 `3.0.0`
+         *
+         * 更新 深度遮挡 Occ范围，要求调 [wx.createVKSession](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/wx.createVKSession.html) 时传入 {track: {depth: {mode: 2} } } */
+        setDepthOccRange(
+            /** 阈值 */
+            threshold: number
+        ): void
         /** [VKSession.start(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKSession.start.html)
          *
          * 需要基础库： `2.20.0`
@@ -12538,17 +12776,22 @@ session.run({
          *
          * 停止会话。 */
         stop(): void
-        /** [VKSession.update3DMode(boolean open3d)](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKSession.update3DMode.html)
+        /** [VKSession.update3DMode(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKSession.update3DMode.html)
          *
          * 需要基础库： `2.30.2`
          *
          * 在插件中使用：需要基础库 `2.30.2`
          *
-         * 开启3D模式 */
-        update3DMode(
-            /** 是否开启 */
-            open3d: boolean
-        ): void
+         * 更新三维识别相关配置，要求调 [wx.createVKSession](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/wx.createVKSession.html) 时使用 face / hand / body。 */
+        update3DMode(option: Update3DModeOption): void
+        /** [VKSession.updateMaskMode(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKSession.updateMaskMode.html)
+         *
+         * 需要基础库： `3.2.1`
+         *
+         * 在插件中使用：需要基础库 `3.2.1`
+         *
+         * 设置裁剪相关配置，要求调 [wx.createVKSession](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/wx.createVKSession.html) 时使用 shoe。 */
+        updateMaskMode(option: UpdateMaskModeOption): void
         /** [VKSession.updateOSDThreshold(number threshold)](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKSession.updateOSDThreshold.html)
          *
          * 需要基础库： `2.24.5`
@@ -12787,7 +13030,9 @@ setTimeout(audioCtx.resume, 2000)
          *
          * 当前上下文的最终目标节点，一般是音频渲染设备。 */
         destination: WebAudioContextNode
-        /** 空间音频监听器。 */
+        /** [AudioListener](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/AudioListener.html)
+         *
+         * 空间音频监听器。 */
         listener: AudioListener
         /** 可写属性，开发者可以对该属性设置一个监听函数，当WebAudio状态改变的时候，会触发开发者设置的监听函数。 */
         onstatechange: (...args: any[]) => any
@@ -12964,12 +13209,19 @@ audioCtx.close().then(() => {
             /** 线性音频样本的采样率，即每一秒包含的关键帧的个数 */
             sampleRate: number
         ): AudioBuffer
-        /** [[AudioBuffer](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/AudioBuffer.html) WebAudioContext.decodeAudioData()](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/WebAudioContext.decodeAudioData.html)
+        /** [[AudioBuffer](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/AudioBuffer.html) WebAudioContext.decodeAudioData(ArrayBuffer audioData, function successCallback, function errorCallback)](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/WebAudioContext.decodeAudioData.html)
          *
          * 在插件中使用：不支持
          *
          * 异步解码一段资源为AudioBuffer。 */
-        decodeAudioData(): AudioBuffer
+        decodeAudioData(
+            /** 一个包含音频文件数据的 ArrayBuffer */
+            audioData: ArrayBuffer,
+            /** 在音频数据解码成功时被调用，参数为解码后的AudioBuffer */
+            successCallback: (...args: any[]) => any,
+            /** 在音频数据解码失败时被调用 */
+            errorCallback: (...args: any[]) => any
+        ): AudioBuffer
         /** [[BufferSourceNode](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/BufferSourceNode.html) WebAudioContext.createBufferSource()](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/WebAudioContext.createBufferSource.html)
          *
          * 在插件中使用：不支持
@@ -12977,9 +13229,7 @@ audioCtx.close().then(() => {
          * 创建一个BufferSourceNode实例，通过AudioBuffer对象来播放音频数据。 */
         createBufferSource(): BufferSourceNode
     }
-    /** 需要基础库： `2.19.0`
-     *
-     * 一类音频处理模块，不同的Node具备不同的功能，如GainNode(音量调整)等。一个WebAudioContextNode可以通过上下文来创建。
+    /** 一类音频处理模块，不同的Node具备不同的功能，如GainNode(音量调整)等。一个WebAudioContextNode可以通过上下文来创建。
      * 目前已经支持以下Node：
      * IIRFilterNode
      * WaveShaperNode
@@ -12997,32 +13247,7 @@ audioCtx.close().then(() => {
      * ScriptProcessorNode
      * PannerNode
      * AnalyserNode */
-    interface WebAudioContextNode {
-        /** 表示监听器的前向系统在同一笛卡尔坐标系中的水平位置，作为位置（位置x，位置和位置和位置）值。 */
-        forwardX: number
-        /** 表示听众的前向方向在同一笛卡尔坐标系中作为位置（位置x，位置和位置和位置）值的垂直位置。 */
-        forwardY: number
-        /** 表示与position (positionX、positionY和positionZ)值在同一笛卡尔坐标系下的听者前进方向的纵向(前后)位置。 */
-        forwardZ: number
-        /** 右手笛卡尔坐标系中X轴的位置。 */
-        positionX: number
-        /** 右手笛卡尔坐标系中Y轴的位置。 */
-        positionY: number
-        /** 右手笛卡尔坐标系中Z轴的位置。 */
-        positionZ: number
-        /** 设置监听器的方向 */
-        setOrientation: (...args: any[]) => any
-        /** 设置监听器的位置
-         *
-         * /** */
-        setPosition: (...args: any[]) => any
-        /** 表示在与position (positionX、positionY和positionZ)值相同的笛卡尔坐标系中侦听器向前方向的水平位置。 */
-        upX: number
-        /** 表示在与position (positionX、positionY和positionZ)值相同的笛卡尔坐标系中侦听器向上方向的水平位置。 */
-        upY: number
-        /** 表示在与position (positionX、positionY和positionZ)值相同的笛卡尔坐标系中侦听器向后方向的水平位置。 */
-        upZ: number
-    }
+    interface WebAudioContextNode {}
     /** 提供预设的 Wi-Fi 信息列表 */
     interface WifiData {
         /** Wi-Fi 的 BSSID */
@@ -13384,6 +13609,22 @@ Easing.out(easing)
 Easing.inOut(easing)
 ``` */
     interface WorkletEasing {}
+    /** 需要基础库： `3.3.0`
+     *
+     * `ScrollView` 实例，可在 `worklet` 函数内操作 `scroll-view` 组件。 */
+    interface WorkletScrollViewContext {}
+    interface WorkletScrollViewContextScrollToOption {
+        /** 是否启用滚动动画 */
+        animated?: boolean
+        /** 滚动动画时长 */
+        duration?: number
+        /** 动画曲线 */
+        easingFunction?: string
+        /** 左边界距离 */
+        left?: number
+        /** 顶部距离 */
+        top?: number
+    }
     interface WriteBLECharacteristicValueOption {
         /** 蓝牙特征的 UUID */
         characteristicId: string
@@ -14301,52 +14542,30 @@ ctx.draw()
          *
          * | 错误码 | 错误信息 | 说明 |
          * | - | - | - |
-         * | -1 |  | 支付失败 |
-         * | -2 |  | 支付取消 |
-         * | -4 |  | 风控拦截 |
-         * | -5 |  | 开通签约结果未知 |
-         * | -15001 |  | 参数错误,具体原因见err_msg |
-         * | -15002 |  | outTradeNo重复使用,请换新单号重试 |
-         * | -15003 |  | 系统错误 |
-         * | -15004 |  | currencyType错误,目前只能填CNY |
-         * | -15005 |  | 用户态签名signature错误 |
-         * | -15006 |  | 支付签名paySig错误 |
-         * | -15007 |  | session_key过期 |
-         * | -15008 |  | 二级商户进件未完成 |
-         * | -15009 |  | 代币未发布 |
-         * | -15010 |  | 道具productId未发布 |
-         * | -15011 |  | 现网版本的env只能是0,不能填1(沙盒环境) |
-         * | -15012 |  | 调用米大师失败导致关单,请换新单号重试 |
-         * | -15013 |  | goodsPrice道具价格错误 |
-         * | -15014 |  | 道具/代币发布未生效，禁止下单，大概10分钟后生效 |
-         * | -15016 |  | signData格式有问题 |
-         * | -15017 |  | 此商家涉嫌违规，收款功能已被限制，暂无法支付。商家可以登录微信商户平台/微信支付商家助手小程序查看原因和解决方案 |
-         * | -15018 |  | 代币或者道具productId审核不通过 | */ errMsg: string
+         * | 1000 |  | 系统错误 |
+         * | 1022 |  | 参数json格式非法 |
+         * | 702001 |  | 参数错误，具体原因见errMsg |
+         * | 702002 |  | 用户态签名错误 |
+         * | 702003 |  | 支付签名错误 |
+         * | 702004 |  | mode不合法 |
+         * | 702005 |  | out_trade_no重复，请更换新单号重试 |
+         * | 702006 |  | 二级商户进件未完成 |
+         * | 702007 |  | 用户未授权给品牌 |
+         * | 702008 |  | 正式版小程序只能用生产环境下单 | */ errMsg: string
         /** 错误码
          *
          * | 错误码 | 错误信息 | 说明 |
          * | - | - | - |
-         * | -1 |  | 支付失败 |
-         * | -2 |  | 支付取消 |
-         * | -4 |  | 风控拦截 |
-         * | -5 |  | 开通签约结果未知 |
-         * | -15001 |  | 参数错误,具体原因见err_msg |
-         * | -15002 |  | outTradeNo重复使用,请换新单号重试 |
-         * | -15003 |  | 系统错误 |
-         * | -15004 |  | currencyType错误,目前只能填CNY |
-         * | -15005 |  | 用户态签名signature错误 |
-         * | -15006 |  | 支付签名paySig错误 |
-         * | -15007 |  | session_key过期 |
-         * | -15008 |  | 二级商户进件未完成 |
-         * | -15009 |  | 代币未发布 |
-         * | -15010 |  | 道具productId未发布 |
-         * | -15011 |  | 现网版本的env只能是0,不能填1(沙盒环境) |
-         * | -15012 |  | 调用米大师失败导致关单,请换新单号重试 |
-         * | -15013 |  | goodsPrice道具价格错误 |
-         * | -15014 |  | 道具/代币发布未生效，禁止下单，大概10分钟后生效 |
-         * | -15016 |  | signData格式有问题 |
-         * | -15017 |  | 此商家涉嫌违规，收款功能已被限制，暂无法支付。商家可以登录微信商户平台/微信支付商家助手小程序查看原因和解决方案 |
-         * | -15018 |  | 代币或者道具productId审核不通过 | */ errCode: number
+         * | 1000 |  | 系统错误 |
+         * | 1022 |  | 参数json格式非法 |
+         * | 702001 |  | 参数错误，具体原因见errMsg |
+         * | 702002 |  | 用户态签名错误 |
+         * | 702003 |  | 支付签名错误 |
+         * | 702004 |  | mode不合法 |
+         * | 702005 |  | out_trade_no重复，请更换新单号重试 |
+         * | 702006 |  | 二级商户进件未完成 |
+         * | 702007 |  | 用户未授权给品牌 |
+         * | 702008 |  | 正式版小程序只能用生产环境下单 | */ errCode: number
     }
     interface Console {
         /** [console.debug()](https://developers.weixin.qq.com/miniprogram/dev/api/base/debug/console.debug.html)
@@ -15356,7 +15575,9 @@ fs.open({
     })
   }
 })
-``` */
+```
+* ## 注意事项
+* - 小游戏 iOS 高性能模式（iOSHighPerformance）暂不支持 FileSystemManager.read 接口，请使用 FileSystemManager.readFile 接口代替 */
         read(option: ReadOption): void
         /** [FileSystemManager.readCompressedFile(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.readCompressedFile.html)
 *
@@ -15930,7 +16151,9 @@ const res = fs.readSync({
   length: 10
 })
 console.log(res)
-``` */
+```
+* ## 注意事项
+* - 小游戏 iOS 高性能模式（iOSHighPerformance）暂不支持 FileSystemManager.readSync 接口，请使用 FileSystemManager.readFileSync 接口代替 */
         readSync(option: ReadSyncOption): ReadResult
         /** [[Stats](https://developers.weixin.qq.com/miniprogram/dev/api/file/Stats.html) FileSystemManager.fstatSync(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/file/FileSystemManager.fstatSync.html)
 *
@@ -18020,6 +18243,7 @@ Page({
       res.margin
       res.backgroundColor
       res.context    // 节点对应的 Context 对象
+      res.ref        // 节点对应的 Ref 对象
     }).exec()
   }
 })
@@ -18051,6 +18275,29 @@ Page({
         node(
             /** 回调函数，在执行 `SelectorQuery.exec` 方法后，返回节点信息。 */
             callback?: NodeCallback
+        ): SelectorQuery
+        /** [[SelectorQuery](https://developers.weixin.qq.com/miniprogram/dev/api/wxml/SelectorQuery.html) NodesRef.ref(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/wxml/NodesRef.ref.html)
+*
+* 需要基础库： `3.3.0`
+*
+* 在插件中使用：支持
+*
+* 获取 `Node` 节点的 Ref 对象，可用于 `worklet` 函数内操作节点。仅 `Skyline` 下支持，`Node` 必须是非 `virtual` 类型。
+*
+* **示例代码**
+*
+* ```js
+Page({
+  getNode() {
+    this.createSelectorQuery().select('.scrollable').ref(function(res){
+      console.log(res.ref) // 节点对应的 Ref 对象
+    }).exec()
+  }
+})
+``` */
+        ref(
+            /** 回调函数，在执行 `SelectorQuery.exec` 方法后，返回节点 Ref 对象。 */
+            callback?: RefCallback
         ): SelectorQuery
         /** [[SelectorQuery](https://developers.weixin.qq.com/miniprogram/dev/api/wxml/SelectorQuery.html) NodesRef.scrollOffset(function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/wxml/NodesRef.scrollOffset.html)
 *
@@ -19680,6 +19927,7 @@ userCryptoManager.getRandomValues({
          *
          * | 错误码 | 错误信息 | 说明 |
          * | - | - | - |
+         * | 1001 |  | 参数错误 |
          * | -1 |  | 支付失败 |
          * | -2 |  | 支付取消 |
          * | -4 |  | 风控拦截 |
@@ -19700,11 +19948,15 @@ userCryptoManager.getRandomValues({
          * | -15014 |  | 道具/代币发布未生效，禁止下单，大概10分钟后生效 |
          * | -15016 |  | signData格式有问题 |
          * | -15017 |  | 此商家涉嫌违规，收款功能已被限制，暂无法支付。商家可以登录微信商户平台/微信支付商家助手小程序查看原因和解决方案 |
-         * | -15018 |  | 代币或者道具productId审核不通过 | */ errMsg: string
+         * | -15018 |  | 代币或者道具productId审核不通过 |
+         * | -15019 |  | 调微信报商户受限,商家可以登录微信商户平台/微信支付商家助手小程序查看原因和解决方案 |
+         * | -15020 |  | 操作过快，请稍候再试 |
+         * | -15021 |  | 小程序被限频交易 | */ errMsg: string
         /** 错误码
          *
          * | 错误码 | 错误信息 | 说明 |
          * | - | - | - |
+         * | 1001 |  | 参数错误 |
          * | -1 |  | 支付失败 |
          * | -2 |  | 支付取消 |
          * | -4 |  | 风控拦截 |
@@ -19725,7 +19977,10 @@ userCryptoManager.getRandomValues({
          * | -15014 |  | 道具/代币发布未生效，禁止下单，大概10分钟后生效 |
          * | -15016 |  | signData格式有问题 |
          * | -15017 |  | 此商家涉嫌违规，收款功能已被限制，暂无法支付。商家可以登录微信商户平台/微信支付商家助手小程序查看原因和解决方案 |
-         * | -15018 |  | 代币或者道具productId审核不通过 | */ errCode: number
+         * | -15018 |  | 代币或者道具productId审核不通过 |
+         * | -15019 |  | 调微信报商户受限,商家可以登录微信商户平台/微信支付商家助手小程序查看原因和解决方案 |
+         * | -15020 |  | 操作过快，请稍候再试 |
+         * | -15021 |  | 小程序被限频交易 | */ errCode: number
     }
     interface WifiError {
         /** 错误信息
@@ -20085,6 +20340,22 @@ Page({
             /** 共享变量。 */
             SharedValue: SharedValue
         ): void
+        /** [worklet.scrollViewContext.scrollTo(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/ui/worklet/base/worklet.scrollViewContext.scrollTo.html)
+         *
+         * 需要基础库： `3.3.0`
+         *
+         * 在插件中使用：不支持
+         *
+         * 滚动至指定位置
+         *
+         * **示例代码**
+         *
+         * [在微信开发者工具中查看示例](https://developers.weixin.qq.com/s/R0cfBJml7SNB) */
+        scrollTo(option: WorkletScrollViewContextScrollToOption): void
+        /** 需要基础库： `3.3.0`
+         *
+         * `ScrollView` 实例，可在 `worklet` 函数内操作 `scroll-view` 组件。 */
+        scrollViewContext: WorkletScrollViewContext
     }
     interface Wx {
         /** [Array.&lt;any&gt; wx.batchGetStorageSync(Array.&lt;string&gt; keyList)](https://developers.weixin.qq.com/miniprogram/dev/api/storage/wx.batchGetStorageSync.html)
@@ -20682,6 +20953,8 @@ innerAudioContext.play() // 播放
 innerAudioContext.pause() // 暂停
 
 innerAudioContext.stop() // 停止
+
+innerAudioContext.destroy() // 释放音频资源
 ``` */
         createInnerAudioContext(
             option?: CreateInnerAudioContextOption
@@ -21048,6 +21321,15 @@ logger.warn('key3', 'value3')
 * - 对于 `GET` 方法的数据，会将数据转换成 query string（`encodeURIComponent(k)=encodeURIComponent(v)&encodeURIComponent(k)=encodeURIComponent(v)...`）
 * - 对于 `POST` 方法且 `header['content-type']` 为 `application/json` 的数据，会对数据进行 JSON 序列化
 * - 对于 `POST` 方法且 `header['content-type']` 为 `application/x-www-form-urlencoded` 的数据，会将数据转换成 query string `（encodeURIComponent(k)=encodeURIComponent(v)&encodeURIComponent(k)=encodeURIComponent(v)...）`
+*
+* **useHighPerformanceMode 高性能模式说明**
+*
+* 在该模式下，框架将会采用全新的网络请求模块，默认支持 HTTP3，可以提升小程序的网络请求性能。有以下注意事项：
+* - 会自动开启 HTTP2/HTTP3 等能力，`enableQuic`、`enableHttp2` 参数将会强制开启。建议开发者在后台服务也开启对应能力以获得更好的效果。
+* - 暂仅支持 Android，iOS/PC 端设置该参数后会使用原 request 模块。iOS 会在后续支持该参数。
+* - 暂不支持 forceCellularNetwork 参数。
+* - 暂不支持 HttpDNS 能力。
+* - 开启 `enableProfile` 后，返回的 profile 字段部分信息缺失，会被缺省值代替。缺失部分包括 redirectStart、redirectEnd、rtt、estimate_nettype、httpRttEstimate、transportRttEstimate、downstreamThroughputKbpsEstimate、throughputKbps、peerIP、port。
 *
 * **示例代码**
 *
@@ -21654,7 +21936,7 @@ wx.batchGetStorage({
 *
 * 需要基础库： `2.25.0`
 *
-* 在插件中使用：需要基础库 `1.9.6`
+* 在插件中使用：不支持
 *
 * 将数据批量存储在本地缓存中指定的 key 中。会覆盖掉原来该 key 对应的内容。除非用户主动删除或因存储空间原因被系统清理，否则数据都一直可用。单个 key 允许存储的最大数据长度为 1MB，所有数据存储上限为 10MB。
 *
@@ -21685,7 +21967,7 @@ wx.batchSetStorage({
 *
 * 需要基础库： `2.25.0`
 *
-* 在插件中使用：需要基础库 `1.9.6`
+* 在插件中使用：不支持
 *
 * 将数据批量存储在本地缓存中指定的 key 中。会覆盖掉原来该 key 对应的内容。除非用户主动删除或因存储空间原因被系统清理，否则数据都一直可用。单个 key 允许存储的最大数据长度为 1MB，所有数据存储上限为 10MB。
 *
@@ -22531,7 +22813,7 @@ wx.getBackgroundAudioPlayerState({
          * 在插件中使用：不支持
          *
          * 拉取 backgroundFetch 客户端缓存数据。
-         * 当调用接口时，若当次请求未结束，会先返回本地的旧数据（之前打开小程序时请求的），如果本地没有旧数据，安卓上会返回fail，不会等待请求完成，iOS上会返回success但fetchedData为空，也不会等待请求完成。 */
+         * 当调用接口时，若当次请求未结束，会先返回本地的旧数据（之前打开小程序时请求的），如果本地没有旧数据，安卓上会返回fail，不会等待请求完成，iOS上会返回success但fetchedData为空，也不会等待请求完成。建议和 [wx.onBackgroundFetchData](https://developers.weixin.qq.com/miniprogram/dev/api/storage/background-fetch/wx.onBackgroundFetchData.html) 配合使用。 */
         getBackgroundFetchData<
             T extends GetBackgroundFetchDataOption = GetBackgroundFetchDataOption
         >(
@@ -25865,8 +26147,19 @@ wx.offNetworkWeakChange()
 *
 * ```js
 wx.onUserCaptureScreen(function (res) {
-  console.log('用户截屏了')
-})
+    console.log('用户截屏了')
+        return {
+            query: "parameter=test", // 通过截屏图片打开小程序的query参数
+            promise: new Promise((resolve) => { // 通过promise延时传递小程序的query参数
+                    setTimeout(() => {
+                        resolve({
+                            query: "parameter=test2",
+                        })
+                    }, 1000) // 在1秒内对query进行解析
+                })
+        }
+    }
+  )
 ``` */
         onUserCaptureScreen(
             /** 用户主动截屏事件的监听函数 */
@@ -26750,7 +27043,7 @@ wx.reportPerformance(1101, 680, 'custom')
 *
 * 在插件中使用：不支持
 *
-* 发起b2b支付
+* 发起通用支付。目前该接口仅支持 B2b 支付类型。
 *
 * ****
 *
@@ -26761,15 +27054,30 @@ wx.reportPerformance(1101, 680, 'custom')
 * ```js
   wx.requestCommonPayment({
     signData: JSON.stringify({
-      offerId: '123',
-      buyQuantity: 1,
-      env: 0,
-      currencyType: 'CNY',
-      platform: 'android',
-      productId: 'testproductId',
-      goodsPrice: 10,
-      outTradeNo: 'xxxxxx',
-      attach: 'testdata',
+      mchid: '1234567890',
+      out_trade_no: 'test1244',
+	  description: '测试测试',
+	  amount: {
+		  order_amount: 1,
+		  currency: 'CNY'
+	  },
+	  attach: 'test_attach',
+	  product_info: {
+		  product_list: [{
+			  spu_id: 'spu123456',
+			  sku_id: 'sku123',
+			  title: 'QQ长鹅',
+			  path: 'pages/index',
+			  head_img: 'https://mp.weixin.qq.com/123',
+			  category: '玩偶',
+			  sku_attr: '50cm',
+			  org_price: 5000,
+			  sale_price: 4000,
+			  quantity: 5
+		  }]
+	  },
+	  delivery_type: 2,
+      env: 0
     }),
     paySig: 'd0b8bbccbe109b11549bcfd6602b08711f46600965253a949cd6a2b895152f9d',
     signature: 'd0b8bbccbe109b11549bcfd6602b08711f46600965253a949cd6a2b895152f9d',
@@ -26777,8 +27085,8 @@ wx.reportPerformance(1101, 680, 'custom')
     success(res) {
       console.log('requestCommonPayment success', res)
     },
-    fail({ errMsg, errCode }) {
-      console.error(errMsg, errCode)
+    fail({ errMsg, errno }) {
+      console.error(errMsg, errno)
     },
   })
 ``` */
@@ -26821,6 +27129,29 @@ wx.requestDeviceVoIP({
 })
 ``` */
         requestDeviceVoIP(option: RequestDeviceVoIPOption): void
+        /** [wx.requestMerchantTransfer(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/payment/wx.requestMerchantTransfer.html)
+*
+* 需要基础库： `3.3.0`
+*
+* 在插件中使用：不支持
+*
+* 商家转账用户确认模式下，在微信客户端通过小程序拉起页面请求用户确认收款。调用前需在微信支付商户平台/合作伙伴平台-产品中心，申请开通商家转账。
+*
+* **示例代码**
+*
+* ```js
+wx.requestMerchantTransfer({
+  mchId: '',
+  subMchId: '',
+  appId: '',
+  subAppId: '',
+  package: '',
+  openId: '',
+  success (res) { },
+  fail (res) { }
+})
+``` */
+        requestMerchantTransfer(option: RequestMerchantTransferOption): void
         /** [wx.requestOrderPayment(Object args)](https://developers.weixin.qq.com/miniprogram/dev/api/payment/wx.requestOrderPayment.html)
          *
          * 需要基础库： `2.16.0`
@@ -27083,7 +27414,6 @@ if (compareVersion(SDKVersion, '2.19.2') >= 0 || wx.canIUse('requestVirtualPayme
       buyQuantity: 1,
       env: 0,
       currencyType: 'CNY',
-      platform: 'android',
       productId: 'testproductId',
       goodsPrice: 10,
       outTradeNo: 'xxxxxx',
@@ -27542,7 +27872,7 @@ wx.setEnableDebug({
          * ****
          *
          * ## 注意事项
-         * - 为保证微信整体体验，speakerOn 为 true 时，客户端会忽略 mixWithOthers 参数的内容，强制与其它音频互斥
+         * - 为保证微信整体体验，speakerOn 为 true 时，客户端会忽略 mixWithOther 参数的内容，强制与其它音频互斥
          * - 不支持在播放音频的过程中切换为扬声器播放，开发者如需切换可以先暂停当前播放的音频并记录下当前暂停的时间点，然后切换后重新从原来暂停的时间点开始播放音频
          * - 目前 wx.setInnerAudioOption 接口不兼容 wx.createWebAudioContext 接口，也不兼容 wx.createInnerAudioContext 开启 useWebAudioImplement 的情况，将在后续版本中支持 */
         setInnerAudioOption<
@@ -27767,7 +28097,12 @@ wx.setTopBarText({
          *
          * 在插件中使用：需要基础库 `2.21.3`
          *
-         * 设置截屏/录屏时屏幕表现，仅支持在 Android 端调用 */
+         * 设置截屏/录屏时屏幕表现
+         *
+         * **Bug & Tip**
+         *
+         * 1. `tip`：iOS 要求基础库版本为 3.3.0 以上，且系统版本为 iOS 16 以上
+         * 2. `tip`：iOS 目前只支持处理录屏时的表现 */
         setVisualEffectOnCapture(option: SetVisualEffectOnCaptureOption): void
         /** [wx.setWifiList(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/device/wifi/wx.setWifiList.html)
 *
@@ -27961,7 +28296,11 @@ wx.showModal({
          *
          * 在插件中使用：需要基础库 `2.16.0`
          *
-         * 打开分享图片弹窗，可以将图片发送给朋友、收藏或下载 */
+         * 打开分享图片弹窗，可以将图片发送给朋友、收藏或下载
+         *
+         * **Bug & Tip**
+         *
+         * 1. `tip`: `needShowEntrance`分享的图片消息是否要带小程序入口，支持申明类目：商家自营、电商平台、餐饮服务(餐饮服务场所/餐饮服务管理企业、点餐平台、外卖平台)、旅游服务(住宿服务、景区服务、OTA、旅游管理单位)、生活服务(家政服务、丽人服务、宠物(非医院类)、婚庆服务、洗浴保健、休闲娱乐、百货/超市/便利店、开锁服务、营业性演出票务、其他宠物健康服务、洗浴保健平台、共享服务、跑腿、寄存、求职/招聘) */
         showShareImageMenu<
             T extends ShowShareImageMenuOption = ShowShareImageMenuOption
         >(
@@ -30744,7 +31083,9 @@ wx.writeBLECharacteristicValue({
     /** 小程序有版本更新事件的监听函数 */
     type OnUpdateReadyCallback = (res: GeneralCallbackResult) => void
     /** 用户主动截屏事件的监听函数 */
-    type OnUserCaptureScreenCallback = (res: GeneralCallbackResult) => void
+    type OnUserCaptureScreenCallback = (
+        result: OnUserCaptureScreenListenerResult
+    ) => void
     /** 被动断开实时语音通话事件的监听函数 */
     type OnVoIPChatInterruptedCallback = (
         result: OnVoIPChatInterruptedListenerResult
@@ -31133,6 +31474,8 @@ wx.writeBLECharacteristicValue({
     type RedoFailCallback = (res: GeneralCallbackResult) => void
     /** 接口调用成功的回调函数 */
     type RedoSuccessCallback = (res: GeneralCallbackResult) => void
+    /** 回调函数，在执行 `SelectorQuery.exec` 方法后，返回节点 Ref 对象。 */
+    type RefCallback = (result: RefCallbackResult) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type RemoveArcCompleteCallback = (res: GeneralCallbackResult) => void
     /** 接口调用失败的回调函数 */
@@ -31242,6 +31585,18 @@ wx.writeBLECharacteristicValue({
     /** 接口调用成功的回调函数 */
     type RequestFullScreenSuccessCallback = (res: GeneralCallbackResult) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type RequestMerchantTransferCompleteCallback = (
+        res: GeneralCallbackResult
+    ) => void
+    /** 接口调用失败的回调函数 */
+    type RequestMerchantTransferFailCallback = (
+        res: GeneralCallbackResult
+    ) => void
+    /** 接口调用成功的回调函数 */
+    type RequestMerchantTransferSuccessCallback = (
+        res: GeneralCallbackResult
+    ) => void
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type RequestOrderPaymentCompleteCallback = (
         res: GeneralCallbackResult
     ) => void
@@ -31324,7 +31679,7 @@ wx.writeBLECharacteristicValue({
     ) => void
     /** 接口调用失败的回调函数 */
     type RequestVirtualPaymentFailCallback = (
-        err: RequestCommonPaymentFailCallbackErr
+        err: RequestVirtualPaymentFailCallbackErr
     ) => void
     /** 接口调用成功的回调函数 */
     type RequestVirtualPaymentSuccessCallback = (
