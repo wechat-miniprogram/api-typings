@@ -1948,6 +1948,7 @@ type TPlatform = 'ios' | 'android' | 'windows' | 'mac' | 'devtools'
     isPrivateMessage: true,
     activityId: 'xxx',
     templateInfo: {
+      templateId: '',
       parameterList: [{
         name: '',
         value: '',
