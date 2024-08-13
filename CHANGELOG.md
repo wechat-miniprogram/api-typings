@@ -1,3 +1,7 @@
+## 2024-08-08 v3.12.3
+- 更新 API 定义到 3.5.2
+- 修复 [#235](https://github.com/wechat-miniprogram/api-typings/issues/235), [#302](https://github.com/wechat-miniprogram/api-typings/issues/302), [#303](https://github.com/wechat-miniprogram/api-typings/issues/303), [#304](https://github.com/wechat-miniprogram/api-typings/issues/304) by [@Yang Mingshan](https://github.com/yangmingshan)
+
 ## 2023-12-01 v3.12.2
 - 更新 API 定义到 3.2.3
 

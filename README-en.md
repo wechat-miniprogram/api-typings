@@ -57,6 +57,7 @@ Both PR and issue are welcomed for definitions of pages (`Page`), custom compone
 - [Jelf](https://github.com/okxiaoliang4)
 - [xieyuhang](https://github.com/haiya6)
 - [苏杰豪](https://github.com/Megasu)
+- [Yang Mingshan](https://github.com/yangmingshan)
 
 ### Automated tests
 
