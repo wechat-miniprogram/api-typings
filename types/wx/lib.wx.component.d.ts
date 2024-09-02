@@ -70,7 +70,7 @@ declare namespace WechatMiniprogram.Component {
         <
             TData extends DataOption,
             // 给泛型默认值，避免出现当组件无 properties 选项时
-            // 当xxx未在 data 中声明，this.data.xxx 为 any 的问题。
+            // 当xxx未在 data 中声明，this.data.xxx 为 any 且不报 TS2339 error 的问题。
             TProperty extends PropertyOption = {},
             TMethod extends MethodOption = {},
             TCustomInstanceProperty extends IAnyObject = {},

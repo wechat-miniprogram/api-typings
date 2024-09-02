@@ -1,4 +1,4 @@
-import { expectType } from 'tsd'
+import { expectError, expectType } from 'tsd'
 
 // https://github.com/wechat-miniprogram/api-typings/issues/11
 expectType<string>(wx.env.USER_DATA_PATH)
@@ -442,4 +442,49 @@ import WX = WechatMiniprogram
   const offscreenCanvas = wx.createOffscreenCanvas(800, 600)
   expectType<number>(offscreenCanvas.height)
   expectType<number>(offscreenCanvas.width)
+}
+
+// https://github.com/wechat-miniprogram/api-typings/issues/332
+{
+  Component({
+    data: {
+      a: ''
+    },
+    methods: {
+      test() {
+        expectError<any>(this.data.xxx)
+      },
+    }
+  })
+}
+
+{
+  interface Foo {
+    f: string
+  }
+
+  Component({
+    _timer: '',
+    properties: {
+      bar: {
+        type: Object,
+        value: { f: '' } as Foo,
+        observer () {}
+      },
+      foo: {
+        type: Array,
+        value: [] as Foo[],
+      }
+    },
+    methods: {
+      getData() {
+        return this.data.foo
+      },
+      test() {
+        expectType<Foo>(this.data.bar)
+        expectType<Foo[]>(this.getData())
+        expectType<string>(this._timer)
+      },
+    }
+  })
 }
