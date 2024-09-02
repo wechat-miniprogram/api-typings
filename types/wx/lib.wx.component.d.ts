@@ -55,6 +55,8 @@ declare namespace WechatMiniprogram.Component {
         Partial<Method<TMethod, TIsPage>> &
         Partial<OtherOption> &
         Partial<Lifetimes> &
+        // 有很大几率会在 this.xxx 上使用一些暂存的变量，应该像Page一样支持传入自定义属性
+        Partial<TCustomInstanceProperty> &
         ThisType<
             Instance<
                 TData,
@@ -67,8 +69,10 @@ declare namespace WechatMiniprogram.Component {
     interface Constructor {
         <
             TData extends DataOption,
-            TProperty extends PropertyOption,
-            TMethod extends MethodOption,
+            // 给泛型默认值，避免出现当组件无 properties 选项时
+            // 当xxx未在 data 中声明，this.data.xxx 为 any 的问题。
+            TProperty extends PropertyOption = {},
+            TMethod extends MethodOption = {},
             TCustomInstanceProperty extends IAnyObject = {},
             TIsPage extends boolean = false
         >(
@@ -151,8 +155,9 @@ declare namespace WechatMiniprogram.Component {
     type PropertyToData<T extends AllProperty> = T extends ShortProperty
         ? ValueType<T>
         : FullPropertyToData<Exclude<T, ShortProperty>>
-    type FullPropertyToData<T extends AllFullProperty> = ValueType<T['type']>
-    // type FullPropertyToData<T extends AllFullProperty> = unknown extends T['value'] ? ValueType<T['type']> : T['value']
+    type ArrayOrObject = ArrayConstructor | ObjectConstructor
+    // 支持 Array、Object 的 property 通过 value as ValueType 的方式明确 property 的类型
+    type FullPropertyToData<T extends AllFullProperty> = T['type'] extends ArrayOrObject ? unknown extends T['value'] ? ValueType<T['type']> : T['value'] : ValueType<T['type']>
     type PropertyOptionToData<P extends PropertyOption> = {
         [name in keyof P]: PropertyToData<P[name]>
     }

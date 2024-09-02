@@ -397,7 +397,9 @@ import WX = WechatMiniprogram
         return this.data.foo
       },
       test() {
-        expectType<Record<string, any>>(this.data.bar)
+        expectType<{
+          skuNum: number
+      }>(this.data.bar)
         expectType<number>(this.getDataOrPoperty())
       },
     }
