@@ -285,10 +285,15 @@ import WX = WechatMiniprogram
   type IMethod = {
     setJob(job: string): void
   }
+  type IBehavior = [{
+    data: {}
+    properties: {}
+    methods: {}
+  }]
   type ICustomInstanceProperty = {
     job: string
   }
-  Component<IData, IProperty, IMethod, ICustomInstanceProperty>({
+  Component<IData, IProperty, IMethod, IBehavior, ICustomInstanceProperty>({
     properties: {
       id: Number,
     },
@@ -458,6 +463,7 @@ import WX = WechatMiniprogram
   })
 }
 
+// https://github.com/wechat-miniprogram/api-typings/issues/332
 {
   interface Foo {
     f: string
@@ -482,8 +488,61 @@ import WX = WechatMiniprogram
       },
       test() {
         expectType<Foo>(this.data.bar)
+        expectType<Foo>(this.properties.bar)
         expectType<Foo[]>(this.getData())
         expectType<string>(this._timer)
+      },
+    }
+  })
+}
+
+// https://github.com/wechat-miniprogram/api-typings/issues/332
+{
+  const bA = Behavior({
+    properties: {
+      pA: {
+        type: String,
+        value: '',
+      },
+      pA1: Boolean
+    },
+    data: {
+      dataA: 'init data',
+    },
+    methods: {
+      methodA() {
+        return this.data.dataA
+      },
+    },
+  })
+  const bB = Behavior({
+    properties: {
+      pB: {
+        type: Array,
+        value: [] as string[],
+      }
+    },
+    data: {
+      dataB: [] as string[],
+    },
+    methods: {
+      methodB() {
+        return this.data.dataB
+      },
+    },
+  })
+
+  Component({
+    behaviors: [bA, bB],
+    methods: {
+      test() {
+        expectType<string>(this.data.pA)
+        expectType<boolean>(this.data.pA1)
+        expectType<string>(this.data.dataA)
+        expectType<string[]>(this.data.pB)
+        expectType<string[]>(this.data.dataB)
+        expectType<string>(this.methodA())
+        expectType<string[]>(this.methodB())
       },
     }
   })

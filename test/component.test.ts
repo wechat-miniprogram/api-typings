@@ -3,7 +3,7 @@ import { expectType, expectError } from 'tsd'
 expectType<string>(Component({}))
 
 Component({
-  behaviors: [''],
+  behaviors: [{data: {}, properties: {}, methods: {}}],
 
   properties: {
     myProperty: {
@@ -431,7 +431,8 @@ Component<{}, {}, { fn(): void }>({
     typeof data,
     typeof properties,
     /* methods= */{ fn(): string },
-    /* customProperties= */{},
+    /* behaviors= */ [],
+      /* customProperties= */{},
       /* isPage= */true
       >({
         data,
@@ -485,7 +486,7 @@ Component<{}, {}, { fn(): void }>({
   type CustomProperties = {
     customProp: string
   }
-  Component<{}, {}, {}, CustomProperties>({
+  Component<{}, {}, {}, [], CustomProperties>({
     lifetimes: {
       created() {
         this.customProp = 'customProp'

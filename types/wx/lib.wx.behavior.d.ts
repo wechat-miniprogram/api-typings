@@ -21,13 +21,23 @@ SOFTWARE.
 ***************************************************************************** */
 
 declare namespace WechatMiniprogram.Behavior {
-    type BehaviorIdentifier = string
+    // 为了支持 Behavior TS类型推导，必须得把 data、property、method 都暴露给 Component
+    // Behavior 实际返回的类型是 string。
+    type BehaviorIdentifier<
+        TData extends DataOption = {},
+        TProperty extends PropertyOption = {},
+        TMethod extends MethodOption = {}
+    > = {
+        data: TData
+        properties: TProperty
+        methods: TMethod
+    }
     type Instance<
         TData extends DataOption,
         TProperty extends PropertyOption,
         TMethod extends MethodOption,
         TCustomInstanceProperty extends IAnyObject = Record<string, never>
-    > = Component.Instance<TData, TProperty, TMethod, TCustomInstanceProperty>
+    > = Component.Instance<TData, TProperty, TMethod, [], TCustomInstanceProperty>
     type TrivialInstance = Instance<IAnyObject, IAnyObject, IAnyObject>
     type TrivialOption = Options<IAnyObject, IAnyObject, IAnyObject>
     type Options<
@@ -49,7 +59,7 @@ declare namespace WechatMiniprogram.Behavior {
             TCustomInstanceProperty extends IAnyObject = Record<string, never>
         >(
             options: Options<TData, TProperty, TMethod, TCustomInstanceProperty>
-        ): BehaviorIdentifier
+        ): BehaviorIdentifier<TData, TProperty, TMethod>
     }
 
     type DataOption = Component.DataOption
@@ -61,8 +71,8 @@ declare namespace WechatMiniprogram.Behavior {
 
     type DefinitionFilter = Component.DefinitionFilter
     type Lifetimes = Component.Lifetimes
-
-    type OtherOption = Omit<Component.OtherOption, 'options'>
+    // Behavior 中还能再用 behaviors，感觉这样代码组织很怪异的样子，这里需要类型支持？暂时没有支持
+    type OtherOption = Omit<Component.OtherOption, 'options'> & { behaviors: BehaviorIdentifier[]}
 }
 /** 注册一个 `behavior`，接受一个 `Object` 类型的参数。*/
 declare let Behavior: WechatMiniprogram.Behavior.Constructor

@@ -25,34 +25,43 @@ declare namespace WechatMiniprogram.Component {
         TData extends DataOption,
         TProperty extends PropertyOption,
         TMethod extends Partial<MethodOption>,
+        TBehavior extends BehaviorOption = [],
         TCustomInstanceProperty extends IAnyObject = {},
         TIsPage extends boolean = false
     > = InstanceProperties &
         InstanceMethods<TData> &
         TMethod &
+        MixinMethods<TBehavior> &
         (TIsPage extends true ? Page.ILifetime : {}) &
-        TCustomInstanceProperty & {
+        Omit<TCustomInstanceProperty, 'properties' | 'methods' | 'data'> & {
             /** 组件数据，**包括内部数据和属性值** */
-            data: TData & PropertyOptionToData<TProperty>
+            data: TData & MixinData<TBehavior> &
+                MixinProperties<TBehavior> & PropertyOptionToData<TProperty>
             /** 组件数据，**包括内部数据和属性值**（与 `data` 一致） */
-            properties: TData & PropertyOptionToData<TProperty>
+            properties: TData & MixinData<TBehavior> &
+                MixinProperties<TBehavior> & PropertyOptionToData<TProperty>
         }
+
+    type IAnyArray = []
     type TrivialInstance = Instance<
         IAnyObject,
         IAnyObject,
         IAnyObject,
+        IAnyArray,
         IAnyObject
     >
-    type TrivialOption = Options<IAnyObject, IAnyObject, IAnyObject, IAnyObject>
+    type TrivialOption = Options<IAnyObject, IAnyObject, IAnyObject, IAnyArray, IAnyObject>
     type Options<
         TData extends DataOption,
         TProperty extends PropertyOption,
         TMethod extends MethodOption,
+        TBehavior extends BehaviorOption = [],
         TCustomInstanceProperty extends IAnyObject = {},
         TIsPage extends boolean = false
     > = Partial<Data<TData>> &
         Partial<Property<TProperty>> &
         Partial<Method<TMethod, TIsPage>> &
+        Partial<Behavior<TBehavior>> &
         Partial<OtherOption> &
         Partial<Lifetimes> &
         // 有很大几率会在 this.xxx 上使用一些暂存的变量，应该像Page一样支持传入自定义属性
@@ -62,6 +71,7 @@ declare namespace WechatMiniprogram.Component {
                 TData,
                 TProperty,
                 TMethod,
+                TBehavior,
                 TCustomInstanceProperty,
                 TIsPage
             >
@@ -73,6 +83,7 @@ declare namespace WechatMiniprogram.Component {
             // 当xxx未在 data 中声明，this.data.xxx 为 any 且不报 TS2339 error 的问题。
             TProperty extends PropertyOption = {},
             TMethod extends MethodOption = {},
+            TBehavior extends BehaviorOption = [],
             TCustomInstanceProperty extends IAnyObject = {},
             TIsPage extends boolean = false
         >(
@@ -80,6 +91,7 @@ declare namespace WechatMiniprogram.Component {
                 TData,
                 TProperty,
                 TMethod,
+                TBehavior,
                 TCustomInstanceProperty,
                 TIsPage
             >
@@ -88,6 +100,25 @@ declare namespace WechatMiniprogram.Component {
     type DataOption = Record<string, any>
     type PropertyOption = Record<string, AllProperty>
     type MethodOption = Record<string, Function>
+
+
+    /** 支持 Behavior 开始 */
+    type BehaviorOption = Behavior.BehaviorIdentifier[]
+    type ExtractData<T> = T extends { data: infer D } ? D : never
+    type ExtractProperties<T> = T extends { properties: infer P } ? PropertyOptionToData<P extends PropertyOption ? P : {}> : never
+    type ExtractMethods<T> = T extends { methods: infer M } ? M : never
+    // 联合类型转交叉类型
+    type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (k: infer I) => void ? I : never
+
+    type MixinData<T extends any[]> = UnionToIntersection<ExtractData<T[number]>>
+    type MixinProperties<T extends any[]> = UnionToIntersection<ExtractProperties<T[number]>>
+    type MixinMethods<T extends any[]> = UnionToIntersection<ExtractMethods<T[number]>>
+
+    interface Behavior<B extends BehaviorOption> {
+        /** 类似于mixins和traits的组件间代码复用机制，参见 [behaviors](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/behaviors.html) */
+        behaviors?: B
+    }
+    /** 支持 Behavior 结束 */
 
     interface Data<D extends DataOption> {
         /** 组件的内部数据，和 `properties` 一同用于组件的模板渲染 */
@@ -528,8 +559,6 @@ declare namespace WechatMiniprogram.Component {
     }
 
     interface OtherOption {
-        /** 类似于mixins和traits的组件间代码复用机制，参见 [behaviors](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/behaviors.html) */
-        behaviors: Behavior.BehaviorIdentifier[]
         /**
          * 组件数据字段监听器，用于监听 properties 和 data 的变化，参见 [数据监听器](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/observer.html)
          *

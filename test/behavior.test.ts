@@ -1,6 +1,10 @@
 import { expectType } from 'tsd'
 
-expectType<string>(Behavior({}))
+expectType<{
+  data: {}
+  properties: {}
+  methods: {}
+}>(Behavior({}))
 
 Behavior({
   behaviors: [],

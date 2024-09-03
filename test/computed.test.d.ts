@@ -14,7 +14,7 @@ declare namespace WechatMiniprogram {
       M extends MethodOption,
       C extends ComputedOption,
       CustomProperty extends IAnyObject = Record<string, never>,
-    > = Instance<D, P, M, CustomProperty> & { data: ComputedOptionToData<C> }
+    > = Instance<D, P, M, [], CustomProperty> & { data: ComputedOptionToData<C> }
     type ComputedOptions<
       D extends DataOption,
       P extends PropertyOption,
