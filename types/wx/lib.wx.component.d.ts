@@ -183,7 +183,6 @@ declare namespace WechatMiniprogram.Component {
         ? ValueType<T>
         : FullPropertyToData<Exclude<T, ShortProperty>>
     type ArrayOrObject = ArrayConstructor | ObjectConstructor
-    // 支持 Array、Object 的 property 通过 value as ValueType 的方式明确 property 的类型
     type FullPropertyToData<T extends AllFullProperty> = T['type'] extends ArrayOrObject ? unknown extends T['value'] ? ValueType<T['type']> : T['value'] : ValueType<T['type']>
     type PropertyOptionToData<P extends PropertyOption> = {
         [name in keyof P]: PropertyToData<P[name]>
