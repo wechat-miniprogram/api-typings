@@ -464,7 +464,6 @@ import WX = WechatMiniprogram
   }
 
   Component({
-    _timer: '',
     properties: {
       bar: {
         type: Object,
@@ -483,7 +482,6 @@ import WX = WechatMiniprogram
       test() {
         expectType<Foo>(this.data.bar)
         expectType<Foo[]>(this.getData())
-        expectType<string>(this._timer)
       },
     }
   })
