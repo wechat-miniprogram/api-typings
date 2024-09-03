@@ -29,7 +29,7 @@ Component({
     max: {
       type: Number,
       value: 0,
-      observer(newVal: number, oldVal: number) {
+      observer(newVal, oldVal) {
         expectType<number>(newVal)
         expectType<number>(oldVal)
         expectType<void>(this.onMyButtonTap())

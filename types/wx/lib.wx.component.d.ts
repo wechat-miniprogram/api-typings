@@ -21,6 +21,7 @@ SOFTWARE.
 ***************************************************************************** */
 
 declare namespace WechatMiniprogram.Component {
+    type FilterUnknownProperty<TProperty> = string extends keyof TProperty ? {} : TProperty
     type Instance<
         TData extends DataOption,
         TProperty extends PropertyOption,
@@ -34,12 +35,11 @@ declare namespace WechatMiniprogram.Component {
         MixinMethods<TBehavior> &
         (TIsPage extends true ? Page.ILifetime : {}) &
         Omit<TCustomInstanceProperty, 'properties' | 'methods' | 'data'> & {
-            /** 组件数据，**包括内部数据和属性值** */
             data: TData & MixinData<TBehavior> &
-                MixinProperties<TBehavior> & PropertyOptionToData<TProperty>
+            MixinProperties<TBehavior> & PropertyOptionToData<FilterUnknownProperty<TProperty>>
             /** 组件数据，**包括内部数据和属性值**（与 `data` 一致） */
             properties: TData & MixinData<TBehavior> &
-                MixinProperties<TBehavior> & PropertyOptionToData<TProperty>
+            MixinProperties<TBehavior> & PropertyOptionToData<FilterUnknownProperty<TProperty>>
         }
 
     type IAnyArray = []
@@ -79,10 +79,8 @@ declare namespace WechatMiniprogram.Component {
     interface Constructor {
         <
             TData extends DataOption,
-            // 给泛型默认值，避免出现当组件无 properties 选项时
-            // 当xxx未在 data 中声明，this.data.xxx 为 any 且不报 TS2339 error 的问题。
-            TProperty extends PropertyOption = {},
-            TMethod extends MethodOption = {},
+            TProperty extends PropertyOption,
+            TMethod extends MethodOption,
             TBehavior extends BehaviorOption = [],
             TCustomInstanceProperty extends IAnyObject = {},
             TIsPage extends boolean = false
