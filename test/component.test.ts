@@ -178,7 +178,7 @@ Component({
       expectType<number>(this.data.n2)
       expectType<string>(this.data.s)
       expectType<any[]>(this.data.a)
-      expectType<any[]>(this.data.a2)
+      expectType<number[]>(this.data.a2)
       expectType<boolean>(this.data.b)
       expectType<Record<string, any>>(this.data.o)
       expectType<any>(this.data.a[0])
@@ -218,7 +218,7 @@ Component({
       expectType<number>(this.data.n2)
       expectType<string>(this.data.s)
       expectType<any[]>(this.data.a)
-      expectType<any[]>(this.data.a2)
+      expectType<number[]>(this.data.a2)
       expectType<boolean>(this.data.b)
       expectType<Record<string, any>>(this.data.o)
       expectType<Record<string, any>>(this.data.o2)
@@ -243,7 +243,7 @@ Component({
   methods: {
     f() {
       expectType<number>(this.data.n)
-      expectType<any[]>(this.data.a)
+      expectType<number[]>(this.data.a)
     },
   },
 })

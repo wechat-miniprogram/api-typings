@@ -21,6 +21,7 @@ SOFTWARE.
 ***************************************************************************** */
 
 declare namespace WechatMiniprogram.Component {
+    type FilterUnknownProperty<TProperty> = string extends keyof TProperty ? {} : TProperty
     type Instance<
         TData extends DataOption,
         TProperty extends PropertyOption,
@@ -33,9 +34,9 @@ declare namespace WechatMiniprogram.Component {
         (TIsPage extends true ? Page.ILifetime : {}) &
         TCustomInstanceProperty & {
             /** 组件数据，**包括内部数据和属性值** */
-            data: TData & PropertyOptionToData<TProperty>
+            data: TData & PropertyOptionToData<FilterUnknownProperty<TProperty>>
             /** 组件数据，**包括内部数据和属性值**（与 `data` 一致） */
-            properties: TData & PropertyOptionToData<TProperty>
+            properties: TData & PropertyOptionToData<FilterUnknownProperty<TProperty>>
         }
     type TrivialInstance = Instance<
         IAnyObject,
@@ -151,8 +152,8 @@ declare namespace WechatMiniprogram.Component {
     type PropertyToData<T extends AllProperty> = T extends ShortProperty
         ? ValueType<T>
         : FullPropertyToData<Exclude<T, ShortProperty>>
-    type FullPropertyToData<T extends AllFullProperty> = ValueType<T['type']>
-    // type FullPropertyToData<T extends AllFullProperty> = unknown extends T['value'] ? ValueType<T['type']> : T['value']
+    type ArrayOrObject = ArrayConstructor | ObjectConstructor
+    type FullPropertyToData<T extends AllFullProperty> = T['type'] extends ArrayOrObject ? unknown extends T['value'] ? ValueType<T['type']> : T['value'] : ValueType<T['type']>
     type PropertyOptionToData<P extends PropertyOption> = {
         [name in keyof P]: PropertyToData<P[name]>
     }
