@@ -21,8 +21,6 @@ SOFTWARE.
 ***************************************************************************** */
 
 declare namespace WechatMiniprogram.Behavior {
-    // 为了支持 Behavior TS类型推导，必须得把 data、property、method 都暴露给 Component
-    // Behavior 实际返回的类型是 string。
     type BehaviorIdentifier<
         TData extends DataOption = {},
         TProperty extends PropertyOption = {},
@@ -71,7 +69,6 @@ declare namespace WechatMiniprogram.Behavior {
 
     type DefinitionFilter = Component.DefinitionFilter
     type Lifetimes = Component.Lifetimes
-    // Behavior 中还能再用 behaviors，感觉这样代码组织很怪异的样子，这里需要类型支持？暂时没有支持
     type OtherOption = Omit<Component.OtherOption, 'options'> & { behaviors: BehaviorIdentifier[]}
 }
 /** 注册一个 `behavior`，接受一个 `Object` 类型的参数。*/
