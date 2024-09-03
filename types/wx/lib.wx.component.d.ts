@@ -64,8 +64,6 @@ declare namespace WechatMiniprogram.Component {
         Partial<Behavior<TBehavior>> &
         Partial<OtherOption> &
         Partial<Lifetimes> &
-        // 有很大几率会在 this.xxx 上使用一些暂存的变量，应该像Page一样支持传入自定义属性
-        Partial<TCustomInstanceProperty> &
         ThisType<
             Instance<
                 TData,

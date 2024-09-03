@@ -120,6 +120,17 @@ Component({
   },
 })
 
+expectError(
+  Component({
+    custom: 1,
+    methods: {
+      f() {
+        this.custom
+      },
+    },
+  }),
+)
+
 interface Config {
   a: number
 }
