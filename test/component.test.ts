@@ -3,7 +3,7 @@ import { expectType, expectError } from 'tsd'
 expectType<string>(Component({}))
 
 Component({
-  behaviors: [{data: {}, properties: {}, methods: {}}],
+  behaviors: [],
 
   properties: {
     myProperty: {

@@ -25,10 +25,12 @@ declare namespace WechatMiniprogram.Behavior {
         TData extends DataOption = {},
         TProperty extends PropertyOption = {},
         TMethod extends MethodOption = {}
-    > = {
-        data: TData
-        properties: TProperty
-        methods: TMethod
+    > = string & {
+        BehaviorType: {
+            data: TData
+            properties: TProperty
+            methods: TMethod
+        }
     }
     type Instance<
         TData extends DataOption,

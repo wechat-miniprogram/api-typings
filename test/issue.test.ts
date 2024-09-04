@@ -285,11 +285,7 @@ import WX = WechatMiniprogram
   type IMethod = {
     setJob(job: string): void
   }
-  type IBehavior = [{
-    data: {}
-    properties: {}
-    methods: {}
-  }]
+  type IBehavior = []
   type ICustomInstanceProperty = {
     job: string
   }

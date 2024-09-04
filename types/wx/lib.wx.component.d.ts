@@ -97,15 +97,15 @@ declare namespace WechatMiniprogram.Component {
     type PropertyOption = Record<string, AllProperty>
     type MethodOption = Record<string, Function>
 
-
     type BehaviorOption = Behavior.BehaviorIdentifier[]
+    type ExtractBehaviorType<T> = T extends { BehaviorType: infer B } ? B : never
     type ExtractData<T> = T extends { data: infer D } ? D : never
     type ExtractProperties<T> = T extends { properties: infer P } ? PropertyOptionToData<P extends PropertyOption ? P : {}> : never
     type ExtractMethods<T> = T extends { methods: infer M } ? M : never
     type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (k: infer I) => void ? I : never
-    type MixinData<T extends any[]> = UnionToIntersection<ExtractData<T[number]>>
-    type MixinProperties<T extends any[]> = UnionToIntersection<ExtractProperties<T[number]>>
-    type MixinMethods<T extends any[]> = UnionToIntersection<ExtractMethods<T[number]>>
+    type MixinData<T extends any[]> = UnionToIntersection<ExtractData<ExtractBehaviorType<T[number]>>>
+    type MixinProperties<T extends any[]> = UnionToIntersection<ExtractProperties<ExtractBehaviorType<T[number]>>>
+    type MixinMethods<T extends any[]> = UnionToIntersection<ExtractMethods<ExtractBehaviorType<T[number]>>>
 
     interface Behavior<B extends BehaviorOption> {
         /** 类似于mixins和traits的组件间代码复用机制，参见 [behaviors](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/behaviors.html) */
