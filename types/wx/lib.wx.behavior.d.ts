@@ -21,17 +21,18 @@ SOFTWARE.
 ***************************************************************************** */
 
 declare namespace WechatMiniprogram.Behavior {
-    type BehaviorIdentifier<
+    type RealBehaviorType<
         TData extends DataOption = {},
         TProperty extends PropertyOption = {},
         TMethod extends MethodOption = {}
-    > = string & {
-        BehaviorType: {
+    > = {
+        [key in 'BehaviorType']?: {
             data: TData
             properties: TProperty
             methods: TMethod
         }
     }
+    type BehaviorIdentifier = string
     type Instance<
         TData extends DataOption,
         TProperty extends PropertyOption,
@@ -59,7 +60,7 @@ declare namespace WechatMiniprogram.Behavior {
             TCustomInstanceProperty extends IAnyObject = Record<string, never>
         >(
             options: Options<TData, TProperty, TMethod, TCustomInstanceProperty>
-        ): BehaviorIdentifier<TData, TProperty, TMethod>
+        ): BehaviorIdentifier & RealBehaviorType<TData, TProperty, TMethod>
     }
 
     type DataOption = Component.DataOption

@@ -98,7 +98,7 @@ declare namespace WechatMiniprogram.Component {
     type MethodOption = Record<string, Function>
 
     type BehaviorOption = Behavior.BehaviorIdentifier[]
-    type ExtractBehaviorType<T> = T extends { BehaviorType: infer B } ? B : never
+    type ExtractBehaviorType<T> = T extends { BehaviorType?: infer B } ? B : never
     type ExtractData<T> = T extends { data: infer D } ? D : never
     type ExtractProperties<T> = T extends { properties: infer P } ? PropertyOptionToData<P extends PropertyOption ? P : {}> : never
     type ExtractMethods<T> = T extends { methods: infer M } ? M : never
