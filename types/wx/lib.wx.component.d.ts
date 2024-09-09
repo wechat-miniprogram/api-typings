@@ -100,11 +100,12 @@ declare namespace WechatMiniprogram.Component {
     type BehaviorOption = Behavior.BehaviorIdentifier[]
     type ExtractBehaviorType<T> = T extends { BehaviorType?: infer B } ? B : never
     type ExtractData<T> = T extends { data: infer D } ? D : never
-    type ExtractProperties<T> = T extends { properties: infer P } ? PropertyOptionToData<P extends PropertyOption ? P : {}> : never
+    type ExtractProperties<T, TIsBehavior extends boolean = false> = T extends { properties: infer P } ?
+    TIsBehavior extends true ? P : PropertyOptionToData<P extends PropertyOption ? P : {}> : never
     type ExtractMethods<T> = T extends { methods: infer M } ? M : never
     type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (k: infer I) => void ? I : never
     type MixinData<T extends any[]> = UnionToIntersection<ExtractData<ExtractBehaviorType<T[number]>>>
-    type MixinProperties<T extends any[]> = UnionToIntersection<ExtractProperties<ExtractBehaviorType<T[number]>>>
+    type MixinProperties<T extends any[], TIsBehavior extends boolean = false> = UnionToIntersection<ExtractProperties<ExtractBehaviorType<T[number]>, TIsBehavior>>
     type MixinMethods<T extends any[]> = UnionToIntersection<ExtractMethods<ExtractBehaviorType<T[number]>>>
 
     interface Behavior<B extends BehaviorOption> {

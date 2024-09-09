@@ -25,12 +25,12 @@ ComputedComponent({
 })
 
 type IMethods = {
-  _setData: WechatMiniprogram.Component.InstanceMethods<{}>['setData'],
+  _setData: WechatMiniprogram.Component.InstanceMethods<{}>['setData']
 }
 type ICustomProperty = {
-  _originalSetData: WechatMiniprogram.Component.InstanceMethods<{}>['setData'],
+  _originalSetData: WechatMiniprogram.Component.InstanceMethods<{}>['setData']
 }
-Behavior<{}, {}, IMethods, ICustomProperty>({
+Behavior<{}, {}, IMethods, [], ICustomProperty>({
   lifetimes: {
     created() {
       this._originalSetData = this.setData

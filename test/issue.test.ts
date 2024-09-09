@@ -541,3 +541,61 @@ import WX = WechatMiniprogram
     }
   })
 }
+// https://github.com/wechat-miniprogram/api-typings/issues/332#issuecomment-2333434425
+{
+  const b1 = Behavior({
+    properties: {
+      pA: {
+        type: String,
+        value: '',
+      },
+      pA1: Boolean
+    },
+    data: {
+      dataA: 'init data',
+    },
+    methods: {
+      methodA() {
+        return this.data.dataA
+      },
+    },
+  })
+  const b2 = Behavior({
+    behaviors: [b1],
+    properties: {
+      pB: {
+        type: Array,
+        value: [] as string[],
+      }
+    },
+    data: {
+      dataB: [] as string[],
+    },
+    methods: {
+      methodB() {
+        return this.data.dataB
+      },
+      test() {
+        expectType<string>(this.data.pA)
+        expectType<boolean>(this.data.pA1)
+        expectType<string>(this.data.dataA)
+        expectType<string>(this.methodA())
+      },
+    },
+  })
+
+  Component({
+    behaviors: [b2],
+    methods: {
+      test() {
+        expectType<string>(this.data.pA)
+        expectType<boolean>(this.data.pA1)
+        expectType<string>(this.data.dataA)
+        expectType<string[]>(this.data.pB)
+        expectType<string[]>(this.data.dataB)
+        expectType<string>(this.methodA())
+        expectType<string[]>(this.methodB())
+      },
+    }
+  })
+}
