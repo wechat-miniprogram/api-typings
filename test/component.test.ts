@@ -418,7 +418,7 @@ Component({
   },
 })
 
-Component<{}, {}, { fn(): void }>({
+Component<{}, {}, { fn(): void }, []>({
   methods: {
     fn() {
       expectError(this.notExists)

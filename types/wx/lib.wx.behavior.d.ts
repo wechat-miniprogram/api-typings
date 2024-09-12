@@ -21,20 +21,19 @@ SOFTWARE.
 ***************************************************************************** */
 
 declare namespace WechatMiniprogram.Behavior {
-    type RealBehaviorType<
+
+    type BehaviorIdentifier<
         TData extends DataOption = {},
         TProperty extends PropertyOption = {},
         TMethod extends MethodOption = {},
         TBehavior extends BehaviorOption = []
-    > = {
+    > = string & {
         [key in 'BehaviorType']?: {
             data: TData & Component.MixinData<TBehavior>
             properties: TProperty & Component.MixinProperties<TBehavior, true>
             methods: TMethod & Component.MixinMethods<TBehavior>
         }
     }
-
-    type BehaviorIdentifier = string
     type Instance<
         TData extends DataOption,
         TProperty extends PropertyOption,
@@ -42,8 +41,8 @@ declare namespace WechatMiniprogram.Behavior {
         TBehavior extends BehaviorOption,
         TCustomInstanceProperty extends IAnyObject = Record<string, never>
     > = Component.Instance<TData, TProperty, TMethod, TBehavior, TCustomInstanceProperty>
-    type TrivialInstance = Instance<IAnyObject, IAnyObject, IAnyObject, Component.IAnyArray>
-    type TrivialOption = Options<IAnyObject, IAnyObject, IAnyObject, Component.IAnyArray>
+    type TrivialInstance = Instance<IAnyObject, IAnyObject, IAnyObject, Component.IEmptyArray>
+    type TrivialOption = Options<IAnyObject, IAnyObject, IAnyObject, Component.IEmptyArray>
     type Options<
         TData extends DataOption,
         TProperty extends PropertyOption,
@@ -66,7 +65,7 @@ declare namespace WechatMiniprogram.Behavior {
             TCustomInstanceProperty extends IAnyObject = Record<string, never>
         >(
             options: Options<TData, TProperty, TMethod, TBehavior, TCustomInstanceProperty>
-        ): BehaviorIdentifier & RealBehaviorType<TData, TProperty, TMethod, TBehavior>
+        ): BehaviorIdentifier<TData, TProperty, TMethod, TBehavior>
     }
 
     type DataOption = Component.DataOption

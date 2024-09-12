@@ -174,7 +174,7 @@ wx.request({
     f?: () => string
     g: () => void
   }
-  type Dialog = WechatMiniprogram.Component.Instance<{}, {}, IDialogMethod>
+  type Dialog = WechatMiniprogram.Component.Instance<{}, {}, IDialogMethod, []>
   Page({
     f() {
       const comp = this.selectComponent('#comp') as Dialog

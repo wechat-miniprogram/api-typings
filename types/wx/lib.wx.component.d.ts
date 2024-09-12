@@ -26,7 +26,7 @@ declare namespace WechatMiniprogram.Component {
         TData extends DataOption,
         TProperty extends PropertyOption,
         TMethod extends Partial<MethodOption>,
-        TBehavior extends BehaviorOption = [],
+        TBehavior extends BehaviorOption,
         TCustomInstanceProperty extends IAnyObject = {},
         TIsPage extends boolean = false
     > = InstanceProperties &
@@ -35,6 +35,7 @@ declare namespace WechatMiniprogram.Component {
         MixinMethods<TBehavior> &
         (TIsPage extends true ? Page.ILifetime : {}) &
         Omit<TCustomInstanceProperty, 'properties' | 'methods' | 'data'> & {
+            /** 组件数据，**包括内部数据和属性值** */
             data: TData & MixinData<TBehavior> &
             MixinProperties<TBehavior> & PropertyOptionToData<FilterUnknownProperty<TProperty>>
             /** 组件数据，**包括内部数据和属性值**（与 `data` 一致） */
@@ -42,20 +43,20 @@ declare namespace WechatMiniprogram.Component {
             MixinProperties<TBehavior> & PropertyOptionToData<FilterUnknownProperty<TProperty>>
         }
 
-    type IAnyArray = []
+    type IEmptyArray = []
     type TrivialInstance = Instance<
         IAnyObject,
         IAnyObject,
         IAnyObject,
-        IAnyArray,
+        IEmptyArray,
         IAnyObject
     >
-    type TrivialOption = Options<IAnyObject, IAnyObject, IAnyObject, IAnyArray, IAnyObject>
+    type TrivialOption = Options<IAnyObject, IAnyObject, IAnyObject, IEmptyArray, IAnyObject>
     type Options<
         TData extends DataOption,
         TProperty extends PropertyOption,
         TMethod extends MethodOption,
-        TBehavior extends BehaviorOption = [],
+        TBehavior extends BehaviorOption,
         TCustomInstanceProperty extends IAnyObject = {},
         TIsPage extends boolean = false
     > = Partial<Data<TData>> &
@@ -79,7 +80,7 @@ declare namespace WechatMiniprogram.Component {
             TData extends DataOption,
             TProperty extends PropertyOption,
             TMethod extends MethodOption,
-            TBehavior extends BehaviorOption = [],
+            TBehavior extends BehaviorOption,
             TCustomInstanceProperty extends IAnyObject = {},
             TIsPage extends boolean = false
         >(
