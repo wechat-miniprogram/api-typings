@@ -418,7 +418,7 @@ Component({
   },
 })
 
-Component<{}, {}, { fn(): void }>({
+Component<{}, {}, { fn(): void }, []>({
   methods: {
     fn() {
       expectError(this.notExists)
@@ -442,7 +442,8 @@ Component<{}, {}, { fn(): void }>({
     typeof data,
     typeof properties,
     /* methods= */{ fn(): string },
-    /* customProperties= */{},
+    /* behaviors= */ [],
+      /* customProperties= */{},
       /* isPage= */true
       >({
         data,
@@ -496,7 +497,7 @@ Component<{}, {}, { fn(): void }>({
   type CustomProperties = {
     customProp: string
   }
-  Component<{}, {}, {}, CustomProperties>({
+  Component<{}, {}, {}, [], CustomProperties>({
     lifetimes: {
       created() {
         this.customProp = 'customProp'

@@ -21,47 +21,64 @@ SOFTWARE.
 ***************************************************************************** */
 
 declare namespace WechatMiniprogram.Behavior {
-    type BehaviorIdentifier = string
+
+    type BehaviorIdentifier<
+        TData extends DataOption = {},
+        TProperty extends PropertyOption = {},
+        TMethod extends MethodOption = {},
+        TBehavior extends BehaviorOption = []
+    > = string & {
+        [key in 'BehaviorType']?: {
+            data: TData & Component.MixinData<TBehavior>
+            properties: TProperty & Component.MixinProperties<TBehavior, true>
+            methods: TMethod & Component.MixinMethods<TBehavior>
+        }
+    }
     type Instance<
         TData extends DataOption,
         TProperty extends PropertyOption,
         TMethod extends MethodOption,
+        TBehavior extends BehaviorOption,
         TCustomInstanceProperty extends IAnyObject = Record<string, never>
-    > = Component.Instance<TData, TProperty, TMethod, TCustomInstanceProperty>
-    type TrivialInstance = Instance<IAnyObject, IAnyObject, IAnyObject>
-    type TrivialOption = Options<IAnyObject, IAnyObject, IAnyObject>
+    > = Component.Instance<TData, TProperty, TMethod, TBehavior, TCustomInstanceProperty>
+    type TrivialInstance = Instance<IAnyObject, IAnyObject, IAnyObject, Component.IEmptyArray>
+    type TrivialOption = Options<IAnyObject, IAnyObject, IAnyObject, Component.IEmptyArray>
     type Options<
         TData extends DataOption,
         TProperty extends PropertyOption,
         TMethod extends MethodOption,
+        TBehavior extends BehaviorOption,
         TCustomInstanceProperty extends IAnyObject = Record<string, never>
     > = Partial<Data<TData>> &
         Partial<Property<TProperty>> &
         Partial<Method<TMethod>> &
+        Partial<Behavior<TBehavior>> &
         Partial<OtherOption> &
         Partial<Lifetimes> &
-        ThisType<Instance<TData, TProperty, TMethod, TCustomInstanceProperty>>
+        ThisType<Instance<TData, TProperty, TMethod, TBehavior, TCustomInstanceProperty>>
     interface Constructor {
         <
             TData extends DataOption,
             TProperty extends PropertyOption,
             TMethod extends MethodOption,
+            TBehavior extends BehaviorOption,
             TCustomInstanceProperty extends IAnyObject = Record<string, never>
         >(
-            options: Options<TData, TProperty, TMethod, TCustomInstanceProperty>
-        ): BehaviorIdentifier
+            options: Options<TData, TProperty, TMethod, TBehavior, TCustomInstanceProperty>
+        ): BehaviorIdentifier<TData, TProperty, TMethod, TBehavior>
     }
 
     type DataOption = Component.DataOption
     type PropertyOption = Component.PropertyOption
     type MethodOption = Component.MethodOption
+    type BehaviorOption = Component.BehaviorOption
     type Data<D extends DataOption> = Component.Data<D>
     type Property<P extends PropertyOption> = Component.Property<P>
     type Method<M extends MethodOption> = Component.Method<M>
+    type Behavior<B extends BehaviorOption> = Component.Behavior<B>
 
     type DefinitionFilter = Component.DefinitionFilter
     type Lifetimes = Component.Lifetimes
-
     type OtherOption = Omit<Component.OtherOption, 'options'>
 }
 /** 注册一个 `behavior`，接受一个 `Object` 类型的参数。*/

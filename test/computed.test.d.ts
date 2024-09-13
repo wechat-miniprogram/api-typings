@@ -14,7 +14,7 @@ declare namespace WechatMiniprogram {
       M extends MethodOption,
       C extends ComputedOption,
       CustomProperty extends IAnyObject = Record<string, never>,
-    > = Instance<D, P, M, CustomProperty> & { data: ComputedOptionToData<C> }
+    > = Instance<D, P, M, [], CustomProperty> & { data: ComputedOptionToData<C> }
     type ComputedOptions<
       D extends DataOption,
       P extends PropertyOption,
@@ -23,7 +23,7 @@ declare namespace WechatMiniprogram {
       CustomProperty extends IAnyObject = Record<string, never>,
     > = Partial<Computed<C>> &
       ThisType<ComputedInstance<D, P, M, C, CustomProperty>> &
-      Options<D, P, M>
+      Options<D, P, M, []>
     interface ComputedConstructor {
       <
         D extends DataOption,
