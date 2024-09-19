@@ -1,6 +1,6 @@
 {
-  "name": "miniprogram-api-typings",
-  "version": "3.12.3",
+  "name": "@mtypes/miniprogram-api-typings",
+  "version": "4.0.0",
   "description": "Type definitions for APIs of Wechat Mini Program in TypeScript",
   "main": "./index.d.ts",
   "types": "./index.d.ts",

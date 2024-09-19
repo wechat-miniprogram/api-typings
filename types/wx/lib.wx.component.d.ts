@@ -36,10 +36,10 @@ declare namespace WechatMiniprogram.Component {
         (TIsPage extends true ? Page.ILifetime : {}) &
         Omit<TCustomInstanceProperty, 'properties' | 'methods' | 'data'> & {
             /** 组件数据，**包括内部数据和属性值** */
-            data: TData & MixinData<TBehavior> &
+            data: FilterUnknownProperty<TData> & MixinData<TBehavior> &
             MixinProperties<TBehavior> & PropertyOptionToData<FilterUnknownProperty<TProperty>>
             /** 组件数据，**包括内部数据和属性值**（与 `data` 一致） */
-            properties: TData & MixinData<TBehavior> &
+            properties: FilterUnknownProperty<TData> & MixinData<TBehavior> &
             MixinProperties<TBehavior> & PropertyOptionToData<FilterUnknownProperty<TProperty>>
         }
 
