@@ -21,7 +21,7 @@ SOFTWARE.
 ***************************************************************************** */
 
 declare namespace WechatMiniprogram.Component {
-    type FilterUnknownProperty<TProperty> = string extends keyof TProperty ? {} : TProperty
+    type FilterUnknownType<T> = string extends keyof T ? {} : T
     type Instance<
         TData extends DataOption,
         TProperty extends PropertyOption,
@@ -36,11 +36,11 @@ declare namespace WechatMiniprogram.Component {
         (TIsPage extends true ? Page.ILifetime : {}) &
         Omit<TCustomInstanceProperty, 'properties' | 'methods' | 'data'> & {
             /** 组件数据，**包括内部数据和属性值** */
-            data: FilterUnknownProperty<TData> & MixinData<TBehavior> &
-            MixinProperties<TBehavior> & PropertyOptionToData<FilterUnknownProperty<TProperty>>
+            data: FilterUnknownType<TData> & MixinData<TBehavior> &
+            MixinProperties<TBehavior> & PropertyOptionToData<FilterUnknownType<TProperty>>
             /** 组件数据，**包括内部数据和属性值**（与 `data` 一致） */
-            properties: FilterUnknownProperty<TData> & MixinData<TBehavior> &
-            MixinProperties<TBehavior> & PropertyOptionToData<FilterUnknownProperty<TProperty>>
+            properties: FilterUnknownType<TData> & MixinData<TBehavior> &
+            MixinProperties<TBehavior> & PropertyOptionToData<FilterUnknownType<TProperty>>
         }
 
     type IEmptyArray = []
