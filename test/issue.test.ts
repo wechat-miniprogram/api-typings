@@ -599,3 +599,39 @@ import WX = WechatMiniprogram
     }
   })
 }
+
+{
+  const b1 = Behavior({
+    methods: {
+      methodA() {
+        return ['']
+      },
+    },
+  })
+  const b2 = Behavior({
+    properties: {
+      pB: {
+        type: Array,
+        value: [] as string[],
+      }
+    }
+  })
+  const b3 = Behavior({
+    data: {
+      dataC: 'init data',
+    }
+  })
+
+  Component({
+    behaviors: [b1, b2, b3],
+    methods: {
+      test() {
+        expectType<string[]>(this.data.pB)
+        expectType<string>(this.data.dataC)
+        expectType<string[]>(this.methodA())
+        expectError(this.data.xxx)
+        expectError(this.properties.yyy)
+      },
+    }
+  })
+}

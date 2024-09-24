@@ -29,9 +29,9 @@ declare namespace WechatMiniprogram.Behavior {
         TBehavior extends BehaviorOption = []
     > = string & {
         [key in 'BehaviorType']?: {
-            data: TData & Component.MixinData<TBehavior>
-            properties: TProperty & Component.MixinProperties<TBehavior, true>
-            methods: TMethod & Component.MixinMethods<TBehavior>
+            data: Component.FilterUnknownType<TData> & Component.MixinData<TBehavior>
+            properties: Component.FilterUnknownType<TProperty> & Component.MixinProperties<TBehavior, true>
+            methods: Component.FilterUnknownType<TMethod> & Component.MixinMethods<TBehavior>
         }
     }
     type Instance<
