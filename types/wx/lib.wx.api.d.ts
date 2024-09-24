@@ -370,7 +370,7 @@ declare namespace WechatMiniprogram {
     interface AppAuthorizeSetting {
         /** 允许微信使用相册的开关（仅 iOS 有效） */
         albumAuthorized: 'authorized' | 'denied' | 'not determined'
-        /** 允许微信使用蓝牙的开关（仅 iOS 有效） */
+        /** 允许微信使用蓝牙的开关（安卓基础库 3.5.0 以上有效） */
         bluetoothAuthorized: 'authorized' | 'denied' | 'not determined'
         /** 允许微信使用摄像头的开关 */
         cameraAuthorized: 'authorized' | 'denied' | 'not determined'
@@ -779,7 +779,7 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
     interface BackgroundAudioManager {
         /** 需要基础库： `3.4.8`
          *
-         * 音频类型。可设置 "audio" 和 "music" 两种值，默认为 "audio"。不同音频类型对应的播放器样式不一样（实验特性，目前仅安卓端支持） */
+         * 音频类型。可设置 "audio" 和 "music" 两种值，默认为 "audio"。不同音频类型对应的播放器样式不一样（实验特性，目前仅iOS和Android端支持） */
         audioType: string
         /** 音频已缓冲的时间，仅保证当前播放时间点到此时间点内容已缓冲。（只读） */
         buffered: number
@@ -803,7 +803,7 @@ backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb
         protocol: string
         /** 需要基础库： `3.4.8`
          *
-         * 关联页面路径。设置后，当点击播放器上的小程序跳转链接时，将跳转到这个关联页面路径（实验特性，目前仅安卓端支持） */
+         * 关联页面路径。设置后，当点击播放器上的小程序跳转链接时，将跳转到这个关联页面路径（实验特性，目前仅Android端支持） */
         referrerPath: string
         /** 需要基础库： `2.13.0`
          *
@@ -4238,7 +4238,7 @@ ctx.draw()
         /** 接口调用成功的回调函数 */
         success?: ConnectWifiSuccessCallback
     }
-    /** 一个字典对象，它指定是否应该禁用规范化(默认启用规范化) */
+    /** 一个字典对象，用于指定是否禁用规范化(默认启用规范化) */
     interface Constraints {
         /** 如果指定为true则禁用标准化，默认为false */
         disableNormalization?: boolean
@@ -4330,6 +4330,10 @@ ctx.draw()
     interface CreateIntersectionObserverOption {
         /** 初始的相交比例，如果调用时检测到的相交比例与这个值不相等且达到阈值，则会触发一次监听器的回调函数。 */
         initialRatio?: number
+        /** 需要基础库： `3.5.7`
+         *
+         * 是否使用原生观察器模式。 */
+        nativeMode?: boolean
         /** 需要基础库： `2.0.0`
          *
          * 是否同时观测多个目标节点（而非一个），如果设为 true ，observe 的 targetSelector 将选中多个节点（注意：同时选中过多节点将影响渲染性能） */
@@ -5403,9 +5407,11 @@ ctx.draw()
         /** 直播状态
          *
          * 可选值：
+         * - 1: 直播状态不存在（针对未开过直播的主播）;
          * - 2: 直播中;
-         * - 3: 直播结束; */
-        status: 2 | 3
+         * - 3: 直播已结束;
+         * - 4: 直播准备中（未开播）; */
+        status: 1 | 2 | 3 | 4
         errMsg: string
     }
     interface GetChannelsLiveNoticeInfoOption {
@@ -5874,6 +5880,10 @@ ctx.draw()
         networkType: 'wifi' | '2g' | '3g' | '4g' | '5g' | 'unknown' | 'none'
         /** 信号强弱，单位 dbm */
         signalStrength: number
+        /** 需要基础库： `3.5.3`
+         *
+         * 是否处于弱网环境 */
+        weakNet: boolean
         errMsg: string
     }
     interface GetPrivacySettingOption {
@@ -5885,7 +5895,7 @@ ctx.draw()
         success?: GetPrivacySettingSuccessCallback
     }
     interface GetPrivacySettingSuccessCallbackResult {
-        /** 是否需要用户授权隐私协议（如果开发者没有在[mp后台-设置-服务内容声明-用户隐私保护指引]中声明隐私收集类型则会返回false；如果开发者声明了隐私收集，且用户之前同意过隐私协议则会返回false；如果开发者声明了隐私收集，且用户还没同意过则返回true；如果用户之前同意过、但后来小程序又新增了隐私收集类型也会返回true） */
+        /** 是否需要用户授权隐私协议（如果开发者没有在「MP后台-设置-服务内容声明-用户隐私保护指引」中声明隐私收集类型则会返回false；如果开发者声明了隐私收集，且用户之前同意过隐私协议则会返回false；如果开发者声明了隐私收集，且用户还没同意过则返回true；如果用户之前同意过、但后来小程序又新增了隐私收集类型也会返回true） */
         needAuthorization: boolean
         /** 隐私授权协议的名称 */
         privacyContractName: string
@@ -7836,6 +7846,30 @@ NFCAdapter.offDiscovered(listener) // 需传入与监听时同一个的函数对
         /** Z 轴 */
         z: number
     }
+    interface OnAfterPageLoadListenerResult {
+        /** 组件框架
+         *
+         * 可选值：
+         * - 'exparser': 旧版小程序组件框架;
+         * - 'glass-easel': 新版小程序组件框架; */
+        componentFramework: 'exparser' | 'glass-easel'
+        /** 路由打开类型 */
+        openType: string
+        /** 页面实例 */
+        page: IAnyObject
+        /** 页面路径 */
+        path: string
+        /** 路由参数 */
+        query: IAnyObject
+        /** 路由事件 id */
+        routeEventId: string
+    }
+    interface OnAfterPageUnloadListenerResult {
+        /** 页面路径 */
+        path: string
+        /** 路由事件 id */
+        routeEventId: string
+    }
     interface OnApiCategoryChangeListenerResult {
         /** API 类别
          *
@@ -7849,6 +7883,49 @@ NFCAdapter.offDiscovered(listener) // 需传入与监听时同一个的函数对
             | 'nativeFunctionalized'
             | 'browseOnly'
             | 'embedded'
+    }
+    interface OnAppRouteDoneListenerResult {
+        /** 路由打开类型 */
+        openType: string
+        /** 页面路径 */
+        path: string
+        /** 路由参数 */
+        query: IAnyObject
+        /** 路由事件 id */
+        routeEventId: string
+        /** 路由下发的时间戳 */
+        timeStamp: number
+        /** 当前页面 id */
+        webviewId: number
+    }
+    interface OnAppRouteListenerResult {
+        /** 是否未找到页面 */
+        notFound: boolean
+        /** 路由打开类型 */
+        openType: string
+        /** 当前打开页面的相关配置 */
+        page: IAnyObject
+        /** 页面路径 */
+        path: string
+        /** 可选值：
+         * - 'min': 视频页面缩小为小窗;
+         * - 'max': 视频小窗还原为页面; */
+        pipMode: 'min' | 'max'
+        /** 路由参数 */
+        query: IAnyObject
+        /** 渲染引擎
+         *
+         * 可选值：
+         * - 'webview': Webview 渲染引擎;
+         * - 'skyline': Skyline 渲染引擎;
+         * - 'xr-frame': xr-frame 解决方案; */
+        renderer: 'webview' | 'skyline' | 'xr-frame'
+        /** 路由事件 id */
+        routeEventId: string
+        /** 路由下发的时间戳 */
+        timeStamp: number
+        /** 当前页面 id */
+        webviewId: number
     }
     interface OnBLECharacteristicValueChangeListenerResult {
         /** 蓝牙特征的 UUID */
@@ -7907,6 +7984,57 @@ NFCAdapter.offDiscovered(listener) // 需传入与监听时同一个的函数对
     interface OnBeaconUpdateListenerResult {
         /** 当前搜寻到的所有 Beacon 设备列表 */
         beacons: BeaconInfo[]
+    }
+    interface OnBeforeAppRouteListenerResult {
+        /** 是否未找到页面 */
+        notFound: boolean
+        /** 路由打开类型 */
+        openType: string
+        /** 当前打开页面的相关配置 */
+        page: IAnyObject
+        /** 页面路径 */
+        path: string
+        /** 可选值：
+         * - 'min': 视频页面缩小为小窗;
+         * - 'max': 视频小窗还原为页面; */
+        pipMode: 'min' | 'max'
+        /** 路由参数 */
+        query: IAnyObject
+        /** 渲染引擎
+         *
+         * 可选值：
+         * - 'webview': Webview 渲染引擎;
+         * - 'skyline': Skyline 渲染引擎;
+         * - 'xr-frame': xr-frame 解决方案; */
+        renderer: 'webview' | 'skyline' | 'xr-frame'
+        /** 路由事件 id */
+        routeEventId: string
+        /** 当前页面 id */
+        webviewId: number
+    }
+    interface OnBeforePageLoadListenerResult {
+        /** 组件框架
+         *
+         * 可选值：
+         * - 'exparser': 旧版小程序组件框架;
+         * - 'glass-easel': 新版小程序组件框架; */
+        componentFramework: 'exparser' | 'glass-easel'
+        /** 路由打开类型 */
+        openType: string
+        /** 页面路径 */
+        path: string
+        /** 路由参数 */
+        query: IAnyObject
+        /** 路由事件 id */
+        routeEventId: string
+    }
+    interface OnBeforePageUnloadListenerResult {
+        /** 页面实例 */
+        page: IAnyObject
+        /** 页面路径 */
+        path: string
+        /** 路由事件 id */
+        routeEventId: string
     }
     interface OnBluetoothAdapterStateChangeListenerResult {
         /** 蓝牙适配器是否可用 */
@@ -10900,7 +11028,7 @@ wx.createSelectorQuery()
         needShowEntrance?: boolean
         /** 需要基础库： `3.2.0`
          *
-         * 分享样式，可选 v2 */
+         * 分享样式，小程序可选 v2 */
         style?: string
         /** 接口调用成功的回调函数 */
         success?: ShowShareImageMenuSuccessCallback
@@ -13363,11 +13491,11 @@ imag[1] = 0
 const waveNode = audioContext.createPeriodicWave(real, imag, {disableNormalization: true})
 ``` */
         createPeriodicWave(
-            /** 一组余弦项(传统上是A项) */
+            /** 一系列余弦术语(传统上的A项) */
             real: Float32Array,
-            /** 一组余弦项(传统上是A项) */
+            /** 一系列正弦项(传统上的B项) */
             imag: Float32Array,
-            /** 一个字典对象，它指定是否应该禁用规范化(默认启用规范化) */
+            /** 一个字典对象，用于指定是否禁用规范化(默认启用规范化) */
             constraints: Constraints
         ): PeriodicWaveNode
         /** [Promise WebAudioContext.close()](https://developers.weixin.qq.com/miniprogram/dev/api/media/audio/WebAudioContext.close.html)
@@ -21225,7 +21353,22 @@ innerAudioContext.destroy() // 释放音频资源
          *
          * **示例代码**
          *
-         * [在微信开发者工具中查看示例](https://developers.weixin.qq.com/s/LAbMxkmI7F2A) */
+         * [在微信开发者工具中查看示例](https://developers.weixin.qq.com/s/ETQafJmu7BTm)
+         *
+         * **原生模式**
+         *
+         * 小程序的观察器默认使用非原生模式。非原生模式下，部分表现会与原生模式有差异，具体差异为：
+         *
+         * 1. 非原生观察器 `relativeTo` 设置的参照区域可以为任意节点；而原生模式只能相对祖先节点。
+         * 2. 非原生观察器计算区域相交时，直接计算节点区域和参照区域的交集；而原生模式会对节点的祖先节点进行遍历，计算节点的祖先节点到参照节点的路径中，所有节点区域的交集。
+         * 3. 原生观察器性能比非原生模式更高。
+         *
+         * 原生观察器相关信息可参考 [IntersectionObserver 文档](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API)。
+         *
+         * **Tips**
+         *
+         * 1. 若 `relativeTo` 设置的参照区域不是祖先节点，则无法开启原生模式。
+         * 2. 若调用多次 `relativeTo` 和 `relativeToViewport`，观察器性能会下降。 */
         createIntersectionObserver(
             /** 自定义组件实例 */
             component: IAnyObject,
@@ -23587,6 +23730,7 @@ wx.getLocalIPAddress({
 wx.getNetworkType({
   success (res) {
     const networkType = res.networkType
+    const weakNet = res.weakNet
   }
 })
 ``` */
@@ -24473,7 +24617,7 @@ wx.makePhoneCall({
 *
 * 在插件中使用：不支持
 *
-* 返回到上一个小程序。只有在当前小程序是被其他小程序打开时可以调用成功
+* 返回到上一个小程序。只有在当前小程序是被其他小程序打开时可以调用成功。
 *
 * 注意：**微信客户端 iOS 6.5.9，Android 6.5.10 及以上版本支持**
 *
@@ -24676,6 +24820,46 @@ wx.offAccelerometerChange(listener) // 需传入与监听时同一个的函数�
             /** onAccelerometerChange 传入的监听函数。不传此参数则移除所有监听函数。 */
             listener?: OffAccelerometerChangeCallback
         ): void
+        /** [wx.offAfterPageLoad(function listener)](https://developers.weixin.qq.com/miniprogram/dev/api/base/app/app-route/wx.offAfterPageLoad.html)
+*
+* 需要基础库： `3.5.5`
+*
+* 在插件中使用：需要基础库 `3.5.5`
+*
+* 移除路由事件的监听函数
+*
+* **示例代码**
+*
+* ```js
+const listener = function (res) { console.log(res) }
+
+wx.onAfterPageLoad(listener)
+wx.offAfterPageLoad(listener) // 需传入与监听时同一个的函数对象
+``` */
+        offAfterPageLoad(
+            /** onAfterPageLoad 传入的监听函数。不传此参数则移除所有监听函数。 */
+            listener?: OffAfterPageLoadCallback
+        ): void
+        /** [wx.offAfterPageUnload(function listener)](https://developers.weixin.qq.com/miniprogram/dev/api/base/app/app-route/wx.offAfterPageUnload.html)
+*
+* 需要基础库： `3.5.5`
+*
+* 在插件中使用：需要基础库 `3.5.5`
+*
+* 移除路由事件的监听函数
+*
+* **示例代码**
+*
+* ```js
+const listener = function (res) { console.log(res) }
+
+wx.onAfterPageUnload(listener)
+wx.offAfterPageUnload(listener) // 需传入与监听时同一个的函数对象
+``` */
+        offAfterPageUnload(
+            /** onAfterPageUnload 传入的监听函数。不传此参数则移除所有监听函数。 */
+            listener?: OffAfterPageUnloadCallback
+        ): void
         /** [wx.offApiCategoryChange(function listener)](https://developers.weixin.qq.com/miniprogram/dev/api/base/app/life-cycle/wx.offApiCategoryChange.html)
 *
 * 需要基础库： `2.33.0`
@@ -24715,6 +24899,46 @@ wx.offAppHide(listener) // 需传入与监听时同一个的函数对象
         offAppHide(
             /** onAppHide 传入的监听函数。不传此参数则移除所有监听函数。 */
             listener?: OffAppHideCallback
+        ): void
+        /** [wx.offAppRoute(function listener)](https://developers.weixin.qq.com/miniprogram/dev/api/base/app/app-route/wx.offAppRoute.html)
+*
+* 需要基础库： `3.5.5`
+*
+* 在插件中使用：需要基础库 `3.5.5`
+*
+* 移除路由事件的监听函数
+*
+* **示例代码**
+*
+* ```js
+const listener = function (res) { console.log(res) }
+
+wx.onAppRoute(listener)
+wx.offAppRoute(listener) // 需传入与监听时同一个的函数对象
+``` */
+        offAppRoute(
+            /** onAppRoute 传入的监听函数。不传此参数则移除所有监听函数。 */
+            listener?: OffAppRouteCallback
+        ): void
+        /** [wx.offAppRouteDone(function listener)](https://developers.weixin.qq.com/miniprogram/dev/api/base/app/app-route/wx.offAppRouteDone.html)
+*
+* 需要基础库： `3.5.5`
+*
+* 在插件中使用：需要基础库 `3.5.5`
+*
+* 移除当前路由动画执行完成的事件的监听函数
+*
+* **示例代码**
+*
+* ```js
+const listener = function (res) { console.log(res) }
+
+wx.onAppRouteDone(listener)
+wx.offAppRouteDone(listener) // 需传入与监听时同一个的函数对象
+``` */
+        offAppRouteDone(
+            /** onAppRouteDone 传入的监听函数。不传此参数则移除所有监听函数。 */
+            listener?: OffAppRouteDoneCallback
         ): void
         /** [wx.offAppShow(function listener)](https://developers.weixin.qq.com/miniprogram/dev/api/base/app/app-event/wx.offAppShow.html)
 *
@@ -24898,6 +25122,66 @@ wx.offBeaconServiceChange()
 wx.offBeaconUpdate()
 ``` */
         offBeaconUpdate(): void
+        /** [wx.offBeforeAppRoute(function listener)](https://developers.weixin.qq.com/miniprogram/dev/api/base/app/app-route/wx.offBeforeAppRoute.html)
+*
+* 需要基础库： `3.5.5`
+*
+* 在插件中使用：需要基础库 `3.5.5`
+*
+* 移除路由事件的监听函数
+*
+* **示例代码**
+*
+* ```js
+const listener = function (res) { console.log(res) }
+
+wx.onBeforeAppRoute(listener)
+wx.offBeforeAppRoute(listener) // 需传入与监听时同一个的函数对象
+``` */
+        offBeforeAppRoute(
+            /** onBeforeAppRoute 传入的监听函数。不传此参数则移除所有监听函数。 */
+            listener?: OffBeforeAppRouteCallback
+        ): void
+        /** [wx.offBeforePageLoad(function listener)](https://developers.weixin.qq.com/miniprogram/dev/api/base/app/app-route/wx.offBeforePageLoad.html)
+*
+* 需要基础库： `3.5.5`
+*
+* 在插件中使用：需要基础库 `3.5.5`
+*
+* 移除路由事件的监听函数
+*
+* **示例代码**
+*
+* ```js
+const listener = function (res) { console.log(res) }
+
+wx.onBeforePageLoad(listener)
+wx.offBeforePageLoad(listener) // 需传入与监听时同一个的函数对象
+``` */
+        offBeforePageLoad(
+            /** onBeforePageLoad 传入的监听函数。不传此参数则移除所有监听函数。 */
+            listener?: OffBeforePageLoadCallback
+        ): void
+        /** [wx.offBeforePageUnload(function listener)](https://developers.weixin.qq.com/miniprogram/dev/api/base/app/app-route/wx.offBeforePageUnload.html)
+*
+* 需要基础库： `3.5.5`
+*
+* 在插件中使用：需要基础库 `3.5.5`
+*
+* 移除路由事件的监听函数
+*
+* **示例代码**
+*
+* ```js
+const listener = function (res) { console.log(res) }
+
+wx.onBeforePageUnload(listener)
+wx.offBeforePageUnload(listener) // 需传入与监听时同一个的函数对象
+``` */
+        offBeforePageUnload(
+            /** onBeforePageUnload 传入的监听函数。不传此参数则移除所有监听函数。 */
+            listener?: OffBeforePageUnloadCallback
+        ): void
         /** [wx.offBluetoothAdapterStateChange()](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/wx.offBluetoothAdapterStateChange.html)
 *
 * 需要基础库： `2.9.0`
@@ -25582,6 +25866,54 @@ wx.onAccelerometerChange(callback)
             /** 加速度数据事件的监听函数 */
             listener: OnAccelerometerChangeCallback
         ): void
+        /** [wx.onAfterPageLoad(function listener)](https://developers.weixin.qq.com/miniprogram/dev/api/base/app/app-route/wx.onAfterPageLoad.html)
+*
+* 需要基础库： `3.5.5`
+*
+* 在插件中使用：需要基础库 `3.5.5`
+*
+* 监听路由事件引起新的页面实例化时，页面实例化完成的事件监听，详见 [页面路由监听](#)。
+*
+* ****
+*
+* > 新旧版本小程序组件框架的说明详见：[glass-easel：新版微信小程序组件框架](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/glass-easel/introduction.html)
+*
+* **示例代码**
+*
+* ```js
+const func = function (res) {
+  console.log(res)
+}
+wx.onAfterPageLoad(func)
+// 取消监听
+wx.offAfterPageLoad(func)
+``` */
+        onAfterPageLoad(
+            /** 路由事件的监听函数 */
+            listener: OnAfterPageLoadCallback
+        ): void
+        /** [wx.onAfterPageUnload(function listener)](https://developers.weixin.qq.com/miniprogram/dev/api/base/app/app-route/wx.onAfterPageUnload.html)
+*
+* 需要基础库： `3.5.5`
+*
+* 在插件中使用：需要基础库 `3.5.5`
+*
+* 监听路由事件引起现有页面实例销毁时，页面实例销毁后的事件监听，详见 [页面路由监听](#)。
+*
+* **示例代码**
+*
+* ```js
+const func = function (res) {
+  console.log(res)
+}
+wx.onAfterPageUnload(func)
+// 取消监听
+wx.offAfterPageUnload(func)
+``` */
+        onAfterPageUnload(
+            /** 路由事件的监听函数 */
+            listener: OnAfterPageUnloadCallback
+        ): void
         /** [wx.onApiCategoryChange(function listener)](https://developers.weixin.qq.com/miniprogram/dev/api/base/app/life-cycle/wx.onApiCategoryChange.html)
 *
 * 需要基础库： `2.33.0`
@@ -25627,6 +25959,63 @@ wx.offApiCategoryChange(func)
         onAppHide(
             /** 小程序切后台事件的监听函数 */
             listener: OnAppHideCallback
+        ): void
+        /** [wx.onAppRoute(function listener)](https://developers.weixin.qq.com/miniprogram/dev/api/base/app/app-route/wx.onAppRoute.html)
+*
+* 需要基础库： `3.5.5`
+*
+* 在插件中使用：需要基础库 `3.5.5`
+*
+* 监听路由事件下发后，执行路由逻辑后的事件监听，详见 [页面路由监听](#)。
+*
+* ****
+*
+* > Skyline 渲染引擎相关说明：[详情](https://developers.weixin.qq.com/miniprogram/dev/framework/runtime/skyline/introduction.html)
+* > xr-frame 解决方案相关说明：[详情](#)
+*
+* **注意**
+*
+* 在低于 3.5.5 版本的基础库中也存在此接口，但参数可能与当前文档不同，请注意。
+*
+* **示例代码**
+*
+* ```js
+const func = function (res) {
+  console.log(res)
+}
+wx.onAppRoute(func)
+// 取消监听
+wx.offAppRoute(func)
+``` */
+        onAppRoute(
+            /** 路由事件的监听函数 */
+            listener: OnAppRouteCallback
+        ): void
+        /** [wx.onAppRouteDone(function listener)](https://developers.weixin.qq.com/miniprogram/dev/api/base/app/app-route/wx.onAppRouteDone.html)
+*
+* 需要基础库： `3.5.5`
+*
+* 在插件中使用：需要基础库 `3.5.5`
+*
+* 监听当前路由动画执行完成的事件监听，详见 [页面路由监听](#)。
+*
+* **注意**
+*
+* 在低于 3.5.5 版本的基础库中也存在此接口，但参数可能与当前文档不同，请注意。
+*
+* **示例代码**
+*
+* ```js
+const func = function (res) {
+  console.log(res)
+}
+wx.onAppRouteDone(func)
+// 取消监听
+wx.offAppRouteDone(func)
+``` */
+        onAppRouteDone(
+            /** 当前路由动画执行完成的事件的监听函数 */
+            listener: OnAppRouteDoneCallback
         ): void
         /** [wx.onAppShow(function listener)](https://developers.weixin.qq.com/miniprogram/dev/api/base/app/app-event/wx.onAppShow.html)
          *
@@ -25873,6 +26262,81 @@ wx.onBeaconUpdate(res => {
         onBeaconUpdate(
             /** Beacon 设备更新事件的监听函数 */
             listener: OnBeaconUpdateCallback
+        ): void
+        /** [wx.onBeforeAppRoute(function listener)](https://developers.weixin.qq.com/miniprogram/dev/api/base/app/app-route/wx.onBeforeAppRoute.html)
+*
+* 需要基础库： `3.5.5`
+*
+* 在插件中使用：需要基础库 `3.5.5`
+*
+* 监听路由事件下发后，执行路由逻辑前的事件监听，详见 [页面路由监听](#)。
+*
+* ****
+*
+* > Skyline 渲染引擎相关说明：[详情](https://developers.weixin.qq.com/miniprogram/dev/framework/runtime/skyline/introduction.html)
+* > xr-frame 解决方案相关说明：[详情](#)
+*
+* **示例代码**
+*
+* ```js
+const func = function (res) {
+  console.log(res)
+}
+wx.onBeforeAppRoute(func)
+// 取消监听
+wx.offBeforeAppRoute(func)
+``` */
+        onBeforeAppRoute(
+            /** 路由事件的监听函数 */
+            listener: OnBeforeAppRouteCallback
+        ): void
+        /** [wx.onBeforePageLoad(function listener)](https://developers.weixin.qq.com/miniprogram/dev/api/base/app/app-route/wx.onBeforePageLoad.html)
+*
+* 需要基础库： `3.5.5`
+*
+* 在插件中使用：需要基础库 `3.5.5`
+*
+* 监听路由事件引起新的页面实例化时，页面实例化前的事件监听，详见 [页面路由监听](#)。
+*
+* ****
+*
+* > 新旧版本小程序组件框架的说明详见：[glass-easel：新版微信小程序组件框架](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/glass-easel/introduction.html)
+*
+* **示例代码**
+*
+* ```js
+const func = function (res) {
+  console.log(res)
+}
+wx.onBeforePageLoad(func)
+// 取消监听
+wx.offBeforePageLoad(func)
+``` */
+        onBeforePageLoad(
+            /** 路由事件的监听函数 */
+            listener: OnBeforePageLoadCallback
+        ): void
+        /** [wx.onBeforePageUnload(function listener)](https://developers.weixin.qq.com/miniprogram/dev/api/base/app/app-route/wx.onBeforePageUnload.html)
+*
+* 需要基础库： `3.5.5`
+*
+* 在插件中使用：需要基础库 `3.5.5`
+*
+* 监听路由事件引起现有页面实例销毁时，页面实例销毁前的事件监听，详见 [页面路由监听](#)。
+*
+* **示例代码**
+*
+* ```js
+const func = function (res) {
+  console.log(res)
+}
+wx.onBeforePageUnload(func)
+// 取消监听
+wx.offBeforePageUnload(func)
+``` */
+        onBeforePageUnload(
+            /** 路由事件的监听函数 */
+            listener: OnBeforePageUnloadCallback
         ): void
         /** [wx.onBluetoothAdapterStateChange(function listener)](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/wx.onBluetoothAdapterStateChange.html)
 *
@@ -27210,11 +27674,11 @@ wx.preloadAssets({
 * | 类型 | 说明 | 最低版本 |
 * |------|------| -------|
 * | 小程序码 |    |
-* | 微信个人码 | 不支持小游戏   | [2.18.0](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html) |
-* | 企业微信个人码 | 不支持小游戏   | [2.18.0](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html) |
-* | 普通群码 | 指仅包含微信用户的群，不支持小游戏   | [2.18.0](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html) |
-* | 互通群码 |  指既有微信用户也有企业微信用户的群，不支持小游戏  | [2.18.0](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html) |
-* | 公众号二维码 | 不支持小游戏  | [2.18.0](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html) |
+* | 微信个人码 |    | [2.18.0](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html) |
+* | 企业微信个人码 |    | [2.18.0](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html) |
+* | 普通群码 | 指仅包含微信用户的群  | [2.18.0](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html) |
+* | 互通群码 |  指既有微信用户也有企业微信用户的群  | [2.18.0](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html) |
+* | 公众号二维码 |   | [2.18.0](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html) |
 *
 * **示例代码**
 *
@@ -31146,12 +31610,26 @@ wx.writeBLECharacteristicValue({
     ) => void
     /** onAccelerometerChange 传入的监听函数。不传此参数则移除所有监听函数。 */
     type OffAccelerometerChangeCallback = (res: GeneralCallbackResult) => void
+    /** onAfterPageLoad 传入的监听函数。不传此参数则移除所有监听函数。 */
+    type OffAfterPageLoadCallback = (
+        result: OnAfterPageLoadListenerResult
+    ) => void
+    /** onAfterPageUnload 传入的监听函数。不传此参数则移除所有监听函数。 */
+    type OffAfterPageUnloadCallback = (
+        result: OnAfterPageUnloadListenerResult
+    ) => void
     /** onApiCategoryChange 传入的监听函数。不传此参数则移除所有监听函数。 */
     type OffApiCategoryChangeCallback = (
         result: OnApiCategoryChangeListenerResult
     ) => void
     /** onAppHide 传入的监听函数。不传此参数则移除所有监听函数。 */
     type OffAppHideCallback = (res: GeneralCallbackResult) => void
+    /** onAppRoute 传入的监听函数。不传此参数则移除所有监听函数。 */
+    type OffAppRouteCallback = (result: OnAppRouteListenerResult) => void
+    /** onAppRouteDone 传入的监听函数。不传此参数则移除所有监听函数。 */
+    type OffAppRouteDoneCallback = (
+        result: OnAppRouteDoneListenerResult
+    ) => void
     /** onAppShow 传入的监听函数。不传此参数则移除所有监听函数。 */
     type OffAppShowCallback = (res: GeneralCallbackResult) => void
     /** onAudioInterruptionBegin 传入的监听函数。不传此参数则移除所有监听函数。 */
@@ -31175,6 +31653,18 @@ wx.writeBLECharacteristicValue({
     /** onBatteryInfoChange 传入的监听函数。不传此参数则移除所有监听函数。 */
     type OffBatteryInfoChangeCallback = (
         result: OnBatteryInfoChangeListenerResult
+    ) => void
+    /** onBeforeAppRoute 传入的监听函数。不传此参数则移除所有监听函数。 */
+    type OffBeforeAppRouteCallback = (
+        result: OnBeforeAppRouteListenerResult
+    ) => void
+    /** onBeforePageLoad 传入的监听函数。不传此参数则移除所有监听函数。 */
+    type OffBeforePageLoadCallback = (
+        result: OnBeforePageLoadListenerResult
+    ) => void
+    /** onBeforePageUnload 传入的监听函数。不传此参数则移除所有监听函数。 */
+    type OffBeforePageUnloadCallback = (
+        result: OnBeforePageUnloadListenerResult
     ) => void
     /** onBindWifi 传入的监听函数。不传此参数则移除所有监听函数。 */
     type OffBindWifiCallback = (res: GeneralCallbackResult) => void
@@ -31334,12 +31824,24 @@ wx.writeBLECharacteristicValue({
     type OnAccelerometerChangeCallback = (
         result: OnAccelerometerChangeListenerResult
     ) => void
+    /** 路由事件的监听函数 */
+    type OnAfterPageLoadCallback = (
+        result: OnAfterPageLoadListenerResult
+    ) => void
+    /** 路由事件的监听函数 */
+    type OnAfterPageUnloadCallback = (
+        result: OnAfterPageUnloadListenerResult
+    ) => void
     /** API 类别变化事件的监听函数 */
     type OnApiCategoryChangeCallback = (
         result: OnApiCategoryChangeListenerResult
     ) => void
     /** 小程序切后台事件的监听函数 */
     type OnAppHideCallback = (res: GeneralCallbackResult) => void
+    /** 路由事件的监听函数 */
+    type OnAppRouteCallback = (result: OnAppRouteListenerResult) => void
+    /** 当前路由动画执行完成的事件的监听函数 */
+    type OnAppRouteDoneCallback = (result: OnAppRouteDoneListenerResult) => void
     /** 小程序切前台事件的监听函数 */
     type OnAppShowCallback = (
         /** 启动参数 */
@@ -31383,6 +31885,18 @@ wx.writeBLECharacteristicValue({
     ) => void
     /** Beacon 设备更新事件的监听函数 */
     type OnBeaconUpdateCallback = (result: OnBeaconUpdateListenerResult) => void
+    /** 路由事件的监听函数 */
+    type OnBeforeAppRouteCallback = (
+        result: OnBeforeAppRouteListenerResult
+    ) => void
+    /** 路由事件的监听函数 */
+    type OnBeforePageLoadCallback = (
+        result: OnBeforePageLoadListenerResult
+    ) => void
+    /** 路由事件的监听函数 */
+    type OnBeforePageUnloadCallback = (
+        result: OnBeforePageUnloadListenerResult
+    ) => void
     /** 当一个 socket 绑定当前 wifi 网络成功时触发该事件的监听函数 */
     type OnBindWifiCallback = (res: GeneralCallbackResult) => void
     /** 蓝牙适配器状态变化事件的监听函数 */

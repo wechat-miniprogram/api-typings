@@ -1,3 +1,6 @@
+## 2024-09-24 v4.0.1
+- 更新 API 定义到 3.5.7
+
 ## 2024-09-24 v4.0.0
 合入 [#332](https://github.com/wechat-miniprogram/api-typings/pull/332), [#333](https://github.com/wechat-miniprogram/api-typings/pull/333), [#334](https://github.com/wechat-miniprogram/api-typings/pull/334) by [@lvzl](https://github.com/lv-z-l)。这几个 Pull Request 对 `Component` 和 `Behavior` 的实现进行了较大改动，以支持：
 1. 对于 `Array` 和 `Object` 类型的 `property` 和 `data`，以值的实际类型作为泛型推导的结果，而非固定推导为 `any[]` 和 `Record<string, any>`；
