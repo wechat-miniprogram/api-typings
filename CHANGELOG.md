@@ -1,3 +1,13 @@
+## 2024-09-24 v4.0.0
+合入 [#332](https://github.com/wechat-miniprogram/api-typings/pull/332), [#333](https://github.com/wechat-miniprogram/api-typings/pull/333), [#334](https://github.com/wechat-miniprogram/api-typings/pull/334) by [@lvzl](https://github.com/lv-z-l)。这几个 Pull Request 对 `Component` 和 `Behavior` 的实现进行了较大改动，以支持：
+1. 对于 `Array` 和 `Object` 类型的 `property` 和 `data`，以值的实际类型作为泛型推导的结果，而非固定推导为 `any[]` 和 `Record<string, any>`；
+2. 改变了 `BehaviorIdentifier` 的类型，通过为其交叉一个带有 `Behavior` 定义信息的虚假类型，使 `Component` 和 `Behavior` 能自动推导其使用到的 `Behavior` 的 `data`, `properties` 及 `methods`；
+
+这是一个比较大的 **破坏性改动**，从低于 4.0.0 的版本升级时，可能需要进行一些适配：
+1. 全局函数 `Component` 和 `Behavior` 的第四个泛型现在是新的 `TBehavior`，如果之前的代码中有为这两个函数手动指定泛型的用例，需要手动添加这个泛型；
+2. `Behavior()` 的返回值不再是 `string`（或者说不完全是），之前使用 `string` 接受 `Behavior()` 返回值的实现需要修改为 `WechatMiniprogram.Behavior.BehaviorIdentifier`；
+3. 自定义组件的 `this.data` 和 `this.property` 的推导类型可能会有所变化，需要根据推导类型进行响应改动。
+
 ## 2024-08-08 v3.12.3
 - 更新 API 定义到 3.5.2
 - 修复 [#235](https://github.com/wechat-miniprogram/api-typings/issues/235), [#302](https://github.com/wechat-miniprogram/api-typings/issues/302), [#303](https://github.com/wechat-miniprogram/api-typings/issues/303), [#304](https://github.com/wechat-miniprogram/api-typings/issues/304) by [@Yang Mingshan](https://github.com/yangmingshan)
