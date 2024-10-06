@@ -180,8 +180,7 @@ declare namespace WechatMiniprogram.Component {
     type PropertyToData<T extends AllProperty> = T extends ShortProperty
         ? ValueType<T>
         : FullPropertyToData<Exclude<T, ShortProperty>>
-    type ArrayOrObject = ArrayConstructor | ObjectConstructor
-    type FullPropertyToData<T extends AllFullProperty> = T['type'] extends ArrayOrObject ? unknown extends T['value'] ? ValueType<T['type']> : T['value'] : ValueType<T['type']>
+    type FullPropertyToData<T extends AllFullProperty> = T['type'] extends null | BooleanConstructor ? ValueType<T['type']> : unknown extends T['value'] ? ValueType<T['type']> : T['value']
     type PropertyOptionToData<P extends PropertyOption> = {
         [name in keyof P]: PropertyToData<P[name]>
     }
