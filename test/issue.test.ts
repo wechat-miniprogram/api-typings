@@ -635,3 +635,28 @@ import WX = WechatMiniprogram
     }
   })
 }
+
+// Page behaviors support
+{
+  const b1 = Behavior({
+    properties: {
+      pA: String,
+    },
+    data: {
+      d1: '',
+    },
+    methods: {
+      methodA() {
+        return ['']
+      },
+    },
+  })
+  Page({
+    behaviors: [b1],
+    test() {
+      expectType<string[]>(this.methodA())
+      expectType<string>(this.data.pA)
+      expectType<string>(this.data.d1)
+    },
+  })
+}
