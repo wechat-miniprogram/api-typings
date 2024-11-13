@@ -1,3 +1,6 @@
+## 2024-11-13 v4.0.2
+- 补齐 `RaycastHit` ([#337](https://github.com/wechat-miniprogram/api-typings/issues/337))
+
 ## 2024-09-24 v4.0.1
 - 更新 API 定义到 3.5.7
 
