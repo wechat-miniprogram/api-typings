@@ -467,6 +467,22 @@ import WX = WechatMiniprogram
 
   Component({
     properties: {
+      any: {
+        type: null,
+        value: '',
+      },
+      num: {
+        type: Number,
+        value: 0 as 0 | 1,
+      },
+      str: {
+        type: String,
+        value: 'A' as 'A' | 'B',
+      },
+      bool: {
+        type: Boolean,
+        value: false,
+      },
       bar: {
         type: Object,
         value: { f: '' } as Foo,
@@ -475,16 +491,24 @@ import WX = WechatMiniprogram
       foo: {
         type: Array,
         value: [] as Foo[],
-      }
+      },
+      noValue: {
+        type: String,
+      },
     },
     methods: {
       getData() {
         return this.data.foo
       },
       test() {
+        expectType<any>(this.data.any)
+        expectType<0 | 1>(this.data.num)
+        expectType<'A' | 'B'>(this.data.str)
+        expectType<boolean>(this.data.bool)
         expectType<Foo>(this.data.bar)
         expectType<Foo>(this.properties.bar)
         expectType<Foo[]>(this.getData())
+        expectType<string>(this.data.noValue)
       },
     }
   })
