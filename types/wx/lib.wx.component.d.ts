@@ -368,6 +368,18 @@ declare namespace WechatMiniprogram.Component {
          * 最低基础库版本：[`2.25.1`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html)
          */
         setPassiveEvent(config: PassiveConfig): void
+        /**
+         * 设置初始渲染缓存的动态数据
+         *
+         * 最低基础库版本：[`2.11.1`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html)
+         */
+        setInitialRenderingCache(dynamicData: IAnyObject | null): void
+        /**
+         * 返回当前页面的 appBar 组件实例
+         *
+         * 最低基础库版本：[`3.3.1`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html)
+         */
+        getAppBar(): TrivialInstance
     }
 
     interface ComponentOptions {
