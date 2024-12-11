@@ -27,8 +27,11 @@ declare namespace WechatMiniprogram.Page {
     > = OptionalInterface<ILifetime> &
         InstanceProperties &
         InstanceMethods<TData> &
+        Component.MixinMethods<TCustom['behaviors']> &
         Data<TData> &
-        TCustom
+        TCustom & {
+            data: Component.MixinData<TCustom['behaviors']> & Component.MixinProperties<TCustom['behaviors']>
+        }
     type Options<
         TData extends DataOption,
         TCustom extends CustomOption
