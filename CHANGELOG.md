@@ -1,3 +1,6 @@
+## 2025-01-14 v4.0.4
+- 解决依赖安全问题
+
 ## 2025-01-14 v4.0.3
 - 补齐云开发 `CollectionReference` 上的 `aggregate` ([#276](https://github.com/wechat-miniprogram/api-typings/issues/276))
 - 补齐组件实例方法 `setInitialRenderingCache` 和 `getAppBar` by [@Yang Mingshan](https://github.com/yangmingshan) ([#339](https://github.com/wechat-miniprogram/api-typings/issues/339))
