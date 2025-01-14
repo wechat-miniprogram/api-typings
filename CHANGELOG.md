@@ -1,3 +1,8 @@
+## 2025-01-14 v4.0.3
+- 补齐云开发 `CollectionReference` 上的 `aggregate` ([#276](https://github.com/wechat-miniprogram/api-typings/issues/276))
+- 补齐组件实例方法 `setInitialRenderingCache` 和 `getAppBar` by [@Yang Mingshan](https://github.com/yangmingshan) ([#339](https://github.com/wechat-miniprogram/api-typings/issues/339))
+- 更新 API 定义到 3.7.4
+
 ## 2024-11-13 v4.0.2
 - 补齐 `RaycastHit` ([#337](https://github.com/wechat-miniprogram/api-typings/issues/337))
 
