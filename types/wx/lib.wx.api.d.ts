@@ -170,6 +170,14 @@ declare namespace WechatMiniprogram {
         fail?: AddPhoneCalendarFailCallback
         /** 事件位置 */
         location?: string
+        /** 需要基础库： `3.7.6`
+         *
+         * 跳转小程序路径，必须要和 signature 一起使用，填入后会自动生成跳转链接拼接在事件说明中 */
+        path?: string
+        /** 需要基础库： `3.7.6`
+         *
+         * 跳转小程序路径签名，必须要和 path 一起使用，用 session_key 对 path 签名得到的结果，即 `hmac_sha256(session_key, path)`。详见 [用户数据的签名验证和加解密](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/signature.html) */
+        signature?: string
         /** 接口调用成功的回调函数 */
         success?: AddPhoneCalendarSuccessCallback
     }
@@ -266,6 +274,10 @@ declare namespace WechatMiniprogram {
         fail?: AddPhoneRepeatCalendarFailCallback
         /** 事件位置 */
         location?: string
+        /** 需要基础库： `3.7.6`
+         *
+         * 跳转小程序路径，必须要和 signature 一起使用，填入后会自动生成跳转链接拼接在事件说明中 */
+        path?: string
         /** 重复周期结束时间的 unix 时间戳，不填表示一直重复 */
         repeatEndTime?: number
         /** 重复周期，默认 month 每月重复
@@ -276,6 +288,10 @@ declare namespace WechatMiniprogram {
          * - 'month': 每月重复。该模式日期不能大于 28 日;
          * - 'year': 每年重复; */
         repeatInterval?: 'day' | 'week' | 'month' | 'year'
+        /** 需要基础库： `3.7.6`
+         *
+         * 跳转小程序路径签名，必须要和 path 一起使用，用 session_key 对 path 签名得到的结果，即 `hmac_sha256(session_key, path)`。详见 [用户数据的签名验证和加解密](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/signature.html) */
+        signature?: string
         /** 接口调用成功的回调函数 */
         success?: AddPhoneRepeatCalendarSuccessCallback
     }
@@ -4667,10 +4683,6 @@ ctx.draw()
          *
          * 是否开启 http2 */
         enableHttp2?: boolean
-        /** 需要基础库： `3.7.0`
-         *
-         * 等同于 enableQuic 参数。enableQuic 和 enableHttp3 其中一个参数传 true 就会生效。目前只在 Android 端生效。 */
-        enableHttp3?: boolean
         /** 是否开启 profile，默认开启。开启后可在接口回调的 res.profile 中查看性能调试信息。 */
         enableProfile?: boolean
         /** 需要基础库： `2.10.4`
@@ -9917,10 +9929,6 @@ NFCAdapter.offDiscovered(listener) // 需传入与监听时同一个的函数对
          *
          * 开启 http2 */
         enableHttp2?: boolean
-        /** 需要基础库： `3.7.0`
-         *
-         * 等同于 enableQuic 参数。enableQuic 和 enableHttp3 其中一个参数传 true 就会生效。目前只在 Android 端生效。 */
-        enableHttp3?: boolean
         /** 需要基础库： `2.19.1`
          *
          * 是否开启 HttpDNS 服务。如开启，需要同时填入 httpDNSServiceId 。 HttpDNS 用法详见 [移动解析HttpDNS](https://developers.weixin.qq.com/miniprogram/dev/framework/ability/HTTPDNS.html) */
@@ -11241,7 +11249,7 @@ wx.createSelectorQuery()
     }
     /** Snapshot 实例，可通过 [SelectorQuery](https://developers.weixin.qq.com/miniprogram/dev/api/wxml/SelectorQuery.html) 获取。
      *
-     * [Snapshot](https://developers.weixin.qq.com/miniprogram/dev/api/skyline/Snapshot.html) 通过 `id` 跟一个 [snapshot](https://developers.weixin.qq.com/miniprogram/dev/component/snapshot.html) 组件绑定，操作对应的 [snapshot](https://developers.weixin.qq.com/miniprogram/dev/component/snapshot.html) 组件。
+     * [Snapshot](https://developers.weixin.qq.com/miniprogram/dev/api/skyline/Snapshot.html) 通过 `id` 跟一个 [snapshot](#) 组件绑定，操作对应的 [snapshot](#) 组件。
      *
      * **示例代码**
      *
@@ -12588,10 +12596,6 @@ session.run({
          *
          * 是否开启 http2 */
         enableHttp2?: boolean
-        /** 需要基础库： `3.7.0`
-         *
-         * 等同于 enableQuic 参数。enableQuic 和 enableHttp3 其中一个参数传 true 就会生效。目前只在 Android 端生效。 */
-        enableHttp3?: boolean
         /** 是否开启 profile，默认开启。开启后可在接口回调的 res.profile 中查看性能调试信息。目前仅 iOS 端支持。 */
         enableProfile?: boolean
         /** 需要基础库： `2.10.4`
@@ -20269,7 +20273,7 @@ userCryptoManager.getRandomValues({
          *
          * 设置倍速播放 */
         playbackRate(
-            /** 倍率，支持 0.5/0.8/1.0/1.25/1.5，2.6.3 起支持 2.0 倍速 */
+            /** 倍率，支持 0.5/0.8/1.0/1.25/1.5，2.6.3 起支持 2.0 倍速，3.7.5 起支持 3.0/4.0 倍速 */
             rate: number
         ): void
         /** [VideoContext.reconnectCasting()](https://developers.weixin.qq.com/miniprogram/dev/api/media/video/VideoContext.reconnectCasting.html)
@@ -23707,7 +23711,7 @@ wx.getGroupEnterInfo({
 *
 * **Tips**
 *
-* - 如需要展示群名称，小程序可以使用[开放数据组件](https://developers.weixin.qq.com/miniprogram/dev/component/open-data.html)
+* - 如需要展示群名称，小程序可以使用[开放数据组件](https://developers.weixin.qq.com/miniprogram/dev/component/open-ability/open-data.html)
 * - 小游戏可以通过 `wx.getGroupInfo` 接口获取群名称 */
         getGroupEnterInfo(option: GetGroupEnterInfoOption): void
         /** [wx.getHCEState(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/device/nfc-hce/wx.getHCEState.html)
@@ -24117,7 +24121,7 @@ wx.getSetting({
 *
 * **Tips**
 *
-* - 如需要展示群名称，小程序可以使用 [开放数据组件](https://developers.weixin.qq.com/miniprogram/dev/component/open-data.html)
+* - 如需要展示群名称，小程序可以使用 [开放数据组件](https://developers.weixin.qq.com/miniprogram/dev/component/open-ability/open-data.html)
 * - 小游戏可以通过 [`wx.getGroupInfo`](#) 接口获取群名称 */
         getShareInfo<T extends GetShareInfoOption = GetShareInfoOption>(
             option: T
