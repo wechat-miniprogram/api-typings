@@ -12275,7 +12275,7 @@ session.run({
         /** [Tensor](https://developers.weixin.qq.com/miniprogram/dev/api/ai/inference/Tensor.html)
          *
          * Tensor，每个 Tensor 包含 shape、data、type 字段。 */
-        key: Tensor
+        [key: string]: Tensor
     }
     interface TextMetrics {
         /** 文本的宽度 */
