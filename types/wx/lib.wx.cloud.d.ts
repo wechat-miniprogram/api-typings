@@ -20,6 +20,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ***************************************************************************** */
 
+/// <reference lib="es2018.asynciterable" />
+
 /**
  * Common interfaces and types
  */
@@ -261,7 +263,7 @@ declare namespace ICloud {
         sendMessage: (options: ICloudAICallbackOptions & ICloudBotOptions) => Promise<ICloudAIStreamResult>
     }
 
-    interface ICloudBotOptions { data: any; botId: string; timeout?: number }
+    interface ICloudBotOptions { data: any, botId: string, timeout?: number }
     interface ICloudAIModel {
         streamText: (opts: ICloudAIOptions & ICloudAICallbackOptions) => Promise<ICloudAIStreamResult>
         generateText: (opts: ICloudAIOptions & ICloudAICallbackOptions) => Promise<string>
@@ -285,10 +287,12 @@ declare namespace ICloud {
         data: string
         json?: any
     }
+
     interface AsyncIterator<T> {
-        next(value?: any): Promise<IteratorResult<T>>;
-        return?(value?: any): Promise<IteratorResult<T>>;
-        throw?(e?: any): Promise<IteratorResult<T>>;
+        next(value?: any): Promise<IteratorResult<T>>
+        return?(value?: any): Promise<IteratorResult<T>>
+        throw?(e?: any): Promise<IteratorResult<T>>
+        [Symbol.asyncIterator](): AsyncIterableIterator<T>
     }
     interface ICloudAIStreamResult {
         textStream: AsyncIterator<string>
