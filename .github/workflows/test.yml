@@ -9,12 +9,12 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Checkout
-              uses: actions/checkout@v2
+              uses: actions/checkout@v4
               with:
                   persist-credentials: false
 
             - name: restore node modules
-              uses: actions/cache@v2
+              uses: actions/cache@v4
               id: node-modules-cache
               with:
                   path: node_modules
@@ -22,7 +22,7 @@ jobs:
 
             - name: Install Deps
               if: steps.node-modules-cache.outputs.cache-hit != 'true'
-              run: npm install
+              run: npm ci
 
             - name: Run test
               run: npm run test
