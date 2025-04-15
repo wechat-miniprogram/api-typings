@@ -24,7 +24,7 @@
 这是一个比较大的 **破坏性改动**，从低于 4.0.0 的版本升级时，可能需要进行一些适配：
 1. 全局函数 `Component` 和 `Behavior` 的第四个泛型现在是新的 `TBehavior`，如果之前的代码中有为这两个函数手动指定泛型的用例，需要手动添加这个泛型；
 2. `Behavior()` 的返回值不再是 `string`（或者说不完全是），之前使用 `string` 接受 `Behavior()` 返回值的实现需要修改为 `WechatMiniprogram.Behavior.BehaviorIdentifier`；
-3. 自定义组件的 `this.data` 和 `this.property` 的推导类型可能会有所变化，需要根据推导类型进行响应改动。
+3. 自定义组件的 `this.data` 和 `this.property` 的推导类型可能会有所变化，需要根据推导类型进行相应改动。
 
 ## 2024-08-08 v3.12.3
 - 更新 API 定义到 3.5.2
