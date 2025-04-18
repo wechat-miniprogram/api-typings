@@ -20,6 +20,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ***************************************************************************** */
 
+/// <reference lib="es2018.asynciterable" />
+
 /**
  * Common interfaces and types
  */
@@ -137,6 +139,7 @@ interface WxCloud {
     ): Promise<ICloud.ConnectContainerResult>
 
     services: ICloud.CloudServices
+    extend: ICloud.ICloudExtendServices
 }
 
 declare namespace ICloud {
@@ -218,7 +221,7 @@ declare namespace ICloud {
         refresh: (session: AsyncSession<string>) => Promise<void>
     }
     interface GatewayConstructOptions {
-        id: string
+        id?: string
         appid?: string
         domain?: string
         keepalive?: boolean
@@ -231,6 +234,70 @@ declare namespace ICloud {
     }
     interface CloudServices {
         Gateway: (opts: GatewayConstructOptions) => GatewayInstance
+    }
+    // === end ===
+
+    // === API: extend ===
+    interface ICloudExtendServices {
+        AI: ICloudAI
+    }
+    interface ICloudAI {
+        createModel: (modelName: string) => ICloudAIModel
+        bot: ICloudBot
+    }
+    interface ICloudAICallbackOptions {
+        onEvent?: (ev: ICloudAIEvent) => void
+        onText?: (text: string) => void
+        onFinish?: (text: string) => void
+    }
+    interface ICloudBot {
+        get: ({ botId: string }: any) => any
+        list: (data: any) => any
+        create: (data: any) => any
+        update: (data: any) => any
+        delete: (data: any) => any
+        getChatRecords: (data: any) => any
+        sendFeedback: (data: any) => any
+        getFeedBack: (data: any) => any
+        getRecommendQuestions: (options: ICloudAICallbackOptions & ICloudBotOptions) => Promise<ICloudAIStreamResult>
+        sendMessage: (options: ICloudAICallbackOptions & ICloudBotOptions) => Promise<ICloudAIStreamResult>
+    }
+
+    interface ICloudBotOptions { data: any, botId: string, timeout?: number }
+    interface ICloudAIModel {
+        streamText: (opts: ICloudAIOptions & ICloudAICallbackOptions) => Promise<ICloudAIStreamResult>
+        generateText: (opts: ICloudAIOptions & ICloudAICallbackOptions) => Promise<string>
+    }
+    interface ICloudAIChatMessage {
+        role: 'user' | 'assistant' | string
+        content: string
+    }
+    interface ICloudAIChatModelInput {
+        model: string
+        messages: ICloudAIChatMessage[]
+        temperature?: number
+        top_p?: number
+    }
+    interface ICloudAIOptions{
+        data: ICloudAIChatModelInput
+    }
+    interface ICloudAIEvent {
+        event: string
+        id: string
+        data: string
+        json?: any
+    }
+
+    interface AsyncIterator<T> {
+        next(value?: any): Promise<IteratorResult<T>>
+        return?(value?: any): Promise<IteratorResult<T>>
+        throw?(e?: any): Promise<IteratorResult<T>>
+        [Symbol.asyncIterator](): AsyncIterableIterator<T>
+    }
+    interface ICloudAIStreamResult {
+        textStream: AsyncIterator<string>
+        eventStream: AsyncIterator<ICloudAIEvent>
+        abort?: () => void
     }
     // === end ===
 
