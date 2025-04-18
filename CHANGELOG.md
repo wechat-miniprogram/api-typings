@@ -1,3 +1,6 @@
+## 2025-04-18 v4.0.6
+- 更新 API 定义到 3.8.0
+
 ## 2025-02-08 v4.0.5
 - 修复 `setTimeout` 和 `setInterval` 的参数 ([#323](https://github.com/wechat-miniprogram/api-typings/issues/323))
 - 更新 API 定义到 3.7.7
