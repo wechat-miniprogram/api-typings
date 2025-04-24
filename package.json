@@ -20,11 +20,11 @@
   },
   "homepage": "https://github.com/wechat-miniprogram/api-typings#readme",
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^5.46.0",
-    "@typescript-eslint/parser": "^5.46.0",
-    "eslint": "^8.29.0",
-    "tsd": "^0.25.0",
-    "typescript": "^4.9.4"
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "eslint": "^8.57.1",
+    "tsd": "^0.32.0",
+    "typescript": "^5.2.2 <5.4.0"
   },
   "tsd": {
     "directory": "test"

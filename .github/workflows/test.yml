@@ -10,19 +10,21 @@ jobs:
         steps:
             - name: Checkout
               uses: actions/checkout@v4
-              with:
-                  persist-credentials: false
 
-            - name: restore node modules
-              uses: actions/cache@v4
-              id: node-modules-cache
+            - uses: pnpm/action-setup@v4
+              name: Install pnpm
               with:
-                  path: node_modules
-                  key: ${{ runner.os }}-node-modules-${{ hashFiles('package-lock.json') }}
+                version: latest
+                run_install: false
 
-            - name: Install Deps
-              if: steps.node-modules-cache.outputs.cache-hit != 'true'
-              run: npm ci
+            - name: Install Node.js
+              uses: actions/setup-node@v4
+              with:
+                node-version: lts/*
+                cache: 'pnpm'
+
+            - name: Install dependencies
+              run: pnpm install --frozen-lockfile
 
             - name: Run test
               run: npm run test
