@@ -22,7 +22,7 @@ SOFTWARE.
 
 declare namespace WechatMiniprogram.Component {
     type FilterUnknownType<T> = {
-        [P in keyof T]: string extends P ? never : T[P]
+        [P in keyof T as string extends P ? never : P]: T[P]
     }
     type Instance<
         TData extends DataOption,
