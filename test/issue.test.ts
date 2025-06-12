@@ -635,3 +635,24 @@ import WX = WechatMiniprogram
     }
   })
 }
+
+// https://github.com/wechat-miniprogram/api-typings/pull/351
+{
+  type Properties = {
+    customProp: string
+    [key: string]: unknown;
+    [key: number]: string;
+  }
+  Component<Properties, {}, {}, []>({
+    lifetimes: {
+      created() {
+        this.properties[1] = '1';
+        expectError(() => {
+          this.properties[2] = 2;
+        });
+        expectError(this.properties.xxx);
+        this.properties.customProp = 'customProp';
+      }
+    }
+  })
+}

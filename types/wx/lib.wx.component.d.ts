@@ -21,7 +21,9 @@ SOFTWARE.
 ***************************************************************************** */
 
 declare namespace WechatMiniprogram.Component {
-    type FilterUnknownType<T> = string extends keyof T ? {} : T
+    type FilterUnknownType<T> = {
+        [P in keyof T as string extends P ? never : P]: T[P]
+    }
     type Instance<
         TData extends DataOption,
         TProperty extends PropertyOption,
