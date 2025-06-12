@@ -636,7 +636,7 @@ import WX = WechatMiniprogram
   })
 }
 
-// FilterUnknownType test
+// https://github.com/wechat-miniprogram/api-typings/pull/351
 {
   type Properties = {
     customProp: string
