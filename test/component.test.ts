@@ -505,3 +505,24 @@ Component<{}, {}, { fn(): void }, []>({
     }
   })
 }
+
+// FilterUnknownType test
+{
+  type Properties = {
+    customProp: string
+    [key: string]: unknown;
+    [key: number]: string;
+  }
+  Component<Properties, {}, {}, []>({
+    lifetimes: {
+      created() {
+        this.properties[1] = '1';
+        expectError(() => {
+          this.properties[2] = 2;
+        });
+        expectError(this.properties.xxx);
+        this.properties.customProp = 'customProp';
+      }
+    }
+  })
+}
