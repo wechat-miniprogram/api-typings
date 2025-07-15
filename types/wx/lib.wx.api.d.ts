@@ -10573,7 +10573,7 @@ NFCAdapter.offDiscovered(listener) // 需传入与监听时同一个的函数对
         success?: RequestSubscribeMessageSuccessCallback
     }
     interface RequestSubscribeMessageSuccessCallbackResult {
-        /** [TEMPLATE_ID]是动态的键，即模板id，值包括'accept'、'reject'、'ban'、'filter'、'acceptWithAlert'、'acceptWithAudio'。'accept'表示用户同意订阅该条id对应的模板消息，'reject'表示用户拒绝订阅该条id对应的模板消息，'ban'表示已被后台封禁，'filter'表示该模板因为模板标题同名被后台过滤，'acceptWithAlert' 表示用户接收消息并打开提醒, 'acceptWithAudio' 表示用户接收订阅消息并开启了语音提醒, 'acceptWithForcePush' 表示用户接收订阅消息并开启了推送提醒。例如 { errMsg: "requestSubscribeMessage:ok", zun-LzcQyW-edafCVvzPkK4de2Rllr1fFpw2A_x0oXE: "accept"} 表示用户同意订阅zun-LzcQyW-edafCVvzPkK4de2Rllr1fFpw2A_x0oXE这条消息 */
+        /** [TEMPLATE_ID]是动态的键，即模板id，值包括'accept'、'reject'、'ban'、'filter'。'accept'表示用户同意订阅该条id对应的模板消息，'reject'表示用户拒绝订阅该条id对应的模板消息，'ban'表示已被后台封禁，'filter'表示该模板因为模板标题同名被后台过滤。例如 { errMsg: "requestSubscribeMessage:ok", zun-LzcQyW-edafCVvzPkK4de2Rllr1fFpw2A_x0oXE: "accept"} 表示用户同意订阅zun-LzcQyW-edafCVvzPkK4de2Rllr1fFpw2A_x0oXE这条消息 */
         [TEMPLATE_ID: string]: string
         /** 接口调用成功时errMsg值为'requestSubscribeMessage:ok' */
         errMsg: string
@@ -15915,6 +15915,40 @@ this.editorCtx.insertImage({
          *
          * 撤销 */
         undo(option?: UndoOption): void
+    }
+    interface EmptyEventChannel {
+        /** [EventChannel.emit(string eventName, any args)](https://developers.weixin.qq.com/miniprogram/dev/api/route/EventChannel.emit.html)
+         *
+         * 需要基础库： `2.7.3`
+         *
+         * 在插件中使用：支持
+         *
+         * 触发一个事件 */
+        emit: undefined
+        /** [EventChannel.off(string eventName, function fn)](https://developers.weixin.qq.com/miniprogram/dev/api/route/EventChannel.off.html)
+         *
+         * 需要基础库： `2.7.3`
+         *
+         * 在插件中使用：支持
+         *
+         * 取消监听一个事件。给出第二个参数时，只取消给出的监听函数，否则取消所有监听函数 */
+        off: undefined
+        /** [EventChannel.on(string eventName, function fn)](https://developers.weixin.qq.com/miniprogram/dev/api/route/EventChannel.on.html)
+         *
+         * 需要基础库： `2.7.3`
+         *
+         * 在插件中使用：支持
+         *
+         * 持续监听一个事件 */
+        on: undefined
+        /** [EventChannel.once(string eventName, function fn)](https://developers.weixin.qq.com/miniprogram/dev/api/route/EventChannel.once.html)
+         *
+         * 需要基础库： `2.7.3`
+         *
+         * 在插件中使用：支持
+         *
+         * 监听一个事件一次，触发后失效 */
+        once: undefined
     }
     interface EntryList {
         /** [Array.&lt;[PerformanceEntry](https://developers.weixin.qq.com/miniprogram/dev/api/base/performance/PerformanceEntry.html)&gt; EntryList.getEntries()](https://developers.weixin.qq.com/miniprogram/dev/api/base/performance/EntryList.getEntries.html)

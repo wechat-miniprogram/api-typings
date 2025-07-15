@@ -1,4 +1,4 @@
-import { expectType, expectError } from 'tsd'
+import { expectType, expectError, expectNotAssignable } from 'tsd'
 
 expectType<void>(Page({}))
 
@@ -203,10 +203,15 @@ Page<DataType, CustomOption>({
 Page({
   test() {
     const channel = this.getOpenerEventChannel()
-    expectType<WechatMiniprogram.EventChannel>(channel)
-    channel.emit('test', {})
-    channel.on('xxx', () => {})
-    expectError(channel.emit(1, 2))
+    // `tsd` not yet supports error `ts2722`
+    // expectError(channel.emit('test', {}))
+    expectNotAssignable<(...args: any[]) => any>(channel.emit)
+    channel.emit?.('test', {})
+    expectError(channel.emit?.(1, 2))
+    channel.on?.('xxx', () => {})
+    if (typeof channel.emit === 'function') {
+      channel.on('xxx', () => {})
+    }
   },
 })
 

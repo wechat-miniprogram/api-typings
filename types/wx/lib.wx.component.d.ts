@@ -325,7 +325,7 @@ declare namespace WechatMiniprogram.Component {
          *
          * 最低基础库版本：[`2.7.3`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html)
          */
-        getOpenerEventChannel(): EventChannel
+        getOpenerEventChannel(): EventChannel | EmptyEventChannel
         /**
          * 绑定由 worklet 驱动的样式到相应的节点，详见 [worklet 动画](https://developers.weixin.qq.com/miniprogram/dev/framework/runtime/skyline/worklet.html)
          *
