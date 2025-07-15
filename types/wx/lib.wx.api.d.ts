@@ -366,6 +366,13 @@ declare namespace WechatMiniprogram {
         /** 订单所有商品的原价总和，单位为分。示例值：1000 */
         product_amount?: number
     }
+    /** 交易金额对象 */
+    interface AmountOption {
+        /** 交易币种，货币的符号采用ISO4217，3位大写字符进行表达。 */
+        currency: string
+        /** 交易金额，采用ISO4217标准中的最小货币单位进行表达，该值为整数，没有小数点。 */
+        total: number
+    }
     /** animationData */
     interface AnimationExportResult {
         actions: IAnyObject[]
@@ -4331,6 +4338,12 @@ ctx.draw()
         /** 全局 origin */
         origin?: string
     }
+    interface CreateGlobalPaymentOption {
+        /** 根据每笔订单实际的交易地区，提供地区编码，不同地区可能匹配不同的支付方式，参考 ISO3166二位字母代码标准，大写。 */
+        mchRegion: string
+        /** true为开发环境，false为生产环境。不传入该参数，则默认为false，即生产环境。 */
+        isSandbox?: string
+    }
     interface CreateInferenceSessionOption {
         /** 模型文件路径，目前只执行后缀为.onnx格式(支持代码包路径，和本地文件系统路径） */
         model: string
@@ -4845,10 +4858,8 @@ ctx.draw()
     }
     /** 错误 */
     interface Error {
-        /** 错误 */
+        /** 错误信息，包含堆栈 */
         message: string
-        /** 错误调用堆栈 */
-        stack: string
     }
     /** 需要基础库： `3.4.0`
      *
@@ -6470,6 +6481,109 @@ ctx.draw()
         /** 接口调用成功的回调函数 */
         success?: GetWifiListSuccessCallback
     }
+    /** 全球收银对象 GlobalPayment */
+    interface GlobalPayment {
+        /** 初始值为null。当开发者调用 openMethodPicker 用户选中具体支付方式后确定，后续不再改变。
+*
+* ```js
+
+const goods = {
+  goods_id: `goods_1`,
+  goods_name: `拿铁`,
+  goods_unit_price: {
+    currency: 'SGD',
+    total: 10,
+  },
+  goods_quantity: '1',
+  goods_category: '1',
+}
+
+const globalPay = async () => {
+  if (typeof wx.createGlobalPayment !== 'function') {
+    // 基础库版本不支持
+    // 方案一、微信支付做兜底
+    wx.requestPayment({
+      timeStamp: '',
+      nonceStr: '',
+      package: '',
+      signType: '',
+      paySign: '',
+    })
+    // 方案二、引导用户更新
+    // 方案三、mp后台设置最低基础库版本 3.7.3
+    return
+  }
+
+  const payment = wx.createGlobalPayment({ mchRegion: 'SG', isSandbox: true })
+
+  try {
+    const pickerResp = await payment.openMethodPicker({
+      amount: goods.goods_unit_price,
+    })
+
+    console.log(`openMethodPicker resp: `, pickerResp)
+
+    if (pickerResp.methodKey === 'WECHAT_PAY') {
+      // 发起微信支付
+    } else {
+      // 后台接口发起预下单
+      const preOrderResp = await preOrder(
+        goods.goods_unit_price,
+        [goods],
+        pickerResp.methodKey
+      )
+
+      console.log(`preOrder resp: `, preOrderResp)
+
+      const { payment_id, prepay_info } = preOrderResp
+
+      const requestPaymentResp = await payment.requestGlobalPayment({
+        paymentId: payment_id,
+        prepayInfo: prepay_info,
+      })
+
+      console.log(`requestGlobalPayment resp: `, requestPaymentResp)
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+``` */
+        methodKey: string
+        /** [Promise GlobalPayment.abort()](https://developers.weixin.qq.com/miniprogram/dev/api/payment/GlobalPayment.abort.html)
+         *
+         * 需要基础库： `3.7.3`
+         *
+         * 在插件中使用：不支持
+         *
+         * 用户选择TPG的支付方式，界面会进入加载的Toast，等待开发者前往TPG完成预下单后携带预支付信息和交易单号调用 requestGlobalPayment，若开发者在
+         *   TPG预下单未成功或出现异常情况，可调用该接口主动终止TPG支付流程，界面加载的Toast将会隐藏，提示用户下单失败。 */
+        abort(): Promise<any>
+        /** [Promise GlobalPayment.openMethodPicker(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/payment/GlobalPayment.openMethodPicker.html)
+         *
+         * 需要基础库： `3.7.3`
+         *
+         * 在插件中使用：不支持
+         *
+         * 拉起全球收银的支付方式选择面板。当用户选择支付方式或者关闭选择面板后，返回相应结果。
+         *   当用户选定支付方式后，globalPayment上的属性 methodKey 也会更新，后续该对象再次调用将直接失败，不再拉起选择面板。
+         *   若用户选择微信支付，请开发者按原微信支付接口 wx.requestPayment 调用完成后续支付流程。
+         *   若用户选择TPG的支付方式，流程会等待开发者前往TPG完成预下单后，携带预支付信息和交易单号调用 requestGlobalPayment，若开发者超时未调用，则会提示用户加载超时（超时时间暂定为30s）。
+         *   当用户关闭选择面板，即未选择支付方式，开发者后续仍可继续调用接口拉起支付方式选择面板。 */
+        openMethodPicker(option: OpenMethodPickerOption): Promise<any>
+        /** [Promise GlobalPayment.requestGlobalPayment(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/payment/GlobalPayment.requestGlobalPayment.html)
+         *
+         * 需要基础库： `3.7.3`
+         *
+         * 在插件中使用：不支持
+         *
+         * 开发者调用 openMethodPicker 并在返回值 methodKey 中接受到用户选择了TPG的支付方式后，可调用此接口接入TPG的支付流程。
+         *   当用户已成功完成当前订单支付后，再次调用该对象的 requestGlobalPayment 会失败。即每次支付都需创建新的 globalPayment 对象重走流程。
+         *   仅在 methodKey 为TPG支付类型才能进入全球收银的支付流程，其他情况会失败。
+         *   建议在接口返回后，不论成功或失败，均通过 TPG 接口 inquiry-payment 对订单状态进行查询。 */
+        requestGlobalPayment(option: RequestGlobalPaymentOption): Promise<any>
+    }
     interface GroupMemberInfo {
         /** 所选用户在此聊天室下的唯一标识，同一个用户在不同的聊天室下id不同 */
         members: string[]
@@ -7079,6 +7193,8 @@ InnerAudioContext.offWaiting(listener) // 需传入与监听时同一个的函�
         complete?: InsertCustomBlockCompleteCallback
         /** 接口调用失败的回调函数 */
         fail?: InsertCustomBlockFailCallback
+        /** 插入自定义块后是否自动换行，默认换行 */
+        nowrap?: boolean
         /** 接口调用成功的回调函数 */
         success?: InsertCustomBlockSuccessCallback
     }
@@ -7868,7 +7984,7 @@ NFCAdapter.offDiscovered(listener) // 需传入与监听时同一个的函数对
          * - 'trial': 体验版;
          * - 'release': 正式版; */
         envVersion?: 'develop' | 'trial' | 'release'
-        /** 需要传递给目标小程序的数据，目标小程序可在 `App.onLaunch`，`App.onShow` 中获取到这份数据。如果跳转的是小游戏，可以在 [wx.onShow](#)、[wx.getLaunchOptionsSync](https://developers.weixin.qq.com/miniprogram/dev/api/base/app/life-cycle/wx.getLaunchOptionsSync.html) 中可以获取到这份数据数据。 */
+        /** 需要传递给目标小程序的数据，目标小程序可在 `App.onLaunch`，`App.onShow` 中获取到这份数据。如果跳转的是小游戏，可以在 [wx.onShow](#)、[wx.getLaunchOptionsSync](https://developers.weixin.qq.com/miniprogram/dev/api/base/app/life-cycle/wx.getLaunchOptionsSync.html) 中可以获取到这份数据。 */
         extraData?: IAnyObject
         /** 接口调用失败的回调函数 */
         fail?: NavigateToMiniProgramFailCallback
@@ -7986,19 +8102,19 @@ NFCAdapter.offDiscovered(listener) // 需传入与监听时同一个的函数对
     /** media query 描述符 */
     interface ObserveDescriptor {
         /** 页面高度（ px 为单位） */
-        height: number
+        height?: number
         /** 页面最大高度（ px 为单位） */
-        maxHeight: number
+        maxHeight?: number
         /** 页面最大宽度（ px 为单位） */
-        maxWidth: number
+        maxWidth?: number
         /** 页面最小高度（ px 为单位） */
-        minHeight: number
+        minHeight?: number
         /** 页面最小宽度（ px 为单位） */
-        minWidth: number
+        minWidth?: number
         /** 屏幕方向（ `landscape` 或 `portrait` ） */
-        orientation: string
+        orientation?: string
         /** 页面宽度（ px 为单位） */
-        width: number
+        width?: number
     }
     /** 设置 type 监听单个类型的指标，设置 entryTypes 监听多个类型指标。 */
     interface ObserveOption {
@@ -8521,6 +8637,7 @@ NFCAdapter.offDiscovered(listener) // 需传入与监听时同一个的函数对
         /** 端口号 */
         port: number
     }
+    interface OnNeedPrivacyAuthorizationListenerResult {}
     interface OnNetworkStatusChangeListenerResult {
         /** 当前是否有网络连接 */
         isConnected: boolean
@@ -8667,6 +8784,13 @@ NFCAdapter.offDiscovered(listener) // 需传入与监听时同一个的函数对
     interface OnWindowResizeListenerResult {
         size: Size
     }
+    interface OnWindowStateChangeListenerResult {
+        /** 改变的窗口状态，可能的值为：
+         * - 'minimize'：窗口最小化
+         * - 'normalize'：窗口恢复正常尺寸
+         * - 'maximize'：窗口最大化 */
+        state: string
+    }
     interface OpenAppAuthorizeSettingOption {
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: OpenAppAuthorizeSettingCompleteCallback
@@ -8713,6 +8837,8 @@ NFCAdapter.offDiscovered(listener) // 需传入与监听时同一个的函数对
         feedId: string
         /** 视频号 id，以“sph”开头的id，可在视频号助手获取 */
         finderUserName: string
+        /** 视频号的Feed的nonceId，必填 */
+        nonceId: string
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: OpenChannelsActivityCompleteCallback
         /** 接口调用失败的回调函数 */
@@ -8915,6 +9041,16 @@ NFCAdapter.offDiscovered(listener) // 需传入与监听时同一个的函数对
         /** 接口调用成功的回调函数 */
         success?: OpenMapAppSuccessCallback
     }
+    interface OpenMethodPickerOption {
+        /** 交易金额对象 */
+        amount: AmountOption
+    }
+    interface OpenOfficialAccountArticleFailCallbackErr {
+        /** 错误码 */
+        errCode: number
+        /** 错误信息 */
+        errMsg: string
+    }
     interface OpenOfficialAccountArticleOption {
         /** 需要打开的公众号地址 */
         url: string
@@ -9042,6 +9178,24 @@ NFCAdapter.offDiscovered(listener) // 需传入与监听时同一个的函数对
         fail?: OpenStickerSetViewFailCallback
         /** 接口调用成功的回调函数 */
         success?: OpenStickerSetViewSuccessCallback
+    }
+    interface OpenStoreCouponDetailFailCallbackResult {
+        /** 错误码 */
+        code: number
+        /** 错误信息 */
+        message: string
+    }
+    interface OpenStoreCouponDetailOption {
+        /** 优惠券id，可以通过[小店后台](https://store.weixin.qq.com/shop/marketing/coupon)获取 */
+        couponId: string
+        /** 小店appid，可以通过[小店后台](https://store.weixin.qq.com/shop/setting/home)获取 */
+        shopAppid: string
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: OpenStoreCouponDetailCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: OpenStoreCouponDetailFailCallback
+        /** 接口调用成功的回调函数 */
+        success?: OpenStoreCouponDetailSuccessCallback
     }
     interface OpenStoreOrderDetailFailCallbackResult {
         /** 错误码
@@ -9990,8 +10144,15 @@ NFCAdapter.offDiscovered(listener) // 需传入与监听时同一个的函数对
         /** 支付的类型
          *
          * 可选值：
-         * - 'retail_pay_goods': B2b支付; */
-        mode: 'retail_pay_goods'
+         * - 'retail_pay_goods': B2b支付;
+         * - 'retail_pay_combined_goods': 合单支付;
+         * - 'retail_pay_goods_new': 多渠道B2b支付;
+         * - 'retail_pay_indirect_goods': 间接支付; */
+        mode:
+            | 'retail_pay_goods'
+            | 'retail_pay_combined_goods'
+            | 'retail_pay_goods_new'
+            | 'retail_pay_indirect_goods'
         /** 支付签名, 详见[《签名详解》](https://developers.weixin.qq.com/miniprogram/dev/platform-capabilities/industry/virtual-payment.html) */
         paySig: string
         /** 具体支付参数见signData, 该参数需以string形式传递, 例如signData: '{"mchid":"1234567890","out_trade_no":"test1244","description":"测试测试","amount":{"order_amount":1,"currency":"CNY"},"attach":"test_attach","env":1}' */
@@ -10033,6 +10194,8 @@ NFCAdapter.offDiscovered(listener) // 需传入与监听时同一个的函数对
         delivery_type?: 1 | 2 | 3 | 4
         /** 订单详细商品信息列表。 */
         product_info?: ProductInfo
+        /** B2b间连支付场景下，调用requestPaymentInfo的参数 */
+        requestPaymentInfo?: RequestPaymentInfo
     }
     interface RequestCommonPaymentSuccessCallbackResult {
         /** 调用成功信息 */
@@ -10064,7 +10227,7 @@ NFCAdapter.offDiscovered(listener) // 需传入与监听时同一个的函数对
     }
     /** 需要基础库： `3.0.0`
      *
-     * 网络请求过程中的一些异常信息，例如httpdns重试等 */
+     * 网络请求过程中的一些异常信息，例如httpdns超时等 */
     interface RequestException {
         /** 本次请求底层失败信息，所有失败信息均符合Errno错误码 */
         reasons: ExceptionReason[]
@@ -10078,6 +10241,12 @@ NFCAdapter.offDiscovered(listener) // 需传入与监听时同一个的函数对
          *
          * errno 错误码，错误码的详细说明参考 [Errno错误码](https://developers.weixin.qq.com/miniprogram/dev/framework/usability/PublicErrno.html) */
         errno: number
+    }
+    interface RequestGlobalPaymentOption {
+        /** ISO4217标准中的最小货币单位进行表达，该值为整数，没有小数点。 */
+        paymentId: string
+        /** 预支付信息 */
+        prepayInfo: string
     }
     interface RequestMerchantTransferOption {
         /** 商户号 */
@@ -10153,6 +10322,10 @@ NFCAdapter.offDiscovered(listener) // 需传入与监听时同一个的函数对
          *
          * HttpDNS 服务商 Id。 HttpDNS 用法详见 [移动解析HttpDNS](https://developers.weixin.qq.com/miniprogram/dev/framework/ability/HTTPDNS.html) */
         httpDNSServiceId?: string
+        /** 需要基础库： `3.8.9`
+         *
+         * HttpDNS 超时时间。HttpDNS解析时间超过该值时不再走HttpDNS，本次请求将回退到localDNS。默认为 60000 毫秒。 HttpDNS 用法详见 [移动解析HttpDNS](https://developers.weixin.qq.com/miniprogram/dev/framework/ability/HTTPDNS.html) */
+        httpDNSTimeout?: string
         /** HTTP 请求方法
          *
          * 可选值：
@@ -10223,6 +10396,19 @@ NFCAdapter.offDiscovered(listener) // 需传入与监听时同一个的函数对
         /** 接口调用成功的回调函数 */
         success?: RequestOrderPaymentSuccessCallback
     }
+    /** B2b间连支付场景下，调用requestPaymentInfo的参数 */
+    interface RequestPaymentInfo {
+        /** 随机字符串，长度为32个字符以下 */
+        nonceStr?: string
+        /** 统一下单接口返回的 prepay_id 参数值，提交格式如：prepay_id=*** */
+        package?: string
+        /** 签名，具体见微信支付文档 */
+        paySign?: string
+        /** 签名算法，应与后台下单时的值一致 */
+        signType?: string
+        /** 时间戳，从 1970 年 1 月 1 日 00:00:00 至今的秒数，即当前的时间 */
+        timeStamp?: string
+    }
     interface RequestPaymentOption {
         /** 随机字符串，长度为32个字符以下 */
         nonceStr: string
@@ -10287,9 +10473,9 @@ NFCAdapter.offDiscovered(listener) // 需传入与监听时同一个的函数对
         connectEnd: number
         /** HTTP（TCP） 开始建立连接的时间，如果是持久连接，则与 fetchStart 值相等。注意如果在传输层发生了错误且重新建立连接，则这里显示的是新建立的连接开始的时间 */
         connectStart: number
-        /** DNS 域名查询完成的时间，如果使用了本地缓存（即无 DNS 查询）或持久连接，则与 fetchStart 值相等 */
+        /** Local DNS 域名查询完成的时间，如果使用了本地缓存（即无 DNS 查询）或持久连接，则与 fetchStart 值相等 */
         domainLookUpEnd: number
-        /** DNS 域名查询开始的时间，如果使用了本地缓存（即无 DNS 查询）或持久连接，则与 fetchStart 值相等 */
+        /** Local DNS 域名查询开始的时间，如果使用了本地缓存（即无 DNS 查询）或持久连接，则与 fetchStart 值相等 */
         domainLookUpStart: number
         /** 评估当前网络下载的kbps */
         downstreamThroughputKbpsEstimate: number
@@ -10297,14 +10483,24 @@ NFCAdapter.offDiscovered(listener) // 需传入与监听时同一个的函数对
         estimate_nettype: number
         /** 组件准备好使用 HTTP 请求抓取资源的时间，这发生在检查本地缓存之前 */
         fetchStart: number
+        /** httpDNS 完成查询的时间。仅当开启 httpDNS 功能时返回该字段 */
+        httpDNSDomainLookUpEnd: number
+        /** httpDNS 开始查询的时间。仅当开启 httpDNS 功能时返回该字段 */
+        httpDNSDomainLookUpStart: number
         /** 协议层根据多个请求评估当前网络的 rtt（仅供参考） */
         httpRttEstimate: number
+        /** 调用接口的时间。 */
+        invokeStart: number
         /** 当前请求的IP */
         peerIP: string
         /** 当前请求的端口 */
         port: number
         /** 使用协议类型，有效值：http1.1, h2, quic, unknown */
         protocol: string
+        /** 结束排队的时间。达到并行上限时才需要排队。如果未发生排队，则该字段和 queueStart 字段值相同 */
+        queueEnd: number
+        /** 开始排队的时间。达到并行上限时才需要排队。 */
+        queueStart: number
         /** 收到字节数 */
         receivedBytedCount: number
         /** 最后一个 HTTP 重定向完成时的时间。有跳转且是同域名内部的重定向才算，否则值为 0 */
@@ -10377,7 +10573,7 @@ NFCAdapter.offDiscovered(listener) // 需传入与监听时同一个的函数对
         success?: RequestSubscribeMessageSuccessCallback
     }
     interface RequestSubscribeMessageSuccessCallbackResult {
-        /** [TEMPLATE_ID]是动态的键，即模板id，值包括'accept'、'reject'、'ban'、'filter'。'accept'表示用户同意订阅该条id对应的模板消息，'reject'表示用户拒绝订阅该条id对应的模板消息，'ban'表示已被后台封禁，'filter'表示该模板因为模板标题同名被后台过滤。例如 { errMsg: "requestSubscribeMessage:ok", zun-LzcQyW-edafCVvzPkK4de2Rllr1fFpw2A_x0oXE: "accept"} 表示用户同意订阅zun-LzcQyW-edafCVvzPkK4de2Rllr1fFpw2A_x0oXE这条消息 */
+        /** [TEMPLATE_ID]是动态的键，即模板id，值包括'accept'、'reject'、'ban'、'filter'、'acceptWithAlert'、'acceptWithAudio'。'accept'表示用户同意订阅该条id对应的模板消息，'reject'表示用户拒绝订阅该条id对应的模板消息，'ban'表示已被后台封禁，'filter'表示该模板因为模板标题同名被后台过滤，'acceptWithAlert' 表示用户接收消息并打开提醒, 'acceptWithAudio' 表示用户接收订阅消息并开启了语音提醒, 'acceptWithForcePush' 表示用户接收订阅消息并开启了推送提醒。例如 { errMsg: "requestSubscribeMessage:ok", zun-LzcQyW-edafCVvzPkK4de2Rllr1fFpw2A_x0oXE: "accept"} 表示用户同意订阅zun-LzcQyW-edafCVvzPkK4de2Rllr1fFpw2A_x0oXE这条消息 */
         [TEMPLATE_ID: string]: string
         /** 接口调用成功时errMsg值为'requestSubscribeMessage:ok' */
         errMsg: string
@@ -10396,7 +10592,7 @@ NFCAdapter.offDiscovered(listener) // 需传入与监听时同一个的函数对
         data: T
         /** 需要基础库： `3.0.0`
          *
-         * 网络请求过程中的一些异常信息，例如httpdns重试等 */
+         * 网络请求过程中的一些异常信息，例如httpdns超时等 */
         exception: RequestException
         /** 需要基础库： `1.2.0`
          *
@@ -10410,7 +10606,7 @@ NFCAdapter.offDiscovered(listener) // 需传入与监听时同一个的函数对
         statusCode: number
         /** 需要基础库： `3.4.10`
          *
-         * 最终请求是否使用了HttpDNS（仅当enableHttpDNS传true时返回此字段） */
+         * 最终请求是否使用了HttpDNS解析的IP。仅当enableHttpDNS传true时返回此字段。如果开启enableHttpDNS但最终请求未使用HttpDNS解析的IP，可在exception查看原因。 */
         useHttpDNS: boolean
         errMsg: string
     }
@@ -10421,12 +10617,6 @@ NFCAdapter.offDiscovered(listener) // 需传入与监听时同一个的函数对
         header: IAnyObject
         /** 开发者服务器返回的 HTTP 状态码 （目前开发者工具上不会返回 statusCode 字段，可用真机查看该字段，后续将会支持） */
         statusCode: number
-    }
-    interface RequestVirtualPaymentFailCallbackErr {
-        /** 错误码 */
-        errCode: number
-        /** 错误信息 */
-        errMsg: string
     }
     interface RequestVirtualPaymentOption {
         /** 支付的类型, 不同的支付类型有各自额外要传的附加参数
@@ -10708,10 +10898,14 @@ NFCAdapter.offDiscovered(listener) // 需传入与监听时同一个的函数对
         dataset: IAnyObject
         /** 节点的 ID */
         id: string
+        /** 节点的滚动高度 */
+        scrollHeight: number
         /** 节点的水平滚动位置 */
         scrollLeft: number
         /** 节点的竖直滚动位置 */
         scrollTop: number
+        /** 节点的滚动宽度 */
+        scrollWidth: number
     }
     /** 需要基础库： `2.14.4`
 *
@@ -11442,7 +11636,7 @@ wx.createSelectorQuery()
         complete?: ShowShareImageMenuCompleteCallback
         /** 需要基础库： `3.2.0`
          *
-         * 从消息小程序入口打开小程序的路径，如果当前页面允许分享给朋友，则默认为当前页面路径，否则默认为小程序首页 */
+         * 发送给朋友时，小程序入口打开小程序的路径，如果当前页面允许分享给朋友，则默认为当前页面路径，否则默认为小程序首页 */
         entrancePath?: string
         /** 接口调用失败的回调函数 */
         fail?: ShowShareImageMenuFailCallback
@@ -13489,7 +13683,7 @@ session.run({
              *
              * 参数 eventName 可选值：
              * - 'resize': 相机尺寸变化事件，回调参数为相机尺寸;
-             * - 'addAnchors': 增加 anchor 事件，回调参数为 [VKPlaneAnchor](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKPlaneAnchor.html)/[VKMarkerAnchor](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKMarkerAnchor.html)/[VKOSDAnchor](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKOSDAnchor.html) 列表（只有v2版本支持）;
+             * - 'addAnchors': 增加 anchor 事件，回调参数为 [VKPlaneAnchor](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKPlaneAnchor.html)/[VKMarkerAnchor](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKMarkerAnchor.html)/[VKOSDAnchor](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKOSDAnchor.html) 列表（只有v2版本支持） 或 [VKFaceAnchor](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKFaceAnchor.html)/[VKOCRAnchor](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKOCRAnchor.html)/[VKHandAnchor](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKHandAnchor.html)/[VKBodyAnchor](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKBodyAnchor.html)列表（v1、v2都支持）;
              * - 'updateAnchors': 更新 anchor 事件，回调参数为 [VKPlaneAnchor](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKPlaneAnchor.html)/[VKMarkerAnchor](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKMarkerAnchor.html)/[VKOSDAnchor](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKOSDAnchor.html) 列表（只有v2版本支持） 或 [VKFaceAnchor](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKFaceAnchor.html)/[VKOCRAnchor](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKOCRAnchor.html)/[VKHandAnchor](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKHandAnchor.html)/[VKBodyAnchor](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKBodyAnchor.html)列表（v1、v2都支持）;
              * - 'removeAnchors': 删除 anchor 事件，回调参数为 [VKPlaneAnchor](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKPlaneAnchor.html)/[VKMarkerAnchor](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKMarkerAnchor.html)/[VKOSDAnchor](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKOSDAnchor.html) 列表（只有v2版本支持） 或 [VKFaceAnchor](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKFaceAnchor.html)/[VKOCRAnchor](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKOCRAnchor.html)/[VKHandAnchor](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKHandAnchor.html)/[VKBodyAnchor](https://developers.weixin.qq.com/miniprogram/dev/api/ai/visionkit/VKBodyAnchor.html) 列表（v1、v2都支持）; */
             eventName:
@@ -15335,7 +15529,8 @@ ctx.draw()
          * | 702005 |  | out_trade_no重复，请更换新单号重试 |
          * | 702006 |  | 二级商户进件未完成 |
          * | 702007 |  | 用户未授权给品牌 |
-         * | 702008 |  | 正式版小程序只能用生产环境下单 | */ errMsg: string
+         * | 702008 |  | 正式版小程序只能用生产环境下单 |
+         * | 702009 |  | B2b授权关系校验不通过 | */ errMsg: string
         /** 错误码
          *
          * | 错误码 | 错误信息 | 说明 |
@@ -15349,7 +15544,8 @@ ctx.draw()
          * | 702005 |  | out_trade_no重复，请更换新单号重试 |
          * | 702006 |  | 二级商户进件未完成 |
          * | 702007 |  | 用户未授权给品牌 |
-         * | 702008 |  | 正式版小程序只能用生产环境下单 | */ errCode: number
+         * | 702008 |  | 正式版小程序只能用生产环境下单 |
+         * | 702009 |  | B2b授权关系校验不通过 | */ errCode: number
     }
     interface Console {
         /** [console.debug()](https://developers.weixin.qq.com/miniprogram/dev/api/base/debug/console.debug.html)
@@ -15631,7 +15827,7 @@ Page({
          * 在插件中使用：支持
          *
          * 插入自定义区块 */
-        insertCustomBlock(option?: InsertCustomBlockOption): void
+        insertCustomBlock(option: InsertCustomBlockOption): void
         /** [EditorContext.insertDivider(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/media/editor/EditorContext.insertDivider.html)
          *
          * 需要基础库： `2.7.0`
@@ -21758,6 +21954,14 @@ wx.downloadFile({
          *
          * 获取全局唯一的文件管理器 */
         getFileSystemManager(): FileSystemManager
+        /** [[GlobalPayment](https://developers.weixin.qq.com/miniprogram/dev/api/payment/GlobalPayment.html) wx.createGlobalPayment(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/payment/wx.createGlobalPayment.html)
+         *
+         * 需要基础库： `3.7.3`
+         *
+         * 在插件中使用：不支持
+         *
+         * 创建全球支付方式的对象。一旦用户选定支付方式后，不可更改。如需重新选择支付方式，需创建新对象。 */
+        createGlobalPayment(option: CreateGlobalPaymentOption): GlobalPayment
         /** [[InferenceSession](https://developers.weixin.qq.com/miniprogram/dev/api/ai/inference/InferenceSession.html) wx.createInferenceSession(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/ai/inference/wx.createInferenceSession.html)
 *
 * 需要基础库： `2.30.0`
@@ -24976,7 +25180,7 @@ wx.getWeRunData({
 *
 * 需要基础库： `2.8.2`
 *
-* 在插件中使用：不支持
+* 在插件中使用：需要基础库 `3.8.8`
 *
 * 在input、textarea等focus拉起键盘之后，手动调用此接口收起键盘
 *
@@ -26549,6 +26753,26 @@ wx.offWindowResize(listener) // 需传入与监听时同一个的函数对象
             /** onWindowResize 传入的监听函数。不传此参数则移除所有监听函数。 */
             listener?: OffWindowResizeCallback
         ): void
+        /** [wx.offWindowStateChange(function listener)](https://developers.weixin.qq.com/miniprogram/dev/api/ui/window/wx.offWindowStateChange.html)
+*
+* 需要基础库： `3.8.8`
+*
+* 在插件中使用：不支持
+*
+* 移除小程序窗口状态变化事件的监听函数
+*
+* **示例代码**
+*
+* ```js
+const listener = function (res) { console.log(res) }
+
+wx.onWindowStateChange(listener)
+wx.offWindowStateChange(listener) // 需传入与监听时同一个的函数对象
+``` */
+        offWindowStateChange(
+            /** onWindowStateChange 传入的监听函数。不传此参数则移除所有监听函数。 */
+            listener?: OffWindowStateChangeCallback
+        ): void
         /** [wx.onAccelerometerChange(function listener)](https://developers.weixin.qq.com/miniprogram/dev/api/device/accelerometer/wx.onAccelerometerChange.html)
 *
 * 在插件中使用：不支持
@@ -27852,6 +28076,17 @@ wx.onUserCaptureScreen(function (res) {
             /** 窗口尺寸变化事件的监听函数 */
             listener: OnWindowResizeCallback
         ): void
+        /** [wx.onWindowStateChange(function listener)](https://developers.weixin.qq.com/miniprogram/dev/api/ui/window/wx.onWindowStateChange.html)
+         *
+         * 需要基础库： `3.8.8`
+         *
+         * 在插件中使用：不支持
+         *
+         * 监听小程序窗口状态变化事件。仅适用于 PC 平台 */
+        onWindowStateChange(
+            /** 小程序窗口状态变化事件的监听函数 */
+            listener: OnWindowStateChangeCallback
+        ): void
         /** [wx.openAppAuthorizeSetting(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/base/system/wx.openAppAuthorizeSetting.html)
 *
 * 需要基础库： `2.20.1`
@@ -28247,6 +28482,14 @@ wx.openStickerSetView({
 })
 ``` */
         openStickerSetView(option: OpenStickerSetViewOption): void
+        /** [wx.openStoreCouponDetail(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/store/wx.openStoreCouponDetail.html)
+         *
+         * 需要基础库： `3.8.5`
+         *
+         * 在插件中使用：不支持
+         *
+         * 打开微信小店优惠券详情页 */
+        openStoreCouponDetail(option: OpenStoreCouponDetailOption): void
         /** [wx.openStoreOrderDetail(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/store/wx.openStoreOrderDetail.html)
          *
          * 需要基础库： `3.7.1`
@@ -28921,11 +29164,24 @@ wx.requestMerchantTransfer({
 *
 * 在插件中使用：不支持
 *
-* 发起微信支付。调用前需在[小程序微信公众平台](https://mp.weixin.qq.com/) -功能-微信支付入口申请接入微信支付。了解更多信息，可以参考 [微信支付开发文档](https://pay.weixin.qq.com/doc/v3/partner/4012069852)：
-* - [开发指引](https://pay.weixin.qq.com/doc/v3/merchant/4012791870)
-* - [下单接口](https://pay.weixin.qq.com/doc/v3/partner/4012738519)
-* - [支付接口](https://pay.weixin.qq.com/doc/v3/partner/4012085827)
-* - 旧版本 (v2)
+* 发起微信支付。调用前需在[小程序微信公众平台](https://mp.weixin.qq.com/)-功能-微信支付入口申请接入微信支付。了解更多信息，可以参考 [微信支付开发文档](https://pay.weixin.qq.com/doc/v3/partner/4012069852)：
+*
+* 【普通商户】
+*
+*   - [产品介绍](https://pay.weixin.qq.com/doc/v3/merchant/4012791894)
+*   - [开发指引](https://pay.weixin.qq.com/doc/v3/merchant/4012791911)
+*   - [下单接口](https://pay.weixin.qq.com/doc/v3/merchant/4012791897)
+*   - [调起支付接口](https://pay.weixin.qq.com/doc/v3/merchant/4012791898)
+*
+* 【普通服务商】
+*
+*   - [产品介绍](https://pay.weixin.qq.com/doc/v3/partner/4012085810)
+*   - [开发指引](https://pay.weixin.qq.com/doc/v3/partner/4012076732)
+*   - [下单接口](https://pay.weixin.qq.com/doc/v3/partner/4012759974)
+*   - [调起支付接口](https://pay.weixin.qq.com/doc/v3/partner/4012085827)
+*
+* 【旧版本 (v2)】
+*
 *   - [开发指引](https://pay.weixin.qq.com/doc/v2/merchant/4011938514)
 *   - [支付接口](https://pay.weixin.qq.com/doc/v2/merchant/4011939566)
 *
@@ -30023,7 +30279,7 @@ wx.getWifiList()
         ): PromisifySuccessResult<T, ShareVideoMessageOption>
         /** [wx.shareVideoToGroup(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/chattool/wx.shareVideoToGroup.html)
          *
-         * 需要基础库： `3.8.8`
+         * 需要基础库： `3.7.8`
          *
          * 在插件中使用：不支持
          *
@@ -30147,7 +30403,13 @@ wx.showModal({
          *
          * 在插件中使用：需要基础库 `2.16.0`
          *
-         * 打开分享图片弹窗，可以将图片发送给朋友、收藏或下载 */
+         * 打开分享图片弹窗，可以将图片发送给朋友、分享至朋友圈、收藏或下载
+         *
+         * **Tips**
+         *
+         * 1. 从基础库 3.8.2 开始，style 参数废弃
+         * 2. 从基础库 3.8.2 开始，needShowEntrance 参数默认值从 false 改为 true
+         * 3. 从基础库 3.8.2 开始，支持分享至朋友圈，分享至朋友圈的图片不支持带有二维码（可支持小程序码） */
         showShareImageMenu<
             T extends ShowShareImageMenuOption = ShowShareImageMenuOption
         >(
@@ -31224,7 +31486,7 @@ wx.writeBLECharacteristicValue({
     type AuthorizeSuccessCallback = (res: GeneralCallbackResult) => void
     /** 背景音频播放错误事件的监听函数 */
     type BackgroundAudioManagerOnErrorCallback = (
-        res: GeneralCallbackResult
+        result: OnNeedPrivacyAuthorizationListenerResult
     ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type BatchGetStorageCompleteCallback = (res: GeneralCallbackResult) => void
@@ -32405,7 +32667,9 @@ wx.writeBLECharacteristicValue({
     type InnerAudioContextOnErrorCallback = (
         result: InnerAudioContextOnErrorListenerResult
     ) => void
-    type InnerAudioContextOnStopCallback = (res: GeneralCallbackResult) => void
+    type InnerAudioContextOnStopCallback = (
+        result: OnNeedPrivacyAuthorizationListenerResult
+    ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type InsertCustomBlockCompleteCallback = (
         res: GeneralCallbackResult
@@ -32629,7 +32893,9 @@ wx.writeBLECharacteristicValue({
         res: GeneralCallbackResult
     ) => void
     /** onAccelerometerChange 传入的监听函数。不传此参数则移除所有监听函数。 */
-    type OffAccelerometerChangeCallback = (res: GeneralCallbackResult) => void
+    type OffAccelerometerChangeCallback = (
+        result: OnNeedPrivacyAuthorizationListenerResult
+    ) => void
     /** onAfterPageLoad 传入的监听函数。不传此参数则移除所有监听函数。 */
     type OffAfterPageLoadCallback = (
         result: OnAfterPageLoadListenerResult
@@ -32643,7 +32909,9 @@ wx.writeBLECharacteristicValue({
         result: OnApiCategoryChangeListenerResult
     ) => void
     /** onAppHide 传入的监听函数。不传此参数则移除所有监听函数。 */
-    type OffAppHideCallback = (res: GeneralCallbackResult) => void
+    type OffAppHideCallback = (
+        result: OnNeedPrivacyAuthorizationListenerResult
+    ) => void
     /** onAppRoute 传入的监听函数。不传此参数则移除所有监听函数。 */
     type OffAppRouteCallback = (result: OnAppRouteListenerResult) => void
     /** onAppRouteDone 传入的监听函数。不传此参数则移除所有监听函数。 */
@@ -32651,13 +32919,17 @@ wx.writeBLECharacteristicValue({
         result: OnAppRouteDoneListenerResult
     ) => void
     /** onAppShow 传入的监听函数。不传此参数则移除所有监听函数。 */
-    type OffAppShowCallback = (res: GeneralCallbackResult) => void
+    type OffAppShowCallback = (
+        result: OnNeedPrivacyAuthorizationListenerResult
+    ) => void
     /** onAudioInterruptionBegin 传入的监听函数。不传此参数则移除所有监听函数。 */
     type OffAudioInterruptionBeginCallback = (
-        res: GeneralCallbackResult
+        result: OnNeedPrivacyAuthorizationListenerResult
     ) => void
     /** onAudioInterruptionEnd 传入的监听函数。不传此参数则移除所有监听函数。 */
-    type OffAudioInterruptionEndCallback = (res: GeneralCallbackResult) => void
+    type OffAudioInterruptionEndCallback = (
+        result: OnNeedPrivacyAuthorizationListenerResult
+    ) => void
     /** onBLEConnectionStateChange 传入的监听函数。不传此参数则移除所有监听函数。 */
     type OffBLEConnectionStateChangeCallback = (
         result: OnBLEConnectionStateChangeListenerResult
@@ -32687,9 +32959,13 @@ wx.writeBLECharacteristicValue({
         result: OnBeforePageUnloadListenerResult
     ) => void
     /** onBindWifi 传入的监听函数。不传此参数则移除所有监听函数。 */
-    type OffBindWifiCallback = (res: GeneralCallbackResult) => void
+    type OffBindWifiCallback = (
+        result: OnNeedPrivacyAuthorizationListenerResult
+    ) => void
     /** onCanplay 传入的监听函数。不传此参数则移除所有监听函数。 */
-    type OffCanplayCallback = (res: GeneralCallbackResult) => void
+    type OffCanplayCallback = (
+        result: OnNeedPrivacyAuthorizationListenerResult
+    ) => void
     /** onCharacteristicReadRequest 传入的监听函数。不传此参数则移除所有监听函数。 */
     type OffCharacteristicReadRequestCallback = (
         result: OnCharacteristicReadRequestListenerResult
@@ -32711,11 +32987,15 @@ wx.writeBLECharacteristicValue({
         result: OnChunkReceivedListenerResult
     ) => void
     /** onCompassChange 传入的监听函数。不传此参数则移除所有监听函数。 */
-    type OffCompassChangeCallback = (res: GeneralCallbackResult) => void
+    type OffCompassChangeCallback = (
+        result: OnNeedPrivacyAuthorizationListenerResult
+    ) => void
     /** onConnect 传入的监听函数。不传此参数则移除所有监听函数。 */
     type OffConnectCallback = (result: OnConnectListenerResult) => void
     /** onDeviceMotionChange 传入的监听函数。不传此参数则移除所有监听函数。 */
-    type OffDeviceMotionChangeCallback = (res: GeneralCallbackResult) => void
+    type OffDeviceMotionChangeCallback = (
+        result: OnNeedPrivacyAuthorizationListenerResult
+    ) => void
     /** onDiscovered 传入的监听函数。不传此参数则移除所有监听函数。 */
     type OffDiscoveredCallback = (result: OnDiscoveredListenerResult) => void
     /** onEmbeddedMiniProgramHeightChange 传入的监听函数。不传此参数则移除所有监听函数。 */
@@ -32723,11 +33003,15 @@ wx.writeBLECharacteristicValue({
         result: OnEmbeddedMiniProgramHeightChangeListenerResult
     ) => void
     /** onEnded 传入的监听函数。不传此参数则移除所有监听函数。 */
-    type OffEndedCallback = (res: GeneralCallbackResult) => void
+    type OffEndedCallback = (
+        result: OnNeedPrivacyAuthorizationListenerResult
+    ) => void
     /** onGetWifiList 传入的监听函数。不传此参数则移除所有监听函数。 */
     type OffGetWifiListCallback = (result: OnGetWifiListListenerResult) => void
     /** onGyroscopeChange 传入的监听函数。不传此参数则移除所有监听函数。 */
-    type OffGyroscopeChangeCallback = (res: GeneralCallbackResult) => void
+    type OffGyroscopeChangeCallback = (
+        result: OnNeedPrivacyAuthorizationListenerResult
+    ) => void
     /** onHCEMessage 传入的监听函数。不传此参数则移除所有监听函数。 */
     type OffHCEMessageCallback = (result: OnHCEMessageListenerResult) => void
     /** onKeyDown 传入的监听函数。不传此参数则移除所有监听函数。 */
@@ -32743,12 +33027,16 @@ wx.writeBLECharacteristicValue({
         result: OnLazyLoadErrorListenerResult
     ) => void
     /** onListening 传入的监听函数。不传此参数则移除所有监听函数。 */
-    type OffListeningCallback = (res: GeneralCallbackResult) => void
+    type OffListeningCallback = (
+        result: OnNeedPrivacyAuthorizationListenerResult
+    ) => void
     /** onLoad 传入的监听函数。不传此参数则移除所有监听函数。 */
-    type OffLoadCallback = (res: GeneralCallbackResult) => void
+    type OffLoadCallback = (
+        result: OnNeedPrivacyAuthorizationListenerResult
+    ) => void
     /** onLocalServiceDiscoveryStop 传入的监听函数。不传此参数则移除所有监听函数。 */
     type OffLocalServiceDiscoveryStopCallback = (
-        res: GeneralCallbackResult
+        result: OnNeedPrivacyAuthorizationListenerResult
     ) => void
     /** onLocalServiceFound 传入的监听函数。不传此参数则移除所有监听函数。 */
     type OffLocalServiceFoundCallback = (
@@ -32779,7 +33067,9 @@ wx.writeBLECharacteristicValue({
         result: OnMenuButtonBoundingClientRectWeightChangeListenerResult
     ) => void
     /** onNetworkStatusChange 传入的监听函数。不传此参数则移除所有监听函数。 */
-    type OffNetworkStatusChangeCallback = (res: GeneralCallbackResult) => void
+    type OffNetworkStatusChangeCallback = (
+        result: OnNeedPrivacyAuthorizationListenerResult
+    ) => void
     /** onNetworkWeakChange 传入的监听函数。不传此参数则移除所有监听函数。 */
     type OffNetworkWeakChangeCallback = (
         result: OnNetworkWeakChangeListenerResult
@@ -32793,23 +33083,35 @@ wx.writeBLECharacteristicValue({
         result: OnPageNotFoundListenerResult
     ) => void
     /** onPause 传入的监听函数。不传此参数则移除所有监听函数。 */
-    type OffPauseCallback = (res: GeneralCallbackResult) => void
+    type OffPauseCallback = (
+        result: OnNeedPrivacyAuthorizationListenerResult
+    ) => void
     /** onPlay 传入的监听函数。不传此参数则移除所有监听函数。 */
-    type OffPlayCallback = (res: GeneralCallbackResult) => void
+    type OffPlayCallback = (
+        result: OnNeedPrivacyAuthorizationListenerResult
+    ) => void
     /** onScreenRecordingStateChanged 传入的监听函数。不传此参数则移除所有监听函数。 */
     type OffScreenRecordingStateChangedCallback = (
         result: OnScreenRecordingStateChangedListenerResult
     ) => void
     /** onSeeked 传入的监听函数。不传此参数则移除所有监听函数。 */
-    type OffSeekedCallback = (res: GeneralCallbackResult) => void
+    type OffSeekedCallback = (
+        result: OnNeedPrivacyAuthorizationListenerResult
+    ) => void
     /** onSeeking 传入的监听函数。不传此参数则移除所有监听函数。 */
-    type OffSeekingCallback = (res: GeneralCallbackResult) => void
+    type OffSeekingCallback = (
+        result: OnNeedPrivacyAuthorizationListenerResult
+    ) => void
     /** onStop 传入的监听函数。不传此参数则移除所有监听函数。 */
-    type OffStopCallback = (res: GeneralCallbackResult) => void
+    type OffStopCallback = (
+        result: OnNeedPrivacyAuthorizationListenerResult
+    ) => void
     /** onThemeChange 传入的监听函数。不传此参数则移除所有监听函数。 */
     type OffThemeChangeCallback = (result: OnThemeChangeListenerResult) => void
     /** onTimeUpdate 传入的监听函数。不传此参数则移除所有监听函数。 */
-    type OffTimeUpdateCallback = (res: GeneralCallbackResult) => void
+    type OffTimeUpdateCallback = (
+        result: OnNeedPrivacyAuthorizationListenerResult
+    ) => void
     /** onUnhandledRejection 传入的监听函数。不传此参数则移除所有监听函数。 */
     type OffUnhandledRejectionCallback = (
         result: OnUnhandledRejectionListenerResult
@@ -32835,7 +33137,9 @@ wx.writeBLECharacteristicValue({
         result: OnVoIPVideoMembersChangedListenerResult
     ) => void
     /** onWaiting 传入的监听函数。不传此参数则移除所有监听函数。 */
-    type OffWaitingCallback = (res: GeneralCallbackResult) => void
+    type OffWaitingCallback = (
+        result: OnNeedPrivacyAuthorizationListenerResult
+    ) => void
     /** onWifiConnected 传入的监听函数。不传此参数则移除所有监听函数。 */
     type OffWifiConnectedCallback = (
         result: OnWifiConnectedListenerResult
@@ -32847,6 +33151,10 @@ wx.writeBLECharacteristicValue({
     /** onWindowResize 传入的监听函数。不传此参数则移除所有监听函数。 */
     type OffWindowResizeCallback = (
         result: OnWindowResizeListenerResult
+    ) => void
+    /** onWindowStateChange 传入的监听函数。不传此参数则移除所有监听函数。 */
+    type OffWindowStateChangeCallback = (
+        result: OnWindowStateChangeListenerResult
     ) => void
     /** 加速度数据事件的监听函数 */
     type OnAccelerometerChangeCallback = (
@@ -32879,9 +33187,13 @@ wx.writeBLECharacteristicValue({
         options: LaunchOptionsApp
     ) => void
     /** 音频因为受到系统占用而被中断开始事件的监听函数 */
-    type OnAudioInterruptionBeginCallback = (res: GeneralCallbackResult) => void
+    type OnAudioInterruptionBeginCallback = (
+        result: OnNeedPrivacyAuthorizationListenerResult
+    ) => void
     /** 音频中断结束事件的监听函数 */
-    type OnAudioInterruptionEndCallback = (res: GeneralCallbackResult) => void
+    type OnAudioInterruptionEndCallback = (
+        result: OnNeedPrivacyAuthorizationListenerResult
+    ) => void
     /** 蓝牙低功耗设备的特征值变化事件的监听函数 */
     type OnBLECharacteristicValueChangeCallback = (
         result: OnBLECharacteristicValueChangeListenerResult
@@ -32897,11 +33209,17 @@ wx.writeBLECharacteristicValue({
         result: OnBLEPeripheralConnectionStateChangedListenerResult
     ) => void
     /** 音乐暂停事件的监听函数 */
-    type OnBackgroundAudioPauseCallback = (res: GeneralCallbackResult) => void
+    type OnBackgroundAudioPauseCallback = (
+        result: OnNeedPrivacyAuthorizationListenerResult
+    ) => void
     /** 音乐播放事件的监听函数 */
-    type OnBackgroundAudioPlayCallback = (res: GeneralCallbackResult) => void
+    type OnBackgroundAudioPlayCallback = (
+        result: OnNeedPrivacyAuthorizationListenerResult
+    ) => void
     /** 音乐停止事件的监听函数 */
-    type OnBackgroundAudioStopCallback = (res: GeneralCallbackResult) => void
+    type OnBackgroundAudioStopCallback = (
+        result: OnNeedPrivacyAuthorizationListenerResult
+    ) => void
     /** 收到 backgroundFetch 数据事件的监听函数 */
     type OnBackgroundFetchDataCallback = (
         result: OnBackgroundFetchDataListenerResult
@@ -32929,7 +33247,9 @@ wx.writeBLECharacteristicValue({
         result: OnBeforePageUnloadListenerResult
     ) => void
     /** 当一个 socket 绑定当前 wifi 网络成功时触发该事件的监听函数 */
-    type OnBindWifiCallback = (res: GeneralCallbackResult) => void
+    type OnBindWifiCallback = (
+        result: OnNeedPrivacyAuthorizationListenerResult
+    ) => void
     /** 蓝牙适配器状态变化事件的监听函数 */
     type OnBluetoothAdapterStateChangeCallback = (
         result: OnBluetoothAdapterStateChangeListenerResult
@@ -32940,7 +33260,9 @@ wx.writeBLECharacteristicValue({
     ) => void
     /** 回调函数 */
     type OnCameraFrameCallback = (result: OnCameraFrameCallbackResult) => void
-    type OnCanplayCallback = (res: GeneralCallbackResult) => void
+    type OnCanplayCallback = (
+        result: OnNeedPrivacyAuthorizationListenerResult
+    ) => void
     /** 已连接的设备请求读当前外围设备的特征值事件的监听函数 */
     type OnCharacteristicReadRequestCallback = (
         result: OnCharacteristicReadRequestListenerResult
@@ -32983,7 +33305,9 @@ wx.writeBLECharacteristicValue({
     type OnEmbeddedMiniProgramHeightChangeCallback = (
         result: OnEmbeddedMiniProgramHeightChangeListenerResult
     ) => void
-    type OnEndedCallback = (res: GeneralCallbackResult) => void
+    type OnEndedCallback = (
+        result: OnNeedPrivacyAuthorizationListenerResult
+    ) => void
     /** 已录制完指定帧大小的文件事件的监听函数 */
     type OnFrameRecordedCallback = (
         result: OnFrameRecordedListenerResult
@@ -32997,9 +33321,13 @@ wx.writeBLECharacteristicValue({
     /** 接收 NFC 设备消息事件的监听函数 */
     type OnHCEMessageCallback = (result: OnHCEMessageListenerResult) => void
     /** 录音因为受到系统占用而被中断开始事件的监听函数 */
-    type OnInterruptionBeginCallback = (res: GeneralCallbackResult) => void
+    type OnInterruptionBeginCallback = (
+        result: OnNeedPrivacyAuthorizationListenerResult
+    ) => void
     /** 录音中断结束事件的监听函数 */
-    type OnInterruptionEndCallback = (res: GeneralCallbackResult) => void
+    type OnInterruptionEndCallback = (
+        result: OnNeedPrivacyAuthorizationListenerResult
+    ) => void
     /** 小程序全局键盘按键按下事件的监听函数 */
     type OnKeyDownCallback = (result: OnKeyDownListenerResult) => void
     /** 小程序全局键盘按键弹起事件的监听函数 */
@@ -33013,11 +33341,15 @@ wx.writeBLECharacteristicValue({
         result: OnLazyLoadErrorListenerResult
     ) => void
     /** 开始监听数据包消息的事件的监听函数 */
-    type OnListeningCallback = (res: GeneralCallbackResult) => void
-    type OnLoadCallback = (res: GeneralCallbackResult) => void
+    type OnListeningCallback = (
+        result: OnNeedPrivacyAuthorizationListenerResult
+    ) => void
+    type OnLoadCallback = (
+        result: OnNeedPrivacyAuthorizationListenerResult
+    ) => void
     /** mDNS 服务停止搜索的事件的监听函数 */
     type OnLocalServiceDiscoveryStopCallback = (
-        res: GeneralCallbackResult
+        result: OnNeedPrivacyAuthorizationListenerResult
     ) => void
     /** mDNS 服务发现的事件的监听函数 */
     type OnLocalServiceFoundCallback = (
@@ -33049,7 +33381,7 @@ wx.writeBLECharacteristicValue({
     ) => void
     /** 隐私接口需要用户授权事件的监听函数 */
     type OnNeedPrivacyAuthorizationCallback = (
-        res: GeneralCallbackResult
+        result: OnNeedPrivacyAuthorizationListenerResult
     ) => void
     /** 网络状态变化事件的监听函数 */
     type OnNetworkStatusChangeCallback = (
@@ -33060,7 +33392,9 @@ wx.writeBLECharacteristicValue({
         result: OnNetworkWeakChangeListenerResult
     ) => void
     /** 用户在系统音乐播放面板点击下一曲事件的监听函数 */
-    type OnNextCallback = (res: GeneralCallbackResult) => void
+    type OnNextCallback = (
+        result: OnNeedPrivacyAuthorizationListenerResult
+    ) => void
     /** 用户触发小程序菜单中翻译功能的事件的监听函数 */
     type OnOnUserTriggerTranslationCallback = (
         result: OnOnUserTriggerTranslationListenerResult
@@ -33069,20 +33403,34 @@ wx.writeBLECharacteristicValue({
     type OnOpenCallback = (result: OnOpenListenerResult) => void
     /** 小程序要打开的页面不存在事件的监听函数 */
     type OnPageNotFoundCallback = (result: OnPageNotFoundListenerResult) => void
-    type OnPauseCallback = (res: GeneralCallbackResult) => void
-    type OnPlayCallback = (res: GeneralCallbackResult) => void
+    type OnPauseCallback = (
+        result: OnNeedPrivacyAuthorizationListenerResult
+    ) => void
+    type OnPlayCallback = (
+        result: OnNeedPrivacyAuthorizationListenerResult
+    ) => void
     /** 用户在系统音乐播放面板点击上一曲事件的监听函数 */
-    type OnPrevCallback = (res: GeneralCallbackResult) => void
+    type OnPrevCallback = (
+        result: OnNeedPrivacyAuthorizationListenerResult
+    ) => void
     /** worker线程被系统回收事件的监听函数 */
-    type OnProcessKilledCallback = (res: GeneralCallbackResult) => void
+    type OnProcessKilledCallback = (
+        result: OnNeedPrivacyAuthorizationListenerResult
+    ) => void
     /** 录音继续事件的监听函数 */
-    type OnResumeCallback = (res: GeneralCallbackResult) => void
+    type OnResumeCallback = (
+        result: OnNeedPrivacyAuthorizationListenerResult
+    ) => void
     /** 用户录屏事件的监听函数 */
     type OnScreenRecordingStateChangedCallback = (
         result: OnScreenRecordingStateChangedListenerResult
     ) => void
-    type OnSeekedCallback = (res: GeneralCallbackResult) => void
-    type OnSeekingCallback = (res: GeneralCallbackResult) => void
+    type OnSeekedCallback = (
+        result: OnNeedPrivacyAuthorizationListenerResult
+    ) => void
+    type OnSeekingCallback = (
+        result: OnNeedPrivacyAuthorizationListenerResult
+    ) => void
     /** WebSocket 连接关闭事件的监听函数 */
     type OnSocketCloseCallback = (
         result: SocketTaskOnCloseListenerResult
@@ -33096,18 +33444,26 @@ wx.writeBLECharacteristicValue({
     /** WebSocket 连接打开事件的监听函数 */
     type OnSocketOpenCallback = (result: OnSocketOpenListenerResult) => void
     /** 录音开始事件的监听函数 */
-    type OnStartCallback = (res: GeneralCallbackResult) => void
+    type OnStartCallback = (
+        result: OnNeedPrivacyAuthorizationListenerResult
+    ) => void
     /** 系统主题改变事件的监听函数 */
     type OnThemeChangeCallback = (result: OnThemeChangeListenerResult) => void
-    type OnTimeUpdateCallback = (res: GeneralCallbackResult) => void
+    type OnTimeUpdateCallback = (
+        result: OnNeedPrivacyAuthorizationListenerResult
+    ) => void
     /** 未处理的 Promise 拒绝事件的监听函数 */
     type OnUnhandledRejectionCallback = (
         result: OnUnhandledRejectionListenerResult
     ) => void
     /** 小程序更新失败事件的监听函数 */
-    type OnUpdateFailedCallback = (res: GeneralCallbackResult) => void
+    type OnUpdateFailedCallback = (
+        result: OnNeedPrivacyAuthorizationListenerResult
+    ) => void
     /** 小程序有版本更新事件的监听函数 */
-    type OnUpdateReadyCallback = (res: GeneralCallbackResult) => void
+    type OnUpdateReadyCallback = (
+        result: OnNeedPrivacyAuthorizationListenerResult
+    ) => void
     /** 用户主动截屏事件的监听函数 */
     type OnUserCaptureScreenCallback = (
         result: OnUserCaptureScreenListenerResult
@@ -33133,7 +33489,9 @@ wx.writeBLECharacteristicValue({
         result: OnVoIPVideoMembersChangedListenerResult
     ) => void
     /** 音频加载中事件的监听函数 */
-    type OnWaitingCallback = (res: GeneralCallbackResult) => void
+    type OnWaitingCallback = (
+        result: OnNeedPrivacyAuthorizationListenerResult
+    ) => void
     /** 连接上 Wi-Fi 的事件的监听函数 */
     type OnWifiConnectedCallback = (
         result: OnWifiConnectedListenerResult
@@ -33144,6 +33502,10 @@ wx.writeBLECharacteristicValue({
     ) => void
     /** 窗口尺寸变化事件的监听函数 */
     type OnWindowResizeCallback = (result: OnWindowResizeListenerResult) => void
+    /** 小程序窗口状态变化事件的监听函数 */
+    type OnWindowStateChangeCallback = (
+        result: OnWindowStateChangeListenerResult
+    ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type OpenAppAuthorizeSettingCompleteCallback = (
         res: GeneralCallbackResult
@@ -33272,7 +33634,7 @@ wx.writeBLECharacteristicValue({
     ) => void
     /** 接口调用失败的回调函数 */
     type OpenOfficialAccountArticleFailCallback = (
-        err: RequestVirtualPaymentFailCallbackErr
+        err: OpenOfficialAccountArticleFailCallbackErr
     ) => void
     /** 接口调用成功的回调函数 */
     type OpenOfficialAccountArticleSuccessCallback = (
@@ -33336,6 +33698,18 @@ wx.writeBLECharacteristicValue({
     type OpenStickerSetViewFailCallback = (res: GeneralCallbackResult) => void
     /** 接口调用成功的回调函数 */
     type OpenStickerSetViewSuccessCallback = (
+        res: GeneralCallbackResult
+    ) => void
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type OpenStoreCouponDetailCompleteCallback = (
+        res: GeneralCallbackResult
+    ) => void
+    /** 接口调用失败的回调函数 */
+    type OpenStoreCouponDetailFailCallback = (
+        result: OpenStoreCouponDetailFailCallbackResult
+    ) => void
+    /** 接口调用成功的回调函数 */
+    type OpenStoreCouponDetailSuccessCallback = (
         res: GeneralCallbackResult
     ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
@@ -33769,7 +34143,7 @@ wx.writeBLECharacteristicValue({
     ) => void
     /** 接口调用失败的回调函数 */
     type RequestVirtualPaymentFailCallback = (
-        err: RequestVirtualPaymentFailCallbackErr
+        err: OpenOfficialAccountArticleFailCallbackErr
     ) => void
     /** 接口调用成功的回调函数 */
     type RequestVirtualPaymentSuccessCallback = (
@@ -34718,14 +35092,18 @@ wx.writeBLECharacteristicValue({
     /** 接口调用成功的回调函数 */
     type TruncateSuccessCallback = (res: FileError) => void
     /** onClose 传入的监听函数。不传此参数则移除所有监听函数。 */
-    type UDPSocketOffCloseCallback = (res: GeneralCallbackResult) => void
+    type UDPSocketOffCloseCallback = (
+        result: OnNeedPrivacyAuthorizationListenerResult
+    ) => void
     /** onError 传入的监听函数。不传此参数则移除所有监听函数。 */
     type UDPSocketOffErrorCallback = (result: GeneralCallbackResult) => void
     /** onMessage 传入的监听函数。不传此参数则移除所有监听函数。 */
     type UDPSocketOffMessageCallback = (
         result: UDPSocketOnMessageListenerResult
     ) => void
-    type UDPSocketOnCloseCallback = (res: GeneralCallbackResult) => void
+    type UDPSocketOnCloseCallback = (
+        result: OnNeedPrivacyAuthorizationListenerResult
+    ) => void
     type UDPSocketOnErrorCallback = (result: GeneralCallbackResult) => void
     /** 收到消息的事件的监听函数 */
     type UDPSocketOnMessageCallback = (
@@ -34889,7 +35267,9 @@ wx.writeBLECharacteristicValue({
     /** 接口调用成功的回调函数 */
     type WriteSuccessCallback = (result: WriteSuccessCallbackResult) => void
     /** onError 传入的监听函数。不传此参数则移除所有监听函数。 */
-    type WxOffErrorCallback = (res: GeneralCallbackResult) => void
+    type WxOffErrorCallback = (
+        result: OnNeedPrivacyAuthorizationListenerResult
+    ) => void
     /** 小程序错误事件的监听函数 */
     type WxOnErrorCallback = (
         /** 错误 */
