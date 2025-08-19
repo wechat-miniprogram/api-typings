@@ -25286,7 +25286,7 @@ wx.hideShareMenu({
          *
          * 隐藏 tabBar */
         hideTabBar<T extends HideTabBarOption = HideTabBarOption>(
-            option: T
+            option?: T
         ): PromisifySuccessResult<T, HideTabBarOption>
         /** [wx.hideTabBarRedDot(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/ui/tab-bar/wx.hideTabBarRedDot.html)
          *
@@ -30484,7 +30484,7 @@ wx.showShareMenu({
          *
          * 显示 tabBar */
         showTabBar<T extends ShowTabBarOption = ShowTabBarOption>(
-            option: T
+            option?: T
         ): PromisifySuccessResult<T, ShowTabBarOption>
         /** [wx.showTabBarRedDot(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/ui/tab-bar/wx.showTabBarRedDot.html)
          *
