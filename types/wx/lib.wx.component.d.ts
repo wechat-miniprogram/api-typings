@@ -32,7 +32,7 @@ declare namespace WechatMiniprogram.Component {
         TCustomInstanceProperty extends IAnyObject = {},
         TIsPage extends boolean = false
     > = InstanceProperties &
-        InstanceMethods<TData> &
+        InstanceMethods<TData & PropertyOptionToData<TProperty>> &
         TMethod &
         MixinMethods<TBehavior> &
         (TIsPage extends true ? Page.ILifetime : {}) &
