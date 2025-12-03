@@ -1,3 +1,6 @@
+## 2025-12-03 v4.1.1
+- 更新 API 定义到 3.12.0
+
 ## 2025-07-15 v4.1.0
 - 修改 `getOpenerEventChannel` 的返回值的类型，使其有可能返回空对象，以正确反映实际情况。这是一个 **破坏性改动**，`getOpenerEventChannel` 的返回值上的 `emit`, `on` 等方法不再可以直接调用 ([#350](https://github.com/wechat-miniprogram/api-typings/issues/350))
 - 解决依赖安全问题

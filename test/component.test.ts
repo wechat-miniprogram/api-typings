@@ -62,7 +62,7 @@ Component({
     moved() {},
     detached() {},
     error(err) {
-      expectType<WechatMiniprogram.Error>(err)
+      expectType<Error>(err)
     },
   },
 
