@@ -3630,8 +3630,8 @@ ctx.draw()
          * 可选值：
          * - 'accept': 已绑定;
          * - 'reject': 已拒绝;
-         * - '空串': 未绑定且未拒绝; */
-        bindingStatus: 'accept' | 'reject' | '空串'
+         * - '': 未绑定且未拒绝; */
+        bindingStatus: 'accept' | 'reject' | ''
         errMsg: string
     }
     interface CheckIsAddedToMyMiniProgramOption {
@@ -8827,6 +8827,14 @@ NFCAdapter.offDiscovered(listener) // 需传入与监听时同一个的函数对
         /** 打开不存在页面的 query 参数 */
         query: Record<string, string>
     }
+    interface OnParallelStateChangeListenerResult {
+        /** 当前是否分栏 */
+        isOnParallel: boolean
+        /** 分栏左侧页面对象（非分栏状态时返回当前页面） */
+        leftPage: Page.TrivialInstance
+        /** 分栏右侧页面对象（非分栏状态时返回当前页面） */
+        rightPage: Page.TrivialInstance
+    }
     interface OnScreenRecordingStateChangedListenerResult {
         /** 录屏状态
          *
@@ -9046,6 +9054,14 @@ NFCAdapter.offDiscovered(listener) // 需传入与监听时同一个的函数对
         /** 接口调用成功的回调函数 */
         success?: OpenChatToolSuccessCallback
     }
+    /** OpenContainer 实例，可通过 [SelectorQuery](https://developers.weixin.qq.com/miniprogram/dev/api/wxml/SelectorQuery.html) 获取。
+     *
+     * [OpenContainer](https://developers.weixin.qq.com/miniprogram/dev/api/skyline/OpenContainer.html) 可以作为`withOpenContainer`参数传入`navigateTo`以执行该OpenContainer的路由动画。
+     *
+     * **示例代码**
+     *
+     * [在微信开发者工具中查看示例](https://developers.weixin.qq.com/s/G3tm7gmP8144) */
+    interface OpenContainer {}
     interface OpenCustomerServiceChatOption {
         /** 企业ID */
         corpId: string
@@ -9182,6 +9198,24 @@ NFCAdapter.offDiscovered(listener) // 需传入与监听时同一个的函数对
         complete?: OpenMapAppCompleteCallback
         /** 接口调用失败的回调函数 */
         fail?: OpenMapAppFailCallback
+        /** 传递给地图App的poi参数 */
+        poiId?: PoiObj
+        /** 指定推荐使用的地图 App
+         *
+         * 可选值：
+         * - 'baidu': 百度地图;
+         * - 'google': 谷歌地图;
+         * - 'amap': 高德地图;
+         * - 'tencent': 腾讯地图;
+         * - 'petal': 花瓣地图;
+         * - 'apple': 苹果地图; */
+        preferApplication?:
+            | 'baidu'
+            | 'google'
+            | 'amap'
+            | 'tencent'
+            | 'petal'
+            | 'apple'
         /** 接口调用成功的回调函数 */
         success?: OpenMapAppSuccessCallback
     }
@@ -9733,6 +9767,21 @@ NFCAdapter.offDiscovered(listener) // 需传入与监听时同一个的函数对
         /** 用于换取 openpid 的凭证（有效期五分钟）。插件开发者可以用此 code 在开发者服务器后台调用 [getPluginOpenPId](https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/user-info/basic-info/getPluginOpenPId.html) 换取 openpid。 */
         code: string
         errMsg: string
+    }
+    /** 传递给地图App的poi参数 */
+    interface PoiObj {
+        /** 高德地图 */
+        amap?: string
+        /** 苹果地图 */
+        apple?: string
+        /** 百度地图 */
+        baidu?: string
+        /** 谷歌地图 */
+        google?: string
+        /** 花瓣地图 */
+        petal?: string
+        /** 腾讯地图 */
+        tencent?: string
     }
     interface PostMessageToReferrerMiniProgramOption {
         /** 需要返回的数据 */
@@ -10758,7 +10807,7 @@ NFCAdapter.offDiscovered(listener) // 需传入与监听时同一个的函数对
         errMsg: string
     }
     interface RequestSubscribeMessageOption {
-        /** 需要订阅的消息模板的id的集合，一次调用最多可订阅3条消息（注意：iOS客户端7.0.6版本、Android客户端7.0.7版本之后的一次性订阅/长期订阅才支持多个模板消息，iOS客户端7.0.5版本、Android客户端7.0.6版本之前的一次订阅只支持一个模板消息）消息模板id在[微信公众平台(mp.weixin.qq.com)-功能-订阅消息]中配置。每个tmplId对应的模板标题需要不相同，否则会被过滤。 */
+        /** 需要订阅的消息模板的id的集合，一次调用最多可订阅5条消息（注意：iOS客户端7.0.6版本、Android客户端7.0.7版本之后的一次性订阅/长期订阅才支持多个模板消息，iOS客户端7.0.5版本、Android客户端7.0.6版本之前的一次订阅只支持一个模板消息）消息模板id在[微信公众平台(mp.weixin.qq.com)-功能-订阅消息]中配置。每个tmplId对应的模板标题需要不相同，否则会被过滤。 */
         tmplIds: any[]
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: RequestSubscribeMessageCompleteCallback
@@ -26913,6 +26962,26 @@ wx.offPageNotFound(listener) // 需传入与监听时同一个的函数对象
             /** onPageNotFound 传入的监听函数。不传此参数则移除所有监听函数。 */
             listener?: OffPageNotFoundCallback
         ): void
+        /** [wx.offParallelStateChange(function listener)](https://developers.weixin.qq.com/miniprogram/dev/api/ui/window/wx.offParallelStateChange.html)
+*
+* 需要基础库： `3.12.1`
+*
+* 在插件中使用：不支持
+*
+* 移除小程序分栏状态变化事件的监听函数
+*
+* **示例代码**
+*
+* ```js
+const listener = function (res) { console.log(res) }
+
+wx.onParallelStateChange(listener)
+wx.offParallelStateChange(listener) // 需传入与监听时同一个的函数对象
+``` */
+        offParallelStateChange(
+            /** onParallelStateChange 传入的监听函数。不传此参数则移除所有监听函数。 */
+            listener?: OffParallelStateChangeCallback
+        ): void
         /** [wx.offScreenRecordingStateChanged(function listener)](https://developers.weixin.qq.com/miniprogram/dev/api/device/screen/wx.offScreenRecordingStateChanged.html)
 *
 * 需要基础库： `2.24.0`
@@ -27754,7 +27823,7 @@ wx.onBluetoothDeviceFound(function(res) {
          *
          * 在插件中使用：不支持
          *
-         * 监听用户点击右上角菜单的「复制链接」按钮时触发的事件。本接口为 Beta 版本，暂只在 Android 平台支持。 */
+         * 监听用户点击右上角菜单的「复制链接」按钮时触发的事件。 */
         onCopyUrl(
             /** 用户点击右上角菜单的「复制链接」按钮时触发的事件的监听函数 */
             listener: OnCopyUrlCallback
@@ -28291,6 +28360,17 @@ wx.offUserTriggerTranslation(callback)
         onPageNotFound(
             /** 小程序要打开的页面不存在事件的监听函数 */
             listener: OnPageNotFoundCallback
+        ): void
+        /** [wx.onParallelStateChange(function listener)](https://developers.weixin.qq.com/miniprogram/dev/api/ui/window/wx.onParallelStateChange.html)
+         *
+         * 需要基础库： `3.12.1`
+         *
+         * 在插件中使用：不支持
+         *
+         * 监听小程序分栏状态变化事件。仅适用于 PC 平台 */
+        onParallelStateChange(
+            /** 小程序分栏状态变化事件的监听函数 */
+            listener: OnParallelStateChangeCallback
         ): void
         /** [wx.onScreenRecordingStateChanged(function listener)](https://developers.weixin.qq.com/miniprogram/dev/api/device/screen/wx.onScreenRecordingStateChanged.html)
          *
@@ -33641,6 +33721,10 @@ wx.writeBLECharacteristicValue({
     type OffPageNotFoundCallback = (
         result: OnPageNotFoundListenerResult
     ) => void
+    /** onParallelStateChange 传入的监听函数。不传此参数则移除所有监听函数。 */
+    type OffParallelStateChangeCallback = (
+        result: OnParallelStateChangeListenerResult
+    ) => void
     /** onPause 传入的监听函数。不传此参数则移除所有监听函数。 */
     type OffPauseCallback = (res: GeneralCallbackResult) => void
     /** onPlay 传入的监听函数。不传此参数则移除所有监听函数。 */
@@ -33926,6 +34010,10 @@ wx.writeBLECharacteristicValue({
     type OnOpenCallback = (result: OnOpenListenerResult) => void
     /** 小程序要打开的页面不存在事件的监听函数 */
     type OnPageNotFoundCallback = (result: OnPageNotFoundListenerResult) => void
+    /** 小程序分栏状态变化事件的监听函数 */
+    type OnParallelStateChangeCallback = (
+        result: OnParallelStateChangeListenerResult
+    ) => void
     type OnPauseCallback = (res: GeneralCallbackResult) => void
     type OnPlayCallback = (res: GeneralCallbackResult) => void
     /** 用户在系统音乐播放面板点击上一曲事件的监听函数 */
