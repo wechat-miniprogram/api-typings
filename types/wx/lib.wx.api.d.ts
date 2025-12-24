@@ -9034,6 +9034,16 @@ NFCAdapter.offDiscovered(listener) // 需传入与监听时同一个的函数对
         /** 接口调用成功的回调函数 */
         success?: OpenChannelsUserProfileSuccessCallback
     }
+	interface OpenChannelsLiveNoticeInfoOption {
+      /** 视频号id（参考格式为：sphcqO59YEPCvoe；查看路径为：微信客户端->我tab->视频号->右上角.-＞视频号名字-视频号ID） */
+      finderUserName: string
+      /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+      complete?: OpenChannelsLiveNoticeInfoCompleteCallback
+      /** 接口调用失败的回调函数 */
+      fail?: OpenChannelsLiveNoticeInfoFailCallback
+      /** 接口调用成功的回调函数 */
+      success?: OpenChannelsLiveNoticeInfoSuccessCallback
+    }
     interface OpenChatToolOption {
         /** 聊天工具分包内的页面路径 */
         url: string
@@ -28703,6 +28713,14 @@ wx.openCard({
          *
          * 打开视频号主页。若为插件环境，只允许在插件页面中调用。 */
         openChannelsUserProfile(option: OpenChannelsUserProfileOption): void
+		/** [wx.openChannelsLiveNoticeInfo(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/channels/wx.openChannelsLiveNoticeInfo.html)
+         *
+         * 需要基础库： `3.13.0`
+         *
+         * 在插件中使用：不支持
+         *
+         * 打开视频号直播预告半屏 */
+        openChannelsLiveNoticeInfo(option: OpenChannelsLiveNoticeInfoOption): void
         /** [wx.openChatTool(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/chattool/wx.openChatTool.html)
          *
          * 需要基础库： `3.7.8`
@@ -34151,6 +34169,18 @@ wx.writeBLECharacteristicValue({
     ) => void
     /** 接口调用成功的回调函数 */
     type OpenChannelsUserProfileSuccessCallback = (
+        res: GeneralCallbackResult
+    ) => void
+	/** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type OpenChannelsLiveNoticeInfoCompleteCallback = (
+        res: GeneralCallbackResult
+    ) => void
+    /** 接口调用失败的回调函数 */
+    type OpenChannelsLiveNoticeInfoFailCallback = (
+        res: GeneralCallbackResult
+    ) => void
+    /** 接口调用成功的回调函数 */
+    type OpenChannelsLiveNoticeInfoSuccessCallback = (
         res: GeneralCallbackResult
     ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
