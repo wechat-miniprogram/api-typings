@@ -94,7 +94,7 @@ declare namespace WechatMiniprogram.Component {
                 TCustomInstanceProperty,
                 TIsPage
             >
-        ): string
+        ): string & ComponentTypeSignature<TData, TProperty, TMethod>
     }
     type DataOption = Record<string, any>
     type PropertyOption = Record<string, AllProperty>
@@ -110,6 +110,19 @@ declare namespace WechatMiniprogram.Component {
     type MixinData<T extends any[]> = UnionToIntersection<ExtractData<ExtractBehaviorType<T[number]>>>
     type MixinProperties<T extends any[], TIsBehavior extends boolean = false> = UnionToIntersection<ExtractProperties<ExtractBehaviorType<T[number]>, TIsBehavior>>
     type MixinMethods<T extends any[]> = UnionToIntersection<ExtractMethods<ExtractBehaviorType<T[number]>>>
+
+    /** 用于辅助识别组件类型的虚拟字段（供 glass-easel-analyzer 等外部模块使用） */
+    class ComponentTypeSignature<
+        TData extends DataOption,
+        TProperty extends PropertyOption,
+        TMethod extends MethodOption,
+    > {
+        protected readonly _$fieldTypes: {
+            propertyValues: PropertyOptionToData<TProperty>
+            dataWithProperties: TData & PropertyOptionToData<TProperty>
+            methods: TMethod
+        }
+    }
 
     interface Behavior<B extends BehaviorOption> {
         /** 类似于mixins和traits的组件间代码复用机制，参见 [behaviors](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/behaviors.html) */
