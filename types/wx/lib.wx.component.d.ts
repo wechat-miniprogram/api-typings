@@ -144,6 +144,8 @@ declare namespace WechatMiniprogram.Component {
         /** 组件的方法，包括事件响应函数和任意的自定义方法，关于事件响应函数的使用，参见 [组件间通信与事件](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/events.html) */
         methods: M & (TIsPage extends true ? Partial<Page.ILifetime> : {})
     }
+
+    type Satisfy<T, V> = V extends T ? V : T
     type PropertyType =
         | StringConstructor
         | NumberConstructor
@@ -164,11 +166,24 @@ declare namespace WechatMiniprogram.Component {
         : T extends ObjectConstructor
         ? IAnyObject
         : never
-    type FullProperty<T extends PropertyType> = {
+    type SimpleValueType<T extends PropertyType, V> = T extends StringConstructor
+        ? Satisfy<string, V>
+        : T extends NumberConstructor
+        ? Satisfy<number, V>
+        : T extends BooleanConstructor
+        ? Satisfy<boolean, V>
+        : T extends ArrayConstructor
+        ? Satisfy<any[], V>
+        : T extends ObjectConstructor
+        ? Satisfy<Record<string, any> | null, V>
+        : T extends FunctionConstructor
+        ? Satisfy<(...args: any[]) => any, V>
+        : never
+    type FullProperty<T extends PropertyType, V extends ValueType<T>> = {
         /** 属性类型 */
         type: T
         /** 属性初始值 */
-        value?: ValueType<T>
+        value?: V
         /** 属性值被更改时的响应函数 */
         observer?:
             | string
@@ -181,12 +196,12 @@ declare namespace WechatMiniprogram.Component {
         optionalTypes?: ShortProperty[]
     }
     type AllFullProperty =
-        | FullProperty<StringConstructor>
-        | FullProperty<NumberConstructor>
-        | FullProperty<BooleanConstructor>
-        | FullProperty<ArrayConstructor>
-        | FullProperty<ObjectConstructor>
-        | FullProperty<null>
+        | FullProperty<StringConstructor, any>
+        | FullProperty<NumberConstructor, any>
+        | FullProperty<BooleanConstructor, any>
+        | FullProperty<ArrayConstructor, any>
+        | FullProperty<ObjectConstructor, any>
+        | FullProperty<null, any>
     type ShortProperty =
         | StringConstructor
         | NumberConstructor
@@ -198,8 +213,15 @@ declare namespace WechatMiniprogram.Component {
     type PropertyToData<T extends AllProperty> = T extends ShortProperty
         ? ValueType<T>
         : FullPropertyToData<Exclude<T, ShortProperty>>
-    type ArrayOrObject = ArrayConstructor | ObjectConstructor
-    type FullPropertyToData<T extends AllFullProperty> = T['type'] extends ArrayOrObject ? unknown extends T['value'] ? ValueType<T['type']> : T['value'] : ValueType<T['type']>
+    type FullPropertyToData<T> = T extends FullProperty<infer T, infer V>
+        ? unknown extends V
+            ? ValueType<T>
+            : ((a: T) => void) extends (a: PropertyType) => void
+            ? V
+            : V extends ValueType<T>
+            ? SimpleValueType<T, V>
+            : never
+        : never
     type PropertyOptionToData<P extends PropertyOption> = {
         [name in keyof P]: PropertyToData<P[name]>
     }
