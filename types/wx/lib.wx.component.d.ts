@@ -101,7 +101,10 @@ declare namespace WechatMiniprogram.Component {
     type MethodOption = Record<string, Function>
 
     type BehaviorOption = Behavior.BehaviorIdentifier[]
-    type ExtractBehaviorType<T> = T extends { BehaviorType?: infer B } ? B : never
+    type BehaviorFieldTypes<T> = (T & Record<string, unknown>)['_$behaviorFieldTypes']
+    type ExtractBehaviorType<T> = BehaviorFieldTypes<T> extends Behavior.BehaviorTypeSignatureFields<any, any, any, any> | undefined
+        ? BehaviorFieldTypes<T>
+        : never
     type ExtractData<T> = T extends { data: infer D } ? D : never
     type ExtractProperties<T, TIsBehavior extends boolean = false> = T extends { properties: infer P } ?
     TIsBehavior extends true ? P : PropertyOptionToData<P extends PropertyOption ? P : {}> : never
