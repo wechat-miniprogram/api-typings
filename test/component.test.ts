@@ -1,6 +1,6 @@
-import { expectType, expectError, expectNotAssignable } from 'tsd'
+import { expectType, expectError, expectNotAssignable, expectAssignable } from 'tsd'
 
-expectType<string>(Component({}))
+expectAssignable<string>(Component({}))
 
 Component({
   behaviors: [''],
@@ -496,6 +496,38 @@ Component<{}, {}, { fn(): void }, []>({
       this.setUpdatePerformanceListener({})
     }
   })
+}
+
+{
+  type CustomProperties = {
+    customProp: string
+  }
+  Component<{}, {}, {}, [], CustomProperties>({
+    lifetimes: {
+      created() {
+        this.customProp = 'customProp'
+      }
+    }
+  })
+}
+
+{
+  const def = Component({
+    properties: {
+      a: Boolean,
+    },
+    data: {
+      b: 1,
+    },
+    methods: {
+      c() {}
+    },
+  })
+  type FieldTypes = (typeof def)['_$fieldTypes']
+  expectType<FieldTypes['propertyValues']['a']>(false as boolean)
+  expectType<FieldTypes['dataWithProperties']['a']>(false as boolean)
+  expectType<FieldTypes['dataWithProperties']['b']>(1 as number)
+  expectType<FieldTypes['methods']['c']>(() => {})
 }
 
 {

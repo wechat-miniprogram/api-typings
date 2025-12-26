@@ -94,14 +94,17 @@ declare namespace WechatMiniprogram.Component {
                 TCustomInstanceProperty,
                 TIsPage
             >
-        ): string
+        ): string & ComponentTypeSignature<TData, TProperty, TMethod>
     }
     type DataOption = Record<string, any>
     type PropertyOption = Record<string, AllProperty>
     type MethodOption = Record<string, Function>
 
     type BehaviorOption = Behavior.BehaviorIdentifier[]
-    type ExtractBehaviorType<T> = T extends { BehaviorType?: infer B } ? B : never
+    type BehaviorFieldTypes<T> = (T & Record<string, unknown>)['_$behaviorFieldTypes']
+    type ExtractBehaviorType<T> = BehaviorFieldTypes<T> extends Behavior.BehaviorTypeSignatureFields<any, any, any, any> | undefined
+        ? BehaviorFieldTypes<T>
+        : never
     type ExtractData<T> = T extends { data: infer D } ? D : never
     type ExtractProperties<T, TIsBehavior extends boolean = false> = T extends { properties: infer P } ?
     TIsBehavior extends true ? P : PropertyOptionToData<P extends PropertyOption ? P : {}> : never
@@ -110,6 +113,19 @@ declare namespace WechatMiniprogram.Component {
     type MixinData<T extends any[]> = UnionToIntersection<ExtractData<ExtractBehaviorType<T[number]>>>
     type MixinProperties<T extends any[], TIsBehavior extends boolean = false> = UnionToIntersection<ExtractProperties<ExtractBehaviorType<T[number]>, TIsBehavior>>
     type MixinMethods<T extends any[]> = UnionToIntersection<ExtractMethods<ExtractBehaviorType<T[number]>>>
+
+    /** 用于辅助识别组件类型的虚拟字段（供 glass-easel-analyzer 等外部模块使用） */
+    class ComponentTypeSignature<
+        TData extends DataOption,
+        TProperty extends PropertyOption,
+        TMethod extends MethodOption,
+    > {
+        protected readonly _$fieldTypes: {
+            propertyValues: PropertyOptionToData<TProperty>
+            dataWithProperties: TData & PropertyOptionToData<TProperty>
+            methods: TMethod
+        }
+    }
 
     interface Behavior<B extends BehaviorOption> {
         /** 类似于mixins和traits的组件间代码复用机制，参见 [behaviors](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/behaviors.html) */

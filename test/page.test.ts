@@ -1,6 +1,6 @@
-import { expectType, expectError, expectNotAssignable } from 'tsd'
+import { expectType, expectError, expectNotAssignable, expectAssignable } from 'tsd'
 
-expectType<void>(Page({}))
+expectAssignable<void>(Page({}))
 
 expectType<Record<string, any>>(getCurrentPages()[0].data)
 
@@ -242,3 +242,15 @@ Page({
     return { title: this.data.a, imageUrl: '', path: '' }
   },
 })
+
+{
+  const def = Page({
+    data: {
+      b: 1,
+    },
+    c() {},
+  })
+  type FieldTypes = (typeof def)['_$fieldTypes']
+  expectType<FieldTypes['dataWithProperties']['b']>(1 as number)
+  expectType<FieldTypes['methods']['c']>(() => {})
+}
