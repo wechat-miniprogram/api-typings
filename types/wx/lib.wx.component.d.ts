@@ -94,14 +94,17 @@ declare namespace WechatMiniprogram.Component {
                 TCustomInstanceProperty,
                 TIsPage
             >
-        ): string
+        ): string & ComponentTypeSignature<TData, TProperty, TMethod>
     }
     type DataOption = Record<string, any>
     type PropertyOption = Record<string, AllProperty>
     type MethodOption = Record<string, Function>
 
     type BehaviorOption = Behavior.BehaviorIdentifier[]
-    type ExtractBehaviorType<T> = T extends { BehaviorType?: infer B } ? B : never
+    type BehaviorFieldTypes<T> = (T & Record<string, unknown>)['_$behaviorFieldTypes']
+    type ExtractBehaviorType<T> = BehaviorFieldTypes<T> extends Behavior.BehaviorTypeSignatureFields<any, any, any, any> | undefined
+        ? BehaviorFieldTypes<T>
+        : never
     type ExtractData<T> = T extends { data: infer D } ? D : never
     type ExtractProperties<T, TIsBehavior extends boolean = false> = T extends { properties: infer P } ?
     TIsBehavior extends true ? P : PropertyOptionToData<P extends PropertyOption ? P : {}> : never
@@ -110,6 +113,19 @@ declare namespace WechatMiniprogram.Component {
     type MixinData<T extends any[]> = UnionToIntersection<ExtractData<ExtractBehaviorType<T[number]>>>
     type MixinProperties<T extends any[], TIsBehavior extends boolean = false> = UnionToIntersection<ExtractProperties<ExtractBehaviorType<T[number]>, TIsBehavior>>
     type MixinMethods<T extends any[]> = UnionToIntersection<ExtractMethods<ExtractBehaviorType<T[number]>>>
+
+    /** 用于辅助识别组件类型的虚拟字段（供 glass-easel-analyzer 等外部模块使用） */
+    class ComponentTypeSignature<
+        TData extends DataOption,
+        TProperty extends PropertyOption,
+        TMethod extends MethodOption,
+    > {
+        protected readonly _$fieldTypes: {
+            propertyValues: PropertyOptionToData<TProperty>
+            dataWithProperties: TData & PropertyOptionToData<TProperty>
+            methods: TMethod
+        }
+    }
 
     interface Behavior<B extends BehaviorOption> {
         /** 类似于mixins和traits的组件间代码复用机制，参见 [behaviors](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/behaviors.html) */
@@ -128,6 +144,8 @@ declare namespace WechatMiniprogram.Component {
         /** 组件的方法，包括事件响应函数和任意的自定义方法，关于事件响应函数的使用，参见 [组件间通信与事件](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/events.html) */
         methods: M & (TIsPage extends true ? Partial<Page.ILifetime> : {})
     }
+
+    type Satisfy<T, V> = V extends T ? V : T
     type PropertyType =
         | StringConstructor
         | NumberConstructor
@@ -148,11 +166,24 @@ declare namespace WechatMiniprogram.Component {
         : T extends ObjectConstructor
         ? IAnyObject
         : never
-    type FullProperty<T extends PropertyType> = {
+    type SimpleValueType<T extends PropertyType, V> = T extends StringConstructor
+        ? Satisfy<string, V>
+        : T extends NumberConstructor
+        ? Satisfy<number, V>
+        : T extends BooleanConstructor
+        ? Satisfy<boolean, V>
+        : T extends ArrayConstructor
+        ? Satisfy<any[], V>
+        : T extends ObjectConstructor
+        ? Satisfy<Record<string, any> | null, V>
+        : T extends FunctionConstructor
+        ? Satisfy<(...args: any[]) => any, V>
+        : never
+    type FullProperty<T extends PropertyType, V extends ValueType<T>> = {
         /** 属性类型 */
         type: T
         /** 属性初始值 */
-        value?: ValueType<T>
+        value?: V
         /** 属性值被更改时的响应函数 */
         observer?:
             | string
@@ -165,12 +196,12 @@ declare namespace WechatMiniprogram.Component {
         optionalTypes?: ShortProperty[]
     }
     type AllFullProperty =
-        | FullProperty<StringConstructor>
-        | FullProperty<NumberConstructor>
-        | FullProperty<BooleanConstructor>
-        | FullProperty<ArrayConstructor>
-        | FullProperty<ObjectConstructor>
-        | FullProperty<null>
+        | FullProperty<StringConstructor, any>
+        | FullProperty<NumberConstructor, any>
+        | FullProperty<BooleanConstructor, any>
+        | FullProperty<ArrayConstructor, any>
+        | FullProperty<ObjectConstructor, any>
+        | FullProperty<null, any>
     type ShortProperty =
         | StringConstructor
         | NumberConstructor
@@ -182,8 +213,15 @@ declare namespace WechatMiniprogram.Component {
     type PropertyToData<T extends AllProperty> = T extends ShortProperty
         ? ValueType<T>
         : FullPropertyToData<Exclude<T, ShortProperty>>
-    type ArrayOrObject = ArrayConstructor | ObjectConstructor
-    type FullPropertyToData<T extends AllFullProperty> = T['type'] extends ArrayOrObject ? unknown extends T['value'] ? ValueType<T['type']> : T['value'] : ValueType<T['type']>
+    type FullPropertyToData<T> = T extends FullProperty<infer T, infer V>
+        ? unknown extends V
+            ? ValueType<T>
+            : ((a: T) => void) extends (a: PropertyType) => void
+            ? V
+            : V extends ValueType<T>
+            ? SimpleValueType<T, V>
+            : never
+        : never
     type PropertyOptionToData<P extends PropertyOption> = {
         [name in keyof P]: PropertyToData<P[name]>
     }

@@ -1,6 +1,6 @@
-import { expectType } from 'tsd'
+import { expectAssignable, expectType } from 'tsd'
 
-expectType<string & {}>(Behavior({}))
+expectAssignable<string>(Behavior({}))
 
 Behavior({
   behaviors: [],

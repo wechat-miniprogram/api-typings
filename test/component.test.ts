@@ -1,6 +1,6 @@
-import { expectType, expectError, expectNotAssignable } from 'tsd'
+import { expectType, expectError, expectNotAssignable, expectAssignable } from 'tsd'
 
-expectType<string>(Component({}))
+expectAssignable<string>(Component({}))
 
 Component({
   behaviors: [''],
@@ -194,6 +194,10 @@ Component({
       type: Number,
       value: 1,
     },
+    n3: {
+      type: Number,
+      value: 1 as const,
+    },
     s: String,
     a: Array,
     a2: {
@@ -206,6 +210,12 @@ Component({
       type: Object,
       value: {} as Record<string, any>,
     },
+    o3: {
+      type: Object,
+      value: {
+        f1: 123,
+      },
+    },
   },
   methods: {
     g() {
@@ -216,12 +226,15 @@ Component({
       expectType<string>(this.g())
       expectType<number>(this.data.n)
       expectType<number>(this.data.n2)
+      expectType<1>(this.data.n3)
       expectType<string>(this.data.s)
       expectType<any[]>(this.data.a)
       expectType<number[]>(this.data.a2)
       expectType<boolean>(this.data.b)
       expectType<Record<string, any>>(this.data.o)
       expectType<Record<string, any>>(this.data.o2)
+      expectType<number>(this.data.o3.f1)
+      expectError(this.data.o3.f2)
       expectType<any>(this.data.o2.city)
       expectType<any>(this.data.a[0])
       expectType<any>(this.data.o.prop)
@@ -496,6 +509,38 @@ Component<{}, {}, { fn(): void }, []>({
       this.setUpdatePerformanceListener({})
     }
   })
+}
+
+{
+  type CustomProperties = {
+    customProp: string
+  }
+  Component<{}, {}, {}, [], CustomProperties>({
+    lifetimes: {
+      created() {
+        this.customProp = 'customProp'
+      }
+    }
+  })
+}
+
+{
+  const def = Component({
+    properties: {
+      a: Boolean,
+    },
+    data: {
+      b: 1,
+    },
+    methods: {
+      c() {}
+    },
+  })
+  type FieldTypes = (typeof def)['_$fieldTypes']
+  expectType<FieldTypes['propertyValues']['a']>(false as boolean)
+  expectType<FieldTypes['dataWithProperties']['a']>(false as boolean)
+  expectType<FieldTypes['dataWithProperties']['b']>(1 as number)
+  expectType<FieldTypes['methods']['c']>(() => {})
 }
 
 {
