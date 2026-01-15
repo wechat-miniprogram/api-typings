@@ -21,13 +21,13 @@ SOFTWARE.
 ***************************************************************************** */
 
 declare namespace WechatMiniprogram.Behavior {
-
-    type BehaviorIdentifier<
+    /** 实际使用中该值类型为 `string`。`TypeSignature` 仅用作类型推导，运行时无此类型对应的实际值 */
+    type Identifier<
         TData extends DataOption = {},
         TProperty extends PropertyOption = {},
         TMethod extends MethodOption = {},
         TBehavior extends BehaviorOption = []
-    > = string & BehaviorTypeSignature<TData, TProperty, TMethod, TBehavior>
+    > = string & TypeSignature<TData, TProperty, TMethod, TBehavior>
     type Instance<
         TData extends DataOption,
         TProperty extends PropertyOption,
@@ -59,7 +59,7 @@ declare namespace WechatMiniprogram.Behavior {
             TCustomInstanceProperty extends IAnyObject = Record<string, never>
         >(
             options: Options<TData, TProperty, TMethod, TBehavior, TCustomInstanceProperty>
-        ): string & BehaviorTypeSignature<TData, TProperty, TMethod, TBehavior>
+        ): Identifier<TData, TProperty, TMethod, TBehavior>
     }
 
     type DataOption = Component.DataOption
@@ -76,15 +76,15 @@ declare namespace WechatMiniprogram.Behavior {
     type OtherOption = Omit<Component.OtherOption, 'options'>
 
     /** 用于辅助识别 behavior 字段类型的虚拟字段 */
-    class BehaviorTypeSignature<
+    class TypeSignature<
         TData extends DataOption,
         TProperty extends PropertyOption,
         TMethod extends MethodOption,
         TBehavior extends BehaviorOption,
     > {
-        protected readonly _$behaviorFieldTypes?: BehaviorTypeSignatureFields<TData, TProperty, TMethod, TBehavior>
+        protected readonly _$behaviorFieldTypes?: TypeSignatureFields<TData, TProperty, TMethod, TBehavior>
     }
-    type BehaviorTypeSignatureFields<
+    type TypeSignatureFields<
         TData extends DataOption,
         TProperty extends PropertyOption,
         TMethod extends MethodOption,

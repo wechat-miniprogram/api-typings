@@ -21,6 +21,12 @@ SOFTWARE.
 ***************************************************************************** */
 
 declare namespace WechatMiniprogram.Component {
+    /** 实际使用中该值类型为 `string`。`TypeSignature` 仅用作类型推导，运行时无此类型对应的实际值 */
+    type Identifier<
+        TData extends DataOption = {},
+        TProperty extends PropertyOption = {},
+        TMethod extends MethodOption = {},
+    > = string & TypeSignature<TData, TProperty, TMethod>
     type FilterUnknownType<T> = {
         [P in keyof T as string extends P ? never : P]: T[P]
     }
@@ -94,15 +100,15 @@ declare namespace WechatMiniprogram.Component {
                 TCustomInstanceProperty,
                 TIsPage
             >
-        ): string & ComponentTypeSignature<TData, TProperty, TMethod>
+        ): Identifier<TData, TProperty, TMethod>
     }
     type DataOption = Record<string, any>
     type PropertyOption = Record<string, AllProperty>
     type MethodOption = Record<string, Function>
 
-    type BehaviorOption = Behavior.BehaviorIdentifier[]
+    type BehaviorOption = Behavior.Identifier[]
     type BehaviorFieldTypes<T> = (T & Record<string, unknown>)['_$behaviorFieldTypes']
-    type ExtractBehaviorType<T> = BehaviorFieldTypes<T> extends Behavior.BehaviorTypeSignatureFields<any, any, any, any> | undefined
+    type ExtractBehaviorType<T> = BehaviorFieldTypes<T> extends Behavior.TypeSignatureFields<any, any, any, any> | undefined
         ? BehaviorFieldTypes<T>
         : never
     type ExtractData<T> = T extends { data: infer D } ? D : never
@@ -115,7 +121,7 @@ declare namespace WechatMiniprogram.Component {
     type MixinMethods<T extends any[]> = UnionToIntersection<ExtractMethods<ExtractBehaviorType<T[number]>>>
 
     /** 用于辅助识别组件类型的虚拟字段（供 glass-easel-analyzer 等外部模块使用） */
-    class ComponentTypeSignature<
+    class TypeSignature<
         TData extends DataOption,
         TProperty extends PropertyOption,
         TMethod extends MethodOption,
@@ -275,7 +281,7 @@ declare namespace WechatMiniprogram.Component {
         ): void
 
         /** 检查组件是否具有 `behavior` （检查时会递归检查被直接或间接引入的所有behavior） */
-        hasBehavior(behavior: Behavior.BehaviorIdentifier): void
+        hasBehavior(behavior: Behavior.Identifier): void
         /** 触发事件，参见组件事件 */
         triggerEvent<DetailType = any>(
             name: string,

@@ -21,6 +21,16 @@ SOFTWARE.
 ***************************************************************************** */
 
 declare namespace WechatMiniprogram.Page {
+    /** 实际使用中 `Page` 无返回值（为 `undefined`）。`TypeSignature` 仅用作类型推导，运行时无此类型对应的实际值 */
+    type VoidReturnType<
+        TData extends DataOption,
+        TCustom extends CustomOption,
+    > = void &
+        Component.TypeSignature<
+            TData,
+            Record<never, never>,
+            { [K in keyof TCustom as TCustom[K] extends Function ? K : never]: TCustom[K] }
+        >
     type Instance<
         TData extends DataOption,
         TCustom extends CustomOption
@@ -42,11 +52,7 @@ declare namespace WechatMiniprogram.Page {
     interface Constructor {
         <TData extends DataOption, TCustom extends CustomOption>(
             options: Options<TData, TCustom>
-        ): void & Component.ComponentTypeSignature<
-            TData,
-            Record<never, never>,
-            { [K in keyof TCustom as TCustom[K] extends Function ? K : never]: TCustom[K] }
-        >
+        ): VoidReturnType<TData, TCustom>
     }
     interface ILifetime {
         /** 生命周期回调—监听页面加载
