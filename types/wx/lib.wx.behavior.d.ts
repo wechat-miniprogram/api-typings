@@ -27,13 +27,7 @@ declare namespace WechatMiniprogram.Behavior {
         TProperty extends PropertyOption = {},
         TMethod extends MethodOption = {},
         TBehavior extends BehaviorOption = []
-    > = string & {
-        [key in 'BehaviorType']?: {
-            data: Component.FilterUnknownType<TData> & Component.MixinData<TBehavior>
-            properties: Component.FilterUnknownType<TProperty> & Component.MixinProperties<TBehavior, true>
-            methods: Component.FilterUnknownType<TMethod> & Component.MixinMethods<TBehavior>
-        }
-    }
+    > = string & BehaviorTypeSignature<TData, TProperty, TMethod, TBehavior>
     type Instance<
         TData extends DataOption,
         TProperty extends PropertyOption,
@@ -65,7 +59,7 @@ declare namespace WechatMiniprogram.Behavior {
             TCustomInstanceProperty extends IAnyObject = Record<string, never>
         >(
             options: Options<TData, TProperty, TMethod, TBehavior, TCustomInstanceProperty>
-        ): BehaviorIdentifier<TData, TProperty, TMethod, TBehavior>
+        ): string & BehaviorTypeSignature<TData, TProperty, TMethod, TBehavior>
     }
 
     type DataOption = Component.DataOption
@@ -80,6 +74,26 @@ declare namespace WechatMiniprogram.Behavior {
     type DefinitionFilter = Component.DefinitionFilter
     type Lifetimes = Component.Lifetimes
     type OtherOption = Omit<Component.OtherOption, 'options'>
+
+    /** 用于辅助识别 behavior 字段类型的虚拟字段 */
+    class BehaviorTypeSignature<
+        TData extends DataOption,
+        TProperty extends PropertyOption,
+        TMethod extends MethodOption,
+        TBehavior extends BehaviorOption,
+    > {
+        protected readonly _$behaviorFieldTypes?: BehaviorTypeSignatureFields<TData, TProperty, TMethod, TBehavior>
+    }
+    type BehaviorTypeSignatureFields<
+        TData extends DataOption,
+        TProperty extends PropertyOption,
+        TMethod extends MethodOption,
+        TBehavior extends BehaviorOption,
+    > = {
+        data: Component.FilterUnknownType<TData> & Component.MixinData<TBehavior>
+        properties: Component.FilterUnknownType<TProperty> & Component.MixinProperties<TBehavior, true>
+        methods: Component.FilterUnknownType<TMethod> & Component.MixinMethods<TBehavior>
+    }
 }
 /** 注册一个 `behavior`，接受一个 `Object` 类型的参数。*/
 declare let Behavior: WechatMiniprogram.Behavior.Constructor

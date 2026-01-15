@@ -42,7 +42,11 @@ declare namespace WechatMiniprogram.Page {
     interface Constructor {
         <TData extends DataOption, TCustom extends CustomOption>(
             options: Options<TData, TCustom>
-        ): void
+        ): void & Component.ComponentTypeSignature<
+            TData,
+            Record<never, never>,
+            { [K in keyof TCustom as TCustom[K] extends Function ? K : never]: TCustom[K] }
+        >
     }
     interface ILifetime {
         /** 生命周期回调—监听页面加载
