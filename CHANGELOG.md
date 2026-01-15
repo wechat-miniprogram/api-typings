@@ -1,3 +1,17 @@
+## 2026-01-15 v5.0.0
+合入 [#362](https://github.com/wechat-miniprogram/api-typings/pull/362), [#363](https://github.com/wechat-miniprogram/api-typings/pull/363) by [@LastLeaf](https://github.com/LastLeaf)。这两个 Pull Request 对 `Component`, `Behavior` 及 `Page` 的进行了一些改动：
+1. 在 `Component`, `Behavior` 及 `Page` 的返回值中交叉一个实际并不存在的 Branded Type，携带 `data`, `properties` 及 `methods` 的类型信息，用以支持 [glass-easel-analyzer](https://github.com/wechat-miniprogram/glass-easel-analyzer) 的组件类型分析；
+1. 修改 `properties` 的类型推导方式，使其类似 [glass-easel](https://github.com/wechat-miniprogram/glass-easel)，相比原有的推导方式，能更准确地保留 property 的 `value` 的类型
+
+这是一个 **破坏性改动**，从低于 5.0.0 的版本升级时，可能需要进行一些适配：
+1. 全局函数 `Component` 和 `Behavior` 的泛型 `TProperty` 的定义有一些改变，如果之前的代码中以 `FullProperty` 形式手动指定了这个泛型，可能需要为 `FullProperty` 添加 `value` 的具体类型；
+1. 4.0.0 中添加的 `WechatMiniprogram.Behavior.BehaviorIdentifier` 更名为 `WechatMiniprogram.Behavior.Identifier`；
+1. `Component()`, `Behavior()` 和 `Page()` 的返回值类型都有对应的改变，在实际类型上增加了一个 Branded Type。对于这几个函数的返回值类型：
+   - `Behavior` 的返回类型可以使用新增加的 `WechatMiniprogram.Behavior.Identifier` 来表达；
+   - `Component` 的返回类型可以使用新增加的 `WechatMiniprogram.Component.Identifier` 来表达；
+   - `Page` 需要留意实际返回值应为 `void` (`undefined`)，必要时也可以使用新增加的 `WechatMiniprogram.Page.VoidReturnType`；
+1. 自定义组件的 `this.data` 和 `this.property` 的推导类型可能会有所变化，需要根据推导类型进行相应改动。
+
 ## 2026-01-15 v4.1.3
 - 更新 API 定义到 3.13.1
 - 依照更新过的 `Platform` 枚举值更新测试用例
