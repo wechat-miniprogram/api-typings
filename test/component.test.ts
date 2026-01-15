@@ -194,6 +194,10 @@ Component({
       type: Number,
       value: 1,
     },
+    n3: {
+      type: Number,
+      value: 1 as const,
+    },
     s: String,
     a: Array,
     a2: {
@@ -206,6 +210,12 @@ Component({
       type: Object,
       value: {} as Record<string, any>,
     },
+    o3: {
+      type: Object,
+      value: {
+        f1: 123,
+      },
+    },
   },
   methods: {
     g() {
@@ -216,12 +226,15 @@ Component({
       expectType<string>(this.g())
       expectType<number>(this.data.n)
       expectType<number>(this.data.n2)
+      expectType<1>(this.data.n3)
       expectType<string>(this.data.s)
       expectType<any[]>(this.data.a)
       expectType<number[]>(this.data.a2)
       expectType<boolean>(this.data.b)
       expectType<Record<string, any>>(this.data.o)
       expectType<Record<string, any>>(this.data.o2)
+      expectType<number>(this.data.o3.f1)
+      expectError(this.data.o3.f2)
       expectType<any>(this.data.o2.city)
       expectType<any>(this.data.a[0])
       expectType<any>(this.data.o.prop)
