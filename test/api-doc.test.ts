@@ -994,7 +994,7 @@ import { expectType } from 'tsd'
   })
 }
 
-type TPlatform = 'ios' | 'android' | 'windows' | 'mac' | 'devtools' | 'ohos'
+type TPlatform = 'ios' | 'android' | 'windows' | 'mac' | 'devtools' | 'ohos' | 'ohos_pc'
 
 // Test case from `wx.getSystemInfoSync`
 {

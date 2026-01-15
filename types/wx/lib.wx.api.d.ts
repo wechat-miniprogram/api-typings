@@ -1,5 +1,5 @@
 /*! *****************************************************************************
-Copyright (c) 2025 Tencent, Inc. All rights reserved.
+Copyright (c) 2026 Tencent, Inc. All rights reserved.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -4782,8 +4782,24 @@ ctx.draw()
         memorySize: string
         /** 设备型号。新机型刚推出一段时间会显示unknown，微信会尽快进行适配。 */
         model: string
-        /** 客户端平台 */
-        platform: string
+        /** 客户端平台
+         *
+         * 可选值：
+         * - 'ios': iOS微信（包含 iPhone、iPad）;
+         * - 'android': Android微信;
+         * - 'ohos': HarmonyOS 手机端微信;
+         * - 'ohos_pc': HarmonyOS PC微信;
+         * - 'windows': Windows微信;
+         * - 'mac': macOS微信;
+         * - 'devtools': 微信开发者工具; */
+        platform:
+            | 'ios'
+            | 'android'
+            | 'ohos'
+            | 'ohos_pc'
+            | 'windows'
+            | 'mac'
+            | 'devtools'
         /** 操作系统及版本 */
         system: string
     }
@@ -9010,6 +9026,16 @@ NFCAdapter.offDiscovered(listener) // 需传入与监听时同一个的函数对
         /** 接口调用成功的回调函数 */
         success?: OpenChannelsEventSuccessCallback
     }
+    interface OpenChannelsLiveNoticeInfoOption {
+        /** 视频号 id，以"sph"开头的id，可在视频号助手获取 */
+        finderUserName: string
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: OpenChannelsLiveNoticeInfoCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: OpenChannelsLiveNoticeInfoFailCallback
+        /** 接口调用成功的回调函数 */
+        success?: OpenChannelsLiveNoticeInfoSuccessCallback
+    }
     interface OpenChannelsLiveOption {
         /** 视频号 id，以“sph”开头的id，可在视频号助手获取 */
         finderUserName: string
@@ -10505,12 +10531,8 @@ NFCAdapter.offDiscovered(listener) // 需传入与监听时同一个的函数对
         complete?: RequestCompleteCallback
         /** 请求的参数 */
         data?: string | IAnyObject | ArrayBuffer
-        /** 返回的数据格式
-         *
-         * 可选值：
-         * - 'json': 返回的数据为 JSON，返回后会对返回的数据进行一次 JSON.parse;
-         * - '其他': 不对返回的内容进行 JSON.parse; */
-        dataType?: 'json' | '其他'
+        /** 返回的数据格式。值为 `json` 时，返回的数据为 JSON，返回后会对返回的数据进行一次 `JSON.parse`；其他值则不对返回的内容进行 `JSON.parse` */
+        dataType?: string
         /** 需要基础库： `2.10.4`
          *
          * 开启 Http 缓存 */
@@ -11357,7 +11379,7 @@ wx.createSelectorQuery()
         success?: SetBackgroundColorSuccessCallback
     }
     interface SetBackgroundFetchTokenOption {
-        /** 自定义的登录态 */
+        /** 自定义的登录态。上限 1024 字符。 */
         token: string
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: SetBackgroundFetchTokenCompleteCallback
@@ -11744,6 +11766,8 @@ wx.createSelectorQuery()
         fail?: ShareToOfficialAccountFailCallback
         /** 公众号文章图片，必须为本地路径或临时路径 */
         images?: string[]
+        /** 开发者自定义小程序路径 */
+        path?: string
         /** 接口调用成功的回调函数 */
         success?: ShareToOfficialAccountSuccessCallback
         /** 公众号文章标签 */
@@ -12823,11 +12847,19 @@ wx.getSetting({
          * 可选值：
          * - 'ios': iOS微信（包含 iPhone、iPad）;
          * - 'android': Android微信;
-         * - 'ohos': HarmonyOS微信;
+         * - 'ohos': HarmonyOS 手机端微信;
+         * - 'ohos_pc': HarmonyOS PC微信;
          * - 'windows': Windows微信;
          * - 'mac': macOS微信;
          * - 'devtools': 微信开发者工具; */
-        platform: 'ios' | 'android' | 'ohos' | 'windows' | 'mac' | 'devtools'
+        platform:
+            | 'ios'
+            | 'android'
+            | 'ohos'
+            | 'ohos_pc'
+            | 'windows'
+            | 'mac'
+            | 'devtools'
         /** 需要基础库： `2.7.0`
          *
          * 在竖屏正方向下的安全区域。部分机型没有安全区域概念，也不会返回 safeArea 字段，开发者需自行兼容。 */
@@ -28695,6 +28727,16 @@ wx.openCard({
          *
          * 打开视频号直播 */
         openChannelsLive(option: OpenChannelsLiveOption): void
+        /** [wx.openChannelsLiveNoticeInfo(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/channels/wx.openChannelsLiveNoticeInfo.html)
+         *
+         * 需要基础库： `3.13.0`
+         *
+         * 在插件中使用：不支持
+         *
+         * 打开视频号直播预告半屏 */
+        openChannelsLiveNoticeInfo(
+            option: OpenChannelsLiveNoticeInfoOption
+        ): void
         /** [wx.openChannelsUserProfile(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/channels/wx.openChannelsUserProfile.html)
          *
          * 需要基础库： `2.21.2`
@@ -28865,7 +28907,7 @@ wx.openHKOfflinePayView({
 *
 * 需要基础库： `3.7.10`
 *
-* 在插件中使用：不支持
+* 在插件中使用：需要基础库 `3.11.2`
 *
 * 通过小程序打开公众号主页
 *
@@ -34139,6 +34181,18 @@ wx.writeBLECharacteristicValue({
     type OpenChannelsLiveCompleteCallback = (res: GeneralCallbackResult) => void
     /** 接口调用失败的回调函数 */
     type OpenChannelsLiveFailCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type OpenChannelsLiveNoticeInfoCompleteCallback = (
+        res: GeneralCallbackResult
+    ) => void
+    /** 接口调用失败的回调函数 */
+    type OpenChannelsLiveNoticeInfoFailCallback = (
+        res: GeneralCallbackResult
+    ) => void
+    /** 接口调用成功的回调函数 */
+    type OpenChannelsLiveNoticeInfoSuccessCallback = (
+        res: GeneralCallbackResult
+    ) => void
     /** 接口调用成功的回调函数 */
     type OpenChannelsLiveSuccessCallback = (res: GeneralCallbackResult) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
