@@ -772,8 +772,8 @@ declare namespace WechatMiniprogram.Component {
     interface ScrollTimelineOption {
         /** 指定滚动元素的选择器（只支持 scroll-view），该元素滚动时会驱动动画的进度 */
         scrollSource: string
-        /** 指定滚动的方向。有效值为 horizontal 或 vertical */
-        orientation?: string
+        /** 指定滚动的方向。有效值为 horizontal 或 vertical，默认值 vertical */
+        orientation?: 'horizontal' | 'vertical'
         /** 指定开始驱动动画进度的滚动偏移量，单位 px */
         startScrollOffset: number
         /** 指定停止驱动动画进度的滚动偏移量，单位 px */
