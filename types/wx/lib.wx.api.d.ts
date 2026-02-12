@@ -454,6 +454,8 @@ declare namespace WechatMiniprogram {
         phoneCalendarAuthorized: 'authorized' | 'denied' | 'not determined'
     }
     interface AppBaseInfo {
+        /** PC 内核版本号，仅在 PC 端存在该值 */
+        PCKernelVersion: string
         /** 客户端基础库版本 */
         SDKVersion: string
         /** 是否已打开调试。可通过右上角菜单或 [wx.setEnableDebug](https://developers.weixin.qq.com/miniprogram/dev/api/base/debug/wx.setEnableDebug.html) 打开调试。 */
@@ -3844,9 +3846,9 @@ ctx.draw()
         /** 抬头类型
          *
          * 可选值：
-         * - 0: 单位;
-         * - 1: 个人; */
-        type: 0 | 1
+         * - '0': 单位;
+         * - '1': 个人; */
+        type: '0' | '1'
     }
     interface ChooseLicensePlateOption {
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
@@ -8173,6 +8175,10 @@ NFCAdapter.offDiscovered(listener) // 需传入与监听时同一个的函数对
         routeType?: string
         /** 接口调用成功的回调函数 */
         success?: NavigateToSuccessCallback
+        /** [OpenContainer](https://developers.weixin.qq.com/miniprogram/dev/api/skyline/OpenContainer.html)
+         *
+         * 3.12.2 skyline 下指定路由动画所用OpenContainerContext，相关文档 [OpenContainerContext] (#) */
+        withOpenContainer?: OpenContainer
     }
     interface NavigateToSuccessCallbackResult {
         /** [EventChannel](https://developers.weixin.qq.com/miniprogram/dev/api/route/EventChannel.html)
@@ -9194,6 +9200,20 @@ NFCAdapter.offDiscovered(listener) // 需传入与监听时同一个的函数对
         signType?: 'SHA1'
         /** 接口调用成功的回调函数 */
         success?: OpenHKOfflinePayViewSuccessCallback
+    }
+    interface OpenInquiriesTopicFailCallbackErr {
+        /** 错误信息 */
+        errMsg: string
+    }
+    interface OpenInquiriesTopicOption {
+        /** 落地页 id，需在指定页面点击右上角三个点的「复制 ID」按钮获取 */
+        pageId: string
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: OpenInquiriesTopicCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: OpenInquiriesTopicFailCallback
+        /** 接口调用成功的回调函数 */
+        success?: OpenInquiriesTopicSuccessCallback
     }
     interface OpenLocationOption {
         /** 纬度，范围为-90~90，负数表示南纬。使用 gcj02 国测局坐标系 */
@@ -27792,6 +27812,7 @@ wx.onBluetoothAdapterStateChange(function (res) {
 * **注意**
 *
 * - 若在 [wx.onBluetoothDeviceFound](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/wx.onBluetoothDeviceFound.html) 回调了某个设备，则此设备会添加到 [wx.getBluetoothDevices](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth/wx.getBluetoothDevices.html) 接口获取到的数组中。
+* - 地址变化这个是鸿蒙系统特性，小程序可以不缓存地址，重新搜索连接。
 *
 * **示例代码**
 *
@@ -28831,6 +28852,28 @@ wx.openHKOfflinePayView({
 })
 ``` */
         openHKOfflinePayView(option: OpenHKOfflinePayViewOption): void
+        /** [wx.openInquiriesTopic(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/navigate/wx.openInquiriesTopic.html)
+*
+* 需要基础库： `3.14.0`
+*
+* 在插件中使用：不支持
+*
+* 通过小程序打开问一问话题
+*
+* **示例代码**
+*
+* ```js
+wx.openInquiriesTopic({
+  pageId:'', // 填写落地页 id
+  success: res => {
+
+  },
+  fail: res => {
+
+  }
+})
+``` */
+        openInquiriesTopic(option: OpenInquiriesTopicOption): void
         /** [wx.openLocation(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/location/wx.openLocation.html)
 *
 * 在插件中使用：需要基础库 `1.9.6`
@@ -34255,6 +34298,18 @@ wx.writeBLECharacteristicValue({
     type OpenHKOfflinePayViewFailCallback = (res: GeneralCallbackResult) => void
     /** 接口调用成功的回调函数 */
     type OpenHKOfflinePayViewSuccessCallback = (
+        res: GeneralCallbackResult
+    ) => void
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type OpenInquiriesTopicCompleteCallback = (
+        res: GeneralCallbackResult
+    ) => void
+    /** 接口调用失败的回调函数 */
+    type OpenInquiriesTopicFailCallback = (
+        err: OpenInquiriesTopicFailCallbackErr
+    ) => void
+    /** 接口调用成功的回调函数 */
+    type OpenInquiriesTopicSuccessCallback = (
         res: GeneralCallbackResult
     ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */

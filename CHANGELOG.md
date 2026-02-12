@@ -1,3 +1,6 @@
+## 2026-02-12 v5.0.1
+- 更新 API 定义到 3.14.2
+
 ## 2026-01-15 v5.0.0
 合入 [#362](https://github.com/wechat-miniprogram/api-typings/pull/362), [#363](https://github.com/wechat-miniprogram/api-typings/pull/363) by [@LastLeaf](https://github.com/LastLeaf)。这两个 Pull Request 对 `Component`, `Behavior` 及 `Page` 的进行了一些改动：
 1. 在 `Component`, `Behavior` 及 `Page` 的返回值中交叉一个实际并不存在的 Branded Type，携带 `data`, `properties` 及 `methods` 的类型信息，用以支持 [glass-easel-analyzer](https://github.com/wechat-miniprogram/glass-easel-analyzer) 的组件类型分析；
