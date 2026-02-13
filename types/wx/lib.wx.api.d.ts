@@ -21767,10 +21767,10 @@ Page({
          * 在插件中使用：不支持
          *
          * 创建共享变量 `SharedValue`，用于跨线程共享数据和驱动动画。 */
-        shared(
+        shared<T>(
             /** 初始值，可通过 `.value` 属性进行读取和修改。类型可以是 `number | string | bool | null | undefined | Object | Array | Function`。 */
-            initialValue: any
-        ): SharedValue
+            initialValue: T
+        ): SharedValue<T>
         /** [function worklet.runOnJS(function fn)](https://developers.weixin.qq.com/miniprogram/dev/api/ui/worklet/tool-function/worklet.runOnJS.html)
          *
          * 在插件中使用：不支持
