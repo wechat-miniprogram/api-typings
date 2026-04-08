@@ -241,8 +241,14 @@ declare namespace ICloud {
     interface ICloudExtendServices {
         AI: ICloudAI
     }
+    interface ICloudAIModelDefinition {
+        modelName: string
+        modelPath: string
+        extractPath: string
+        reasoningPath?: string
+    }
     interface ICloudAI {
-        createModel: (modelName: string) => ICloudAIModel
+        createModel: (modelName: string | ICloudAIModelDefinition) => ICloudAIModel
         bot: ICloudBot
     }
     interface ICloudAICallbackOptions {
