@@ -3683,6 +3683,14 @@ ctx.draw()
         /** 是否已录入信息 */
         isEnrolled: boolean
     }
+    interface CheckIsSupportFacialRecognitionOption {
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: CheckIsSupportFacialRecognitionCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: CheckIsSupportFacialRecognitionFailCallback
+        /** 接口调用成功的回调函数 */
+        success?: CheckIsSupportFacialRecognitionSuccessCallback
+    }
     interface CheckIsSupportSoterAuthenticationOption {
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: CheckIsSupportSoterAuthenticationCompleteCallback
@@ -3846,9 +3854,9 @@ ctx.draw()
         /** 抬头类型
          *
          * 可选值：
-         * - '0': 单位;
-         * - '1': 个人; */
-        type: '0' | '1'
+         * - 0: 单位;
+         * - 1: 个人; */
+        type: 0 | 1
     }
     interface ChooseLicensePlateOption {
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
@@ -4911,6 +4919,20 @@ ctx.draw()
         fail?: EnableAlertBeforeUnloadFailCallback
         /** 接口调用成功的回调函数 */
         success?: EnableAlertBeforeUnloadSuccessCallback
+    }
+    interface EnterChatToolModeOption {
+        /** 聊天室 id，不传则拉起群选择框，可以传入多聊群的 opengid 值 */
+        chatToolRooms?: string[]
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: EnterChatToolModeCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: EnterChatToolModeFailCallback
+        /** 多选模式下最多选择的群聊数量 */
+        selectLimit?: number
+        /** 是否单选群聊，true 为单选，false 为多选 */
+        singleChatRoom?: boolean
+        /** 接口调用成功的回调函数 */
+        success?: EnterChatToolModeSuccessCallback
     }
     /** 文件读取结果。res.entries 是一个对象，key是文件路径，value是一个对象 FileItem ，表示该文件的读取结果。每个 FileItem 包含 data （文件内容） 和 errMsg （错误信息） 属性。 */
     interface EntriesResult {
@@ -8175,10 +8197,8 @@ NFCAdapter.offDiscovered(listener) // 需传入与监听时同一个的函数对
         routeType?: string
         /** 接口调用成功的回调函数 */
         success?: NavigateToSuccessCallback
-        /** [OpenContainer](https://developers.weixin.qq.com/miniprogram/dev/api/skyline/OpenContainer.html)
-         *
-         * 3.12.2 skyline 下指定路由动画所用OpenContainerContext，相关文档 [OpenContainerContext] (#) */
-        withOpenContainer?: OpenContainer
+        /** 3.12.2 skyline 下指定路由动画所用OpenContainerContext，相关文档 [OpenContainerContext](#) */
+        withOpenContainer?: IAnyObject
     }
     interface NavigateToSuccessCallbackResult {
         /** [EventChannel](https://developers.weixin.qq.com/miniprogram/dev/api/route/EventChannel.html)
@@ -8643,6 +8663,8 @@ NFCAdapter.offDiscovered(listener) // 需传入与监听时同一个的函数对
     interface OnCopyUrlListenerResult {
         /** 用短链打开小程序时当前页面携带的查询字符串。小程序中使用时，应在进入页面时调用 `wx.onCopyUrl` 自定义 `query`，退出页面时调用 `wx.offCopyUrl`，防止影响其它页面。 */
         query: string
+        /** 短链中的自定义标题，显示在小程序名称之后，可以不填 */
+        title: string
     }
     interface OnCustomRendererEventCallbackResult {
         /** 推流高度 */
@@ -10488,6 +10510,16 @@ NFCAdapter.offDiscovered(listener) // 需传入与监听时同一个的函数对
         /** 本次请求底层重试次数 */
         retryCount: number
     }
+    interface RequestFacialVerifyOption {
+        /** 人脸核身会话唯一标识（小程序后台根据「用户实名信息（姓名+身份证）」调用微信后台[getVerifyId](https://developers.weixin.qq.com/miniprogram/dev/server/API/face/api_getverifyid.html)接口获取） */
+        verifyId: string
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: RequestFacialVerifyCompleteCallback
+        /** 接口调用失败的回调函数 */
+        fail?: RequestFacialVerifyFailCallback
+        /** 接口调用成功的回调函数 */
+        success?: RequestFacialVerifySuccessCallback
+    }
     interface RequestFailCallbackErr {
         /** 错误信息 */
         errMsg: string
@@ -11282,13 +11314,13 @@ wx.createSelectorQuery()
     interface ScrollViewContextScrollToOption {
         /** 是否启用滚动动画 */
         animated?: boolean
-        /** 滚动动画时长 (仅在 iOS 下生效) */
+        /** 滚动动画时长 (webview 仅在 iOS 下生效；skyline 在 3.14.3 后支持) */
         duration?: number
         /** 左边界距离 */
         left?: number
         /** 顶部距离 */
         top?: number
-        /** 初始速度 (仅在 iOS 下生效) */
+        /** 初始速度 (webview 仅在 iOS 下生效；skyline 在 3.14.3 后支持) */
         velocity?: number
     }
     interface SeekBackgroundAudioOption {
@@ -11776,21 +11808,21 @@ wx.createSelectorQuery()
         success?: ShareImageToGroupSuccessCallback
     }
     interface ShareToOfficialAccountOption {
-        /** 公众号文章标题 */
+        /** 贴图的标题 */
         title: string
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: ShareToOfficialAccountCompleteCallback
-        /** 公众号文章正文 */
+        /** 贴图的正文 */
         content?: string
         /** 接口调用失败的回调函数 */
         fail?: ShareToOfficialAccountFailCallback
-        /** 公众号文章图片，必须为本地路径或临时路径 */
+        /** 贴图的图片，必须为本地路径或临时路径 */
         images?: string[]
         /** 开发者自定义小程序路径 */
         path?: string
         /** 接口调用成功的回调函数 */
         success?: ShareToOfficialAccountSuccessCallback
-        /** 公众号文章标签 */
+        /** 贴图的标签 */
         tags?: string[]
     }
     interface ShareToWeRunOption {
@@ -12028,6 +12060,8 @@ wx.createSelectorQuery()
         offerId: string
         /** 业务订单号, 每个订单号只能使用一次, 重复使用会失败(极端情况不保证唯一, 不建议业务强依赖唯一性).  要求8-32个字符内, 只能是数字、大小写字母、符号 _-|*@组成, 不能以下划线(_)开头 */
         outTradeNo: string
+        /** 道具优惠价格（分），**非必填，该字段需与goodsPrice一起传入**。如用户使用优惠券、积分等，需要以低于道具价格下单时可传入，传入后该价格即为实际下单价格，优惠价格最低为道具价格的40%。 */
+        activitySellingPrice?: number
         /** 环境配置, 0 米大师正式环境, 1 米大师沙箱环境, 默认为 0 */
         env?: number
         /** 道具单价(分), **该字段仅mode=short_series_goods时需要必填**, 用来校验价格与后台道具价格是否一致, 避免用户在业务商城页看到的价格与实际价格不一致导致投诉 */
@@ -12981,6 +13015,10 @@ wx.getSetting({
         port: number
     }
     interface TakePhotoOption {
+        /** 需要基础库： `3.15.0`
+         *
+         * 是否返回照片的拍摄信息 */
+        captureMetadata?: boolean
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
         complete?: TakePhotoCompleteCallback
         /** 接口调用失败的回调函数 */
@@ -13001,6 +13039,10 @@ wx.getSetting({
         success?: TakePhotoSuccessCallback
     }
     interface TakePhotoSuccessCallbackResult {
+        /** 需要基础库： `3.15.0`
+         *
+         * 照片的拍摄信息，仅当传入的 captureMetadata 属性值为 true 时返回该字段 */
+        metadata: IAnyObject
         /** 照片文件的临时路径 (本地路径)，安卓是jpg图片格式，ios是png */
         tempImagePath: string
         errMsg: string
@@ -20289,6 +20331,18 @@ Page({
          * 停止录音 */
         stop(): void
     }
+    interface RequestFacialVerifyError {
+        /** 错误信息
+         *
+         * | 错误码 | 错误信息 | 说明 |
+         * | - | - | - |
+         * | 0 | 人脸识别完成（需要通过[queryVerifyInfo](https://developers.weixin.qq.com/miniprogram/dev/server/API/face/api_queryverifyinfo.html)接口查询人脸核身真实验证结果） |  | */ errMsg: string
+        /** 错误码
+         *
+         * | 错误码 | 错误信息 | 说明 |
+         * | - | - | - |
+         * | 0 | 人脸识别完成（需要通过[queryVerifyInfo](https://developers.weixin.qq.com/miniprogram/dev/server/API/face/api_queryverifyinfo.html)接口查询人脸核身真实验证结果） |  | */ errCode: number
+    }
     interface RequestTask {
         /** [RequestTask.abort()](https://developers.weixin.qq.com/miniprogram/dev/api/network/request/RequestTask.abort.html)
          *
@@ -23691,6 +23745,29 @@ wx.checkIsSoterEnrolledInDevice({
         >(
             option: T
         ): PromisifySuccessResult<T, CheckIsSoterEnrolledInDeviceOption>
+        /** [wx.checkIsSupportFacialRecognition(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/face/wx.checkIsSupportFacialRecognition.html)
+*
+* 需要基础库： `3.8.12`
+*
+* 在插件中使用：不支持
+*
+* 检查当前设备是否支持人脸识别能力
+*
+* **示例代码**
+*
+* ```js
+wx.checkIsSupportFacialRecognition({
+  success() {
+   // 支持人脸识别
+  },
+  fail() {
+   // 不支持人脸识别
+  },
+})
+``` */
+        checkIsSupportFacialRecognition(
+            option?: CheckIsSupportFacialRecognitionOption
+        ): void
         /** [wx.checkIsSupportSoterAuthentication(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/soter/wx.checkIsSupportSoterAuthentication.html)
 *
 * 需要基础库： `1.5.0`
@@ -24252,6 +24329,17 @@ wx.editImage({
          *
          * [在微信开发者工具中查看示例](https://developers.weixin.qq.com/s/MTPm9Cmh7VfT) */
         enableAlertBeforeUnload(option: EnableAlertBeforeUnloadOption): void
+        /** [wx.enterChatToolMode(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/chattool/wx.enterChatToolMode.html)
+         *
+         * 需要基础库： `3.12.0`
+         *
+         * 在插件中使用：不支持
+         *
+         * 进入聊天工具开放能力模式。
+         *
+         *   1. 不传入聊天室id列表时，微信会拉起聊天列表让用户选择，用户选择后绑定聊天室进入聊天工具模式。
+         *   2. 传入聊天室id列表时（群聊为opengid），会直接绑定这批聊天室进入。 */
+        enterChatToolMode(option: EnterChatToolModeOption): void
         /** [wx.exitMiniProgram(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/navigate/wx.exitMiniProgram.html)
          *
          * 需要基础库： `2.17.3`
@@ -25087,7 +25175,7 @@ Page({
 *
 * ```js
 wx.getRandomValues({
-  length: 6 // 生成 6 个字节长度的随机数,
+  length: 6, // 生成 6 个字节长度的随机数
   success: res => {
     console.log(wx.arrayBufferToBase64(res.randomValues)) // 转换为 base64 字符串后打印
   }
@@ -28944,7 +29032,7 @@ wx.openInquiriesTopic({
 *
 * 需要基础库： `3.4.8`
 *
-* 在插件中使用：不支持
+* 在插件中使用：需要基础库 `3.15.1`
 *
 * 通过小程序打开任意公众号文章（不包括临时链接等异常状态下的公众号文章），必须有点击行为才能调用成功。
 *
@@ -29778,6 +29866,29 @@ wx.requestDeviceVoIP({
 })
 ``` */
         requestDeviceVoIP(option: RequestDeviceVoIPOption): void
+        /** [wx.requestFacialVerify(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/face/wx.requestFacialVerify.html)
+*
+* 需要基础库： `3.8.12`
+*
+* 在插件中使用：不支持
+*
+* 对用户实名信息进行基于生物识别的人脸核身验证
+*
+* **示例代码**
+*
+* ```js
+wx.requestFacialVerify({
+  // 人脸核身会话唯一标识
+  verifyId: 'xxx',
+  success() {
+    // 人脸核身验证成功，需要通知小程序后台根据本次人脸核身会话唯一标识 verifyId 字段调用微信后台 queryVerifyInfo 接口查询人脸核身真实验证结果。
+  },
+  fail() {
+    // 人脸核身验证失败
+  },
+})
+``` */
+        requestFacialVerify(option: RequestFacialVerifyOption): void
         /** [wx.requestIdleCallback(function callback, Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/base/performance/wx.requestIdleCallback.html)
 *
 * 需要基础库： `3.10.0`
@@ -30963,17 +31074,17 @@ wx.getWifiList()
          *
          * 在插件中使用：不支持
          *
-         * 支持拉起公众号图文发表页，用户可将图片与文字内容发表至公众号
+         * 支持拉起贴图发表页，用户可将图片与文字内容发表为贴图。
          *
          * ****
          *
          * ## 推荐图标
          *
-         * 推荐使用公众号品牌图标作为该功能按钮，可使用下列高清素材：
+         * 推荐使用贴图品牌图标作为该功能按钮，可使用下列高清素材：
          *
-         * ![推荐图标1](https://res.wx.qq.com/op_res/sUpSkdOuTXzdE2AcUlfESWWjDekvvsIpAB5LkXDz68XiwaYUxjHhMRe9aUxQeFKKpeodbEXzywEC4FITblbJwA)
+         * ![推荐图标1](https://res.wx.qq.com/op_res/92p2SWttdiOWvv5u9ZnyZwZrBXYrnz8TwwQNyOnfjFK2EG_Veqj4i0Gvs_EzXzzoXSByoaXkou7gw5_UIHiYRg)
          *
-         * ![推荐图标2](https://res.wx.qq.com/op_res/CtbPHCu5Ado0lGDHwEHsP4HAdafJu48A6P8O5ajOoZqle7XIlALejtqID9DcMGtTJHXOJYq91wXrbmQ7MjFi1w) */
+         * ![推荐图标2](https://res.wx.qq.com/op_res/T9EwP8p1f6xuyLUDFdfVP7qiQsqrm203K6PeQdxjh87W_ME_-ht8nLLdtMZmapwdrfgpmMctsjiBwZpkIyfxgA) */
         shareToOfficialAccount(option: ShareToOfficialAccountOption): void
         /** [wx.shareToWeRun(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/werun/wx.shareToWeRun.html)
          *
@@ -32375,6 +32486,18 @@ wx.writeBLECharacteristicValue({
         result: CheckIsSoterEnrolledInDeviceSuccessCallbackResult
     ) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type CheckIsSupportFacialRecognitionCompleteCallback = (
+        res: GeneralCallbackResult
+    ) => void
+    /** 接口调用失败的回调函数 */
+    type CheckIsSupportFacialRecognitionFailCallback = (
+        res: GeneralCallbackResult
+    ) => void
+    /** 接口调用成功的回调函数 */
+    type CheckIsSupportFacialRecognitionSuccessCallback = (
+        res: GeneralCallbackResult
+    ) => void
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type CheckIsSupportSoterAuthenticationCompleteCallback = (
         res: GeneralCallbackResult
     ) => void
@@ -32673,6 +32796,14 @@ wx.writeBLECharacteristicValue({
     type EnableAlertBeforeUnloadSuccessCallback = (
         res: GeneralCallbackResult
     ) => void
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type EnterChatToolModeCompleteCallback = (
+        res: GeneralCallbackResult
+    ) => void
+    /** 接口调用失败的回调函数 */
+    type EnterChatToolModeFailCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用成功的回调函数 */
+    type EnterChatToolModeSuccessCallback = (res: GeneralCallbackResult) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
     type EraseLinesCompleteCallback = (res: GeneralCallbackResult) => void
     /** 接口调用失败的回调函数 */
@@ -34803,6 +34934,18 @@ wx.writeBLECharacteristicValue({
     type RequestDeviceVoIPFailCallback = (res: GeneralCallbackResult) => void
     /** 接口调用成功的回调函数 */
     type RequestDeviceVoIPSuccessCallback = (res: GeneralCallbackResult) => void
+    /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+    type RequestFacialVerifyCompleteCallback = (
+        res: RequestFacialVerifyError
+    ) => void
+    /** 接口调用失败的回调函数 */
+    type RequestFacialVerifyFailCallback = (
+        res: RequestFacialVerifyError
+    ) => void
+    /** 接口调用成功的回调函数 */
+    type RequestFacialVerifySuccessCallback = (
+        res: RequestFacialVerifyError
+    ) => void
     /** 接口调用失败的回调函数 */
     type RequestFailCallback = (err: RequestFailCallbackErr) => void
     /** 接口调用结束的回调函数（调用成功、失败都会执行） */
