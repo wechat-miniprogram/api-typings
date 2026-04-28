@@ -1,7 +1,5 @@
 declare namespace WechatMiniprogram.Skyline {
-    interface WorkletFunction {}
-
-    interface BasicWorkletFunction<T> extends WorkletFunction {
+    interface WorkletFunction<T> {
       (): T
     }
 
@@ -23,8 +21,6 @@ declare namespace WechatMiniprogram.Skyline {
       strippedCurrent?: number
       cancelled?: boolean
 
-      __prefix?: string
-      __suffix?: string
       onFrame: (animation: any, timestamp: Timestamp) => boolean
       onStart: (
         nextAnimation: any,
@@ -44,19 +40,7 @@ declare namespace WechatMiniprogram.Skyline {
       current?: number
     }
 
-    interface Animation<T extends AnimationObject> extends AnimationObject {
-      onFrame: (animation: T, timestamp: Timestamp) => boolean
-      onStart: (
-        nextAnimation: T,
-        current: T extends NumericAnimation ? number : AnimatableValue,
-        timestamp: Timestamp,
-        previousAnimation: T
-      ) => void
-    }
-
-    interface AnimatedStyle extends Record<string, Animation<AnimationObject>> {
-        [key: string]: any
-    }
+    type AnimatedStyle = Record<string, any>
 
     type FlushOption = 'async' | 'sync'
 

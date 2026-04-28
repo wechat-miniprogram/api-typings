@@ -226,7 +226,7 @@ declare namespace WechatMiniprogram.GlassEasel.Component {
         createSelectorQuery(): SelectorQuery
         applyAnimatedStyle(
             selector: string,
-            updater: Skyline.BasicWorkletFunction<Skyline.AnimatedStyle>,
+            updater: Skyline.WorkletFunction<Skyline.AnimatedStyle>,
             userConfig?: Skyline.AnimatedStyleConfig,
             callback?: (styleId: number) => void
         ): void
