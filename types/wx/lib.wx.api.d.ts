@@ -3854,9 +3854,9 @@ ctx.draw()
         /** 抬头类型
          *
          * 可选值：
-         * - 0: 单位;
-         * - 1: 个人; */
-        type: 0 | 1
+         * - '0': 单位;
+         * - '1': 个人; */
+        type: '0' | '1'
     }
     interface ChooseLicensePlateOption {
         /** 接口调用结束的回调函数（调用成功、失败都会执行） */
@@ -4618,19 +4618,19 @@ ctx.draw()
         /** 返回上一级，效果同 `wx.navigateBack`，仅可用于 `worklet` 函数内 */
         didPop: (...args: any[]) => any
         /** 动画控制器，影响推入页面的进入和退出过渡效果 */
-        primaryAnimation: SharedValue<number>
+        primaryAnimation: Skyline.SharedValue<number>
         /** 动画控制器状态 */
-        primaryAnimationStatus: SharedValue<number>
+        primaryAnimationStatus: Skyline.SharedValue<number>
         /** 动画控制器，影响栈顶页面的推出过渡效果 */
-        secondaryAnimation: SharedValue<number>
+        secondaryAnimation: Skyline.SharedValue<number>
         /** 动画控制器状态 */
-        secondaryAnimationStatus: SharedValue<number>
+        secondaryAnimationStatus: Skyline.SharedValue<number>
         /** 手势开始控制路由，与共享元素动画有关 */
         startUserGesture: (...args: any[]) => any
         /** 手势不再控制路由，与 `startUserGesture` 成对调用 */
         stopUserGesture: (...args: any[]) => any
         /** 当前路由进度由手势控制 */
-        userGestureInProgress: SharedValue<number>
+        userGestureInProgress: Skyline.SharedValue<number>
     }
     /** 弹幕内容 */
     interface Danmu {
@@ -10885,7 +10885,7 @@ NFCAdapter.offDiscovered(listener) // 需传入与监听时同一个的函数对
         success?: RequestSubscribeMessageSuccessCallback
     }
     interface RequestSubscribeMessageSuccessCallbackResult {
-        /** [TEMPLATE_ID]是动态的键，即模板id，值包括'accept'、'reject'、'ban'、'filter'。'accept'表示用户同意订阅该条id对应的模板消息，'reject'表示用户拒绝订阅该条id对应的模板消息，'ban'表示已被后台封禁，'filter'表示该模板因为模板标题同名被后台过滤。例如 { errMsg: "requestSubscribeMessage:ok", zun-LzcQyW-edafCVvzPkK4de2Rllr1fFpw2A_x0oXE: "accept"} 表示用户同意订阅zun-LzcQyW-edafCVvzPkK4de2Rllr1fFpw2A_x0oXE这条消息 */
+        /** [TEMPLATE_ID]是动态的键，即模板id，值包括'accept'、'reject'、'ban'、'filter'、'acceptWithAlert'、'acceptWithAudio'。'accept'表示用户同意订阅该条id对应的模板消息，'reject'表示用户拒绝订阅该条id对应的模板消息，'ban'表示已被后台封禁，'filter'表示该模板因为模板标题同名被后台过滤，'acceptWithAlert' 表示用户接收消息并打开提醒, 'acceptWithAudio' 表示用户接收订阅消息并开启了语音提醒, 'acceptWithForcePush' 表示用户接收订阅消息并开启了推送提醒。例如 { errMsg: "requestSubscribeMessage:ok", zun-LzcQyW-edafCVvzPkK4de2Rllr1fFpw2A_x0oXE: "accept"} 表示用户同意订阅zun-LzcQyW-edafCVvzPkK4de2Rllr1fFpw2A_x0oXE这条消息 */
         [TEMPLATE_ID: string]: string
         /** 接口调用成功时errMsg值为'requestSubscribeMessage:ok' */
         errMsg: string
@@ -21745,7 +21745,7 @@ Page({
             options: DecayOption,
             /** 动画完成回调。动画被取消时，返回 fasle，正常完成时返回 true。 */
             callback: (...args: any[]) => any
-        ): AnimationObject
+        ): Skyline.AnimationObject
         /** [AnimationObject worklet.delay(number delayMS, AnimationObject delayedAnimation)](https://developers.weixin.qq.com/miniprogram/dev/api/ui/worklet/combine-animation/worklet.delay.html)
          *
          * 在插件中使用：不支持
@@ -21755,8 +21755,8 @@ Page({
             /** 动画开始前等待的时间，单位：毫秒。 */
             delayMS: number,
             /** 动画对象。 */
-            delayedAnimation: AnimationObject
-        ): AnimationObject
+            delayedAnimation: Skyline.AnimationObject
+        ): Skyline.AnimationObject
         /** [AnimationObject worklet.repeat(AnimationObject animation, number numberOfReps, boolean reverse, function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/ui/worklet/combine-animation/worklet.repeat.html)
          *
          * 在插件中使用：不支持
@@ -21764,14 +21764,14 @@ Page({
          * 重复执行动画。 */
         repeat(
             /** 动画对象 */
-            animation: AnimationObject,
+            animation: Skyline.AnimationObject,
             /** 重复次数。为负值时一直循环，直到被取消动画。 */
             numberOfReps?: number,
             /** 反向运行动画，每周期结束动画由尾到头运行。该字段仅对 timing 和 spring 返回的动画对象生效。 */
             reverse?: boolean,
             /** 动画完成回调。动画被取消时，返回 fasle，正常完成时返回 true。 */
             callback?: (...args: any[]) => any
-        ): AnimationObject
+        ): Skyline.AnimationObject
         /** [AnimationObject worklet.sequence(AnimationObject animationN)](https://developers.weixin.qq.com/miniprogram/dev/api/ui/worklet/combine-animation/worklet.sequence.html)
          *
          * 在插件中使用：不支持
@@ -21779,8 +21779,8 @@ Page({
          * 组合动画序列，依次执行传入的动画。 */
         sequence(
             /** 动画对象 */
-            animationN: AnimationObject
-        ): AnimationObject
+            animationN: Skyline.AnimationObject
+        ): Skyline.AnimationObject
         /** [AnimationObject worklet.spring(number|string toValue, Object options, function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/ui/worklet/animation/worklet.spring.html)
          *
          * 在插件中使用：不支持
@@ -21793,7 +21793,7 @@ Page({
             options: SpringOption,
             /** 动画完成回调。动画被取消时，返回 fasle，正常完成时返回 true。 */
             callback: (...args: any[]) => any
-        ): AnimationObject
+        ): Skyline.AnimationObject
         /** [AnimationObject worklet.timing(number toValue, Object options, function callback)](https://developers.weixin.qq.com/miniprogram/dev/api/ui/worklet/animation/worklet.timing.html)
          *
          * 在插件中使用：不支持
@@ -21806,7 +21806,7 @@ Page({
             options: TimingOption,
             /** 动画完成回调。动画被取消时，返回 fasle，正常完成时返回 true。 */
             callback: (...args: any[]) => any
-        ): AnimationObject
+        ): Skyline.AnimationObject
         /** [DerivedValue worklet.derived(WorkletFunction updaterWorklet)](https://developers.weixin.qq.com/miniprogram/dev/api/ui/worklet/base/worklet.derived.html)
          *
          * 在插件中使用：不支持
@@ -21814,8 +21814,8 @@ Page({
          * 衍生值 `DerivedValue`，可基于已有的 `SharedValue` 生成其它共享变量。 */
         derived(
             /** worklet 函数类型，该函数被立即执行，返回值作为 DerivedValue 的初始值。当函数内捕获的 SharedValue 类型值发生变化时，updaterWorklet 被驱动执行，返回值用于更新 DerivedValue。可类比 computed 计算属性进行理解。 */
-            updaterWorklet: WorkletFunction
-        ): DerivedValue
+            updaterWorklet: Skyline.WorkletFunction
+        ): Skyline.DerivedValue<any>
         /** [SharedValue worklet.shared(any initialValue)](https://developers.weixin.qq.com/miniprogram/dev/api/ui/worklet/base/worklet.shared.html)
          *
          * 在插件中使用：不支持
@@ -21824,7 +21824,7 @@ Page({
         shared(
             /** 初始值，可通过 `.value` 属性进行读取和修改。类型可以是 `number | string | bool | null | undefined | Object | Array | Function`。 */
             initialValue: any
-        ): SharedValue
+        ): Skyline.SharedValue<any>
         /** [function worklet.runOnJS(function fn)](https://developers.weixin.qq.com/miniprogram/dev/api/ui/worklet/tool-function/worklet.runOnJS.html)
          *
          * 在插件中使用：不支持
@@ -21851,7 +21851,7 @@ Page({
          * 取消由 `SharedValue` 驱动的动画。 */
         cancelAnimation(
             /** 共享变量。 */
-            SharedValue: SharedValue
+            SharedValue: Skyline.SharedValue<any>
         ): void
         /** [worklet.scrollViewContext.scrollTo(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/ui/worklet/base/worklet.scrollViewContext.scrollTo.html)
          *

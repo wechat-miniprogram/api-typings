@@ -60,6 +60,8 @@ declare namespace WechatMiniprogram.Behavior {
         >(
             options: Options<TData, TProperty, TMethod, TBehavior, TCustomInstanceProperty>
         ): Identifier<TData, TProperty, TMethod, TBehavior>
+        (): GlassEasel.Behavior.Builder
+        trait: GlassEasel.TraitBehavior.Constructor
     }
 
     type DataOption = Component.DataOption

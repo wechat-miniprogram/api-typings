@@ -101,6 +101,7 @@ declare namespace WechatMiniprogram.Component {
                 TIsPage
             >
         ): Identifier<TData, TProperty, TMethod>
+        (): GlassEasel.Component.Builder
     }
     type DataOption = Record<string, any>
     type PropertyOption = Record<string, AllProperty>
