@@ -1,3 +1,6 @@
+## 2026-05-06 v5.2.0
+- 支持 [glass-easel 组件框架](https://github.com/wechat-miniprogram/glass-easel) 中的 [Chaining API](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/glass-easel/chaining-api.html)。与经典形式的 Definition API 一样，Chaining API 也可以和 [glass-easel-analyzer](https://github.com/wechat-miniprogram/glass-easel-analyzer) 组合使用
+
 ## 2026-04-22 v5.1.3
 - 更新 API 定义到 3.15.2
 
