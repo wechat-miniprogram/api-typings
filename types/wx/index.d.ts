@@ -26,9 +26,11 @@ SOFTWARE.
 /// <reference path="./lib.wx.cloud.d.ts" />
 /// <reference path="./lib.wx.canvas.d.ts" />
 /// <reference path="./lib.wx.component.d.ts" />
+/// <reference path="./lib.wx.glass-easel.d.ts" />
 /// <reference path="./lib.wx.behavior.d.ts" />
 /// <reference path="./lib.wx.event.d.ts" />
 /// <reference path="./lib.wx.wasm.d.ts" />
+/// <reference path="./lib.wx.skyline.d.ts" />
 
 declare namespace WechatMiniprogram {
     type IAnyObject = Record<string, any>
@@ -68,12 +70,6 @@ declare namespace WechatMiniprogram {
     type AnalyserNode = any
     type WebGLTexture = any
     type WebGLRenderingContext = any
-
-    // TODO: fill worklet type
-    type WorkletFunction = (...args: any) => any
-    type AnimationObject = any
-    type SharedValue<T = any> = T
-    type DerivedValue<T = any> = T
 }
 
 declare let console: WechatMiniprogram.Console
