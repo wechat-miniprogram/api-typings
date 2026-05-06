@@ -390,7 +390,7 @@ declare namespace WechatMiniprogram.GlassEasel.Component {
         TProperty extends TypeUtils.PropertyList,
         TMethod extends TypeUtils.MethodList,
     > {
-        protected readonly _$fieldTypes?: {
+        protected readonly _$fieldTypes: {
             propertyValues: TypeUtils.PropertyValues<TProperty>
             dataWithProperties: TypeUtils.DataWithPropertyValues<TData, TProperty>
             methods: TMethod
