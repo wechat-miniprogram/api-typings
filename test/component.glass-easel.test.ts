@@ -570,3 +570,51 @@ import { expectType } from 'tsd'
     })
     .register()
 }
+
+// TypeSignature: Component register() should carry field types for glass-easel-analyzer
+{
+  const def = Component()
+    .property('a', Boolean)
+    .data(() => ({
+      b: 1,
+    }))
+    .methods({
+      c() {},
+    })
+    .register()
+  type FieldTypes = (typeof def)['_$fieldTypes']
+  expectType<NonNullable<FieldTypes>['propertyValues']['a']>(false as boolean)
+  expectType<NonNullable<FieldTypes>['dataWithProperties']['a']>(false as boolean)
+  expectType<NonNullable<FieldTypes>['dataWithProperties']['b']>(1 as number)
+  expectType<NonNullable<FieldTypes>['methods']['c']>(() => {})
+}
+
+// TypeSignature: Behavior register() should carry field types for glass-easel-analyzer
+{
+  const beh = Behavior()
+    .property('a', Number)
+    .data(() => ({
+      b: 'hello',
+    }))
+    .methods({
+      c() { return 1 },
+    })
+    .register()
+  type FieldTypes = (typeof beh)['_$behaviorFieldTypes']
+  expectType<NonNullable<FieldTypes>['propertyValues']['a']>(1 as number)
+  expectType<NonNullable<FieldTypes>['dataWithProperties']['a']>(1 as number)
+  expectType<NonNullable<FieldTypes>['dataWithProperties']['b']>('hello' as string)
+  expectType<NonNullable<FieldTypes>['methods']['c']>(() => 1)
+}
+
+// Property value type: precise value type inference (like glass-easel)
+{
+  Component()
+    .property('n', { type: Number, value: 1 as const })
+    .property('o', { type: Object, value: { f1: 123 } })
+    .lifetime('attached', function () {
+      expectType<1>(this.data.n)
+      expectType<number>(this.data.o.f1)
+    })
+    .register()
+}

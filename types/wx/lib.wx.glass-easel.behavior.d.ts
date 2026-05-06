@@ -1,3 +1,6 @@
+// this rule seems buggy, unable to distinguish WechatMiniprogram.GlassEasel.Component and WechatMiniprogram.Component
+/* eslint-disable @typescript-eslint/no-unnecessary-qualifier */
+
 declare namespace WechatMiniprogram.GlassEasel.Behavior {
     type DefinitionFilter = (
         target: Component.TrivialDefinition,
@@ -145,6 +148,19 @@ declare namespace WechatMiniprogram.GlassEasel.Behavior {
         ): ResolveBehaviorBuilder<this, TChainingFilter>
     }
 
+    /** 用于辅助识别 behavior 字段类型的虚拟字段（供 glass-easel-analyzer 等外部模块使用） */
+    type TypeSignature<
+        TData extends TypeUtils.DataList,
+        TProperty extends TypeUtils.PropertyList,
+        TMethod extends TypeUtils.MethodList,
+    > = {
+        readonly _$behaviorFieldTypes?: {
+            propertyValues: TypeUtils.PropertyValues<TProperty>
+            dataWithProperties: TypeUtils.DataWithPropertyValues<TData, TProperty>
+            methods: TMethod
+        }
+    }
+
     type Instance<
         TData extends TypeUtils.DataList,
         TProperty extends TypeUtils.PropertyList,
@@ -152,7 +168,7 @@ declare namespace WechatMiniprogram.GlassEasel.Behavior {
         TChainingFilter extends TypeUtils.ChainingFilterType,
         TComponentExport,
         TExtraThisFields extends TypeUtils.DataList = TypeUtils.Empty
-    > = {}
+    > = TypeSignature<TData, TProperty, TMethod>
 
     type TrivialInstance = Instance<
         /* TData */ IAnyObject,
@@ -224,7 +240,7 @@ declare namespace WechatMiniprogram.GlassEasel.Behavior {
                       UComponentExport,
                       UExtraThisFields
                   >
-                | string
+                | WechatMiniprogram.Behavior.Identifier
         ): ResolveBehaviorBuilder<
             Builder<
                 TPrevData,

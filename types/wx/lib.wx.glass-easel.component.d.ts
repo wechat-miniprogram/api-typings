@@ -384,13 +384,26 @@ declare namespace WechatMiniprogram.GlassEasel.Component {
             IAnyObject
         > {}
 
+    /** 用于辅助识别组件类型的虚拟字段（供 glass-easel-analyzer 等外部模块使用） */
+    class TypeSignature<
+        TData extends TypeUtils.DataList,
+        TProperty extends TypeUtils.PropertyList,
+        TMethod extends TypeUtils.MethodList,
+    > {
+        protected readonly _$fieldTypes?: {
+            propertyValues: TypeUtils.PropertyValues<TProperty>
+            dataWithProperties: TypeUtils.DataWithPropertyValues<TData, TProperty>
+            methods: TMethod
+        }
+    }
+
     type ComponentType<
         TData extends TypeUtils.DataList,
         TProperty extends TypeUtils.PropertyList,
         TMethod extends TypeUtils.MethodList,
         TComponentExport,
         TExtraThisFields extends TypeUtils.DataList = TypeUtils.Empty
-    > = {}
+    > = TypeSignature<TData, TProperty, TMethod>
 
     type TrivialComponentType = ComponentType<
         TypeUtils.DataList,
@@ -436,14 +449,16 @@ declare namespace WechatMiniprogram.GlassEasel.Component {
             UComponentExport,
             UExtraThisFields extends TypeUtils.DataList = TypeUtils.Empty
         >(
-            behavior: Behavior.Instance<
-                UData,
-                UProperty,
-                UMethod,
-                UChainingFilter,
-                UComponentExport,
-                UExtraThisFields
-            >
+            behavior:
+                | Behavior.Instance<
+                      UData,
+                      UProperty,
+                      UMethod,
+                      UChainingFilter,
+                      UComponentExport,
+                      UExtraThisFields
+                  >
+                | WechatMiniprogram.Behavior.Identifier
         ): Behavior.ResolveBehaviorBuilder<
             Builder<
                 TPrevData,
