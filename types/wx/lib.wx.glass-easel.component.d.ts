@@ -215,8 +215,8 @@ declare namespace WechatMiniprogram.GlassEasel.Component {
         /** Trigger an event */
         triggerEvent(
             name: string,
-            detail: any,
-            options: {
+            detail?: any,
+            options?: {
                 bubbles?: boolean
                 composed?: boolean
                 capturePhase?: boolean
