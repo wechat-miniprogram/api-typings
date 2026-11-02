@@ -433,9 +433,13 @@ declare namespace WechatMiniprogram.Component {
 
     interface ComponentOptions {
         /**
-         * [启用多slot支持](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/wxml-wxss.html#组件wxml的slot)
+         * [启用多slot支持](https://developers.weixin.qq.com/miniprogram/dev/framework/component-framework/slot.html#多-slot)
          */
         multipleSlots?: boolean
+        /**
+         * [启用动态slot支持](https://developers.weixin.qq.com/miniprogram/dev/framework/component-framework/slot.html#动态-slot)
+         */
+        dynamicSlots?: boolean
         /**
          * [组件样式隔离](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/wxml-wxss.html#组件样式隔离)
          */
