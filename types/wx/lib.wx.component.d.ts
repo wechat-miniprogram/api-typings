@@ -159,6 +159,7 @@ declare namespace WechatMiniprogram.Component {
         | BooleanConstructor
         | ArrayConstructor
         | ObjectConstructor
+        | FunctionConstructor
         | null
     type ValueType<T extends PropertyType> = T extends null
         ? any
@@ -172,6 +173,8 @@ declare namespace WechatMiniprogram.Component {
         ? any[]
         : T extends ObjectConstructor
         ? IAnyObject
+        : T extends FunctionConstructor
+        ? (...args: any[]) => any
         : never
     type SimpleValueType<T extends PropertyType, V> = T extends null
         ? V
@@ -210,6 +213,7 @@ declare namespace WechatMiniprogram.Component {
         | FullProperty<BooleanConstructor, any>
         | FullProperty<ArrayConstructor, any>
         | FullProperty<ObjectConstructor, any>
+        | FullProperty<FunctionConstructor, any>
         | FullProperty<null, any>
     type ShortProperty =
         | StringConstructor
@@ -217,6 +221,7 @@ declare namespace WechatMiniprogram.Component {
         | BooleanConstructor
         | ArrayConstructor
         | ObjectConstructor
+        | FunctionConstructor
         | null
     type AllProperty = AllFullProperty | ShortProperty
     type PropertyToData<T extends AllProperty> = T extends ShortProperty
