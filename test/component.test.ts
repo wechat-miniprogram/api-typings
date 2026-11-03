@@ -275,6 +275,22 @@ Component({
   },
 })
 
+Component({
+  properties: {
+    f: Function,
+    f2: {
+      type: Function,
+      value: () => {},
+    },
+  },
+  methods: {
+    m() {
+      expectType<(...args: any[]) => any>(this.data.f)
+      expectType<() => void>(this.data.f2)
+    },
+  },
+})
+
 expectError(
   Component({
     data: {
