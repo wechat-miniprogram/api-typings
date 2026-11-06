@@ -1,3 +1,6 @@
+## 2026-11-06 v5.3.1
+- 更新 API 定义到 3.17.6
+
 ## 2026-11-06 v5.3.0
 - 对照文档，修正 JSDoc 中对应的描述文本和链接
 - 补齐 `replaceDataOnPath`、`applyDataUpdates`、`default`、`comparer`、`beforeDetach`、`propertyEarlyInit`、`linkFailed`、`Page.Options#behaviors`、`promise`
