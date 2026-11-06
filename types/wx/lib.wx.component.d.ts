@@ -135,7 +135,7 @@ declare namespace WechatMiniprogram.Component {
     }
 
     interface Behavior<B extends BehaviorOption> {
-        /** 类似于mixins和traits的组件间代码复用机制，参见 [behaviors](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/behaviors.html) */
+        /** 类似于 mixins 和 traits 的组件间代码复用机制，参见 [使用 behaviors](https://developers.weixin.qq.com/miniprogram/dev/framework/component-framework/behaviors.html#使用-behaviors) */
         behaviors?: B
     }
 
@@ -148,7 +148,7 @@ declare namespace WechatMiniprogram.Component {
         properties: P
     }
     interface Method<M extends MethodOption, TIsPage extends boolean = false> {
-        /** 组件的方法，包括事件响应函数和任意的自定义方法，关于事件响应函数的使用，参见 [组件间通信与事件](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/events.html) */
+        /** 组件的方法，包括事件响应函数和任意的自定义方法，关于事件响应函数的使用，参见 [触发与监听事件](https://developers.weixin.qq.com/miniprogram/dev/framework/component-framework/event-system.html#监听事件) */
         methods: M & (TIsPage extends true ? Partial<Page.ILifetime> : {})
     }
 
@@ -196,13 +196,17 @@ declare namespace WechatMiniprogram.Component {
         type: T
         /** 属性初始值 */
         value?: V
-        /** 属性值被更改时的响应函数 */
+        /** 属性默认值，属性未被指定或收到非法值时用于代替，与 `value` 互斥。仅 glass-easel 组件框架支持，参见 [初始值和默认值](https://developers.weixin.qq.com/miniprogram/dev/framework/component-framework/properties.html#初始值和默认值) */
+        default?: () => V
+        /** 属性值比较函数，返回真表示属性值变化了、组件需要更新。仅 glass-easel 组件框架支持，参见 [属性值比较器](https://developers.weixin.qq.com/miniprogram/dev/framework/component-framework/properties.html#属性值比较器) */
+        comparer?: (newValue: ValueType<T>, oldValue: ValueType<T>) => boolean
+        /** 属性值被更改时的响应函数。`changedPath` 仅经典组件框架（exparser）提供，参见 [属性值变化监听器](https://developers.weixin.qq.com/miniprogram/dev/framework/component-framework/properties.html#属性值变化监听器) */
         observer?:
             | string
             | ((
                   newVal: ValueType<T>,
                   oldVal: ValueType<T>,
-                  changedPath: Array<string | number>
+                  changedPath?: Array<string | number>
               ) => void)
         /** 属性的类型（可以指定多个） */
         optionalTypes?: ShortProperty[]
@@ -266,15 +270,17 @@ declare namespace WechatMiniprogram.Component {
     }
 
     interface InstanceMethods<D extends DataOption> {
-        /** `setData` 函数用于将数据从逻辑层发送到视图层
-         *（异步），同时改变对应的 `this.data` 的值（同步）。
+        /** `setData` 函数用于将数据从逻辑层发送到视图层，同时改变对应的 `this.data` 的值。
+         *
+         * 对 WXML 模板的更新是同步的（在数据监听器内被调用时除外，此时相当于 `updateData`）。
          *
          * **注意：**
          *
          * 1. **直接修改 this.data 而不调用 this.setData 是无法改变页面的状态的，还会造成数据不一致**。
          * 1. 仅支持设置可 JSON 化的数据。
-         * 1. 单次设置的数据不能超过1024kB，请尽量避免一次设置过多的数据。
          * 1. 请不要把 data 中任何一项的 value 设为 `undefined` ，否则这一项将不被设置并可能遗留一些潜在问题。
+         *
+         * 参见 [使用 setData 更新数据](https://developers.weixin.qq.com/miniprogram/dev/framework/component-framework/data-updates.html#使用-setData-更新数据)
          */
         setData(
             /** 这次要改变的数据
@@ -284,12 +290,22 @@ declare namespace WechatMiniprogram.Component {
              * 其中 `key` 可以以数据路径的形式给出，支持改变数组中的某一项或对象的某个属性，如 `array[2].message`，`a.b.c.d`，并且不需要在 this.data 中预先定义。
              */
             data: Partial<D> & IAnyObject,
-            /** setData引起的界面更新渲染完毕后的回调函数，最低基础库： `1.5.0` */
+            /** setData 引起的界面更新完成后回调，这个回调时机偏晚，滥用可能影响性能，请谨慎使用
+             *
+             * 最低基础库版本：[`1.5.0`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html)
+             */
             callback?: () => void
         ): void
 
-        /** 检查组件是否具有 `behavior` （检查时会递归检查被直接或间接引入的所有behavior） */
-        hasBehavior(behavior: Behavior.Identifier): void
+        /**
+         * 在指定数据路径上更新数据，需再调用 `applyDataUpdates` 才会应用到 WXML 模板，参见 [高级路径更新](https://developers.weixin.qq.com/miniprogram/dev/framework/component-framework/data-updates.html#高级路径更新)
+         */
+        replaceDataOnPath(path: Array<string | number>, data: any): void
+        /** 将 `replaceDataOnPath` 产生的更新应用到 WXML 模板，参见 [高级路径更新](https://developers.weixin.qq.com/miniprogram/dev/framework/component-framework/data-updates.html#高级路径更新) */
+        applyDataUpdates(): void
+
+        /** 检查组件是否具有 `behavior` （检查时会递归检查被直接或间接引入的所有 behavior） */
+        hasBehavior(behavior: Behavior.Identifier): boolean
         /** 触发事件，参见组件事件 */
         triggerEvent<DetailType = any>(
             name: string,
@@ -304,30 +320,36 @@ declare namespace WechatMiniprogram.Component {
         ): IntersectionObserver
         /** 创建一个 MediaQueryObserver 对象 */
         createMediaQueryObserver(): MediaQueryObserver
-        /** 使用选择器选择组件实例节点，返回匹配到的第一个组件实例对象（会被 `wx://component-export` 影响） */
-        selectComponent(selector: string): TrivialInstance
-        /** 使用选择器选择组件实例节点，返回匹配到的全部组件实例对象组成的数组 */
+        /** 使用选择器选择组件实例节点，返回匹配到的第一个组件实例对象，未匹配到时返回 `null` ，参见 [获取子组件实例](https://developers.weixin.qq.com/miniprogram/dev/framework/component-framework/component-tree-visit.html#获取子组件实例) */
+        selectComponent(selector: string): TrivialInstance | null
+        /** 使用选择器选择组件实例节点，返回匹配到的全部组件实例对象组成的数组，参见 [获取子组件实例](https://developers.weixin.qq.com/miniprogram/dev/framework/component-framework/component-tree-visit.html#获取子组件实例) */
         selectAllComponents(selector: string): TrivialInstance[]
         /**
-         * 选取当前组件节点所在的组件实例（即组件的引用者），返回它的组件实例对象（会被 `wx://component-export` 影响）
+         * 选取当前组件节点所在的组件实例（即组件的引用者），返回它的组件实例对象，对于页面根组件将返回 `null` ，参见 [获取父组件实例](https://developers.weixin.qq.com/miniprogram/dev/framework/component-framework/component-tree-visit.html#获取父组件实例)
          *
          * 最低基础库版本：[`2.8.2`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html)
          **/
-        selectOwnerComponent(): TrivialInstance
-        /** 获取这个关系所对应的所有关联节点，参见 组件间关系 */
+        selectOwnerComponent(): TrivialInstance | null
+        /** 获取这个关系所对应的所有关联节点，参见 [组件间关系](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/relations.html) */
         getRelationNodes(relationKey: string): TrivialInstance[]
         /**
-         * 立刻执行 callback ，其中的多个 setData 之间不会触发界面绘制（只有某些特殊场景中需要，如用于在不同组件同时 setData 时进行界面绘制同步）
+         * 将 callback 中的多个 `setData` 组合起来，避免展示界面中间状态，参见 [使用 groupSetData 连续更新](https://developers.weixin.qq.com/miniprogram/dev/framework/component-framework/data-updates.html#使用-groupSetData-连续更新)
          *
          * 最低基础库版本：[`2.4.0`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html)
          **/
         groupSetData(callback?: () => void): void
         /**
-         * 返回当前页面的 custom-tab-bar 的组件实例
+         * 返回当前页面的 custom-tab-bar 的组件实例。
+         *
+         * 调用时实例已创建就返回该实例，否则返回 `null`（不论是否传入 `callback`）。
+         *
+         * 当传入 `callback` 时，若已有实例则同步回调；若未创建实例，exparser 下会等到实例创建完成后异步回调；glass-easel 下不会回调。
+         *
+         * 参见 [getTabBar 回调函数](https://developers.weixin.qq.com/miniprogram/dev/framework/ability/custom-tabbar.html#_2-getTabBar-回调函数)
          *
          * 最低基础库版本：[`2.6.2`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html)
          **/
-        getTabBar(): TrivialInstance
+        getTabBar(callback?: (tabBar: TrivialInstance) => void): TrivialInstance | null
         /**
          * 返回页面标识符（一个字符串），可以用来判断几个自定义组件实例是不是在同一个页面内
          *
@@ -361,7 +383,7 @@ declare namespace WechatMiniprogram.Component {
          *
          * 最低基础库版本：[`2.9.0`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html)
          **/
-        clearAnimation(selector: string, callback: () => void): void
+        clearAnimation(selector: string, callback?: () => void): void
         /**
          * 清除关键帧动画，详见[动画](https://developers.weixin.qq.com/miniprogram/dev/framework/view/animation.html)
          *
@@ -373,7 +395,7 @@ declare namespace WechatMiniprogram.Component {
             callback?: () => void
         ): void
         /**
-         * 当从另一页面跳转到该页面时，获得与来源页面实例通信当事件通道，详见 [wx.navigateTo]((wx.navigateTo))
+         * 当从另一页面跳转到该页面时，获得与来源页面实例通信的事件通道，参见 [wx.navigateTo](https://developers.weixin.qq.com/miniprogram/dev/api/route/wx.navigateTo.html)
          *
          * 最低基础库版本：[`2.7.3`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html)
          */
@@ -386,7 +408,7 @@ declare namespace WechatMiniprogram.Component {
         applyAnimatedStyle(
             selector: string,
             updater: () => Record<string, string>,
-            userConfig?: { immediate: boolean, flush: 'sync' | 'async' },
+            userConfig?: { immediate?: boolean, flush?: 'sync' | 'async' },
             callback?: (res: { styleId: number }) => void
         ): void
         /**
@@ -400,7 +422,7 @@ declare namespace WechatMiniprogram.Component {
             callback?: () => void
         ): void
         /**
-         * 获取更新性能统计信息，详见 [获取更新性能统计信息]((custom-component/update-perf-stat))
+         * 获取更新性能统计信息，详见 [获取更新性能统计信息](https://developers.weixin.qq.com/miniprogram/dev/framework/update-perf-stat.html)
          *
          *
          * 最低基础库版本：[`2.12.0`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html)
@@ -411,13 +433,13 @@ declare namespace WechatMiniprogram.Component {
         ): void
 
         /**
-         * 在运行时获取页面或组件所在页面 `touch` 相关事件的 passive 配置，详见 [enablePassiveEvent]((configuration/app#enablePassiveEvent))
+         * 在运行时获取页面或组件所在页面 `touch` 相关事件的 passive 配置，详见 [enablePassiveEvent](https://developers.weixin.qq.com/miniprogram/dev/reference/configuration/app.html#enablePassiveEvent)
          *
          * 最低基础库版本：[`2.25.1`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html)
          */
         getPassiveEvent(callback: (config: PassiveConfig) => void): void
         /**
-         * 在运行时切换页面或组件所在页面 `touch` 相关事件的 passive 配置，详见 [enablePassiveEvent]((configuration/app#enablePassiveEvent))
+         * 在运行时切换页面或组件所在页面 `touch` 相关事件的 passive 配置，详见 [enablePassiveEvent](https://developers.weixin.qq.com/miniprogram/dev/reference/configuration/app.html#enablePassiveEvent)
          *
          * 最低基础库版本：[`2.25.1`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html)
          */
@@ -427,7 +449,7 @@ declare namespace WechatMiniprogram.Component {
          *
          * 最低基础库版本：[`2.11.1`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html)
          */
-        setInitialRenderingCache(dynamicData: IAnyObject | null): void
+        setInitialRenderingCache(dynamicData?: IAnyObject | null): void
         /**
          * 返回当前页面的 appBar 组件实例
          *
@@ -438,19 +460,25 @@ declare namespace WechatMiniprogram.Component {
 
     interface ComponentOptions {
         /**
-         * [启用多slot支持](https://developers.weixin.qq.com/miniprogram/dev/framework/component-framework/slot.html#多-slot)
+         * [启用多 slot 支持](https://developers.weixin.qq.com/miniprogram/dev/framework/component-framework/slot.html#多-slot)
          */
         multipleSlots?: boolean
         /**
-         * [启用动态slot支持](https://developers.weixin.qq.com/miniprogram/dev/framework/component-framework/slot.html#动态-slot)
+         * [启用动态 slot 支持](https://developers.weixin.qq.com/miniprogram/dev/framework/component-framework/slot.html#动态-slot)，仅 glass-easel 组件框架支持
          */
         dynamicSlots?: boolean
         /**
-         * [组件样式隔离](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/wxml-wxss.html#组件样式隔离)
+         * 参见 [组件样式隔离](https://developers.weixin.qq.com/miniprogram/dev/framework/component-framework/style.html#组件样式隔离)
+         *
+         * @deprecated 使用 `styleIsolation: 'apply-shared'`
          */
         addGlobalClass?: boolean
         /**
-         * [组件样式隔离](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/wxml-wxss.html#组件样式隔离)
+         * [组件样式隔离](https://developers.weixin.qq.com/miniprogram/dev/framework/component-framework/style.html#组件样式隔离)，推荐在自定义组件 JSON 中配置。
+         *
+         * `page-` 开头的三个选项可用在页面根组件上，表示在 `isolated` `apply-shared` `shared` 的基础上，在页面中禁用 `app.wxss` 。
+         *
+         * 最低基础库版本：[`2.10.1`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html)
          */
         styleIsolation?:
             | 'isolated'
@@ -460,21 +488,25 @@ declare namespace WechatMiniprogram.Component {
             | 'page-apply-shared'
             | 'page-shared'
         /**
-         * [纯数据字段](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/pure-data.html) 是一些不用于界面渲染的 data 字段，可以用于提升页面更新性能。从小程序基础库版本 2.8.2 开始支持。
+         * [纯数据字段](https://developers.weixin.qq.com/miniprogram/dev/framework/pure-data.html#组件数据中的纯数据字段) 是一些不用于界面渲染的 data 字段，可用于提升页面更新性能。从小程序基础库版本 2.8.2 开始支持。
          */
         pureDataPattern?: RegExp
         /**
-         * [虚拟化组件节点](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/wxml-wxss.html#%E8%99%9A%E6%8B%9F%E5%8C%96%E7%BB%84%E4%BB%B6%E8%8A%82%E7%82%B9) 使自定义组件内部的第一层节点由自定义组件本身完全决定。从小程序基础库版本 [`2.11.2`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html) 开始支持。
+         * [虚拟组件节点](https://developers.weixin.qq.com/miniprogram/dev/framework/component-framework/virtual-host.html#启用组件节点虚拟化) 使自定义组件自身的节点成为虚拟节点，组件内部的第一层节点直接参与外层布局。从小程序基础库版本 [`2.11.2`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html) 开始支持。
          */
         virtualHost?: boolean
         /**
-         * [数据深拷贝](https://developers.weixin.qq.com/miniprogram/dev/framework/component-framework/data-deep-copy.html) 仅 glass-easel 组件框架支持。
+         * [数据深拷贝](https://developers.weixin.qq.com/miniprogram/dev/framework/component-framework/data-deep-copy.html#所有可用的深拷贝策略) 仅 glass-easel 组件框架支持
          */
         dataDeepCopy?: 'simple' | 'simple-recursion' | 'none'
         /**
-         * [属性传递深拷贝](https://developers.weixin.qq.com/miniprogram/dev/framework/component-framework/data-deep-copy.html) 仅 glass-easel 组件框架支持。
+         * [属性传递深拷贝](https://developers.weixin.qq.com/miniprogram/dev/framework/component-framework/data-deep-copy.html#属性传递深拷贝) 仅 glass-easel 组件框架支持
          */
         propertyPassingDeepCopy?: 'simple' | 'simple-recursion' | 'none'
+        /**
+         * 以组件属性值来初始化，性能更好。仅 glass-easel 组件框架支持，参见 [组件初始化策略](https://developers.weixin.qq.com/miniprogram/dev/framework/component-framework/init-strategy.html)
+         */
+        propertyEarlyInit?: boolean
     }
 
     interface TriggerEventOption {
@@ -483,7 +515,7 @@ declare namespace WechatMiniprogram.Component {
          * 默认值： `false`
          */
         bubbles?: boolean
-        /** 事件是否可以穿越组件边界，为false时，事件将只能在引用组件的节点树上触发，不进入其他任何组件内部
+        /** 事件是否可以穿越组件边界，为 false 时，事件将只能在引用组件自身的 Shadow 树上触发，不进入其他任何组件内部
          *
          * 默认值： `false`
          */
@@ -504,6 +536,8 @@ declare namespace WechatMiniprogram.Component {
         linkChanged?(target: TrivialInstance): void
         /** 关系生命周期函数，当关系脱离页面节点树时触发，触发时机在组件detached生命周期之后 */
         unlinked?(target: TrivialInstance): void
+        /** 关系生命周期函数，当父子关系中的儿子未能找到对应的父亲、祖先-后代关系中的后代未能找到对应的祖先时触发，无回调参数，参见 [relations 定义选项](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/relations.html#relations-定义选项) */
+        linkFailed?(): void
         /** 如果这一项被设置，则它表示关联的目标节点所应具有的behavior，所有拥有这一behavior的组件节点都会被关联 */
         target?: string
     }
@@ -512,21 +546,29 @@ declare namespace WechatMiniprogram.Component {
         /** 页面生命周期回调—监听页面显示
          *
          * 页面显示/切入前台时触发。
+         *
+         * 最低基础库版本： [`2.2.3`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html)
          */
         show(): void
         /** 页面生命周期回调—监听页面隐藏
          *
          * 页面隐藏/切入后台时触发。 如 `navigateTo` 或底部 `tab` 切换到其他页面，小程序切入后台等。
+         *
+         * 最低基础库版本： [`2.2.3`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html)
          */
         hide(): void
         /** 页面生命周期回调—监听页面尺寸变化
          *
          * 所在页面尺寸变化时执行
+         *
+         * 最低基础库版本： [`2.4.0`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html)
          */
         resize(size: Page.IResizeOption): void
         /** 页面生命周期回调—监听页面路由动画完成
          *
          * 所在页面路由动画完成时执行
+         *
+         * 最低基础库版本： [`2.31.2`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html)
          */
         routeDone(): void
     }
@@ -539,12 +581,13 @@ declare namespace WechatMiniprogram.Component {
     ) => void
 
     interface Lifetimes {
-        /** 组件生命周期声明对象，组件的生命周期：`created`、`attached`、`ready`、`moved`、`detached` 将收归到 `lifetimes` 字段内进行声明，原有声明方式仍旧有效，如同时存在两种声明方式，则 `lifetimes` 字段内声明方式优先级最高
+        /** 组件生命周期声明对象，组件的生命周期：`created`、`attached`、`ready`、`moved`、`beforeDetach`、`detached` 将收归到 `lifetimes` 字段内进行声明，原有声明方式仍旧有效，如同时存在两种声明方式，则 `lifetimes` 字段内声明方式优先级最高
          *
-         * 最低基础库： `2.2.3` */
+         * 最低基础库版本：[`2.2.3`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html)
+         */
         lifetimes: Partial<{
             /**
-             * 在组件实例刚刚被创建时执行，注意此时不能调用 `setData`
+             * 组件实例刚刚被创建完时触发。此时组件还未添加到页面节点树中
              *
              * 最低基础库版本：[`1.6.3`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html)
              */
@@ -574,11 +617,15 @@ declare namespace WechatMiniprogram.Component {
              */
             detached(): void
             /**
-             * 每当组件方法抛出错误时执行
+             * 在组件实例将被从页面内移除前执行，此时不应再操作节点或更新数据
+             */
+            beforeDetach(): void
+            /**
+             * 当组件内的生命周期回调或事件回调抛出异常时执行，可用于组件级别的错误捕获
              *
              * 最低基础库版本：[`2.4.1`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html)
              */
-            error(err: Error): void
+            error(err: unknown): void
         }>
         /**
          * @deprecated 旧式的定义方式，基础库 `2.2.3` 起请在 lifetimes 中定义
@@ -623,27 +670,35 @@ declare namespace WechatMiniprogram.Component {
         /**
          * @deprecated 旧式的定义方式，基础库 `2.2.3` 起请在 lifetimes 中定义
          *
-         * 每当组件方法抛出错误时执行
+         * 在组件实例将被从页面内移除前执行，此时不应再操作节点或更新数据
+         */
+        beforeDetach(): void
+        /**
+         * @deprecated 旧式的定义方式，基础库 `2.2.3` 起请在 lifetimes 中定义
+         *
+         * 当组件内的生命周期回调或事件回调抛出异常时执行，可用于组件级别的错误捕获
          *
          * 最低基础库版本：[`2.4.1`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html)
          */
-        error(err: Error): void
+        error(err: unknown): void
     }
 
     interface OtherOption {
         /**
-         * 组件数据字段监听器，用于监听 properties 和 data 的变化，参见 [数据监听器](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/observer.html)
+         * 组件数据字段监听器，用于监听 properties 和 data 的变化，参见 [数据监听器](https://developers.weixin.qq.com/miniprogram/dev/framework/observer.html)
          *
          * 最低基础库版本：[`2.6.1`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html)
          */
         observers: Record<string, (...args: any[]) => any>
-        /** 组件间关系定义，参见 [组件间关系](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/lifetimes.html) */
+        /** 组件间关系定义，参见 [relations 定义选项](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/relations.html#relations-定义选项) */
         relations: {
             [componentName: string]: RelationOption
         }
-        /** 组件接受的外部样式类，参见 [外部样式类](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/wxml-wxss.html) */
+        /** 组件接受的外部样式类，参见 [外部样式类](https://developers.weixin.qq.com/miniprogram/dev/framework/component-framework/external-classes.html#外部样式类)
+         *
+         * 最低基础库版本： [`1.9.90`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html) */
         externalClasses?: string[]
-        /** 组件所在页面的生命周期声明对象，参见 [组件生命周期](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/lifetimes.html)
+        /** 组件所在页面的生命周期声明对象，参见 [组件所在页面的生命周期](https://developers.weixin.qq.com/miniprogram/dev/framework/component-framework/lifetimes.html#组件所在页面的生命周期)
          *
          * 最低基础库版本： [`2.2.3`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html) */
         pageLifetimes?: Partial<PageLifetimes>
@@ -655,7 +710,7 @@ declare namespace WechatMiniprogram.Component {
          * 最低基础库版本： [`2.2.3`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html) */
         definitionFilter?: DefinitionFilter
         /**
-         * 组件自定义导出，当使用 `behavior: wx://component-export` 时，这个定义段可以用于指定组件被 selectComponent 调用时的返回值，参见 [组件间通信与事件](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/events.html)
+         * 组件自定义导出，当在 `behaviors` 中引入 `wx://component-export` 时，这个定义段可以用于指定组件被 `selectComponent` 调用时的返回值，参见 [自定义的组件实例获取结果](https://developers.weixin.qq.com/miniprogram/dev/framework/component-framework/component-tree-visit.html#自定义的组件实例获取结果)
          * 最低基础库版本： [`2.2.3`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html) */
         export: () => IAnyObject
     }
@@ -793,8 +848,8 @@ declare namespace WechatMiniprogram.Component {
     interface ScrollTimelineOption {
         /** 指定滚动元素的选择器（只支持 scroll-view），该元素滚动时会驱动动画的进度 */
         scrollSource: string
-        /** 指定滚动的方向。有效值为 horizontal 或 vertical */
-        orientation?: string
+        /** 指定滚动的方向。有效值为 `horizontal` 或 `vertical` ，默认值： `vertical` */
+        orientation?: 'horizontal' | 'vertical'
         /** 指定开始驱动动画进度的滚动偏移量，单位 px */
         startScrollOffset: number
         /** 指定停止驱动动画进度的滚动偏移量，单位 px */

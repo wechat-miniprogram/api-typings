@@ -63,7 +63,7 @@ Component({
     moved() {},
     detached() {},
     error(err) {
-      expectType<Error>(err)
+      expectType<unknown>(err)
     },
   },
 

@@ -1,3 +1,29 @@
+## 2026-11-06 v5.3.0
+- 对照文档，修正 JSDoc 中对应的描述文本和链接
+- 补齐 `replaceDataOnPath`、`applyDataUpdates`、`default`、`comparer`、`beforeDetach`、`propertyEarlyInit`、`linkFailed`、`Page.Options#behaviors`、`promise`
+- 修正 `AnimatedStyleConfig` 中 `immediate`、`flush` 为可选，`setUpdatePerformanceListener` 的 `listener` 允许传 `null`
+- 修正 `changedPath`、`setData` 的 `callback`、`clearAnimation` 的 `callback`、`applyAnimatedStyle` 的 `userConfig`、`setInitialRenderingCache` 的参数为可选
+- 修正 `ScrollTimelineOption` 中 `orientation` 的类型为 `'horizontal' | 'vertical'`，`getPassiveEvent`、`setPassiveEvent` 的参数类型去掉 `any`
+
+合入 [#383](https://github.com/wechat-miniprogram/api-typings/pull/383), [#384](https://github.com/wechat-miniprogram/api-typings/pull/384), [#385](https://github.com/wechat-miniprogram/api-typings/pull/385) by [@Yang Mingshan](https://github.com/yangmingshan)：
+1. `ComponentOptions` 新增 `dynamicSlots`，用于启用动态 slot；
+1. `ComponentOptions` 新增 `dataDeepCopy`、`propertyPassingDeepCopy`，用于控制数据与属性传递时的深拷贝策略；
+1. 属性支持 `Function` 类型，`PropertyType` 中新增 `FunctionConstructor`。
+
+### 破坏性改动
+
+主要来源于对此前错误的参数名或返回值等的修正：
+
+1. 将 `ITabItemTapOption` 中的 `index` 从 `string` 修正为 `number`
+   - 此前该字段被错误地声明为 `string`，实际实现传入的是数值。与数字比较、作为数组下标或做数值运算的代码可能需要调整
+1. 将 `IAddToFavoritesOption` 中的 `webviewUrl` 修正为 `webViewUrl`，与文档和实现保持一致
+1. 将 `selectComponent`、`selectOwnerComponent`、`getTabBar`、`getAppBar` 的返回值修正为可能为 `null`
+   - 找不到匹配的节点或未配置自定义 tabBar 时，实际返回 `null` 。调用方需要先做空值判断，例如 `this.selectComponent('.a')?.setData({})`
+1. 将 `hasBehavior` 的返回值从 `void` 修正为 `boolean`
+1. 将 `error` 生命周期的参数类型从 `Error` 修正为 `unknown`
+   - 实际抛出的值不一定是 `Error` 实例。访问 `Error` 成员前需要先做类型收窄，例如 `error(err) { if (err instanceof Error) err.message }`
+1. 将 `applyAnimatedStyle` 的回调参数从 `styleId` 修正为 `{ styleId }`，与文档及经典形式保持一致
+
 ## 2026-08-07 v5.2.3
 - 调用小程序 App() 时，参数改为可选
 

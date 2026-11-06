@@ -333,9 +333,9 @@ import WX = WechatMiniprogram
 {
   Page({
     onAddToFavorites(res) {
-      if (res.webviewUrl) {
-        // webview 页面返回 webviewUrl
-        expectType<string>(res.webviewUrl)
+      if (res.webViewUrl) {
+        // web-view 页面返回 webViewUrl
+        expectType<string>(res.webViewUrl)
       }
       return {
         title: '自定义标题',

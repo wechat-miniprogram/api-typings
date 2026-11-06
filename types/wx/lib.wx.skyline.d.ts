@@ -45,7 +45,9 @@ declare namespace WechatMiniprogram.Skyline {
     type FlushOption = 'async' | 'sync'
 
     interface AnimatedStyleConfig {
-        immediate: boolean
-        flush: FlushOption
+        /** 是否立即执行一次 updater 函数，默认值： `true` */
+        immediate?: boolean
+        /** 刷新时机，默认值： `async` */
+        flush?: FlushOption
     }
 }

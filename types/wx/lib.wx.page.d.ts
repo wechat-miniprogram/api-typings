@@ -45,7 +45,18 @@ declare namespace WechatMiniprogram.Page {
     > = (TCustom &
         Partial<Data<TData>> &
         Partial<ILifetime> & {
+            /**
+             * 页面的组件选项，同 `Component` 构造器的 `options`
+             *
+             * 最低基础库版本：[`2.10.1`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html)
+             */
             options?: Component.ComponentOptions
+            /**
+             * 同 `Component` 构造器的 `behaviors` ，参见 [behaviors](https://developers.weixin.qq.com/miniprogram/dev/framework/component-framework/behaviors.html)
+             *
+             * 最低基础库版本：[`2.9.2`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html)
+             */
+            behaviors?: Component.BehaviorOption
         }) &
         ThisType<Instance<TData, TCustom>>
     type TrivialInstance = Instance<IAnyObject, IAnyObject>
@@ -89,6 +100,8 @@ declare namespace WechatMiniprogram.Page {
         /** 生命周期回调—监听路由动画完成
          *
          * 路由动画完成时触发。如 wx.navigateTo 页面完全推入后 或 wx.navigateBack 页面完全恢复时。
+         *
+         * 最低基础库版本：[`2.31.2`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html)
          */
         onRouteDone(): void | Promise<void>
         /** 监听用户下拉动作
@@ -124,13 +137,15 @@ declare namespace WechatMiniprogram.Page {
             | void
             | Promise<void>
         /**
-         * 监听右上角菜单“分享到朋友圈”按钮的行为，并自定义分享内容
+         * 监听右上角菜单“分享到朋友圈”按钮的行为，并自定义分享内容。
          *
-         * 本接口为 Beta 版本，暂只在 Android 平台支持，详见 [分享到朋友圈 (Beta)](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/share-timeline.html)
+         * 支持平台：Android、iOS（微信 8.0.24 及以上版本）。基础库 2.11.3 开始支持，低版本需做兼容处理。
          *
-         * 基础库 2.11.3 开始支持，低版本需做兼容处理。
+         * **注意：只有定义了此事件处理函数，右上角菜单才会显示“分享到朋友圈”按钮**
+         *
+         * 详见 [分享到朋友圈](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/share-timeline.html)
          */
-        onShareTimeline(): ICustomTimelineContent | void
+        onShareTimeline(): ICustomTimelineContent | IAsyncCustomTimelineContent | void
 
         /** 页面滚动触发事件的处理函数
          *
@@ -141,25 +156,33 @@ declare namespace WechatMiniprogram.Page {
             options: IPageScrollOption
         ): void | Promise<void>
 
-        /** 当前是 tab 页时，点击 tab 时触发，最低基础库： `1.9.0` */
+        /** 当前是 tab 页时，点击 tab 时触发
+         *
+         * 最低基础库版本：[`1.9.0`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html)
+         */
         onTabItemTap(
             /** tab 点击参数 */
             options: ITabItemTapOption
         ): void | Promise<void>
 
-        /** 窗口尺寸改变时触发，最低基础库：`2.4.0` */
+        /** 窗口尺寸改变时触发
+         *
+         * 最低基础库版本：[`2.4.0`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html)
+         */
         onResize(
             /** 窗口尺寸参数 */
             options: IResizeOption
         ): void | Promise<void>
 
         /**
-         * 监听用户点击右上角菜单“收藏”按钮的行为，并自定义收藏内容。
-         * 基础库 2.10.3，安卓 7.0.15 版本起支持，iOS 暂不支持
+         * 监听右上角菜单“收藏”按钮的行为，并自定义收藏内容。
          */
         onAddToFavorites(options: IAddToFavoritesOption): IAddToFavoritesContent
 
-        /** 每当小程序可能被销毁之前会被调用，可以进行退出状态的保存。最低基础库： `2.7.4` */
+        /** 每当小程序可能被销毁之前会被调用，可以进行退出状态的保存
+         *
+         * 最低基础库版本：[`2.7.4`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html)
+         */
         onSaveExitState(): ISaveExitState
     }
     interface InstanceProperties {
@@ -175,10 +198,18 @@ declare namespace WechatMiniprogram.Page {
         /** 上一次退出前 onSaveExitState 保存的数据 */
         exitState: any
 
-        /** 相对于当前页面的 Router 对象 */
+        /**
+         * 相对于当前页面的 Router 对象。在页面中 `router` 与 `pageRouter` 为同一个对象，参见 [Router](https://developers.weixin.qq.com/miniprogram/dev/reference/api/Router.html)
+         *
+         * 最低基础库版本：[`2.16.1`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html)
+         */
         router: Component.Router
 
-        /** 相对于当前页面的 Router 对象 */
+        /**
+         * 相对于当前页面的 Router 对象。在页面中 `router` 与 `pageRouter` 为同一个对象，参见 [Router](https://developers.weixin.qq.com/miniprogram/dev/reference/api/Router.html)
+         *
+         * 最低基础库版本：[`2.16.1`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html)
+         */
         pageRouter: Component.Router
 
         /** 渲染当前页面的渲染后端 */
@@ -224,6 +255,14 @@ declare namespace WechatMiniprogram.Page {
         imageUrl?: string
     }
 
+    interface IAsyncCustomTimelineContent extends ICustomTimelineContent {
+        /** 如果该参数存在，则以 resolve 结果为准，如果三秒内不 resolve，分享会使用上面传入的默认参数
+         *
+         * 最低基础库版本：[`3.12.0`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html)
+         */
+        promise: Promise<ICustomTimelineContent>
+    }
+
     interface IPageScrollOption {
         /** 页面在垂直方向已滚动的距离（单位px） */
         scrollTop: number
@@ -251,11 +290,20 @@ declare namespace WechatMiniprogram.Page {
     }
 
     interface ITabItemTapOption {
-        /** 被点击tabItem的序号，从0开始，最低基础库： `1.9.0` */
-        index: string
-        /** 被点击tabItem的页面路径，最低基础库： `1.9.0` */
+        /** 被点击 tabItem 的序号，从 0 开始
+         *
+         * 最低基础库版本：[`1.9.0`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html)
+         */
+        index: number
+        /** 被点击 tabItem 的页面路径
+         *
+         * 最低基础库版本：[`1.9.0`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html)
+         */
         pagePath: string
-        /** 被点击tabItem的按钮文字，最低基础库： `1.9.0` */
+        /** 被点击 tabItem 的按钮文字
+         *
+         * 最低基础库版本：[`1.9.0`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html)
+         */
         text: string
     }
 
@@ -269,8 +317,8 @@ declare namespace WechatMiniprogram.Page {
     }
 
     interface IAddToFavoritesOption {
-        /** 页面中包含web-view组件时，返回当前web-view的url */
-        webviewUrl?: string
+        /** 页面中包含 web-view 组件时，返回当前 web-view 的 url。仅 Android 平台会传入该参数 */
+        webViewUrl?: string
     }
 
     interface IAddToFavoritesContent {

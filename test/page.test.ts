@@ -95,7 +95,7 @@ Page({
   onPageScroll() {},
   onResize() {},
   onTabItemTap(item) {
-    expectType<string>(item.index)
+    expectType<number>(item.index)
     expectType<string>(item.pagePath)
     expectType<string>(item.text)
   },
@@ -217,9 +217,9 @@ Page({
 
 Page({
   onAddToFavorites(res) {
-    // webview 页面返回 webviewUrl
-    if (res.webviewUrl) {
-      console.log('WebviewUrl: ', res.webviewUrl)
+    // web-view 页面返回 webViewUrl
+    if (res.webViewUrl) {
+      console.log('WebviewUrl: ', res.webViewUrl)
     }
     return {
       title: '自定义标题',

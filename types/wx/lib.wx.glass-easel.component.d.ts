@@ -13,12 +13,19 @@ declare namespace WechatMiniprogram.GlassEasel.Component {
         : UComponentExport
 
     type DefinitionOptions = {
+        /** [启用多 slot 支持](https://developers.weixin.qq.com/miniprogram/dev/framework/component-framework/slot.html#多-slot) */
         multipleSlots?: boolean
+        /** [启用动态 slot 支持](https://developers.weixin.qq.com/miniprogram/dev/framework/component-framework/slot.html#动态-slot) */
         dynamicSlots?: boolean
+        /** [纯数据字段](https://developers.weixin.qq.com/miniprogram/dev/framework/pure-data.html) 前缀正则，匹配到的 data 字段不用于 WXML 模板渲染 */
         pureDataPattern?: RegExp
+        /** [启用组件节点虚拟化](https://developers.weixin.qq.com/miniprogram/dev/framework/component-framework/virtual-host.html#启用组件节点虚拟化) */
         virtualHost?: boolean
+        /** [数据深拷贝](https://developers.weixin.qq.com/miniprogram/dev/framework/component-framework/data-deep-copy.html#所有可用的深拷贝策略) 策略 */
         dataDeepCopy?: 'none' | 'simple' | 'simple-recursion'
+        /** [属性传递深拷贝](https://developers.weixin.qq.com/miniprogram/dev/framework/component-framework/data-deep-copy.html#属性传递深拷贝) 策略 */
         propertyPassingDeepCopy?: 'none' | 'simple' | 'simple-recursion'
+        /** 以组件属性值来初始化，性能更好，参见 [组件初始化策略](https://developers.weixin.qq.com/miniprogram/dev/framework/component-framework/init-strategy.html) */
         propertyEarlyInit?: boolean
         /** @deprecated prefer static config */
         addGlobalClass?: boolean
@@ -228,7 +235,7 @@ declare namespace WechatMiniprogram.GlassEasel.Component {
             selector: string,
             updater: Skyline.WorkletFunction<Skyline.AnimatedStyle>,
             userConfig?: Skyline.AnimatedStyleConfig,
-            callback?: (styleId: number) => void
+            callback?: (res: { styleId: number }) => void
         ): void
         clearAnimatedStyle(
             selector: string,
@@ -319,6 +326,7 @@ declare namespace WechatMiniprogram.GlassEasel.Component {
             _animeJS: boolean,
             callback?: () => void
         ): void
+        clearAnimation(selector: string, callback?: () => void): void
         clearAnimation(
             selector: string,
             options:
@@ -341,18 +349,18 @@ declare namespace WechatMiniprogram.GlassEasel.Component {
             duration: number,
             scrollTimeline: WechatMiniprogram.Component.ScrollTimelineOption
         ): void
-        getTabBar(cb?: (tabBar: TrivialInstance) => void): TrivialInstance
-        getAppBar(): TrivialInstance
-        /** The `id` field in the template */
+        getTabBar(cb?: (tabBar: TrivialInstance) => void): TrivialInstance | null
+        getAppBar(): TrivialInstance | null
+        /** The data saved by `onSaveExitState` before the last exit */
         get exitState(): any
         set exitState(value: any)
-        setInitialRenderingCache(): void
+        setInitialRenderingCache(dynamicData?: IAnyObject | null): void
         setUpdatePerformanceListener<WithDataPath extends boolean = false>(
             config: WechatMiniprogram.Component.SetUpdatePerformanceListenerOption<WithDataPath>,
-            listener: WechatMiniprogram.Component.UpdatePerformanceListener<WithDataPath>
+            listener: WechatMiniprogram.Component.UpdatePerformanceListener<WithDataPath> | null
         ): void
-        getPassiveEvent(cb: any): void
-        setPassiveEvent(config: any): void
+        getPassiveEvent(callback: (config: WechatMiniprogram.Component.PassiveConfig) => void): void
+        setPassiveEvent(config: WechatMiniprogram.Component.PassiveConfig): void
         /**
          * Cast the component into the specified type
          *
@@ -628,7 +636,9 @@ declare namespace WechatMiniprogram.GlassEasel.Component {
             >,
             TChainingFilter
         >
-        /** Apply a classic definition object */
+        /**
+         * 应用一个经典 Definition 形式的定义对象，参见 [Chaining 形式的逻辑拆分与形式混用](https://developers.weixin.qq.com/miniprogram/dev/framework/component-framework/scripting.html#Chaining-形式的逻辑拆分与形式混用)
+         */
         definition<
             TNewData extends TypeUtils.DataList = TypeUtils.Empty,
             TNewProperty extends TypeUtils.PropertyList = TypeUtils.Empty,
@@ -693,7 +703,7 @@ declare namespace WechatMiniprogram.GlassEasel.Component {
             TChainingFilter
         >
         /**
-         * Finish the component definition process
+         * 完成组件定义，参见 [Component 构造器的 Chaining 形式](https://developers.weixin.qq.com/miniprogram/dev/framework/component-framework/scripting.html#Component-构造器的-Chaining-形式)
          */
         register(): ComponentType<TData, TProperty, TMethod, TComponentExport, TExtraThisFields>
         /**

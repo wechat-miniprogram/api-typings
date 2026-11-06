@@ -58,7 +58,7 @@ declare namespace WechatMiniprogram.GlassEasel.Behavior {
         TComponentExport = never,
         TExtraThisFields extends TypeUtils.DataList = TypeUtils.Empty
     > {
-        /** Implement a trait behavior */
+        /** 实现一个 trait behavior，参见 [trait behaviors](https://developers.weixin.qq.com/miniprogram/dev/framework/component-framework/trait-behaviors.html) */
         implement<
             TIn extends {
                 [key: string]: any
@@ -198,7 +198,7 @@ declare namespace WechatMiniprogram.GlassEasel.Behavior {
             TComponentExport,
             TExtraThisFields
         > {
-        /** Define a chaining filter */
+        /** 定义一个 chaining filter，参见 [Chaining 形式扩展](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/extend.html#Chaining-形式扩展) */
         chainingFilter<
             TAddedFields extends {
                 [key: string]: any
@@ -424,7 +424,9 @@ declare namespace WechatMiniprogram.GlassEasel.Behavior {
             >,
             TChainingFilter
         >
-        /** Apply a classic definition object */
+        /**
+         * 应用一个经典 Definition 形式的定义对象，参见 [Chaining 形式的逻辑拆分与形式混用](https://developers.weixin.qq.com/miniprogram/dev/framework/component-framework/scripting.html#Chaining-形式的逻辑拆分与形式混用)
+         */
         definition<
             TNewData extends TypeUtils.DataList = TypeUtils.Empty,
             TNewProperty extends TypeUtils.PropertyList = TypeUtils.Empty,
@@ -460,7 +462,7 @@ declare namespace WechatMiniprogram.GlassEasel.Behavior {
             TChainingFilter
         >
         /**
-         * Finish the behavior definition process
+         * 完成 behavior 定义，参见 [Component 构造器的 Chaining 形式](https://developers.weixin.qq.com/miniprogram/dev/framework/component-framework/scripting.html#Component-构造器的-Chaining-形式)
          */
         register(): Instance<
             TData,

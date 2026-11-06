@@ -450,8 +450,12 @@ declare namespace WechatMiniprogram.GlassEasel.TypeUtils {
         created: () => void
         attached: () => void
         moved: () => void
+        /** 组件实例将被从页面内移除前触发 */
+        beforeDetach: () => void
         detached: () => void
         ready: () => void
+        /** 组件内的生命周期回调或事件回调抛出异常时触发，回调参数为 `(err: unknown)` */
+        error: (err: unknown) => void
     }
     interface BuilderContext<
         TPrevData extends DataList,
